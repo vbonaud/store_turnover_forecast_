@@ -1,337 +1,344 @@
 <title>Knowledge Bank</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap">
 <style>
-/* Layout: app shell. Left rail (Prepare · Knowledge) + main workspace; detail opens in a right-hand drawer. Collapses to a top bar under 820px. */
+/* Layout: AI Sales Assistant shell. App bar on top, grey sidebar, white main.
+   Tokens mirror the product's design (customer-profile-builder mockup). Light theme only, by design. */
 :root {
-  --bg: #f4f6f5;
-  --surface: #ffffff;
-  --sunken: #eaeeec;
-  --line: #d8dfdc;
-  --fg: #17211d;
-  --muted: #5b6863;
-  --accent: #1f6b57;
-  --accent-soft: #dcede7;
-  --accent-fg: #ffffff;
-  --ok: #2e7d4f;   --ok-soft: #e1f2e7;
-  --warn: #9a6500; --warn-soft: #fbefd6;
-  --bad: #b3372b;  --bad-soft: #f9e2df;
-  --info: #3659a8; --info-soft: #e3e9f7;
-  --mark: #fff0b3;
-  --shadow: 0 8px 30px rgba(20, 40, 32, .14);
-  --f-display: "Schibsted Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --f-body: "Public Sans", "Segoe UI", system-ui, sans-serif;
-  --f-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;
+  --primary: #003DA5; --primary-dark: #002D7A; --primary-light: #ECF3FF; --primary-lighter: #D1E2FF; --border-primary-light: #A7C6FC;
+  --charcoal: #14171B; --slate: #3E4654; --steel: #6B7587; --snow: #FAFAFB;
+  --light-gray: #E5E7EB; --gray: #D1D5DB; --border-default: #CACFD8; --surface: #F2F4F6; --white: #FFFFFF;
+  --alert-bg: #FFF6DB; --alert-text: #523D00; --alert-accent: #FABB00; --alert-border: #F2DFA0;
+  --ok-bg: #E5FFEF; --ok-text: #003D16; --ok-accent: #008530; --ok-border: #9FE4BC;
+  --err-bg: #FFF1F0; --err-text: #510400; --err-accent: #DE1409; --err-border: #F6C3BF;
+  --info-bg: #F5EAFD; --info-text: #380A59; --info-accent: #7115B2;
+  --ink: #0B1B3B; --mark: #FFF1B8; --scrim: rgba(0, 0, 0, .45);
+  --radius: 10px;
+  --shadow: 0 1px 2px rgba(20, 23, 27, .06), 0 4px 16px rgba(20, 23, 27, .05);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, .25);
+  --mont: "Montserrat", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  --inter: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color-scheme: light;
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111715; --surface: #18201d; --sunken: #0d1311; --line: #2a3531;
-    --fg: #e4ebe8; --muted: #93a29c; --accent: #5cc3a3; --accent-soft: #1d3a31; --accent-fg: #07130f;
-    --ok: #6fcf94; --ok-soft: #173424; --warn: #e8b454; --warn-soft: #3a2c10;
-    --bad: #f08c80; --bad-soft: #3d1c18; --info: #8fb0f5; --info-soft: #1c2742;
-    --mark: #4a3f12; --shadow: 0 8px 30px rgba(0, 0, 0, .5);
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #111715; --surface: #18201d; --sunken: #0d1311; --line: #2a3531;
-  --fg: #e4ebe8; --muted: #93a29c; --accent: #5cc3a3; --accent-soft: #1d3a31; --accent-fg: #07130f;
-  --ok: #6fcf94; --ok-soft: #173424; --warn: #e8b454; --warn-soft: #3a2c10;
-  --bad: #f08c80; --bad-soft: #3d1c18; --info: #8fb0f5; --info-soft: #1c2742;
-  --mark: #4a3f12; --shadow: 0 8px 30px rgba(0, 0, 0, .5);
-  color-scheme: dark;
-}
-
 * { box-sizing: border-box; }
 html, body { height: 100%; }
-body { background: var(--bg); color: var(--fg); font: 14px/1.5 var(--f-body); }
-h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+body { background: var(--surface); color: var(--charcoal); font: 14px/1.55 var(--inter); }
+h1, h2, h3, h4 { font-family: var(--mont); margin: 0; color: var(--charcoal); text-wrap: balance; }
 p { margin: 0; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
-button:disabled, select:disabled { cursor: not-allowed; opacity: .5; }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button:disabled, select:disabled { cursor: not-allowed; opacity: .55; }
+:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2px; }
-.mono { font-family: var(--f-mono); font-size: 12px; }
-.muted { color: var(--muted); }
+svg.i { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.mono { font-family: var(--mono); font-size: 12px; }
+.muted { color: var(--steel); }
 .small { font-size: 12px; }
-.label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.label { font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--steel); }
 .stack { display: grid; gap: 10px; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .spread { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
 
-.app { display: grid; grid-template-columns: 232px minmax(0, 1fr); height: 100%; }
+/* Shell */
+.app { display: grid; grid-template-columns: 208px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); height: 100%; }
+.appbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; background: var(--surface); border-bottom: 1px solid var(--light-gray); padding: 11px 20px; }
+.appbar__mark { width: 32px; height: 32px; border-radius: 7px; background: var(--ink); color: var(--white); display: grid; place-items: center; }
+.appbar__name { font-weight: 500; font-size: 14px; }
+.appbar__spacer { flex: 1; }
+.avatar { width: 34px; height: 34px; border-radius: 99px; background: linear-gradient(135deg, var(--info-accent), var(--primary)); color: var(--white); display: grid; place-items: center; font: 700 12px var(--mont); flex: none; }
+.sidebar { background: var(--surface); border-right: 1px solid var(--light-gray); padding: 14px 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+.sidebar .group { font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--steel); padding: 14px 11px 6px; }
+.navitem { display: flex; align-items: center; gap: 11px; width: 100%; text-align: left; padding: 9px 11px; border-radius: 9px; border: 1px solid transparent; background: none; color: var(--slate); font-size: 13px; margin-bottom: 2px; }
+.navitem svg.i { color: var(--steel); }
+.navitem:hover { background: var(--white); box-shadow: var(--shadow); }
+.navitem[aria-current="true"] { background: var(--white); color: var(--primary); font-weight: 600; border-color: var(--primary); box-shadow: var(--shadow); }
+.navitem[aria-current="true"] svg.i { color: var(--primary); }
+.navitem .count { margin-left: auto; font-size: 11px; color: var(--steel); font-weight: 500; }
+.navitem .badge-n { margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--white); background: var(--err-accent); border-radius: 99px; padding: 0 7px; }
+.main { min-width: 0; overflow-y: auto; background: var(--white); }
+.content { padding: 24px 28px 64px; max-width: 1240px; }
+.crumb { font-size: 12px; color: var(--steel); margin-bottom: 6px; display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.crumb button { border: 0; background: none; padding: 0; color: var(--primary); font-weight: 600; }
+.pagehead { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.pagehead h1 { font-size: 22px; font-weight: 700; }
+.pagehead .sub { color: var(--slate); font-size: 13px; margin-top: 6px; max-width: 760px; }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.mock-note { display: inline-flex; font-size: 11.5px; color: var(--steel); background: var(--snow); border: 1px dashed var(--border-default); border-radius: 99px; padding: 3px 10px; margin-bottom: 16px; }
 
-/* Rail */
-.rail { background: var(--sunken); border-right: 1px solid var(--line); padding: 20px 14px; display: flex; flex-direction: column; gap: 22px; overflow-y: auto; }
-.brand { display: flex; align-items: center; gap: 10px; padding: 0 6px; }
-.brand-mark { width: 30px; height: 30px; border-radius: 8px; background: var(--accent); color: var(--accent-fg); display: grid; place-items: center; font: 700 14px var(--f-display); flex: none; }
-.brand b { font: 700 16px var(--f-display); display: block; }
-.brand small { color: var(--muted); font-size: 12px; }
-.nav { display: flex; flex-direction: column; gap: 2px; }
-.nav .label { padding: 0 10px 4px; }
-.nav button { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; text-align: left; border: 0; background: none; padding: 8px 10px; border-radius: 7px; color: var(--muted); font-weight: 500; }
-.nav button:hover { background: var(--surface); color: var(--fg); }
-.nav button[aria-current="true"] { background: var(--surface); color: var(--fg); box-shadow: inset 3px 0 0 var(--accent); }
-.nav .count { font: 500 11px var(--f-mono); color: var(--muted); }
-.badge { font: 600 11px var(--f-mono); color: var(--bad); background: var(--bad-soft); border-radius: 999px; padding: 0 7px; }
-.rail-foot { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--line); display: flex; gap: 10px; align-items: center; }
-.avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 600; font-size: 12px; flex: none; }
-.rail-foot div { font-size: 12px; line-height: 1.3; }
-
-/* Main */
-.main { min-width: 0; overflow-y: auto; }
-.topbar { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 22px 28px 16px; border-bottom: 1px solid var(--line); background: var(--surface); }
-.topbar .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
-.topbar h1 { font-size: 22px; }
-.topbar p { margin-top: 4px; color: var(--muted); max-width: 66ch; }
-.actions { display: flex; gap: 8px; flex-wrap: wrap; }
-.btn { border: 1px solid var(--line); background: var(--surface); padding: 7px 13px; border-radius: 7px; font-weight: 500; white-space: nowrap; }
-.btn:hover:not(:disabled) { border-color: var(--muted); }
-.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
-.btn.primary:hover:not(:disabled) { filter: brightness(1.08); }
-.btn.danger { color: var(--bad); border-color: var(--bad); }
-.btn.sm { padding: 3px 9px; font-size: 12px; }
-.btn.ghost { border-color: transparent; background: none; color: var(--accent); padding-inline: 4px; white-space: normal; text-align: left; }
-.content { padding: 20px 28px 48px; }
-.mock-note { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); background: var(--sunken); border: 1px dashed var(--line); border-radius: 999px; padding: 3px 10px; margin-bottom: 14px; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
-.pad { padding: 14px 16px; }
-.section-title { font-size: 16px; margin-bottom: 10px; }
-.section { margin-top: 24px; }
-
-/* Summary strip */
-.summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.summary > button, .summary > div { background: var(--surface); padding: 14px 16px; border: 0; text-align: left; }
-.summary > button:hover { background: var(--bg); }
-.summary .num { font: 600 22px var(--f-display); font-variant-numeric: tabular-nums; }
-.summary .sub { font-size: 12px; color: var(--muted); }
-
-/* Pills, tags, badges */
-.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
-.pill::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.pill.ok { color: var(--ok); background: var(--ok-soft); }
-.pill.warn { color: var(--warn); background: var(--warn-soft); }
-.pill.bad { color: var(--bad); background: var(--bad-soft); }
-.pill.info { color: var(--info); background: var(--info-soft); }
-.pill.neutral { color: var(--muted); background: var(--sunken); }
-.tag { font: 500 11px var(--f-mono); color: var(--muted); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
-.type { font: 600 11px var(--f-mono); letter-spacing: .02em; color: var(--accent); background: var(--accent-soft); border-radius: 4px; padding: 1px 6px; }
-.gov { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 11px; white-space: nowrap; color: var(--muted); }
+/* Primitives */
+.btn { border-radius: 999px; padding: 9px 17px; font-size: 13px; font-weight: 600; border: 1px solid var(--border-primary-light); background: var(--white); color: var(--primary); display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.btn:hover:not(:disabled) { background: var(--primary-light); }
+.btn.primary { background: var(--primary); color: var(--white); border-color: var(--primary); }
+.btn.primary:hover:not(:disabled) { background: var(--primary-dark); }
+.btn.primary:disabled { background: var(--gray); border-color: var(--gray); opacity: 1; }
+.btn.plain { color: var(--slate); border-color: var(--border-default); }
+.btn.plain:hover:not(:disabled) { background: var(--surface); }
+.btn.danger { color: var(--err-accent); border-color: var(--err-border); }
+.btn.danger:hover:not(:disabled) { background: var(--err-bg); }
+.btn.sm { padding: 5px 12px; font-size: 12px; }
+.btn.ghost { border-color: transparent; background: none; color: var(--primary); padding: 2px 4px; white-space: normal; text-align: left; border-radius: 6px; }
+.card { background: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius); box-shadow: var(--shadow); }
+.card-hd { padding: 13px 16px; border-bottom: 1px solid var(--light-gray); font: 600 14px var(--mont); display: flex; align-items: center; gap: 8px; justify-content: space-between; flex-wrap: wrap; }
+.pad { padding: 16px; }
+.section { margin-top: 26px; }
+.section-title { font: 700 16px var(--mont); margin-bottom: 12px; }
+.pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 99px; border: 1px solid; white-space: nowrap; }
+.pill.ok { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
+.pill.warn { background: var(--alert-bg); color: var(--alert-text); border-color: var(--alert-border); }
+.pill.bad { background: var(--err-bg); color: var(--err-text); border-color: var(--err-border); }
+.pill.info { background: var(--primary-light); color: var(--primary); border-color: var(--border-primary-light); }
+.pill.solid { background: var(--primary); color: var(--white); border-color: var(--primary); }
+.pill.neutral { background: var(--surface); color: var(--steel); border-color: var(--light-gray); }
+.tag { font: 500 11px var(--mono); color: var(--steel); border: 1px solid var(--light-gray); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.type { font: 600 11px var(--mono); color: var(--primary); background: var(--primary-light); border-radius: 4px; padding: 1px 6px; }
+.gov { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--light-gray); border-radius: 6px; overflow: hidden; font-size: 11px; white-space: nowrap; color: var(--steel); background: var(--white); }
 .gov span { padding: 1px 7px; display: inline-flex; gap: 4px; align-items: center; }
-.gov span + span { border-left: 1px solid var(--line); }
+.gov span + span { border-left: 1px solid var(--light-gray); }
 .gov b { font-weight: 600; }
-.gov .t-certified b { color: var(--ok); } .gov .t-reviewed b { color: var(--info); } .gov .t-stated b { color: var(--fg); }
-.gov .s-external b { color: var(--ok); } .gov .s-internal b { color: var(--info); } .gov .s-restricted b { color: var(--bad); }
-.gov .v-private b { color: var(--warn); }
-.facet { font: 500 11px var(--f-mono); color: var(--muted); word-break: break-all; }
+.gov .t-certified b { color: var(--ok-accent); } .gov .t-reviewed b { color: var(--primary); } .gov .t-stated b { color: var(--charcoal); }
+.gov .s-external b { color: var(--ok-accent); } .gov .s-internal b { color: var(--primary); } .gov .s-restricted b { color: var(--err-accent); }
+.gov .v-private b { color: var(--alert-text); }
+.facet { font: 500 11px var(--mono); color: var(--steel); word-break: break-all; }
+.callout { border-radius: 8px; padding: 12px 14px; border-left: 4px solid; font-size: 13px; }
+.callout.info { background: var(--primary-light); border-color: var(--primary); color: #0D2F6B; }
+.callout.warn { background: var(--alert-bg); border-color: var(--alert-accent); color: var(--alert-text); }
+.callout.ok { background: var(--ok-bg); border-color: var(--ok-accent); color: var(--ok-text); }
+.callout.bad { background: var(--err-bg); border-color: var(--err-accent); color: var(--err-text); }
+.empty-state { border: 1px dashed var(--border-default); border-radius: var(--radius); padding: 26px; text-align: center; color: var(--steel); font-size: 13px; background: var(--snow); }
+.hint { font-size: 11.5px; color: var(--steel); }
 
-/* Home */
-.home { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-.mix { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.mix-row { display: grid; grid-template-columns: 100px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; }
-.mix-row .bar { height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
-.mix-row .bar i { display: block; height: 100%; border-radius: 4px; }
-.mix-row .n { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 12px; }
-.matrix-wrap { overflow-x: auto; }
-.matrix { border-collapse: separate; border-spacing: 4px; width: 100%; min-width: 520px; }
-.matrix th { font-size: 11px; font-weight: 600; color: var(--muted); text-align: left; padding: 4px 6px; }
-.matrix td { padding: 0; }
-.cell { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 7px; padding: 8px 10px; text-align: left; display: grid; gap: 4px; min-height: 62px; }
-.cell:hover { border-color: var(--accent); }
-.cell .n { font: 600 16px var(--f-display); font-variant-numeric: tabular-nums; }
-.cell.empty { color: var(--muted); background: none; border-style: dashed; }
-.cell.l1 { background: var(--accent-soft); }
-.cell.l2 { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); }
-.cell.l3 { background: color-mix(in srgb, var(--accent) 32%, var(--surface)); }
-.todo { display: grid; gap: 1px; background: var(--line); border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
-.todo button { background: var(--surface); border: 0; text-align: left; padding: 12px 14px; display: grid; gap: 4px; }
-.todo button:hover { background: var(--bg); }
+/* Summary strip (matches the projects hub strip) */
+.summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--border-primary-light); border: 1px solid var(--border-primary-light); border-radius: var(--radius); overflow: hidden; }
+.summary.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.summary > button, .summary > div { background: var(--primary-light); padding: 13px 16px; border: 0; text-align: left; }
+.summary > button:hover { background: var(--primary-lighter); }
+.summary .k { font-size: 12.5px; color: var(--slate); }
+.summary .num { font: 700 20px var(--mont); font-variant-numeric: tabular-nums; }
+.summary .sub { font-size: 11.5px; color: var(--steel); }
 
-/* Filters */
+/* Filters, tabs, segmented */
 .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
-.search { border: 1px solid var(--line); background: var(--surface); border-radius: 7px; padding: 7px 10px; width: 240px; max-width: 100%; }
-.select { border: 1px solid var(--line); background: var(--surface); border-radius: 7px; padding: 6px 8px; max-width: 100%; }
-.seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; background: var(--surface); }
-.seg button { border: 0; background: none; padding: 6px 10px; font-size: 12px; color: var(--muted); }
-.seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
-.check { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+.search, .select, .input { border: 1px solid var(--border-default); background: var(--white); border-radius: 8px; padding: 8px 11px; font-size: 13px; max-width: 100%; }
+.search { width: 260px; }
+.search:focus, .select:focus, .input:focus, textarea:focus { outline: 2px solid var(--border-primary-light); border-color: var(--primary); }
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--light-gray); border-radius: 8px; padding: 3px; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--steel); }
+.seg button[aria-pressed="true"] { background: var(--white); color: var(--primary); box-shadow: var(--shadow); }
+.check { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--slate); }
+.tabs { display: flex; gap: 6px; border-bottom: 2px solid var(--primary); margin-bottom: 18px; flex-wrap: wrap; }
+.tabs button { border: 0; background: var(--primary-light); color: var(--primary); font-weight: 600; font-size: 13px; padding: 9px 18px; border-radius: 8px 8px 0 0; display: inline-flex; gap: 6px; align-items: center; }
+.tabs button[aria-selected="true"] { background: var(--primary); color: var(--white); }
 .scope-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin-bottom: 16px; }
 .scope-filters .col { display: grid; gap: 6px; align-content: start; }
 .scope-filters .select { width: 100%; }
-.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
-.tabs button { border: 0; background: none; padding: 8px 12px; color: var(--muted); font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -1px; display: inline-flex; gap: 6px; align-items: center; }
-.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
 
-/* Fact list */
-.fact { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; text-align: left; width: 100%; }
-.fact:hover { border-color: var(--muted); }
+/* Tables */
+.table-wrap { overflow-x: auto; background: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius); }
+table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+th { text-align: left; font: 600 11.5px var(--mont); color: var(--slate); text-transform: uppercase; letter-spacing: .4px; padding: 9px 12px; background: var(--snow); border-bottom: 1px solid var(--light-gray); }
+td { padding: 11px 12px; border-bottom: 1px solid var(--light-gray); vertical-align: top; color: var(--slate); }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.stbl { min-width: 900px; } .stbl.narrow { min-width: 620px; } .ftable { min-width: 720px; }
+.stbl tbody tr[data-act] { cursor: pointer; }
+.stbl tbody tr[data-act]:hover td { background: var(--primary-light); }
+.stbl .name { font-weight: 600; color: var(--charcoal); word-break: break-word; }
+.ftable .gov { flex-wrap: nowrap; }
+.stages { display: flex; gap: 2px; margin-top: 6px; }
+.stages i { width: 16px; height: 4px; border-radius: 2px; background: var(--light-gray); }
+.stages i.done { background: var(--ok-accent); } .stages i.fail { background: var(--err-accent); } .stages i.run { background: var(--alert-accent); }
+
+/* Knowledge Bank home */
+.home { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.mix { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.mix-row { display: grid; grid-template-columns: 104px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; }
+.mix-row .bar { height: 7px; border-radius: 99px; background: var(--light-gray); overflow: hidden; }
+.mix-row .bar i { display: block; height: 100%; border-radius: 99px; }
+.mix-row .n { text-align: right; font: 600 12.5px var(--inter); font-variant-numeric: tabular-nums; }
+.matrix-wrap { overflow-x: auto; }
+.matrix { border-collapse: separate; border-spacing: 4px; min-width: 520px; }
+.matrix th { background: none; border: 0; padding: 4px 6px; font-size: 11px; }
+.matrix td { padding: 0; border: 0; }
+.cell { width: 100%; border: 1px solid var(--light-gray); background: var(--white); border-radius: 8px; padding: 8px 10px; text-align: left; display: grid; gap: 4px; min-height: 62px; }
+.cell:hover { border-color: var(--primary); }
+.cell .n { font: 700 16px var(--mont); font-variant-numeric: tabular-nums; }
+.cell.empty { color: var(--steel); background: var(--snow); border-style: dashed; }
+.cell.l1 { background: var(--primary-light); }
+.cell.l2 { background: var(--primary-lighter); }
+.cell.l3 { background: #B9D2FB; }
+.todo { display: grid; gap: 1px; background: var(--light-gray); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--light-gray); }
+.todo button { background: var(--white); border: 0; text-align: left; padding: 12px 14px; display: grid; gap: 4px; }
+.todo button:hover { background: var(--primary-light); }
+
+/* Facts */
+.fact { background: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 8px; text-align: left; width: 100%; box-shadow: var(--shadow); }
+.fact:hover { border-color: var(--primary); }
 .fact + .fact { margin-top: 8px; }
-.fact .statement { font-size: 15px; font-weight: 500; max-width: 80ch; }
-.fact.dim { opacity: .62; }
-.fact-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 12px; color: var(--muted); }
-.empty-state { border: 1px dashed var(--line); border-radius: 10px; padding: 28px; text-align: center; color: var(--muted); }
+.fact .statement { font-size: 14.5px; font-weight: 500; color: var(--charcoal); max-width: 80ch; }
+.fact.dim { opacity: .6; }
+.fact-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 12px; color: var(--steel); }
 
 /* Briefings */
 .briefings { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 20px; align-items: start; }
-.blist { display: grid; gap: 6px; }
-.bitem { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 9px; padding: 11px 13px; display: grid; gap: 5px; }
-.bitem:hover { border-color: var(--muted); }
-.bitem[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.blist { display: grid; gap: 8px; }
+.bitem { text-align: left; border: 1px solid var(--light-gray); background: var(--white); border-radius: var(--radius); padding: 11px 13px; display: grid; gap: 5px; }
+.bitem:hover { border-color: var(--primary); background: var(--primary-light); }
+.bitem[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 1px var(--primary); }
 .bitem.virtual { border-style: dashed; }
-.bitem strong { font: 600 14px var(--f-display); }
-.doc { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px 26px; display: grid; gap: 16px; }
+.bitem strong { font: 600 14px var(--mont); }
+.doc { background: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius); padding: 22px 24px; display: grid; gap: 16px; box-shadow: var(--shadow); line-height: 1.7; }
 .doc h2 { font-size: 20px; }
-.doc h3 { font-size: 14px; margin-top: 4px; }
+.doc h3 { font-size: 12.5px; color: var(--primary); text-transform: uppercase; letter-spacing: .4px; }
 .doc ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 78ch; }
-.anchor { font: 600 10px var(--f-mono); color: var(--accent); background: var(--accent-soft); border: 0; border-radius: 3px; padding: 0 4px; vertical-align: 1px; }
-button.anchor:hover { background: var(--accent); color: var(--accent-fg); }
-.refs { border-top: 1px solid var(--line); padding-top: 12px; display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
-.meter { height: 6px; border-radius: 3px; background: var(--sunken); overflow: hidden; }
-.meter i { display: block; height: 100%; background: var(--warn); }
+.anchor { font: 700 10px var(--inter); color: var(--primary); background: var(--primary-light); border: 0; border-radius: 3px; padding: 0 4px; vertical-align: 2px; }
+button.anchor:hover { background: var(--primary); color: var(--white); }
+.bgtag { font-size: 10px; font-weight: 600; color: var(--steel); background: var(--surface); border-radius: 3px; padding: 0 4px; vertical-align: 2px; }
+.refs { border-top: 1px dashed var(--light-gray); padding-top: 12px; display: grid; gap: 4px; font-size: 12px; color: var(--steel); }
+.meter { height: 7px; border-radius: 99px; background: var(--light-gray); overflow: hidden; }
+.meter i { display: block; height: 100%; background: var(--alert-accent); }
 
 /* Search */
 .ask { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; align-items: start; }
 .ask form { display: grid; gap: 12px; }
-.pipeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
-.pipeline div { background: var(--surface); padding: 10px 14px; }
-.pipeline b { font: 600 18px var(--f-display); font-variant-numeric: tabular-nums; display: block; }
+.pipeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--light-gray); border: 1px solid var(--light-gray); border-radius: var(--radius); overflow: hidden; }
+.pipeline div { background: var(--snow); padding: 10px 14px; }
+.pipeline b { font: 700 18px var(--mont); font-variant-numeric: tabular-nums; display: block; }
 .answer { display: grid; gap: 10px; }
-.answer ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
-.ftable { width: 100%; border-collapse: collapse; min-width: 720px; }
-.ftable th, .ftable td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 13px; }
-.ftable th { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--sunken); }
-.ftable tr:last-child td { border-bottom: 0; }
-.ftable td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 12px; }
-.ftable .gov { flex-wrap: nowrap; }
-.table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.answer ul, .bubble ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 10px; font-size: 12px; text-align: left; }
-.chip:hover { border-color: var(--accent); }
-.linkish { border: 0; background: none; padding: 0; text-align: left; color: inherit; }
-.linkish:hover { color: var(--accent); text-decoration: underline; }
-
-/* Sources & runs */
-.stbl { width: 100%; border-collapse: collapse; min-width: 900px; }
-.stbl.narrow { min-width: 620px; }
-.stbl th, .stbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
-.stbl th { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--sunken); }
-.stbl tbody tr[data-act] { cursor: pointer; }
-.stbl tbody tr[data-act]:hover td { background: var(--bg); }
-.stbl tr:last-child td { border-bottom: 0; }
-.stbl .name { font-weight: 600; word-break: break-word; }
-.stbl td.num, .stbl th.num { text-align: right; font-variant-numeric: tabular-nums; }
-.stages { display: flex; gap: 2px; margin-top: 6px; }
-.stages i { width: 16px; height: 4px; border-radius: 2px; background: var(--line); }
-.stages i.done { background: var(--ok); }
-.stages i.fail { background: var(--bad); }
-.stages i.run { background: var(--warn); }
+.chip { border: 1px solid var(--border-primary-light); background: var(--white); color: var(--primary); border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 500; text-align: left; }
+.chip:hover { background: var(--primary-light); }
+.linkish { border: 0; background: none; padding: 0; text-align: left; color: var(--charcoal); }
+.linkish:hover { color: var(--primary); text-decoration: underline; }
+.verdict { border-radius: 8px; padding: 10px 12px; font-size: 13px; border-left: 4px solid; }
+.verdict.ok { background: var(--ok-bg); border-color: var(--ok-accent); color: var(--ok-text); }
+.verdict.warn { background: var(--alert-bg); border-color: var(--alert-accent); color: var(--alert-text); }
+.verdict.bad { background: var(--err-bg); border-color: var(--err-accent); color: var(--err-text); }
 
 /* Review queue */
 .rq { display: grid; gap: 12px; }
-.rcard { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 16px 18px; display: grid; gap: 12px; }
+.rcard { background: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius); padding: 16px 18px; display: grid; gap: 12px; box-shadow: var(--shadow); }
 .rcard h3 { font-size: 15px; }
-.rcard p { max-width: 78ch; }
+.rcard p { max-width: 78ch; color: var(--slate); }
 .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-.side-box { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; background: var(--bg); }
-.side-box .big { font: 600 20px var(--f-display); font-variant-numeric: tabular-nums; }
+.side-box { border: 1px solid var(--light-gray); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; background: var(--snow); }
+.side-box .big { font: 700 20px var(--mont); font-variant-numeric: tabular-nums; }
 
-/* Workstreams */
-.ws-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
-.ws { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; }
-.ws:hover { border-color: var(--muted); }
-.ws[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.ws strong { font: 600 15px var(--f-display); }
-.dots { display: inline-flex; gap: 3px; vertical-align: middle; }
-.dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
-.dots i.on { background: var(--accent); }
-.pillars { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
-.pillar { border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; display: grid; gap: 4px; background: var(--surface); align-content: start; }
-.pillar.missing { border-style: dashed; background: none; }
-.pillar strong { font: 600 13px var(--f-display); }
-.ws-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; align-items: start; }
-.ws-detail > .stack { align-content: start; }
-.tool { display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 9px; padding: 12px 14px; }
+/* Projects */
+.projgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 16px; }
+.projcard { border: 1px solid var(--light-gray); border-radius: 14px; background: var(--white); box-shadow: var(--shadow); padding: 16px 17px; text-align: left; display: grid; gap: 8px; transition: transform .18s ease, box-shadow .18s ease; }
+.projcard:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(20, 23, 27, .10); }
+.projcard .nm { font: 700 16px var(--mont); }
+.projchips { display: flex; gap: 6px; flex-wrap: wrap; }
+.projchip { font-size: 11px; font-weight: 600; color: var(--slate); background: var(--surface); border: 1px solid var(--light-gray); border-radius: 99px; padding: 3px 9px; }
+.covbar { height: 7px; background: var(--light-gray); border-radius: 99px; overflow: hidden; }
+.covbar > span { display: block; height: 100%; border-radius: 99px; }
+.dots { display: inline-flex; gap: 4px; vertical-align: middle; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--gray); }
+.dots i.on { background: var(--ok-accent); }
+
+/* Project workspace + chat */
+.proj { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+.chat { display: flex; flex-direction: column; min-height: 560px; }
+.thread { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: calc(100vh - 330px); min-height: 380px; background: var(--snow); border-radius: 0 0 0 0; }
+.msg { display: flex; gap: 10px; align-items: flex-start; max-width: 100%; }
+.msg.me { justify-content: flex-end; }
+.msg .who { width: 30px; height: 30px; border-radius: 8px; background: var(--primary); color: var(--white); display: grid; place-items: center; flex: none; }
+.msg.me .who { background: linear-gradient(135deg, var(--info-accent), var(--primary)); border-radius: 99px; font: 700 11px var(--mont); order: 2; }
+.bubble { background: var(--white); border: 1px solid var(--light-gray); border-radius: 4px 12px 12px 12px; padding: 12px 14px; box-shadow: var(--shadow); display: grid; gap: 10px; min-width: 0; max-width: min(640px, 100%); font-size: 13.5px; }
+.msg.me .bubble { background: var(--primary); color: var(--white); border-color: var(--primary); border-radius: 12px 4px 12px 12px; }
+.bubble .tool-hd { display: flex; align-items: center; gap: 8px; font: 600 13px var(--mont); color: var(--primary); }
+.bubble table { font-size: 12.5px; }
+.typing { display: inline-flex; gap: 4px; padding: 4px 0; }
+.typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--steel); opacity: .4; animation: blink 1s infinite; }
+.typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
+@keyframes blink { 50% { opacity: 1; } }
+.stagelist { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.stagelist li { display: flex; align-items: center; gap: 10px; padding: 5px 0; font-size: 13px; color: var(--steel); }
+.stagelist .ico { width: 18px; height: 18px; border-radius: 99px; border: 2px solid var(--light-gray); flex: none; display: grid; place-items: center; color: var(--white); font-size: 10px; }
+.stagelist li.run { color: var(--primary); font-weight: 600; }
+.stagelist li.run .ico { border-color: var(--primary); border-right-color: transparent; animation: spin .7s linear infinite; }
+.stagelist li.ok { color: var(--charcoal); }
+.stagelist li.ok .ico { background: var(--ok-accent); border-color: var(--ok-accent); }
+@keyframes spin { to { transform: rotate(360deg); } }
+.locked [data-act="cs-deck"], .locked [data-act="st-pick"], .locked [data-act="st-approve"], .locked [data-act="st-refine"] { pointer-events: none; opacity: .5; }
+.opt { border: 1px solid var(--light-gray); border-radius: 8px; padding: 11px 13px; display: grid; gap: 6px; background: var(--white); }
+.opt.rec { border-color: var(--primary); background: var(--primary-light); }
+.opt strong { font: 600 13.5px var(--mont); }
+.filepick { border: 1px dashed var(--border-primary-light); border-radius: 8px; background: var(--primary-light); padding: 10px 12px; display: grid; gap: 6px; }
+.filerow { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--light-gray); border-radius: 8px; background: var(--white); font-size: 12.5px; width: 100%; text-align: left; }
+.filerow:hover:not(:disabled) { border-color: var(--primary); }
+.composer { border-top: 1px solid var(--light-gray); padding: 12px 14px; display: grid; gap: 10px; background: var(--white); border-radius: 0 0 var(--radius) var(--radius); }
+.composer form { display: flex; gap: 8px; align-items: flex-end; }
+.composer textarea { flex: 1; min-width: 0; border: 1px solid var(--border-default); border-radius: 10px; padding: 10px 12px; resize: none; font-size: 13.5px; line-height: 1.5; }
+.launchers { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.launcher { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--light-gray); background: var(--surface); border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 600; color: var(--slate); }
+.launcher:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-light); }
+.launcher svg.i { width: 15px; height: 15px; }
+.side { display: grid; gap: 14px; }
+.plist { display: grid; gap: 1px; background: var(--light-gray); }
+.plist > div { background: var(--white); padding: 9px 14px; display: flex; justify-content: space-between; gap: 8px; align-items: center; font-size: 13px; }
+.runs { display: grid; gap: 8px; padding: 12px 14px; }
+.runs > div { display: grid; gap: 2px; font-size: 12.5px; padding-bottom: 8px; border-bottom: 1px solid var(--light-gray); }
+.runs > div:last-child { border-bottom: 0; padding-bottom: 0; }
 
 /* Drawer & modal */
-.scrim { position: fixed; inset: 0; background: rgba(8, 16, 12, .42); z-index: 20; }
-.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(500px, 100%); background: var(--surface); box-shadow: var(--shadow); z-index: 21; overflow-y: auto; padding: calc(18px + env(safe-area-inset-top, 0px)) 22px calc(24px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 18px; align-content: start; }
-.drawer h2 { font-size: 18px; }
-.chain { display: grid; border-left: 2px solid var(--line); margin-left: 6px; }
+.scrim { position: fixed; inset: 0; background: var(--scrim); z-index: 20; }
+.drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(500px, 100%); background: var(--white); box-shadow: var(--shadow-lg); z-index: 21; overflow-y: auto; padding: calc(18px + env(safe-area-inset-top, 0px)) 22px calc(24px + env(safe-area-inset-bottom, 0px)); display: grid; gap: 18px; align-content: start; }
+.drawer h2 { font-size: 17px; }
+.chain { display: grid; border-left: 2px solid var(--light-gray); margin-left: 6px; }
 .chain > div { position: relative; padding: 0 0 14px 16px; display: grid; gap: 3px; }
-.chain > div::before { content: ""; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); border: 2px solid var(--accent); }
-.excerpt { background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 10px 12px; font-size: 13px; }
-pre.excerpt { font: 12px/1.5 var(--f-mono); white-space: pre-wrap; margin: 0; overflow-x: auto; }
+.chain > div::before { content: ""; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--white); border: 2px solid var(--primary); }
+.excerpt { background: var(--snow); border: 1px solid var(--light-gray); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
+pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; overflow-x: auto; }
 .kv { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 6px 12px; font-size: 13px; margin: 0; }
-.kv dt { color: var(--muted); }
+.kv dt { color: var(--steel); }
 .kv dd { margin: 0; }
-.verdict { border-radius: 8px; padding: 10px 12px; font-size: 13px; }
-.verdict.ok { background: var(--ok-soft); } .verdict.bad { background: var(--bad-soft); } .verdict.warn { background: var(--warn-soft); }
 .modal-wrap { position: fixed; inset: 0; display: grid; place-items: center; padding: 16px; z-index: 22; }
-.modal { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; }
-.modal header { padding: 18px 20px 0; }
-.modal header h2 { font-size: 18px; }
-.modal form { padding: 16px 20px 20px; display: grid; gap: 14px; }
+.modal { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg); width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; }
+.modal header { padding: 16px 20px; border-bottom: 1px solid var(--light-gray); }
+.modal header h2 { font-size: 15px; }
+.modal form { padding: 18px 20px 20px; display: grid; gap: 14px; }
 .field { display: grid; gap: 5px; }
-.field label, .field .flabel { font-size: 12px; font-weight: 600; }
-.field input, .field select, .field textarea { border: 1px solid var(--line); background: var(--bg); border-radius: 7px; padding: 8px 10px; width: 100%; }
+.field label, .field .flabel { font-size: 12px; font-weight: 600; color: var(--slate); }
+.field input, .field select, .field textarea { border: 1px solid var(--border-default); background: var(--white); border-radius: 8px; padding: 9px 11px; width: 100%; font-size: 13px; }
 .field textarea { resize: vertical; min-height: 80px; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-.hint { font-size: 12px; color: var(--muted); }
-.callout { background: var(--info-soft); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
-.foot { display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
-
-.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-weight: 500; z-index: 30; box-shadow: var(--shadow); max-width: calc(100% - 32px); }
+.foot { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid var(--light-gray); }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--charcoal); color: var(--white); padding: 10px 16px; border-radius: 8px; font-weight: 500; z-index: 30; box-shadow: var(--shadow-lg); max-width: calc(100% - 32px); }
 
 @media (max-width: 1100px) {
-  .home, .ask, .ws-detail { grid-template-columns: minmax(0, 1fr); }
+  .home, .ask, .proj { grid-template-columns: minmax(0, 1fr); }
   .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 820px) {
-  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
-  .rail { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; padding: 10px 16px; border-right: 0; border-bottom: 1px solid var(--line); overflow: visible; }
-  .nav { flex-direction: row; flex-wrap: wrap; }
-  .nav button { width: auto; }
-  .nav .label, .nav .count, .rail-foot, .brand small { display: none; }
-  .topbar, .content { padding-inline: 16px; }
-  .briefings, .mix, .scope-filters, .ws-grid { grid-template-columns: minmax(0, 1fr); }
+  .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
+  .sidebar { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--light-gray); padding: 8px 12px; }
+  .sidebar .group, .navitem .count { display: none; }
+  .navitem { width: auto; padding: 6px 10px; }
+  .content { padding-inline: 16px; }
+  .briefings, .mix, .scope-filters, .summary.three { grid-template-columns: minmax(0, 1fr); }
   .grid2, .grid3, .versus, .pipeline { grid-template-columns: minmax(0, 1fr); }
-  .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .doc { padding: 16px; }
   .kv { grid-template-columns: minmax(0, 1fr); }
+  .thread { max-height: none; }
+  .search { width: 100%; }
 }
-@media (prefers-reduced-motion: no-preference) {
-  .drawer { animation: slide .18s ease-out; }
-  @keyframes slide { from { transform: translateX(24px); opacity: .7; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .projcard, .stagelist li.run .ico, .typing i { transition: none; animation: none; }
 }
 </style>
 
 <div class="app">
-  <aside class="rail">
-    <div class="brand">
-      <div class="brand-mark">KB</div>
-      <div><b>Knowledge Bank</b><small>AI Sales Assistant</small></div>
-    </div>
-    <nav class="nav" aria-label="Sections" id="nav"></nav>
-    <div class="rail-foot">
-      <div class="avatar">CM</div>
-      <div><strong>Camille Martin</strong><br><span class="muted">KAM · Fabric Care UK</span></div>
-    </div>
-  </aside>
-
-  <main class="main" id="main">
-    <header class="topbar">
-      <div>
-        <div class="eyebrow" id="view-eyebrow"></div>
-        <h1 id="view-title"></h1>
-        <p id="view-sub"></p>
-      </div>
-      <div class="actions" id="view-actions"></div>
-    </header>
-    <div class="content" id="view"></div>
-  </main>
+  <header class="appbar">
+    <span class="appbar__mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/></svg></span>
+    <span class="appbar__name">AI Sales Assistant</span>
+    <span class="appbar__spacer"></span>
+    <span class="avatar" title="Camille Martin">CM</span>
+  </header>
+  <aside class="sidebar" id="nav" aria-label="Sections"></aside>
+  <main class="main" id="main"><div class="content" id="view"></div></main>
 </div>
 
 <div id="overlay"></div>
@@ -352,6 +359,23 @@ const STAGES = ["Parse", "Quality gate", "Chunk", "Embed", "Mine facts", "Ground
 const REL = ["certified", "reviewed", "stated"];
 const STATUS_LABEL = { verified: "Verified", needs_review: "Needs review", outdated: "Outdated", replaced: "Replaced" };
 const STATUS_CLS = { verified: "ok", needs_review: "warn", outdated: "neutral", replaced: "neutral" };
+
+const ICON = {
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
+  db: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  book: '<path d="M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3z"/><path d="M21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/>',
+  facts: '<path d="M10 6h10M10 12h10M10 18h10"/><path d="M3 6l1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/>',
+  folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 16v-6M9 12l3-3 3 3"/>',
+  coach: '<rect x="4" y="12" width="4" height="8" rx="1"/><rect x="10" y="7" width="4" height="13" rx="1"/><rect x="16" y="3" width="4" height="17" rx="1"/>',
+  story: '<path d="M4 6h16M4 12h10M4 18h7"/><path d="M17 15l3 3-3 3"/>',
+  spark: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/>',
+  send: '<path d="M4 12l16-8-6 16-2-7z"/>',
+  file: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  gap: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/>',
+};
+const icon = n => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 
 const SOURCES = [
   { id: "S-01", name: "uk_retailer_share · certified view v3", kind: "Certified metric view", lane: "Data", cat: null, cust: null, status: "live", sens: "internal", rel: "certified", asOf: "07 Sep 2026", conf: "high", facts: 412, stage: 6 },
@@ -375,12 +399,12 @@ let FACTS = [
   { id: "F-1045", type: "recommendation", text: "Move the capsules end-cap to weeks 38–41 to line up with back-to-school.", fig: "38–41", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "needs_review", asOf: "01 Jul 2026", src: "S-03", loc: "slide 9 [chunk 1]", excerpt: "Next steps: move the capsules end-cap to weeks 38–41 to line up with back-to-school traffic.", dedup: 1 },
   { id: "F-1046", type: "recommendation", text: "Hold promotion depth at 25% or more on capsules to limit own-label switching.", fig: "25%", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 11 [chunk 2]", excerpt: "Recommendation: hold promotion depth at 25% or more on capsules to limit own-label switching.", dedup: 1 },
   { id: "F-1047", type: "metric", text: "Our Fabric Care margin target at Northgate is 31%.", fig: "31%", period: "FY 2026-27", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 14 [chunk 1]", excerpt: "FY26-27 targets: net sales +5%, margin 31%, distribution gains on capsules.", dedup: 1 },
-  { id: "F-1051", type: "event", text: "Northgate range review confirmed for 14 Nov 2026.", fig: "14 Nov 2026", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "22 Sep 2026", src: null, loc: "Account memory · Northgate JBP workstream", excerpt: "Workstream signal: meeting with the category buyer set for 14 Nov 2026 (range review).", dedup: 1 },
+  { id: "F-1051", type: "event", text: "Northgate range review confirmed for 14 Nov 2026.", fig: "14 Nov 2026", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "external", owner: null, status: "verified", asOf: "22 Sep 2026", src: null, loc: "Account memory · Northgate range review project", excerpt: "Project signal: meeting with the category buyer set for 14 Nov 2026 (range review).", dedup: 1 },
   { id: "F-1052", type: "insight", text: "The buyer is under pressure to cut laundry SKU count by about 10%.", fig: "10%", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: ME, status: "needs_review", asOf: "24 Sep 2026", src: null, loc: "Added by you", excerpt: "Heard after the 22 Sep call: pressure to cut laundry SKUs by about 10%. Not confirmed in writing.", dedup: 1 },
   { id: "F-0990", type: "metric", text: "Northgate holds 17.9% of UK Fabric Care value sales.", fig: "17.9", period: "52 w to 01 Jun 2025", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "replaced", asOf: "01 Jul 2025", src: "S-08", loc: "slide 4 [chunk 1]", excerpt: "Northgate share of UK Fabric Care: 17.9% (52 w to 01 Jun 2025).", dedup: 1 },
   { id: "F-1080", type: "insight", text: "Northgate is prioritising own-label growth across household in 2027.", cat: null, cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "15 Aug 2026", src: "S-04", loc: "Customer profile [chunk 1]", excerpt: "2027 priorities: grow own label across household, fewer promotions, more space for new ranges.", dedup: 1 },
   { id: "F-1023", type: "metric", text: "The UK Fabric Care market is worth £2.31bn, up 3.1% vs. a year ago.", fig: "3.1", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 104", row: { market: "UK", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_bn: 2.31, value_sales_growth_pct: 3.1 }, dedup: 4 },
-  { id: "F-1024", type: "metric", text: "Capsules make up 38% of UK Fabric Care value sales.", fig: "38", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 117", row: { market: "UK", category: "Fabric Care", segment: "Capsules", period: "52w_2026-09-07", segment_share_pct: 38 }, dedup: 2 },
+  { id: "F-1024", type: "metric", text: "Capsules make up 38% of UK Fabric Care value sales.", fig: "38", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 117", row: { market: "UK", category: "Fabric Care", segment: "Capsules", period: "52w_2026-09-07", segment_share_pct: 38 }, dedup: 2 },
   { id: "F-1035", type: "insight", text: "Capsule buyers are 1.6× more likely to buy the premium tier.", fig: "1.6×", cat: "Fabric Care", cust: null, rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", src: "S-02", loc: "page 22 [chunk 1]", excerpt: "Capsule buyers are 1.6× more likely than liquid buyers to trade up to the premium tier.", dedup: 1 },
   { id: "F-1060", type: "metric", text: "Hair Care value share at Brightmart fell 0.8 pts vs. a year ago.", fig: "0.8", period: "12 w to 15 Jun 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "15 Jun 2026", expires: "12 Oct 2026", src: "S-01", loc: "dataset row 30 981", row: { retailer: "Brightmart", category: "Hair Care", period: "12w_2026-06-15", share_change_pts: -0.8 }, dedup: 1 },
   { id: "F-1062", type: "metric", text: "Brightmart grew Hair Care value sales 2.1% vs. a year ago.", fig: "2.1", period: "52 w to 07 Sep 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 31 002", row: { retailer: "Brightmart", category: "Hair Care", period: "52w_2026-09-07", value_sales_growth_pct: 2.1 }, dedup: 1 },
@@ -420,12 +444,15 @@ let RUNS = [
   { status: "Complete", source: "salesbook://selection", started: "21 Sep 2026 10:58", indexed: 3, failed: 0 },
 ];
 
-const WORKSTREAMS = [
-  { id: "W-1", name: "Northgate Fabric Care JBP 2026-27", cat: "Fabric Care", cust: "Northgate", audience: "external", buyer: "Alex Morgan · category buyer",
-    runs: [{ tool: "Selling Coach", date: "24 Sep 2026", status: "Completed", note: "JBP deck v3 · 4 of 5 PSF steps grounded", rating: "4/5" }, { tool: "Storyline Generator", date: "18 Sep 2026", status: "Approved", note: "Opportunity: capsules at back-to-school", rating: "5/5" }] },
-  { id: "W-2", name: "Brightmart Hair Care quarterly review", cat: "Hair Care", cust: "Brightmart", audience: "internal", buyer: null,
-    runs: [{ tool: "Selling Coach", date: "03 Sep 2026", status: "Completed", note: "Q3 review deck · 3 of 5 PSF steps grounded", rating: "3/5" }] },
-  { id: "W-3", name: "Harbour & Co whitening launch", cat: "Oral Care", cust: "Harbour & Co", audience: "external", buyer: "Priya Shah · buyer", runs: [] },
+let PROJECTS = [
+  { id: "P-1", name: "Northgate range review", cat: "Fabric Care", cust: "Northgate", audience: "external", meeting: "14 Nov 2026", buyer: "Alex Morgan · category buyer",
+    objective: "Land the capsules plan before the 14 Nov range review.", decks: ["Northgate range review v2.pptx", "Northgate JBP 2026-27.pptx"],
+    runs: [{ tool: "Selling Coach", date: "24 Sep 2026", status: "Completed", note: "Range review v1 · 4 of 5 PSF steps grounded" }, { tool: "Storyline Generator", date: "18 Sep 2026", status: "Approved", note: "Capsules at back-to-school" }] },
+  { id: "P-2", name: "Brightmart quarterly review", cat: "Hair Care", cust: "Brightmart", audience: "internal", meeting: "22 Oct 2026", buyer: null,
+    objective: "Explain the share dip and agree the spring premium aisle.", decks: ["Brightmart Q3 review.pptx"],
+    runs: [{ tool: "Selling Coach", date: "03 Sep 2026", status: "Completed", note: "Q3 review · 3 of 5 PSF steps grounded" }] },
+  { id: "P-3", name: "Harbour & Co whitening launch", cat: "Oral Care", cust: "Harbour & Co", audience: "external", meeting: null, buyer: "Priya Shah · buyer",
+    objective: "Shape the first launch opportunity.", decks: [], runs: [] },
 ];
 
 /* =====================================================================
@@ -435,12 +462,14 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const src = id => SOURCES.find(s => s.id === id);
 const fact = id => FACTS.find(f => f.id === id);
+const proj = id => PROJECTS.find(p => p.id === id);
 const scopeLabel = (cat, cust) => [cat || (cust ? null : "All categories"), "UK", cust].filter(Boolean).join(" · ");
 const facetKey = (cat, cust) => [cat && `category:${cat.toLowerCase()}`, "market:uk", cust && `customer:${cust.toLowerCase()}`].filter(Boolean).sort().join("|");
 const sameScope = (a, cat, cust) => (a.cat || null) === (cat || null) && (a.cust || null) === (cust || null);
 const bkey = b => `${b.cat || ""}|${b.cust || ""}`;
 const hash = s => { let h = 5381; for (const c of s) h = ((h * 33) ^ c.charCodeAt(0)) >>> 0; return h.toString(16).padStart(8, "0"); };
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+const AUD = { external: "Customer-facing", internal: "Internal team" };
 
 function isLive(f) {
   const s = f.src && src(f.src);
@@ -480,66 +509,58 @@ function toast(msg) {
   clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2800);
 }
 
-/* Workstream context pillars. Derived from facts, never set by hand; Buyer is the exception. */
-function pillars(ws) {
+/* Project context pillars. Derived from facts, never set by hand; Buyer is the exception. */
+function pillars(p) {
   const live = FACTS.filter(f => isLive(f) && !f.owner);
   return [
-    { name: "Category", desc: "Category strategy and shopper context", n: live.filter(f => f.cat === ws.cat && !f.cust).length },
-    { name: "Customer", desc: "The retailer's profile and priorities", n: live.filter(f => !f.cat && f.cust === ws.cust).length },
-    { name: "Account", desc: "This customer × category", n: live.filter(f => f.cat === ws.cat && f.cust === ws.cust).length },
-    { name: "Trade panel", desc: "Certified market-share metrics", n: live.filter(f => f.cat === ws.cat && (!f.cust || f.cust === ws.cust) && f.type === "metric" && f.rel === "certified").length },
-    { name: "Buyer", desc: "Buyer attached to the workstream", n: ws.buyer ? 1 : 0, text: ws.buyer },
+    { name: "Category", desc: "Category strategy and shopper context", n: live.filter(f => f.cat === p.cat && !f.cust).length },
+    { name: "Customer", desc: "The retailer's profile and priorities", n: live.filter(f => !f.cat && f.cust === p.cust).length },
+    { name: "Account", desc: "This customer × category", n: live.filter(f => f.cat === p.cat && f.cust === p.cust).length },
+    { name: "Trade panel", desc: "Certified market-share metrics", n: live.filter(f => f.cat === p.cat && (!f.cust || f.cust === p.cust) && f.type === "metric" && f.rel === "certified").length },
+    { name: "Buyer", desc: "Buyer attached to the project", n: p.buyer ? 1 : 0, text: p.buyer },
   ];
 }
+const score = p => pillars(p).filter(x => x.n > 0).length;
+function covTone(s) { return s >= 4 ? ["var(--ok-accent)", "Strong context"] : s >= 3 ? ["var(--alert-accent)", "Thin context"] : ["var(--err-accent)", "Insufficient context"]; }
 
 /* =====================================================================
    State & shell
    ===================================================================== */
 const blankFilter = () => ({ q: "", cat: "", cust: "", type: "", status: "", rel: "", hidden: false });
 const state = {
-  view: "home",
+  view: "project",
+  project: "P-1",
+  pq: "", pcust: "",
   f: blankFilter(),
   bf: { q: "", cat: "", cust: "" },
   briefKey: "Fabric Care|Northgate",
   srcTab: "sources",
-  ws: "W-1",
   ask: { cat: "Fabric Care", cust: "Northgate", audience: "internal", q: "What should I lead with in the Northgate range review?" },
   todo: [],
 };
 
 const NAV = [
-  { group: "Prepare" },
-  { id: "workstreams", label: "Workstreams", count: () => WORKSTREAMS.length },
-  { group: "Knowledge" },
-  { id: "home", label: "Knowledge Bank" },
-  { id: "search", label: "Search" },
-  { id: "briefings", label: "Briefings", count: () => BRIEFINGS.length },
-  { id: "facts", label: "Facts", count: () => FACTS.filter(f => isLive(f) && visibleToMe(f)).length },
-  { id: "sources", label: "Manage sources", badge: () => REVIEW.length },
+  { id: "projects", label: "My Projects", icon: "grid", count: () => PROJECTS.length, match: ["projects", "project"] },
+  { group: "Knowledge Bank" },
+  { id: "home", label: "Overview", icon: "db" },
+  { id: "search", label: "Search", icon: "search" },
+  { id: "briefings", label: "Briefings", icon: "book", count: () => BRIEFINGS.length },
+  { id: "facts", label: "Facts", icon: "facts", count: () => FACTS.filter(f => isLive(f) && visibleToMe(f)).length },
+  { id: "sources", label: "Manage sources", icon: "folder", badge: () => REVIEW.length },
 ];
-
-const VIEWS = {
-  workstreams: { eyebrow: "Prepare", title: "Workstreams", sub: "One home per account plan. A workstream pulls its context from the Knowledge Bank and runs the sales tools on it.", actions: "" },
-  home: { eyebrow: "Grounded customer evidence", title: "Knowledge Bank", sub: "Find and maintain the cited evidence that grounds every customer workstream.", actions: `<button class="btn" data-view="search">Search evidence</button><button class="btn primary" data-act="add-fact">Add a fact</button>` },
-  search: { eyebrow: "Knowledge Bank", title: "Search", sub: "See which facts a tool would receive for a scope and audience, and how well that scope is covered.", actions: "" },
-  briefings: { eyebrow: "Knowledge Bank", title: "Briefings", sub: "Read or generate a concise, cited summary for a customer, market or category.", actions: "" },
-  facts: { eyebrow: "Knowledge Bank", title: "Facts", sub: "Inspect the atomic facts, their provenance, reliability and freshness behind each answer.", actions: `<button class="btn primary" data-act="add-fact">Add a fact</button>` },
-  sources: { eyebrow: "Knowledge Bank", title: "Manage sources", sub: "Add source material, resolve exceptions, and control what the sales tools may cite.", actions: `<button class="btn primary" data-act="add-source">Add source</button>` },
-};
 
 function renderNav() {
   $("#nav").innerHTML = NAV.map(n => n.group
-    ? `<div class="label" style="margin-top:8px">${n.group}</div>`
-    : `<button data-view="${n.id}" aria-current="${n.id === state.view}">${n.label}${n.badge ? (n.badge() ? `<span class="badge" title="Review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
+    ? `<div class="group">${n.group}</div>`
+    : `<button class="navitem" data-view="${n.id}" aria-current="${(n.match || [n.id]).includes(state.view)}">${icon(n.icon)}${n.label}${n.badge ? (n.badge() ? `<span class="badge-n" title="Review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
 }
+function head(crumb, title, sub, actions = "") {
+  return `<div class="crumb">${crumb}</div><div class="pagehead"><div><h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ""}</div>${actions ? `<div class="actions">${actions}</div>` : ""}</div>`;
+}
+const NOTE = `<span class="mock-note">Mock-up · sample data with fictional retailers and people · nothing is saved</span>`;
 function render() {
-  const v = VIEWS[state.view];
-  $("#view-eyebrow").textContent = v.eyebrow;
-  $("#view-title").textContent = v.title;
-  $("#view-sub").textContent = v.sub;
-  $("#view-actions").innerHTML = v.actions;
   renderNav();
-  $("#view").innerHTML = `<span class="mock-note">Mock-up · sample data with fictional retailers and people · nothing is saved</span>` + RENDER[state.view]();
+  $("#view").innerHTML = RENDER[state.view]();
   AFTER[state.view]?.();
 }
 function go(view) { state.view = view; render(); $("#main").scrollTop = 0; }
@@ -548,7 +569,290 @@ const RENDER = {};
 const AFTER = {};
 
 /* =====================================================================
-   Knowledge Bank home
+   My Projects
+   ===================================================================== */
+RENDER.projects = () => {
+  const q = state.pq.toLowerCase();
+  const list = PROJECTS.filter(p => (!state.pcust || p.cust === state.pcust) && (!q || `${p.name} ${p.cust} ${p.cat} UK`.toLowerCase().includes(q)));
+  const runs = PROJECTS.reduce((n, p) => n + p.runs.filter(r => r.status !== "Running").length, 0);
+  const cards = list.map(p => {
+    const s = score(p), [col, lab] = covTone(s);
+    return `<button class="projcard" data-act="open-project" data-id="${p.id}">
+      <span class="spread"><span class="nm">${esc(p.cust)}</span><span class="pill neutral">${p.cat}</span></span>
+      <span class="projchips"><span class="projchip">UK</span><span class="projchip">${p.meeting ? "Meeting " + p.meeting : "No meeting set"}</span><span class="pill ${p.audience === "external" ? "info" : "solid"}">${AUD[p.audience]}</span></span>
+      <span style="font-size:13px;color:var(--slate);min-height:40px">${esc(p.objective)}</span>
+      <span class="covbar"><span style="width:${s * 20}%;background:${col}"></span></span>
+      <span class="spread small muted"><span>${lab} · <span class="dots" aria-hidden="true">${pillars(p).map(x => `<i class="${x.n ? "on" : ""}"></i>`).join("")}</span> ${s}/5</span><b style="color:${col}">${s * 20}%</b></span>
+      <span class="hint">${plural(p.runs.length, "run", "runs")}${p.runs[0] ? ` · last ${p.runs[0].date}` : ""}</span>
+    </button>`;
+  }).join("");
+  return head("Customer workspace hub", "My Projects", "Pick up where you left off. Every tool inside a project uses the same customer scope and Knowledge Bank evidence, set once.",
+    `<button class="btn primary" data-act="new-project">${icon("plus")}New project</button>`) + NOTE + `
+    <div class="filters"><input class="search" id="pq" type="search" placeholder="Search projects, customer, market…" value="${esc(state.pq)}" aria-label="Search projects">
+      <select class="select" data-pfilter aria-label="Customer"><option value="">All customers</option>${CUSTOMERS.map(c => `<option ${c === state.pcust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
+    <div class="summary three" style="margin-bottom:18px"><div><div class="k">Active projects</div><div class="num">${PROJECTS.length}</div></div><div><div class="k">Completed runs</div><div class="num">${runs}</div></div><div><div class="k">Customers</div><div class="num">${new Set(PROJECTS.map(p => p.cust)).size}</div></div></div>
+    ${list.length ? `<div class="projgrid">${cards}</div>` : `<div class="empty-state">No project matches. <button class="btn ghost" data-act="new-project">Create one</button></div>`}
+    <div class="callout info section"><b>A project is the scope, set once.</b> Customer, market and category live on the project. Selling Coach and the Storyline Generator use that scope, so a run never asks for it again. Launch either one from the project chat.</div>`;
+};
+AFTER.projects = () => {
+  $("#pq").addEventListener("input", e => { state.pq = e.target.value; const p = e.target.selectionStart; render(); const n = $("#pq"); n.focus(); n.setSelectionRange(p, p); });
+};
+
+/* =====================================================================
+   Project workspace with the conversational assistant
+   ===================================================================== */
+function seedChat(p) {
+  if (p.chat) return;
+  const s = selectFacts(p.cat, p.cust, "");
+  const q = s.ranked.filter(x => quotable(x.f, p.audience)[0]).length;
+  p.chat = [{ who: "bot", html: `<p>Hi Camille. This project is scoped to <b>${esc(scopeLabel(p.cat, p.cust))}</b> for a <b>${AUD[p.audience].toLowerCase()}</b> audience. The Knowledge Bank has ${plural(s.inScope, "live fact", "live facts")} here, ${plural(q, "is", "are")} quotable for this audience.</p>
+    <p>Tell me what you need. I can review a deck with <b>Selling Coach</b>, build a storyline with the <b>Storyline Generator</b>, or answer from the Knowledge Bank.</p>`, chips: suggestions(p) }];
+}
+function suggestions(p) {
+  return [`Review my ${p.cust} deck`, `Build a storyline for ${p.cust}`, `What do we know about ${p.cust}?`, "What context is missing?"];
+}
+
+RENDER.project = () => {
+  const p = proj(state.project);
+  seedChat(p);
+  const ps = pillars(p), s = score(p), [col, lab] = covTone(s);
+  const b = BRIEFINGS.find(x => sameScope(x, p.cat, p.cust));
+  const st = b ? briefingState(b) : null;
+  return `<div class="crumb"><button data-view="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
+    <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
+      <div class="projchips" style="margin-top:8px"><span class="projchip">${esc(p.cust)} × UK</span><span class="projchip">${p.cat}</span><span class="projchip">${p.meeting ? "Meeting " + p.meeting : "No meeting set"}</span><span class="pill ${p.audience === "external" ? "info" : "solid"}">${AUD[p.audience]}</span></div></div>
+      <div class="actions"><button class="btn plain sm" data-view="projects">Switch project</button></div></div>
+    ${NOTE}
+    <div class="proj">
+      <section class="card chat" aria-label="Project assistant">
+        <div class="card-hd"><span class="row">${icon("spark")}Project assistant</span><span class="small muted" style="font:400 12px var(--inter)">Launches tools with this project's scope</span></div>
+        <div class="thread" id="thread" aria-live="polite">${threadHTML(p)}</div>
+        <div class="composer">
+          <div class="launchers"><span class="small muted">Launch:</span>
+            <button class="launcher" data-act="launch" data-tool="coach">${icon("coach")}Selling Coach</button>
+            <button class="launcher" data-act="launch" data-tool="story">${icon("story")}Storyline Generator</button>
+            <button class="launcher" data-act="launch" data-tool="kb">${icon("db")}Ask the Knowledge Bank</button>
+          </div>
+          <form id="chatform"><textarea id="chat-in" rows="2" placeholder="Ask anything, or say which tool to run…" aria-label="Message the project assistant"></textarea><button class="btn primary" type="submit" aria-label="Send">${icon("send")}Send</button></form>
+        </div>
+      </section>
+      <aside class="side">
+        <div class="card">
+          <div class="card-hd">Context evidence <span class="small" style="font:600 12px var(--inter);color:${col}">${s}/5 · ${lab.toLowerCase()}</span></div>
+          <div class="plist">${ps.map(x => `<div><span>${x.name}${x.name === "Buyer" && x.text ? `<div class="hint">${esc(x.text)}</div>` : ""}</span>${x.n ? `<span class="pill ok">${x.name === "Buyer" ? "Attached" : plural(x.n, "fact", "facts")}</span>` : x.name === "Buyer" ? `<button class="btn ghost small" data-act="attach-buyer">Attach</button>` : `<span class="pill neutral">Missing</span>`}</div>`).join("")}</div>
+          <div class="pad" style="padding-top:10px"><span class="hint">Worked out from Knowledge Bank facts. Private facts never count.</span></div>
+        </div>
+        <div class="card">
+          <div class="card-hd">Briefing ${st ? `<span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span>` : `<span class="pill neutral">None</span>`}</div>
+          <div class="pad stack"><span class="facet">${facetKey(p.cat, p.cust)}</span><div class="row"><button class="btn sm" data-act="open-proj-brief">Open briefing</button><button class="btn sm plain" data-act="proj-search">Selected facts</button></div></div>
+        </div>
+        <div class="card">
+          <div class="card-hd">Recent runs <span class="small muted" style="font:400 12px var(--inter)">${p.runs.length}</span></div>
+          ${p.runs.length ? `<div class="runs">${p.runs.slice(0, 5).map(r => `<div><span class="spread"><b style="font-weight:600">${r.tool}</b><span class="pill ${r.status === "Running" ? "info" : "ok"}">${r.status}</span></span><span class="muted">${esc(r.note)}</span><span class="hint">${r.date}</span></div>`).join("")}</div>` : `<div class="pad hint">No runs yet. Ask the assistant to launch a tool.</div>`}
+        </div>
+      </aside>
+    </div>`;
+};
+AFTER.project = () => {
+  const p = proj(state.project);
+  const inp = $("#chat-in");
+  $("#chatform").addEventListener("submit", e => { e.preventDefault(); const v = inp.value.trim(); if (!v) return; inp.value = ""; userSays(p, v); });
+  inp.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#chatform").requestSubmit(); } });
+  scrollThread();
+};
+
+function threadHTML(p) {
+  return p.chat.map((m, i) => {
+    if (m.who === "me") return `<div class="msg me"><div class="bubble">${esc(m.text)}</div><div class="who" aria-hidden="true">CM</div></div>`;
+    let body = m.typing ? `<span class="typing" aria-label="Assistant is typing"><i></i><i></i><i></i></span>` : m.html;
+    if (m.stages) body = `${m.html || ""}<ul class="stagelist">${m.stages.map((s, k) => `<li class="${k < m.done ? "ok" : k === m.done ? "run" : ""}"><span class="ico">${k < m.done ? "✓" : ""}</span>${esc(s)}</li>`).join("")}</ul>`;
+    if (m.chips && !m.used) body += `<div class="chips">${m.chips.map(c => `<button class="chip" data-act="say" data-text="${esc(c)}" data-m="${i}">${esc(c)}</button>`).join("")}</div>`;
+    return `<div class="msg"><div class="who" aria-hidden="true">${icon("spark")}</div><div class="bubble ${m.lock ? "locked" : ""}">${body}</div></div>`;
+  }).join("");
+}
+function paintThread() {
+  const p = proj(state.project);
+  const t = $("#thread");
+  if (state.view !== "project" || !t) return;
+  t.innerHTML = threadHTML(p);
+  scrollThread();
+}
+function scrollThread() { const t = $("#thread"); if (t) t.scrollTop = t.scrollHeight; }
+function push(p, m) { p.chat.push(m); if (state.project === p.id) paintThread(); return m; }
+function botReply(p, fn, delay = 550) {
+  const m = push(p, { who: "bot", typing: true });
+  setTimeout(() => { m.typing = false; fn(m); if (state.project === p.id) paintThread(); }, delay);
+}
+function lockOld(p) { p.chat.forEach(m => { if (m.chips) m.used = true; m.lock = true; }); }
+
+const INTENT = [
+  ["coach", /(selling coach|deck|slides?|presentation|feedback|psf|review my)/i],
+  ["story", /(storyline|story|opportunit|narrative|pitch)/i],
+  ["gaps", /(missing|gaps?|coverage|what context)/i],
+  ["which", /\b(launch|run|start|open|use)\b.*\b(tool|product|agent|something)\b/i],
+];
+function userSays(p, text) {
+  lockOld(p);
+  push(p, { who: "me", text });
+  const hits = INTENT.filter(([, re]) => re.test(text)).map(([k]) => k);
+  const intent = hits.includes("coach") && hits.includes("story") ? "which" : hits[0] || "kb";
+  if (intent === "coach") startCoach(p);
+  else if (intent === "story") startStory(p);
+  else if (intent === "gaps") contextGaps(p);
+  else if (intent === "which") askWhich(p);
+  else kbAnswer(p, text);
+}
+
+/* Citations respect the audience: quotable facts get a number, the rest steer but are not cited. */
+function citer(p) {
+  const nums = [];
+  return f => {
+    if (!f) return `<span class="bgtag">no evidence</span>`;
+    if (!quotable(f, p.audience)[0]) return `<button class="bgtag" data-act="open-fact" data-id="${f.id}" style="border:0" title="${esc(quotable(f, p.audience)[1])}">background</button>`;
+    let n = nums.indexOf(f.id); if (n < 0) { nums.push(f.id); n = nums.length - 1; }
+    return `<button class="anchor" data-act="open-fact" data-id="${f.id}" title="${f.id}">${n + 1}</button>`;
+  };
+}
+
+/* Tools reach for facts they may quote to this audience first; the rest only steer. */
+function preferQuotable(fs, p) { return [...fs.filter(f => quotable(f, p.audience)[0]), ...fs.filter(f => !quotable(f, p.audience)[0])]; }
+
+function askWhich(p) {
+  botReply(p, m => { m.html = `<p>Which tool do you want?</p><div class="row"><button class="btn sm" data-act="launch" data-tool="coach">${icon("coach")}Selling Coach · review a deck</button><button class="btn sm" data-act="launch" data-tool="story">${icon("story")}Storyline Generator · build a story</button></div>`; });
+}
+
+function kbAnswer(p, q) {
+  botReply(p, m => {
+    const r = selectFacts(p.cat, p.cust, q), cite = citer(p);
+    const c = COV[r.coverage];
+    m.html = r.coverage === "none"
+      ? `<p>The Knowledge Bank has nothing on <b>${esc(scopeLabel(p.cat, p.cust))}</b> yet. Add a source and I'll pick it up once it's reviewed.</p>`
+      : `<div class="tool-hd">${icon("db")}Knowledge Bank · ${plural(r.ranked.length, "fact", "facts")} selected</div>
+         <ul>${r.ranked.slice(0, 5).map(x => `<li>${esc(x.f.text)} ${cite(x.f)}</li>`).join("")}</ul>
+         <div class="verdict ${c[0]}"><b>Coverage: ${c[1]}.</b> ${c[2]}</div>
+         ${p.audience === "external" ? `<p class="hint">This project is customer-facing: only facts cleared for customers get a number. The rest are marked background.</p>` : ""}
+         <div class="row"><button class="btn sm plain" data-act="proj-search">See all selected facts</button><button class="btn sm plain" data-act="open-proj-brief">Open briefing</button></div>`;
+  }, 700);
+}
+
+function contextGaps(p) {
+  botReply(p, m => {
+    const ps = pillars(p), miss = ps.filter(x => !x.n);
+    m.html = !miss.length ? `<p>All five context pillars are covered for this project. Tools have the full picture.</p>`
+      : `<p>${plural(miss.length, "pillar is", "pillars are")} missing, so tool results will be thinner:</p>
+         <ul>${miss.map(x => `<li><b>${x.name}</b>: ${x.name === "Buyer" ? "no buyer attached to the project." : x.name === "Trade panel" ? "no live certified metric. The last one may be outdated." : `no ${x.desc.toLowerCase()} facts yet.`}</li>`).join("")}</ul>
+         <div class="row">${miss.some(x => x.name === "Buyer") ? `<button class="btn sm" data-act="attach-buyer">Attach a buyer</button>` : ""}<button class="btn sm plain" data-act="add-source">Add a source</button></div>`;
+  });
+}
+
+/* ---- Selling Coach ---- */
+function startCoach(p) {
+  botReply(p, m => {
+    m.html = `<div class="tool-hd">${icon("coach")}Selling Coach</div><p>I'll analyse your deck against the five PSF steps using this project's Knowledge Bank scope. Which deck?</p>
+      <div class="filepick">${p.decks.map(d => `<button class="filerow" data-act="cs-deck" data-deck="${esc(d)}">${icon("file")}${esc(d)}<span class="hint" style="margin-left:auto">in this project</span></button>`).join("")}
+      <button class="filerow" data-act="cs-deck" data-deck="${esc(p.cust)} deck ${TODAY.slice(0, 6)}.pptx">${icon("plus")}Upload another deck</button></div>`;
+  });
+}
+function runCoach(p, deck) {
+  lockOld(p);
+  if (!p.decks.includes(deck)) p.decks.push(deck);
+  push(p, { who: "me", text: `Use ${deck}` });
+  const r = selectFacts(p.cat, p.cust, "");
+  const run = { tool: "Selling Coach", date: TODAY, status: "Running", note: deck };
+  p.runs.unshift(run);
+  const m = push(p, { who: "bot", html: `<div class="tool-hd">${icon("coach")}Selling Coach · ${esc(deck)}</div>`, stages: [`Resolve Knowledge Bank scope · ${plural(r.inScope, "fact", "facts")}`, "Prepare the deck · 18 slides", "Analyse the five PSF steps", "Fact-check the deck against the bank", "Check strategy fit"], done: 0 });
+  const t = setInterval(() => {
+    m.done++;
+    if (m.done >= m.stages.length) { clearInterval(t); finishCoach(p, deck, r, run); }
+    if (state.project === p.id) paintThread();
+  }, 650);
+  if (state.view === "project") render();
+}
+function finishCoach(p, deck, r, run) {
+  const cite = citer(p), fs = preferQuotable(r.ranked.map(x => x.f), p);
+  const pick = (...types) => fs.find(f => types.includes(f.type));
+  const steps = [
+    ["Summarise the situation", pick("metric"), "Open with the certified market picture"],
+    ["State the idea", pick("recommendation", "insight"), "Make the idea one clear sentence"],
+    ["Explain how it works", pick("recommendation"), "Show the mechanism, not just the ambition"],
+    ["Reinforce key benefits", fs.filter(f => f.type === "metric" || f.type === "insight")[1], "Quantify the upside for the customer"],
+    ["Suggest an easy next step", pick("event"), "End on a concrete, low-effort ask"],
+  ];
+  const grounded = steps.filter(s => s[1]).length;
+  const conflict = p.cust === "Northgate";
+  run.status = "Completed"; run.note = `${deck} · ${grounded} of 5 PSF steps grounded`;
+  push(p, { who: "bot", html: `<div class="tool-hd">${icon("coach")}Selling Coach result · ${grounded} of 5 steps grounded</div>
+    <div class="table-wrap"><table><thead><tr><th>PSF step</th><th>Evidence</th><th>Feedback</th></tr></thead><tbody>
+    ${steps.map(([s, f, tip]) => `<tr><td style="color:var(--charcoal);font-weight:600">${s}</td><td>${f ? `<span class="pill ok">Grounded</span>` : `<span class="pill warn">No evidence</span>`}</td><td>${f ? `${tip}: “${esc(f.text)}” ${cite(f)}` : `${tip}. The bank has nothing to back this step yet.`}</td></tr>`).join("")}
+    </tbody></table></div>
+    ${conflict ? `<div class="verdict bad"><b>Fact-check: 1 conflict.</b> Slide 4 says Northgate holds 19.4% of UK Fabric Care. The certified figure is 18.6% ${cite(fact("F-1022"))}. Use the certified number.</div>` : `<div class="verdict ok"><b>Fact-check: no conflicts.</b> Every figure in the deck matches the bank or has no counterpart.</div>`}
+    <p class="hint">1 account fact from this run was sent to the Knowledge Bank for review.</p>
+    <div class="row"><button class="btn sm primary" data-act="launch" data-tool="story">Build a storyline next</button><button class="btn sm plain" data-act="toast" data-msg="The full report opens in Selling Coach.">Open full report</button></div>` });
+  FACTS.unshift({ id: "F-" + (2000 + FACTS.length), type: "insight", text: `The ${p.cust} deck “${deck}” is missing evidence for ${5 - grounded} PSF ${5 - grounded === 1 ? "step" : "steps"}.`, cat: p.cat, cust: p.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, loc: `Selling Coach run · ${p.name}`, excerpt: `Written back from a completed Selling Coach run on ${TODAY}.`, dedup: 1 });
+  markOutdated(p.cat, p.cust, "A tool run added an account fact.");
+  if (state.view === "project") render();
+  toast("Selling Coach finished · 1 account fact sent for review");
+}
+
+/* ---- Storyline Generator ---- */
+const OPP_TITLE = { "F-1045": "Capsules at back-to-school", "F-1046": "Protect capsules from own-label switching", "F-1035": "Trade capsule buyers up to premium", "F-1034": "Win back own-label switchers", "F-1061": "Anchor the spring premium aisle", "F-1067": "Lead with scalp care in grocery", "F-1065": "Scalp care drives trial", "F-1071": "Top-120-store whitening launch", "F-1072": "Refills-led whitening launch" };
+function startStory(p) {
+  const r = selectFacts(p.cat, p.cust, "");
+  const q = r.ranked.filter(x => quotable(x.f, p.audience)[0]);
+  if (!q.length) {
+    botReply(p, m => { m.html = `<div class="tool-hd">${icon("story")}Storyline Generator</div>
+      <div class="verdict warn"><b>I can't start a storyline yet.</b> This project is customer-facing and none of its ${plural(r.inScope, "fact is", "facts are")} cleared to quote to a customer. A storyline needs at least one.</div>
+      <p>You can verify the facts waiting for review, add a source with customer-cleared evidence, or switch this project to an internal audience.</p>
+      <div class="row"><button class="btn sm" data-act="go-review-facts">Review waiting facts</button><button class="btn sm plain" data-act="add-source">Add a source</button></div>`; });
+    return;
+  }
+  const m = push(p, { who: "bot", html: `<div class="tool-hd">${icon("story")}Storyline Generator</div>`, stages: [`Read grounded context · ${plural(r.inScope, "fact", "facts")}`, "Scout proposes opportunities", "Cross-check with a second model"], done: 0 });
+  const t = setInterval(() => {
+    m.done++;
+    if (m.done >= m.stages.length) { clearInterval(t); showOpps(p, r); }
+    if (state.project === p.id) paintThread();
+  }, 650);
+}
+function showOpps(p, r) {
+  const fs = r.ranked.map(x => x.f);
+  const cands = fs.filter(f => f.type === "recommendation" || f.type === "insight").slice(0, 3);
+  const tension = fs.find(f => f.type === "metric" && quotable(f, p.audience)[0]) || fs.find(f => f.type === "metric");
+  p.opps = cands.map((f, i) => ({ f, title: OPP_TITLE[f.id] || f.text, tension, rec: i === 0, agree: i === 0 ? "both" : i === 1 ? "primary only" : "cross-check only" }));
+  const cite = citer(p);
+  push(p, { who: "bot", html: `<p>Here are ${plural(p.opps.length, "opportunity", "opportunities")}. I recommend the first one because it has the strongest evidence and both models raised it.</p>
+    ${p.opps.map((o, i) => `<div class="opt ${o.rec ? "rec" : ""}"><span class="spread"><strong>${esc(o.title)}</strong><span class="row">${o.rec ? `<span class="pill solid">Recommended</span>` : ""}<span class="pill neutral">${o.agree}</span></span></span>
+      <span class="small">${esc(o.f.text)} ${cite(o.f)}</span>
+      ${o.tension ? `<span class="small muted"><b>Tension:</b> ${esc(o.tension.text)} ${cite(o.tension)}</span>` : ""}
+      <div><button class="btn sm ${o.rec ? "primary" : ""}" data-act="st-pick" data-i="${i}">Choose this one</button></div></div>`).join("")}` });
+}
+function pickOpp(p, i) {
+  lockOld(p);
+  const o = p.opps[i];
+  push(p, { who: "me", text: `Go with “${o.title}”.` });
+  botReply(p, m => {
+    const r = selectFacts(p.cat, p.cust, ""), fs = preferQuotable(r.ranked.map(x => x.f), p), cite = citer(p);
+    const byType = t => fs.filter(f => f.type === t);
+    const steps = [
+      ["Summarise the situation", o.tension],
+      ["State the idea", o.f, o.title],
+      ["Explain how it works", byType("recommendation").find(f => f !== o.f) || o.f],
+      ["Reinforce key benefits", fs.find(f => (f.type === "metric" || f.type === "insight") && f !== o.tension && f !== o.f)],
+      ["Suggest an easy next step", byType("event")[0]],
+    ];
+    const run = { tool: "Storyline Generator", date: TODAY, status: "Ready for review", note: o.title };
+    p.runs.unshift(run); p.storyRun = run;
+    m.html = `<div class="tool-hd">${icon("story")}PSF storyline · ${esc(o.title)}</div>
+      <div class="table-wrap"><table><thead><tr><th>Step</th><th>Headline</th></tr></thead><tbody>
+      ${steps.map(([s, f, lead]) => `<tr><td style="color:var(--charcoal);font-weight:600;white-space:nowrap">${s}</td><td>${lead ? `<b>${esc(lead)}.</b> ` : ""}${f ? esc(f.text) : "Agree the next step with the buyer."} ${cite(f)}</td></tr>`).join("")}
+      </tbody></table></div>
+      ${p.audience === "external" ? `<p class="hint">Customer-facing: only customer-cleared facts are numbered. Background facts shaped the story but will not appear on slides.</p>` : ""}
+      <div class="row"><button class="btn sm primary" data-act="st-approve">Approve storyline</button><button class="btn sm plain" data-act="st-refine">Refine</button></div>`;
+    if (state.view === "project") render();
+  }, 900);
+}
+
+/* =====================================================================
+   Knowledge Bank overview
    ===================================================================== */
 RENDER.home = () => {
   const all = FACTS.filter(visibleToMe);
@@ -560,9 +864,10 @@ RENDER.home = () => {
   const conflicts = REVIEW.filter(r => r.conflict).length;
 
   const mixRow = (label, cls, n, total, color) => `<div class="mix-row"><span class="pill ${cls}">${label}</span><span class="bar"><i style="width:${total ? n / total * 100 : 0}%;background:${color}"></i></span><span class="n">${n}</span></div>`;
-  const relMix = [["Certified", "ok", "certified", "var(--ok)"], ["Reviewed", "info", "reviewed", "var(--info)"], ["Stated", "neutral", "stated", "var(--muted)"]]
+  const relMix = [["Certified", "ok", "certified", "var(--ok-accent)"], ["Reviewed", "info", "reviewed", "var(--primary)"], ["Stated", "neutral", "stated", "var(--steel)"]]
     .map(([l, c, k, col]) => mixRow(l, c, live.filter(f => f.rel === k).length, live.length, col)).join("");
-  const statusMix = Object.keys(STATUS_LABEL).map(k => mixRow(STATUS_LABEL[k], STATUS_CLS[k], all.filter(f => f.status === k).length, all.length, `var(--${STATUS_CLS[k] === "neutral" ? "muted" : STATUS_CLS[k]})`)).join("");
+  const SC = { ok: "var(--ok-accent)", warn: "var(--alert-accent)", neutral: "var(--steel)" };
+  const statusMix = Object.keys(STATUS_LABEL).map(k => mixRow(STATUS_LABEL[k], STATUS_CLS[k], all.filter(f => f.status === k).length, all.length, SC[STATUS_CLS[k]])).join("");
 
   const cols = [null, ...CUSTOMERS];
   const matrix = `<table class="matrix"><thead><tr><th></th>${cols.map(c => `<th>${c ? esc(c) : "Category level"}</th>`).join("")}</tr></thead><tbody>
@@ -581,39 +886,30 @@ RENDER.home = () => {
     ...BRIEFINGS.filter(b => briefingState(b) === "outdated").map(b => ({ go: () => { state.briefKey = bkey(b); go("briefings"); }, title: `Briefing out of date: ${scopeLabel(b.cat, b.cust)}`, meta: `<span class="pill warn">Outdated</span>` })),
     ...(needs.length ? [{ go: () => { state.f = { ...blankFilter(), status: "needs_review" }; go("facts"); }, title: `${plural(needs.length, "fact needs", "facts need")} review before tools can quote ${needs.length === 1 ? "it" : "them"}`, meta: `<span class="pill warn">Needs review</span>` }] : []),
   ];
+  const runs = RUNS.slice(0, 5).map(r => `<tr><td><span class="pill ${r.status === "Complete" ? "ok" : r.status === "Running" ? "info" : "warn"}">${r.status}</span></td><td class="mono">${esc(r.source)}</td><td>${r.started}</td><td class="num">${r.indexed}</td><td class="num">${r.failed}</td></tr>`).join("");
 
-  const runs = RUNS.slice(0, 5).map(r => `<tr><td><span class="pill ${r.status === "Complete" ? "ok" : r.status === "Running" ? "info" : "warn"}">${r.status}</span></td><td class="mono">${esc(r.source)}</td><td class="small">${r.started}</td><td class="num">${r.indexed}</td><td class="num">${r.failed}</td></tr>`).join("");
-
-  return `
+  return head("Knowledge Bank", "Grounded customer evidence", "Find and maintain the cited evidence that grounds every customer project.",
+    `<button class="btn" data-view="search">${icon("search")}Search evidence</button><button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + `
     <section class="summary" aria-label="Corpus health">
-      <button data-view="facts"><div class="label">Facts</div><div class="num">${live.length}</div><div class="sub">live · ${plural(live.filter(f => f.owner).length, "is", "are")} private to you</div></button>
-      <button data-view="briefings"><div class="label">Briefings</div><div class="num">${BRIEFINGS.length}</div><div class="sub">${bStates.filter(s => s === "current").length} current · ${bStates.filter(s => s === "outdated").length} outdated · ${bStates.filter(s => s === "below").length} below floor</div></button>
-      <button data-view="sources"><div class="label">Sources indexed</div><div class="num">${liveSources}</div><div class="sub">of ${SOURCES.length} added</div></button>
-      <button data-act="attention"><div class="label">Needs attention</div><div class="num">${conflicts + expiring.length}</div><div class="sub">${plural(conflicts, "open conflict", "open conflicts")} · ${expiring.length} expiring ≤ 30 d</div></button>
+      <button data-view="facts"><div class="k">Facts</div><div class="num">${live.length}</div><div class="sub">live · ${plural(live.filter(f => f.owner).length, "is", "are")} private to you</div></button>
+      <button data-view="briefings"><div class="k">Briefings</div><div class="num">${BRIEFINGS.length}</div><div class="sub">${bStates.filter(s => s === "current").length} current · ${bStates.filter(s => s === "outdated").length} outdated · ${bStates.filter(s => s === "below").length} below floor</div></button>
+      <button data-view="sources"><div class="k">Sources indexed</div><div class="num">${liveSources}</div><div class="sub">of ${SOURCES.length} added</div></button>
+      <button data-act="attention"><div class="k">Needs attention</div><div class="num">${conflicts + expiring.length}</div><div class="sub">${plural(conflicts, "open conflict", "open conflicts")} · ${expiring.length} expiring ≤ 30 d</div></button>
     </section>
-
     <div class="home section">
-      <section class="card pad">
-        <div class="spread" style="margin-bottom:4px"><h2 class="section-title" style="margin:0">Coverage by scope</h2><span class="facet">market:uk · live facts</span></div>
-        <p class="small muted" style="margin-bottom:8px">Rows are categories, columns are customers. Open a cell to see its facts. A briefing needs at least 3 live facts, including 1 certified metric.</p>
-        <div class="matrix-wrap">${matrix}</div>
+      <section class="card">
+        <div class="card-hd">Coverage by scope <span class="facet" style="font-weight:500">market:uk · live facts</span></div>
+        <div class="pad"><p class="small muted" style="margin-bottom:8px">Rows are categories, columns are customers. Open a cell to see its facts. A briefing needs at least 3 live facts, including 1 certified metric.</p><div class="matrix-wrap">${matrix}</div></div>
       </section>
       <section>
         <h2 class="section-title">Needs your attention</h2>
         ${state.todo.length ? `<div class="todo">${state.todo.map((t, k) => `<button data-act="todo" data-k="${k}"><span class="row">${t.meta}</span><span>${esc(t.title)}</span></button>`).join("")}</div>` : `<div class="empty-state">Nothing waiting on you.</div>`}
       </section>
     </div>
-
-    <section class="section">
-      <h2 class="section-title">Governance mix</h2>
-      <div class="mix">
-        <div class="card pad stack"><div class="label">Reliability · live facts</div>${relMix}</div>
-        <div class="card pad stack"><div class="label">Fact status · all facts</div>${statusMix}</div>
-      </div>
+    <section class="section"><h2 class="section-title">Governance mix</h2>
+      <div class="mix"><div class="card pad stack"><div class="label">Reliability · live facts</div>${relMix}</div><div class="card pad stack"><div class="label">Fact status · all facts</div>${statusMix}</div></div>
     </section>
-
-    <section class="section">
-      <h2 class="section-title">Recent ingestion runs</h2>
+    <section class="section"><h2 class="section-title">Recent ingestion runs</h2>
       <div class="table-wrap"><table class="stbl narrow"><thead><tr><th>Status</th><th>Source</th><th>Started</th><th class="num">Indexed</th><th class="num">Failed</th></tr></thead><tbody>${runs}</tbody></table></div>
     </section>`;
 };
@@ -630,10 +926,8 @@ function factCard(f) {
     <span class="fact-meta"><span>${s ? esc(s.name) : "Account memory"} · ${esc(f.loc)}</span><span>as of ${f.asOf}</span><span class="mono">${f.id}</span></span>
   </button>`;
 }
-
 RENDER.facts = () => {
-  const F = state.f;
-  const q = F.q.toLowerCase();
+  const F = state.f, q = F.q.toLowerCase();
   const list = FACTS.filter(visibleToMe)
     .filter(f => F.hidden || isLive(f) || F.status === f.status)
     .filter(f => !F.cat || f.cat === F.cat)
@@ -643,24 +937,21 @@ RENDER.facts = () => {
     .filter(f => !F.rel || f.rel === F.rel)
     .filter(f => !q || f.text.toLowerCase().includes(q));
   const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(([v, l]) => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(l)}</option>`).join("");
-  return `
+  return head("Knowledge Bank", "Facts", "Inspect the atomic facts, their provenance, reliability and freshness behind each answer.", `<button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + `
     <div class="filters">
       <input class="search" id="fq" type="search" placeholder="Search facts" value="${esc(F.q)}" aria-label="Search facts">
       <select class="select" data-filter="cat" aria-label="Category">${opt(CATEGORIES.map(c => [c, c]), F.cat, "Category: any")}</select>
       <select class="select" data-filter="cust" aria-label="Customer">${opt([["_cat", "Category level only"], ...CUSTOMERS.map(c => [c, c])], F.cust, "Customer: any")}</select>
       <select class="select" data-filter="rel" aria-label="Reliability">${opt(REL.map(r => [r, r[0].toUpperCase() + r.slice(1)]), F.rel, "Reliability: any")}</select>
       <select class="select" data-filter="status" aria-label="Status">${opt(Object.entries(STATUS_LABEL), F.status, "Status: any")}</select>
-      <div class="seg" role="group" aria-label="Fact type">${["", ...TYPES].map(t => `<button data-ftype="${t}" aria-pressed="${t === F.type}">${t || "All types"}</button>`).join("")}</div>
-      <label class="check"><input type="checkbox" id="fhid" ${F.hidden ? "checked" : ""}> Show outdated and replaced</label>
     </div>
+    <div class="filters"><div class="seg" role="group" aria-label="Fact type">${["", ...TYPES].map(t => `<button data-ftype="${t}" aria-pressed="${t === F.type}">${t || "All types"}</button>`).join("")}</div>
+      <label class="check"><input type="checkbox" id="fhid" ${F.hidden ? "checked" : ""}> Show outdated and replaced</label></div>
     <p class="small muted" style="margin-bottom:10px">${plural(list.length, "fact", "facts")}${F.cat || F.cust || F.type || F.status || F.rel || q ? ` · <button class="btn ghost small" data-act="clear-filters">Clear filters</button>` : ""}</p>
     ${list.length ? list.map(factCard).join("") : `<div class="empty-state">No facts match these filters. <button class="btn ghost" data-act="add-fact">Add a fact</button></div>`}`;
 };
 AFTER.facts = () => {
-  $("#fq").addEventListener("input", e => {
-    state.f.q = e.target.value; const p = e.target.selectionStart; render();
-    const n = $("#fq"); n.focus(); n.setSelectionRange(p, p);
-  });
+  $("#fq").addEventListener("input", e => { state.f.q = e.target.value; const p = e.target.selectionStart; render(); const n = $("#fq"); n.focus(); n.setSelectionRange(p, p); });
   $("#fhid").addEventListener("change", e => { state.f.hidden = e.target.checked; render(); });
 };
 
@@ -670,25 +961,22 @@ AFTER.facts = () => {
 function briefingList() {
   const B = state.bf, q = B.q.toLowerCase();
   let list = BRIEFINGS.filter(b => (!B.cat || b.cat === B.cat) && (!B.cust || b.cust === B.cust) && (!q || scopeLabel(b.cat, b.cust).toLowerCase().includes(q)));
-  // A chosen scope without a briefing becomes a "generate" candidate.
   if (B.cat && !BRIEFINGS.some(b => sameScope(b, B.cat, B.cust || null))) list = [{ cat: B.cat, cust: B.cust || null, status: "none" }, ...list];
   return list;
 }
 RENDER.briefings = () => {
-  const B = state.bf;
-  const list = briefingList();
+  const B = state.bf, list = briefingList();
   if (!list.some(b => bkey(b) === state.briefKey) && list.length) state.briefKey = bkey(list[0]);
   const sel = list.find(b => bkey(b) === state.briefKey);
   const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(v => `<option ${v === cur ? "selected" : ""}>${esc(v)}</option>`).join("");
   const items = list.map(x => {
     const st = briefingState(x);
     return `<button class="bitem ${x.status === "none" ? "virtual" : ""}" data-act="pick-brief" data-key="${esc(bkey(x))}" aria-pressed="${bkey(x) === state.briefKey}">
-      <strong>${esc(scopeLabel(x.cat, x.cust))}</strong>
-      <span class="facet">${facetKey(x.cat, x.cust)}</span>
+      <strong>${esc(scopeLabel(x.cat, x.cust))}</strong><span class="facet">${facetKey(x.cat, x.cust)}</span>
       <span class="spread"><span class="pill ${B_PILL[st][0]}">${x.status === "none" && st === "below" ? "No briefing · below floor" : B_PILL[st][1]}</span><span class="small muted">${plural(briefingFacts(x).length, "fact", "facts")}</span></span>
     </button>`;
   }).join("");
-  return `
+  return head("Knowledge Bank", "Briefings", "Read or generate a concise, cited summary for a customer, market or category.") + NOTE + `
     <div class="filters"><input class="search" id="bq" type="search" placeholder="Filter by scope name" value="${esc(B.q)}" aria-label="Filter by scope name" style="width:100%"></div>
     <div class="scope-filters">
       <div class="col"><span class="label">Product scope</span>
@@ -696,42 +984,31 @@ RENDER.briefings = () => {
         <select class="select" disabled aria-label="Sub-category"><option>Sub-category: any</option></select>
         <select class="select" disabled aria-label="Brand"><option>Brand: any</option></select>
         <select class="select" disabled aria-label="Product"><option>Product: any</option></select>
-        <span class="hint">No sub-category, brand or product facts in this sample yet.</span>
-      </div>
+        <span class="hint">No sub-category, brand or product facts in this sample yet.</span></div>
       <div class="col"><span class="label">Geography</span>
         <select class="select" disabled aria-label="Market"><option>Market: UK</option></select>
         <select class="select" data-bfilter="cust" aria-label="Customer">${opt(CUSTOMERS, B.cust, "Customer: any")}</select>
-        <span class="hint">The MVP trade panel covers the UK only.</span>
-      </div>
+        <span class="hint">The MVP trade panel covers the UK only.</span></div>
     </div>
     ${list.length ? `<div class="briefings"><div class="blist">${items}</div><section>${briefingDoc(sel)}</section></div>` : `<div class="empty-state">No briefing matches. Pick a category to generate one.</div>`}`;
 };
 AFTER.briefings = () => {
-  $("#bq").addEventListener("input", e => {
-    state.bf.q = e.target.value; const p = e.target.selectionStart; render();
-    const n = $("#bq"); n.focus(); n.setSelectionRange(p, p);
-  });
+  $("#bq").addEventListener("input", e => { state.bf.q = e.target.value; const p = e.target.selectionStart; render(); const n = $("#bq"); n.focus(); n.setSelectionRange(p, p); });
 };
-
 function briefingDoc(b) {
-  const st = briefingState(b);
-  const fs = briefingFacts(b);
+  const st = briefingState(b), fs = briefingFacts(b);
   if (st === "below" || st === "none") {
     const hasMetric = fs.some(f => f.type === "metric" && f.rel === "certified");
     const gone = FACTS.filter(f => sameScope(f, b.cat, b.cust) && f.status === "outdated" && f.type === "metric");
-    return `<div class="doc">
-      <div class="label">${esc(scopeLabel(b.cat, b.cust))}</div>
+    return `<div class="doc"><div class="label">${esc(scopeLabel(b.cat, b.cust))}</div>
       ${st === "none"
-        ? `<h2>No briefing for this scope yet</h2><p>This scope has ${plural(fs.length, "live fact", "live facts")}, including a certified metric. That clears the evidence floor, so a briefing can be generated.</p>
-           <div><button class="btn primary" data-act="generate" data-key="${esc(bkey(b))}">Generate briefing</button></div>`
+        ? `<h2>No briefing for this scope yet</h2><p>This scope has ${plural(fs.length, "live fact", "live facts")}, including a certified metric. That clears the evidence floor, so a briefing can be generated.</p><div><button class="btn primary" data-act="generate" data-key="${esc(bkey(b))}">Generate briefing</button></div>`
         : `<h2>Not enough evidence for a briefing</h2><p>This scope has ${plural(fs.length, "live fact", "live facts")}${hasMetric ? "" : " and no live certified metric"}. A briefing needs at least 3 facts including 1 certified metric, so tools use the general selling frameworks here instead of a thin page.</p>
            <div class="meter" role="img" aria-label="${fs.length} of 3 facts"><i style="width:${Math.min(fs.length / 3, 1) * 100}%"></i></div>
-           ${gone.length ? `<div class="callout">${gone.map(f => `“${esc(f.text)}” <span class="mono">${f.id}</span> is outdated. The next trade-panel refresh would bring this scope back over the floor.`).join("<br>")}</div>` : ""}`}
+           ${gone.length ? `<div class="callout warn">${gone.map(f => `“${esc(f.text)}” <span class="mono">${f.id}</span> is outdated. The next trade-panel refresh would bring this scope back over the floor.`).join("<br>")}</div>` : ""}`}
       <div>${fs.map(factCard).join("")}</div>
-      <div class="row"><button class="btn" data-act="add-source">Add a source for this scope</button><button class="btn ghost" data-act="add-fact">Add a fact</button></div>
-    </div>`;
+      <div class="row"><button class="btn" data-act="add-source">Add a source for this scope</button><button class="btn ghost" data-act="add-fact">Add a fact</button></div></div>`;
   }
-  // Select-then-cite: facts grouped by section, sources numbered in order of first appearance.
   const refs = [];
   const refOf = f => { const key = f.src || "memory:" + f.id; let i = refs.findIndex(r => r.key === key); if (i < 0) { refs.push({ key, f }); i = refs.length - 1; } return i + 1; };
   const SECTIONS = [["Where the business stands", ["metric"]], ["What shoppers and the buyer tell us", ["insight", "quote"]], ["What to do next", ["recommendation"]], ["Account memory", ["event"]]];
@@ -745,14 +1022,12 @@ function briefingDoc(b) {
   }).join("");
   const ih = hash(fs.map(f => f.id).sort().join(","));
   return `<article class="doc">
-    <div class="spread">
-      <div class="stack" style="gap:4px"><div class="label">Briefing</div><h2>${esc(scopeLabel(b.cat, b.cust))}</h2><span class="facet">${facetKey(b.cat, b.cust)}</span></div>
-      <div class="row"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><button class="btn sm ${st === "outdated" ? "primary" : ""}" data-act="regen" data-key="${esc(bkey(b))}" ${st === "outdated" ? "" : `disabled title="The fact set is unchanged, so regenerating would change nothing."`}>Regenerate</button></div>
-    </div>
-    ${st === "outdated" ? `<div class="verdict warn">${esc(b.why || "The facts behind this briefing changed.")} Regenerating rebuilds it from the current fact set.</div>` : ""}
+    <div class="spread"><div class="stack" style="gap:4px"><div class="label">Briefing</div><h2>${esc(scopeLabel(b.cat, b.cust))}</h2><span class="facet">${facetKey(b.cat, b.cust)}</span></div>
+      <div class="row"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><button class="btn sm ${st === "outdated" ? "primary" : ""}" data-act="regen" data-key="${esc(bkey(b))}" ${st === "outdated" ? "" : `disabled title="The fact set is unchanged, so regenerating would change nothing."`}>Regenerate</button></div></div>
+    ${st === "outdated" ? `<div class="callout warn">${esc(b.why || "The facts behind this briefing changed.")} Regenerating rebuilds it from the current fact set.</div>` : ""}
     <p class="small muted">Generated ${b.generated} from ${plural(fs.length, "fact", "facts")} · input hash <span class="mono">${ih}</span> · private facts are never included</p>
     ${body}
-    <div class="refs"><div class="label">References</div>${refs.map((r, i) => { const s = r.f.src && src(r.f.src); return `<div><span class="anchor">S${i + 1}</span> ${s ? esc(s.name) : "Account memory · workstream signal"} <span class="muted">· ${esc(s ? s.kind : "event")}</span></div>`; }).join("")}</div>
+    <div class="refs"><div class="label">References</div>${refs.map((r, i) => { const s = r.f.src && src(r.f.src); return `<div><span class="anchor">S${i + 1}</span> ${s ? esc(s.name) : "Account memory · project signal"} <span class="muted">· ${esc(s ? s.kind : "event")}</span></div>`; }).join("")}</div>
   </article>`;
 }
 
@@ -780,31 +1055,23 @@ function shortWhy(f, audience) {
   if (audience === "external") return f.sens === "restricted" ? "Restricted" : "Internal only";
   return "";
 }
-
 RENDER.search = () => {
-  const A = state.ask;
-  const r = selectFacts(A.cat, A.cust, A.q);
-  const c = COV[r.coverage];
+  const A = state.ask, r = selectFacts(A.cat, A.cust, A.q), c = COV[r.coverage];
   const rows = r.ranked.map((x, i) => {
     const [ok, why] = quotable(x.f, A.audience);
-    return `<tr>
-      <td class="num">${i + 1}</td>
+    return `<tr><td class="num">${i + 1}</td>
       <td><button class="linkish" data-act="open-fact" data-id="${x.f.id}">${esc(x.f.text)}</button><div class="row" style="margin-top:4px"><span class="type">${x.f.type}</span><span class="facet">${!x.f.cat ? "customer" : x.f.cust ? "account" : "category"} scope</span></div></td>
-      <td>${gov(x.f)}</td>
-      <td class="num">${x.score.toFixed(2)}</td>
-      <td><span class="pill ${ok ? "ok" : "neutral"}" title="${esc(why)}">${ok ? "Quotable" : "Background"}</span><div class="small muted" style="margin-top:4px">${ok ? "" : shortWhy(x.f, A.audience)}</div></td>
-    </tr>`;
+      <td>${gov(x.f)}</td><td class="num mono">${x.score.toFixed(2)}</td>
+      <td><span class="pill ${ok ? "ok" : "neutral"}" title="${esc(why)}">${ok ? "Quotable" : "Background"}</span><div class="hint" style="margin-top:4px">${ok ? "" : shortWhy(x.f, A.audience)}</div></td></tr>`;
   }).join("");
   const quot = r.ranked.filter(x => quotable(x.f, A.audience)[0]);
   const bg = r.ranked.length - quot.length;
   const shown = (A.audience === "external" ? quot : r.ranked).slice(0, 4);
-  const answer = r.coverage === "none"
-    ? `<p>The bank has nothing on this scope. A tool would answer from general selling frameworks only, with no Knowledge Bank citations.</p>`
-    : `<p>For <strong>${esc(scopeLabel(A.cat, A.cust))}</strong>, the strongest evidence is:</p>
+  const answer = r.coverage === "none" ? `<p>The bank has nothing on this scope. A tool would answer from general selling frameworks only, with no Knowledge Bank citations.</p>`
+    : `<p>For <b>${esc(scopeLabel(A.cat, A.cust))}</b>, the strongest evidence is:</p>
        ${shown.length ? `<ul>${shown.map(x => `<li>${esc(x.f.text)} <button class="anchor" data-act="open-fact" data-id="${x.f.id}">${r.ranked.indexOf(x) + 1}</button></li>`).join("")}</ul>` : `<p class="muted">None of the selected facts can be shown to a customer.</p>`}
-       ${bg && A.audience === "external" ? `<p class="small muted">${plural(bg, "more fact", "more facts")} shaped this answer but cannot be quoted to a customer. See the Use column.</p>` : ""}`;
-
-  return `<div class="ask">
+       ${bg && A.audience === "external" ? `<p class="hint">${plural(bg, "more fact", "more facts")} shaped this answer but cannot be quoted to a customer. See the Use column.</p>` : ""}`;
+  return head("Knowledge Bank", "Search", "See which facts a tool would receive for a scope and audience, and how well that scope is covered.") + NOTE + `<div class="ask">
     <section class="card pad">
       <form id="askform">
         <div class="field"><label for="a-q">Question</label><textarea id="a-q" rows="3">${esc(A.q)}</textarea></div>
@@ -813,10 +1080,9 @@ RENDER.search = () => {
           <div class="field"><label for="a-cust">Customer</label><select id="a-cust"><option value="">Category level</option>${CUSTOMERS.map(x => `<option ${x === A.cust ? "selected" : ""}>${esc(x)}</option>`).join("")}</select></div>
         </div>
         <div class="field"><span class="flabel">Audience</span>
-          <div class="seg" role="group" aria-label="Audience"><button type="button" data-aud="internal" aria-pressed="${A.audience === "internal"}">Internal prep</button><button type="button" data-aud="external" aria-pressed="${A.audience === "external"}">Customer-facing</button></div>
-          <span class="hint">Customer-facing keeps internal and restricted facts as background only.</span>
-        </div>
-        <button class="btn primary" type="submit">Search evidence</button>
+          <div class="seg" role="group" aria-label="Audience"><button type="button" data-aud="internal" aria-pressed="${A.audience === "internal"}">Internal team</button><button type="button" data-aud="external" aria-pressed="${A.audience === "external"}">Customer-facing</button></div>
+          <span class="hint">Customer-facing keeps internal and restricted facts as background only.</span></div>
+        <button class="btn primary" type="submit">${icon("search")}Search evidence</button>
       </form>
       <div class="stack" style="margin-top:16px"><div class="label">Try</div><div class="chips">
         ${[["What should I lead with in the Northgate range review?", "Fabric Care", "Northgate"], ["Why is our Hair Care share slipping at Brightmart?", "Hair Care", "Brightmart"], ["What do we know about Harbour & Co in Oral Care?", "Oral Care", "Harbour & Co"]].map(([q, cat, cu]) => `<button class="chip" data-act="try" data-q="${esc(q)}" data-cat="${cat}" data-cust="${esc(cu)}">${esc(q)}</button>`).join("")}
@@ -828,125 +1094,48 @@ RENDER.search = () => {
         <div><span class="label">2 · Rank</span><b>${r.ranked.length}</b><span class="small muted">top facts by relevance, status, reliability and recency</span></div>
         <div><span class="label">3 · Collapse</span><b>${r.merged}</b><span class="small muted">restatements merged into their best-scored fact</span></div>
       </div>
-      <div class="verdict ${c[0]}"><strong>Coverage: ${c[1]}.</strong> ${c[2]}</div>
+      <div class="verdict ${c[0]}"><b>Coverage: ${c[1]}.</b> ${c[2]}</div>
       <div class="card pad answer"><div class="label">Draft answer · built only from the facts below</div>${answer}</div>
-      ${r.ranked.length ? `<div class="table-wrap"><table class="ftable"><thead><tr><th>#</th><th>Fact</th><th>Governance</th><th>Score</th><th>Use</th></tr></thead><tbody>${rows}</tbody></table></div>` : ""}
-    </section>
-  </div>`;
+      ${r.ranked.length ? `<div class="table-wrap"><table class="ftable"><thead><tr><th>#</th><th>Fact</th><th>Governance</th><th class="num">Score</th><th>Use</th></tr></thead><tbody>${rows}</tbody></table></div>` : ""}
+    </section></div>`;
 };
-AFTER.search = () => {
-  $("#askform").addEventListener("submit", e => { e.preventDefault(); readAskForm(); render(); toast("Evidence selected"); });
-};
-function readAskForm() {
-  state.ask.q = $("#a-q").value.trim() || state.ask.q;
-  state.ask.cat = $("#a-cat").value; state.ask.cust = $("#a-cust").value;
-}
+AFTER.search = () => { $("#askform").addEventListener("submit", e => { e.preventDefault(); readAskForm(); render(); toast("Evidence selected"); }); };
+function readAskForm() { state.ask.q = $("#a-q").value.trim() || state.ask.q; state.ask.cat = $("#a-cat").value; state.ask.cust = $("#a-cust").value; }
 
 /* =====================================================================
    Manage sources (sources + review queue)
    ===================================================================== */
 RENDER.sources = () => {
   const tabs = `<div class="tabs" role="tablist">
-    <button role="tab" data-tab="sources" aria-selected="${state.srcTab === "sources"}">Sources <span class="muted small">${SOURCES.length}</span></button>
-    <button role="tab" data-tab="review" aria-selected="${state.srcTab === "review"}">Review queue ${REVIEW.length ? `<span class="badge">${REVIEW.length}</span>` : ""}</button>
-  </div>`;
-  return tabs + (state.srcTab === "review" ? reviewQueue() : sourceTable());
+    <button role="tab" data-tab="sources" aria-selected="${state.srcTab === "sources"}">Sources (${SOURCES.length})</button>
+    <button role="tab" data-tab="review" aria-selected="${state.srcTab === "review"}">Review queue (${REVIEW.length})</button></div>`;
+  return head("Knowledge Bank", "Manage sources", "Add source material, resolve exceptions, and control what the sales tools may cite.", `<button class="btn primary" data-act="add-source">${icon("plus")}Add source</button>`) + NOTE + tabs + (state.srcTab === "review" ? reviewQueue() : sourceTable());
 };
 function sourceTable() {
   const rows = SOURCES.map(s => {
-    const p = S_PILL[s.status];
-    const stalled = ["failed", "needs_context", "quarantined"].includes(s.status);
+    const p = S_PILL[s.status], stalled = ["failed", "needs_context", "quarantined"].includes(s.status);
     const stages = STAGES.map((_, i) => `<i class="${i < s.stage ? "done" : i === s.stage && stalled ? "fail" : i === s.stage && s.status === "processing" ? "run" : ""}"></i>`).join("");
     return `<tr data-act="open-source" data-id="${s.id}" tabindex="0">
-      <td><div class="name">${esc(s.name)}</div><div class="stages" title="${STAGES.join(" → ")}">${stages}</div>${s.note ? `<div class="small muted" style="margin-top:4px">${esc(s.note)}</div>` : ""}</td>
-      <td>${esc(s.kind)}<div class="small muted">${s.lane} lane</div></td>
-      <td class="small">${esc(scopeLabel(s.cat, s.cust))}</td>
+      <td><div class="name">${esc(s.name)}</div><div class="stages" title="${STAGES.join(" → ")}">${stages}</div>${s.note ? `<div class="hint" style="margin-top:4px">${esc(s.note)}</div>` : ""}</td>
+      <td>${esc(s.kind)}<div class="hint">${s.lane} lane</div></td><td>${esc(scopeLabel(s.cat, s.cust))}</td>
       <td><span class="pill ${p[0]}">${p[1]}</span></td>
       <td><span class="gov"><span class="t-${s.rel}"><b>${s.rel}</b></span><span class="s-${s.sens}"><b>${s.sens}</b></span></span></td>
-      <td class="small">${s.asOf}${s.conf === "low" ? `<div><span class="pill warn">low confidence</span></div>` : ""}</td>
-      <td class="num">${s.facts}</td>
-    </tr>`;
+      <td>${s.asOf}${s.conf === "low" ? `<div><span class="pill warn">low confidence</span></div>` : ""}</td><td class="num">${s.facts}</td></tr>`;
   }).join("");
   const by = st => SOURCES.filter(s => s.status === st).length;
-  return `
-    <p class="small muted" style="margin-bottom:12px">${by("live")} live · ${by("needs_context") + by("quarantined")} waiting for review · ${by("failed")} failed · ${by("superseded") + by("retired")} replaced or retired. Pipeline: ${STAGES.join(" → ")}.</p>
-    <div class="table-wrap"><table class="stbl">
-      <thead><tr><th>Source</th><th>Type</th><th>Scope</th><th>Status</th><th>Reliability · sensitivity</th><th>Content date</th><th class="num">Facts</th></tr></thead>
-      <tbody>${rows}</tbody>
-    </table></div>`;
+  return `<p class="small muted" style="margin-bottom:12px">${by("live")} live · ${by("needs_context") + by("quarantined")} waiting for review · ${by("failed")} failed · ${by("superseded") + by("retired")} replaced or retired. Pipeline: ${STAGES.join(" → ")}.</p>
+    <div class="table-wrap"><table class="stbl"><thead><tr><th>Source</th><th>Type</th><th>Scope</th><th>Status</th><th>Reliability · sensitivity</th><th>Content date</th><th class="num">Facts</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function reviewQueue() {
   if (!REVIEW.length) return `<div class="empty-state">The queue is empty. New cases appear here after ingestion and scheduled jobs.</div>`;
   return `<p class="small muted" style="margin-bottom:12px">Only the cases that need a person: contradictions, stale intake, verbatim quotes, personal data and overlaps.</p>
-  <div class="rq">${REVIEW.map(r => `
-    <article class="rcard">
+  <div class="rq">${REVIEW.map(r => `<article class="rcard">
       <div class="spread"><span class="pill ${r.cls}">${r.kind}</span><span class="mono muted">${r.id}</span></div>
-      <h3>${esc(r.title)}</h3>
-      <p>${esc(r.body)}</p>
-      ${r.a ? `<div class="versus">${[r.a, r.b].map(x => `<div class="side-box"><span class="big">${x.big}</span><span>${esc(x.src)}</span><span class="small muted">${esc(x.loc)} · ${x.rel} · as of ${x.asOf}</span></div>`).join("")}</div>` : ""}
-      <div class="row">${r.actions.map(([l, c]) => `<button class="btn sm ${c}" data-act="resolve" data-id="${r.id}" data-choice="${esc(l)}">${esc(l)}</button>`).join("")}</div>
+      <h3>${esc(r.title)}</h3><p>${esc(r.body)}</p>
+      ${r.a ? `<div class="versus">${[r.a, r.b].map(x => `<div class="side-box"><span class="big">${x.big}</span><span>${esc(x.src)}</span><span class="hint">${esc(x.loc)} · ${x.rel} · as of ${x.asOf}</span></div>`).join("")}</div>` : ""}
+      <div class="row">${r.actions.map(([l, c]) => `<button class="btn sm ${c || "plain"}" data-act="resolve" data-id="${r.id}" data-choice="${esc(l)}">${esc(l)}</button>`).join("")}</div>
     </article>`).join("")}</div>`;
 }
-
-/* =====================================================================
-   Workstreams: how a workspace uses the Knowledge Bank
-   ===================================================================== */
-RENDER.workstreams = () => {
-  const cards = WORKSTREAMS.map(w => {
-    const ps = pillars(w), score = ps.filter(p => p.n > 0).length;
-    return `<button class="ws" data-act="pick-ws" data-id="${w.id}" aria-pressed="${w.id === state.ws}">
-      <strong>${esc(w.name)}</strong>
-      <span class="small muted">${esc(w.cust)} × UK · ${w.cat}</span>
-      <span class="spread"><span class="row small"><span class="dots" aria-hidden="true">${ps.map(p => `<i class="${p.n ? "on" : ""}"></i>`).join("")}</span>${score}/5 context</span><span class="pill ${w.audience === "external" ? "info" : "neutral"}">${w.audience === "external" ? "Customer-facing" : "Internal"}</span></span>
-    </button>`;
-  }).join("");
-  const w = WORKSTREAMS.find(x => x.id === state.ws);
-  const ps = pillars(w);
-  const b = BRIEFINGS.find(x => sameScope(x, w.cat, w.cust));
-  const st = b ? briefingState(b) : null;
-  const sel = selectFacts(w.cat, w.cust, "");
-  const quot = sel.ranked.filter(x => quotable(x.f, w.audience)[0]).length;
-  const storyOK = quot > 0;
-  const runs = w.runs.map(r => `<tr><td>${r.tool}</td><td class="small">${esc(r.note)}</td><td class="small">${r.date}</td><td><span class="pill ${r.status === "Running" ? "info" : "ok"}">${r.status}</span></td><td class="small">${r.rating || "—"}</td></tr>`).join("");
-
-  return `
-    <div class="ws-grid">${cards}</div>
-    <section class="card pad">
-      <div class="spread"><div class="stack" style="gap:2px"><h2 style="font-size:18px">${esc(w.name)}</h2><span class="facet">${facetKey(w.cat, w.cust)}</span></div>
-        <span class="pill ${w.audience === "external" ? "info" : "neutral"}">Audience: ${w.audience === "external" ? "customer-facing" : "internal"}</span></div>
-      <div class="section" style="margin-top:16px">
-        <div class="spread" style="margin-bottom:8px"><span class="label">Context evidence</span><span class="small muted">Derived from facts, not set by hand. Private facts never count.</span></div>
-        <div class="pillars">${ps.map(p => `<div class="pillar ${p.n ? "" : "missing"}"><span class="spread"><strong>${p.name}</strong><span class="pill ${p.n ? "ok" : "neutral"}">${p.n ? (p.name === "Buyer" ? "Attached" : plural(p.n, "fact", "facts")) : "Missing"}</span></span><span class="small muted">${esc(p.text || p.desc)}</span>${!p.n && p.name === "Buyer" ? `<button class="btn ghost small" data-act="attach-buyer" data-id="${w.id}">Attach a buyer</button>` : ""}${!p.n && p.name !== "Buyer" ? `<button class="btn ghost small" data-act="add-source">Add a source</button>` : ""}</div>`).join("")}</div>
-      </div>
-      <div class="ws-detail">
-        <div class="stack">
-          <span class="label">Attached Knowledge Bank context</span>
-          <div class="tool">
-            <span class="spread"><strong>Briefing · ${esc(scopeLabel(w.cat, w.cust))}</strong>${st ? `<span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span>` : `<span class="pill neutral">None</span>`}</span>
-            <span class="small muted">${plural(sel.inScope, "live fact", "live facts")} in scope · ${plural(quot, "is", "are")} quotable for this audience · coverage ${COV[sel.coverage][1].toLowerCase()}</span>
-            <div class="row"><button class="btn sm" data-act="open-ws-brief" data-id="${w.id}">Open briefing</button><button class="btn sm" data-act="ws-search" data-id="${w.id}">See selected facts</button></div>
-          </div>
-        </div>
-        <div class="stack">
-          <span class="label">Tools</span>
-          <div class="tool">
-            <span class="spread"><strong>Selling Coach</strong><span class="small muted">PSF deck analysis</span></span>
-            <span class="small muted">Checks each Persuasive Selling Format step of your deck against the facts in scope and cites them.</span>
-            <div><button class="btn sm primary" data-act="run-tool" data-tool="Selling Coach" data-id="${w.id}">Upload deck and run</button></div>
-          </div>
-          <div class="tool">
-            <span class="spread"><strong>Storyline Generator</strong><span class="small muted">Opportunity + PSF storyline</span></span>
-            <span class="small muted">${storyOK ? "Proposes opportunities from the grounded context. You pick one and refine it until you approve." : "Needs at least one quotable fact for a customer-facing audience. This scope has none yet."}</span>
-            <div><button class="btn sm primary" data-act="run-tool" data-tool="Storyline Generator" data-id="${w.id}" ${storyOK ? "" : "disabled"}>Start storyline</button></div>
-          </div>
-        </div>
-      </div>
-      <div class="section">
-        <div class="spread" style="margin-bottom:8px"><span class="label">Recent runs</span><span class="small muted">Completed runs feed new account facts back to the bank for review.</span></div>
-        ${runs ? `<div class="table-wrap"><table class="stbl narrow"><thead><tr><th>Tool</th><th>Result</th><th>Date</th><th>Status</th><th>Rating</th></tr></thead><tbody>${runs}</tbody></table></div>` : `<div class="empty-state">No runs yet.</div>`}
-      </div>
-    </section>`;
-};
 
 /* =====================================================================
    Drawer (fact detail, source impact) and modals
@@ -964,45 +1153,34 @@ function openModal(html, onSubmit) {
 function closeOverlay() { $("#overlay").innerHTML = ""; }
 
 function factDrawer(id) {
-  const f = fact(id);
-  const s = f.src ? src(f.src) : null;
-  const [qi, whyI] = quotable(f, "internal");
-  const [qc, whyC] = quotable(f, "external");
+  const f = fact(id), s = f.src ? src(f.src) : null;
+  const [qi, whyI] = quotable(f, "internal"), [qc, whyC] = quotable(f, "external");
   const cites = BRIEFINGS.filter(b => floorOK(b) && briefingFacts(b).includes(f));
   const figNum = f.fig && String(parseFloat(f.fig));
-  const evidence = f.row
-    ? `<pre class="excerpt">${esc(JSON.stringify(f.row, null, 2)).replace(figNum, `<mark>${figNum}</mark>`)}</pre>`
-    : `<div class="excerpt">${highlight(f.excerpt, f.fig)}</div>`;
+  const evidence = f.row ? `<pre class="excerpt">${esc(JSON.stringify(f.row, null, 2)).replace(figNum, `<mark>${figNum}</mark>`)}</pre>` : `<div class="excerpt">${highlight(f.excerpt, f.fig)}</div>`;
   const fidelity = !f.fig ? "" : (f.row || (f.excerpt || "").includes(f.fig)) ? "Figure found in its evidence. Numeric check passed." : "Figure not found in its evidence.";
   openDrawer(`
-    <div class="spread"><span class="row"><span class="type">${f.type}</span>${statusPill(f)}${expPill(f)}</span><button class="btn sm" data-act="close">Close</button></div>
-    <h2>${esc(f.text)}</h2>
-    <div>${gov(f)}</div>
+    <div class="spread"><span class="row"><span class="type">${f.type}</span>${statusPill(f)}${expPill(f)}</span><button class="btn sm plain" data-act="close">Close</button></div>
+    <h2>${esc(f.text)}</h2><div>${gov(f)}</div>
     <div class="stack"><div class="label">Where it comes from</div>
       <div class="chain">
-        <div><strong>${s ? esc(s.name) : "Account memory"}</strong><span class="small muted">${s ? `${esc(s.kind)} · ${s.lane} lane · ${s.rel} · ${S_PILL[s.status][1].toLowerCase()}` : "Created from a workstream signal"}</span></div>
-        <div><strong>${esc(f.loc)}</strong><span class="small muted">${f.row ? "Certified dataset row. The number is read from the query, not written by a model." : "Grounding passage"}</span></div>
-        <div style="padding-bottom:0">${evidence}${fidelity ? `<span class="small muted">${fidelity}</span>` : ""}</div>
-      </div>
-    </div>
+        <div><b>${s ? esc(s.name) : "Account memory"}</b><span class="hint">${s ? `${esc(s.kind)} · ${s.lane} lane · ${s.rel} · ${S_PILL[s.status][1].toLowerCase()}` : "Created from a project signal or tool run"}</span></div>
+        <div><b>${esc(f.loc)}</b><span class="hint">${f.row ? "Certified dataset row. The number is read from the query, not written by a model." : "Grounding passage"}</span></div>
+        <div style="padding-bottom:0">${evidence}${fidelity ? `<span class="hint">${fidelity}</span>` : ""}</div>
+      </div></div>
     <dl class="kv">
       <dt>Scope</dt><dd>${esc(scopeLabel(f.cat, f.cust))}<div class="facet">${facetKey(f.cat, f.cust)}</div></dd>
       ${f.period ? `<dt>Period</dt><dd>${esc(f.period)}</dd>` : ""}
       <dt>Content date</dt><dd>${f.asOf}${f.expires ? ` · expires ${f.expires}` : ""}</dd>
       <dt>Restated in</dt><dd>${f.dedup} ${f.dedup === 1 ? "source" : "sources, collapsed to this fact"}</dd>
       <dt>Cited by</dt><dd>${cites.length ? cites.map(b => "Briefing: " + esc(scopeLabel(b.cat, b.cust))).join("<br>") : "No briefing"}</dd>
-      <dt>ID</dt><dd class="mono">${f.id}</dd>
-    </dl>
+      <dt>ID</dt><dd class="mono">${f.id}</dd></dl>
     <div class="stack"><div class="label">Can a tool quote it?</div>
-      <div class="verdict ${qi ? "ok" : "warn"}"><strong>Internal prep: ${qi ? "yes" : "no"}.</strong> ${esc(whyI)}</div>
-      <div class="verdict ${qc ? "ok" : "bad"}"><strong>Customer-facing: ${qc ? "yes" : "no"}.</strong> ${esc(whyC)}</div>
-    </div>
-    ${isLive(f) ? `<div class="stack"><div class="label">Curate</div>
-      <div class="row">
-        ${f.status === "needs_review" ? `<button class="btn primary" data-act="verify" data-id="${f.id}">Verify</button><button class="btn danger" data-act="reject" data-id="${f.id}">Reject</button>` : ""}
-        <label class="check">Sensitivity <select class="select" id="d-sens">${["external", "internal", "restricted"].map(x => `<option ${x === f.sens ? "selected" : ""}>${x}</option>`).join("")}</select></label>
-      </div>
-    </div>` : ""}`);
+      <div class="verdict ${qi ? "ok" : "warn"}"><b>Internal team: ${qi ? "yes" : "no"}.</b> ${esc(whyI)}</div>
+      <div class="verdict ${qc ? "ok" : "bad"}"><b>Customer-facing: ${qc ? "yes" : "no"}.</b> ${esc(whyC)}</div></div>
+    ${isLive(f) ? `<div class="stack"><div class="label">Curate</div><div class="row">
+        ${f.status === "needs_review" ? `<button class="btn sm primary" data-act="verify" data-id="${f.id}">Verify</button><button class="btn sm danger" data-act="reject" data-id="${f.id}">Reject</button>` : ""}
+        <label class="check">Sensitivity <select class="select" id="d-sens">${["external", "internal", "restricted"].map(x => `<option ${x === f.sens ? "selected" : ""}>${x}</option>`).join("")}</select></label></div></div>` : ""}`);
   $("#d-sens")?.addEventListener("change", e => {
     f.sens = e.target.value;
     if (!f.owner) markOutdated(f.cat, f.cust, "A fact's sensitivity changed.");
@@ -1011,71 +1189,50 @@ function factDrawer(id) {
 }
 
 function sourceDrawer(id) {
-  const s = src(id);
-  const fs = FACTS.filter(f => f.src === id);
+  const s = src(id), fs = FACTS.filter(f => f.src === id);
   const briefs = BRIEFINGS.filter(b => fs.some(f => sameScope(f, b.cat, b.cust)));
-  const other = Math.max(0, s.facts - fs.length);
-  const p = S_PILL[s.status];
+  const other = Math.max(0, s.facts - fs.length), p = S_PILL[s.status];
   const canRetire = !["retired", "superseded", "processing"].includes(s.status);
   const stalled = !["live", "superseded", "retired"].includes(s.status);
   openDrawer(`
-    <div class="spread"><span class="pill ${p[0]}">${p[1]}</span><button class="btn sm" data-act="close">Close</button></div>
+    <div class="spread"><span class="pill ${p[0]}">${p[1]}</span><button class="btn sm plain" data-act="close">Close</button></div>
     <h2>${esc(s.name)}</h2>
-    <dl class="kv">
-      <dt>Type</dt><dd>${esc(s.kind)} · ${s.lane} lane</dd>
-      <dt>Scope</dt><dd>${esc(scopeLabel(s.cat, s.cust))}</dd>
-      <dt>Content date</dt><dd>${s.asOf} · ${s.conf} confidence</dd>
-      <dt>Reliability</dt><dd>${s.rel} <span class="small muted">· set from where the source came from</span></dd>
-      ${s.supersededBy ? `<dt>Replaced by</dt><dd>${esc(src(s.supersededBy).name)}</dd>` : ""}
-      ${s.note ? `<dt>Note</dt><dd>${esc(s.note)}</dd>` : ""}
-    </dl>
-    <div class="stack"><div class="label">Pipeline</div>
-      <div class="row">${STAGES.map((st, i) => `<span class="pill ${i < s.stage ? "ok" : i === s.stage && stalled ? (s.status === "processing" ? "info" : "bad") : "neutral"}">${st}</span>`).join("")}</div>
-    </div>
+    <dl class="kv"><dt>Type</dt><dd>${esc(s.kind)} · ${s.lane} lane</dd><dt>Scope</dt><dd>${esc(scopeLabel(s.cat, s.cust))}</dd>
+      <dt>Content date</dt><dd>${s.asOf} · ${s.conf} confidence</dd><dt>Reliability</dt><dd>${s.rel} <span class="hint">· set from where the source came from</span></dd>
+      ${s.supersededBy ? `<dt>Replaced by</dt><dd>${esc(src(s.supersededBy).name)}</dd>` : ""}${s.note ? `<dt>Note</dt><dd>${esc(s.note)}</dd>` : ""}</dl>
+    <div class="stack"><div class="label">Pipeline</div><div class="row">${STAGES.map((st, i) => `<span class="pill ${i < s.stage ? "ok" : i === s.stage && stalled ? (s.status === "processing" ? "info" : "bad") : "neutral"}">${st}</span>`).join("")}</div></div>
     <div class="stack"><div class="label">What depends on it</div>
       <p>${plural(s.facts, "fact comes", "facts come")} from this source${briefs.length ? ` and ${plural(briefs.length, "briefing cites", "briefings cite")} them` : ""}.${s.facts === 0 && s.status === "live" ? " It feeds no live facts and can be cleaned up." : ""}</p>
       ${fs.slice(0, 4).map(f => `<button class="btn ghost" data-act="open-fact" data-id="${f.id}">${f.id} · ${esc(f.text)}</button>`).join("")}
-      ${other && s.facts ? `<span class="small muted">+ ${other} more facts</span>` : ""}
-      ${briefs.map(b => `<span class="small">Briefing: ${esc(scopeLabel(b.cat, b.cust))}</span>`).join("")}
-    </div>
+      ${other && s.facts ? `<span class="hint">+ ${other} more facts</span>` : ""}${briefs.map(b => `<span class="small">Briefing: ${esc(scopeLabel(b.cat, b.cust))}</span>`).join("")}</div>
     <div class="stack"><div class="label">Reclassify</div>
-      <div class="row"><select class="select" id="s-sens" aria-label="New sensitivity">${["external", "internal", "restricted"].map(x => `<option ${x === s.sens ? "selected" : ""}>${x}</option>`).join("")}</select><button class="btn" data-act="reclassify" data-id="${s.id}">Apply to the source and its ${plural(s.facts, "fact", "facts")}</button></div>
-      <span class="hint">No re-parsing and no re-mining. The label flows to every fact, and briefings citing them become outdated.</span>
-    </div>
+      <div class="row"><select class="select" id="s-sens" aria-label="New sensitivity">${["external", "internal", "restricted"].map(x => `<option ${x === s.sens ? "selected" : ""}>${x}</option>`).join("")}</select><button class="btn sm" data-act="reclassify" data-id="${s.id}">Apply to the source and its ${plural(s.facts, "fact", "facts")}</button></div>
+      <span class="hint">No re-parsing and no re-mining. The label flows to every fact, and briefings citing them become outdated.</span></div>
     ${canRetire ? `<div class="stack"><div class="label">Retire</div>
       <label class="check"><input type="checkbox" id="s-confirm"> I understand this removes ${plural(s.facts, "fact", "facts")} from retrieval and cannot be undone. The original file is kept for audit.</label>
-      <div><button class="btn danger" id="s-retire" data-act="retire" data-id="${s.id}" disabled>Retire source</button></div>
-    </div>` : ""}`);
+      <div><button class="btn sm danger" id="s-retire" data-act="retire" data-id="${s.id}" disabled>Retire source</button></div></div>` : ""}`);
   $("#s-confirm")?.addEventListener("change", e => { $("#s-retire").disabled = !e.target.checked; });
 }
 
 function addFactModal() {
   const srcOpts = SOURCES.filter(s => s.status === "live").map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("");
-  openModal(`
-    <header><h2>Add a fact</h2><p class="muted" style="margin-top:4px">One assertion per fact. Write it so a colleague could check it against the evidence.</p></header>
+  openModal(`<header><h2>Add a fact</h2></header>
     <form>
-      <div class="grid2">
-        <div class="field"><label for="n-type">Type</label><select id="n-type" name="type">${TYPES.map(t => `<option>${t}</option>`).join("")}</select></div>
-        <div class="field"><label for="n-date">Content date</label><input id="n-date" name="asOf" value="${TODAY}"><span class="hint">The date the fact is about, not today's date.</span></div>
-      </div>
+      <p class="small muted">One assertion per fact. Write it so a colleague could check it against the evidence.</p>
+      <div class="grid2"><div class="field"><label for="n-type">Type</label><select id="n-type" name="type">${TYPES.map(t => `<option>${t}</option>`).join("")}</select></div>
+        <div class="field"><label for="n-date">Content date</label><input id="n-date" name="asOf" value="${TODAY}"><span class="hint">The date the fact is about, not today's date.</span></div></div>
       <div class="field"><label for="n-text">Statement</label><textarea id="n-text" name="text" required placeholder="e.g. Northgate will cut laundry SKUs by 10% at the November range review."></textarea></div>
-      <div class="grid3">
-        <div class="field"><label for="n-fig">Figure (optional)</label><input id="n-fig" name="fig" placeholder="10%"></div>
+      <div class="grid3"><div class="field"><label for="n-fig">Figure (optional)</label><input id="n-fig" name="fig" placeholder="10%"></div>
         <div class="field"><label for="n-period">Period (optional)</label><input id="n-period" name="period" placeholder="FY 2026-27"></div>
-        <div class="field"><label for="n-cat">Category</label><select id="n-cat" name="cat"><option value="">None (customer only)</option>${CATEGORIES.map(c => `<option ${c === "Fabric Care" ? "selected" : ""}>${c}</option>`).join("")}</select></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label for="n-cust">Customer</label><select id="n-cust" name="cust"><option value="">Category level</option>${CUSTOMERS.map(c => `<option ${c === "Northgate" ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
-        <div class="field"><label for="n-src">Evidence</label><select id="n-src" name="src"><option value="">My own knowledge</option>${srcOpts}</select></div>
-      </div>
+        <div class="field"><label for="n-cat">Category</label><select id="n-cat" name="cat"><option value="">None (customer only)</option>${CATEGORIES.map(c => `<option ${c === "Fabric Care" ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
+      <div class="grid2"><div class="field"><label for="n-cust">Customer</label><select id="n-cust" name="cust"><option value="">Category level</option>${CUSTOMERS.map(c => `<option ${c === "Northgate" ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
+        <div class="field"><label for="n-src">Evidence</label><select id="n-src" name="src"><option value="">My own knowledge</option>${srcOpts}</select></div></div>
       <div class="field"><label for="n-ex">Supporting passage</label><textarea id="n-ex" name="excerpt" rows="2" placeholder="Paste the sentence or note that backs this up. Any figure must appear here."></textarea></div>
-      <div class="grid2">
-        <div class="field"><label for="n-sens">Sensitivity</label><select id="n-sens" name="sens"><option>internal</option><option>external</option><option>restricted</option></select></div>
-        <div class="field"><label for="n-vis">Visibility</label><select id="n-vis" name="vis"><option value="shared">Shared with the team</option><option value="private">Private to me</option></select></div>
-      </div>
-      <p class="hint" id="n-err" style="color:var(--bad)" hidden></p>
-      <div class="callout">New facts start as <strong>needs review</strong>. Reliability comes from the evidence, so your own knowledge is <strong>stated</strong>. A curator verifies it before any tool can quote it.</div>
-      <div class="foot"><button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary" type="submit">Add fact</button></div>
+      <div class="grid2"><div class="field"><label for="n-sens">Sensitivity</label><select id="n-sens" name="sens"><option>internal</option><option>external</option><option>restricted</option></select></div>
+        <div class="field"><label for="n-vis">Visibility</label><select id="n-vis" name="vis"><option value="shared">Shared with the team</option><option value="private">Private to me</option></select></div></div>
+      <p class="hint" id="n-err" style="color:var(--err-accent)" hidden></p>
+      <div class="callout info">New facts start as <b>needs review</b>. Reliability comes from the evidence, so your own knowledge is <b>stated</b>. A curator verifies it before any tool can quote it.</div>
+      <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Add fact</button></div>
     </form>`, fd => {
       const fig = fd.get("fig").trim(), ex = fd.get("excerpt").trim(), err = $("#n-err");
       if (!fd.get("cat") && !fd.get("cust")) { err.hidden = false; err.textContent = "Pick a category, a customer, or both, so the fact has a scope."; return; }
@@ -1093,20 +1250,16 @@ function addFactModal() {
 }
 
 function addSourceModal() {
-  openModal(`
-    <header><h2>Add source</h2><p class="muted" style="margin-top:4px">The file is quality-checked, chunked and mined into facts that need review.</p></header>
+  openModal(`<header><h2>Add source</h2></header>
     <form>
+      <p class="small muted">The file is quality-checked, chunked and mined into facts that need review.</p>
       <div class="field"><label for="u-name">File or link</label><input id="u-name" name="name" required placeholder="e.g. Brightmart JBP 2026-27.pptx or a SharePoint Sales Book link"></div>
-      <div class="grid2">
-        <div class="field"><label for="u-kind">Type</label><select id="u-kind" name="kind"><option>Deck</option><option>PDF</option><option>SharePoint Sales Book</option><option>Word document</option><option>Spreadsheet</option></select></div>
-        <div class="field"><label for="u-sens">Sensitivity</label><select id="u-sens" name="sens"><option>internal</option><option>external</option><option>restricted</option></select></div>
-      </div>
-      <div class="grid2">
-        <div class="field"><label for="u-cat">Category</label><select id="u-cat" name="cat">${CATEGORIES.map(c => `<option>${c}</option>`).join("")}</select></div>
-        <div class="field"><label for="u-cust">Customer</label><select id="u-cust" name="cust"><option value="">Category level</option>${CUSTOMERS.map(c => `<option>${esc(c)}</option>`).join("")}</select></div>
-      </div>
+      <div class="grid2"><div class="field"><label for="u-kind">Type</label><select id="u-kind" name="kind"><option>Deck</option><option>PDF</option><option>SharePoint Sales Book</option><option>Word document</option><option>Spreadsheet</option></select></div>
+        <div class="field"><label for="u-sens">Sensitivity</label><select id="u-sens" name="sens"><option>internal</option><option>external</option><option>restricted</option></select></div></div>
+      <div class="grid2"><div class="field"><label for="u-cat">Category</label><select id="u-cat" name="cat">${CATEGORIES.map(c => `<option>${c}</option>`).join("")}</select></div>
+        <div class="field"><label for="u-cust">Customer</label><select id="u-cust" name="cust"><option value="">Category level</option>${CUSTOMERS.map(c => `<option>${esc(c)}</option>`).join("")}</select></div></div>
       <p class="hint">Certified trade-panel numbers arrive through the data lane on a schedule. You don't upload them.</p>
-      <div class="foot"><button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary" type="submit">Start ingestion</button></div>
+      <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Start ingestion</button></div>
     </form>`, fd => {
       const s = { id: "S-" + (20 + SOURCES.length), name: fd.get("name"), kind: fd.get("kind"), lane: "Document", cat: fd.get("cat"), cust: fd.get("cust") || null, status: "processing", sens: fd.get("sens"), rel: fd.get("kind") === "SharePoint Sales Book" ? "stated" : "reviewed", asOf: "reading…", conf: "medium", facts: 0, stage: 0 };
       const run = { status: "Running", source: "upload · " + s.name, started: TODAY + " 14:05", indexed: 0, failed: 0 };
@@ -1114,32 +1267,27 @@ function addSourceModal() {
       closeOverlay(); state.srcTab = "sources"; go("sources"); toast("Ingestion started");
       const t = setInterval(() => {
         s.stage++;
-        if (s.stage >= STAGES.length) {
-          clearInterval(t); s.status = "live"; s.asOf = "12 Sep 2026"; s.facts = 11;
-          run.status = "Complete"; run.indexed = 11;
-          markOutdated(s.cat, s.cust, "New facts arrived from a new source.");
-          toast(`${s.name}: 11 facts mined, waiting for review`);
-        }
+        if (s.stage >= STAGES.length) { clearInterval(t); s.status = "live"; s.asOf = "12 Sep 2026"; s.facts = 11; run.status = "Complete"; run.indexed = 11; markOutdated(s.cat, s.cust, "New facts arrived from a new source."); toast(`${s.name}: 11 facts mined, waiting for review`); }
         if ((state.view === "sources" || state.view === "home") && !$("#overlay").children.length) render();
       }, 650);
     });
 }
 
-/* A completed tool run writes account facts back to the bank (needs review). */
-function runTool(ws, tool) {
-  const run = { tool, date: TODAY, status: "Running", note: tool === "Selling Coach" ? "Northgate range review deck.pptx" : "Scouting opportunities", rating: "" };
-  ws.runs.unshift(run); render(); toast(`${tool} started`);
-  setTimeout(() => {
-    const sel = selectFacts(ws.cat, ws.cust, "");
-    run.status = tool === "Selling Coach" ? "Completed" : "Ready for review";
-    run.note = tool === "Selling Coach" ? `Range review deck · ${Math.min(5, sel.ranked.length)} of 5 PSF steps grounded` : "3 opportunities proposed · 1 recommended";
-    const f = { id: "F-" + (2000 + FACTS.length), type: "insight", text: tool === "Selling Coach" ? `The ${ws.cust} range review deck has no market-size figure in its Situation step.` : `Recommended opportunity for ${ws.cust}: grow ${ws.cat} premium tier through capsules.`,
-      cat: ws.cat, cust: ws.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, loc: `${tool} run · ${ws.name}`, excerpt: `Written back from a completed ${tool} run on ${TODAY}.`, dedup: 1 };
-    FACTS.unshift(f);
-    markOutdated(ws.cat, ws.cust, "A tool run added an account fact.");
-    if (state.view === "workstreams" && !$("#overlay").children.length) render();
-    toast(`${tool} finished · 1 account fact sent to the bank for review`);
-  }, 1600);
+function newProjectModal() {
+  openModal(`<header><h2>New project</h2></header>
+    <form>
+      <p class="small muted">Set the scope once. Every tool in the project uses it.</p>
+      <div class="field"><label for="np-name">Project name</label><input id="np-name" name="name" required placeholder="e.g. Brightmart spring premium aisle"></div>
+      <div class="grid2"><div class="field"><label for="np-cust">Customer</label><select id="np-cust" name="cust">${CUSTOMERS.map(c => `<option>${esc(c)}</option>`).join("")}</select></div>
+        <div class="field"><label for="np-cat">Category</label><select id="np-cat" name="cat">${CATEGORIES.map(c => `<option>${c}</option>`).join("")}</select></div></div>
+      <div class="grid2"><div class="field"><label for="np-aud">Audience</label><select id="np-aud" name="aud"><option value="internal">Internal team</option><option value="external">Customer-facing</option></select></div>
+        <div class="field"><label for="np-meet">Meeting date (optional)</label><input id="np-meet" name="meeting" placeholder="e.g. 05 Nov 2026"></div></div>
+      <div class="field"><label for="np-obj">Objective</label><input id="np-obj" name="objective" placeholder="What should this project achieve?"></div>
+      <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Create project</button></div>
+    </form>`, fd => {
+      const p = { id: "P-" + (PROJECTS.length + 1), name: fd.get("name").trim(), cust: fd.get("cust"), cat: fd.get("cat"), audience: fd.get("aud"), meeting: fd.get("meeting").trim() || null, buyer: null, objective: fd.get("objective").trim() || "No objective set yet.", decks: [], runs: [] };
+      PROJECTS.unshift(p); closeOverlay(); state.project = p.id; go("project"); toast("Project created");
+    });
 }
 
 /* =====================================================================
@@ -1157,12 +1305,15 @@ document.addEventListener("click", e => {
 
   const el = e.target.closest("[data-act]");
   if (!el) return;
-  const a = el.dataset.act, id = el.dataset.id;
+  const a = el.dataset.act, id = el.dataset.id, p = proj(state.project);
   if (a === "close") { if (e.target === el || el.tagName === "BUTTON") closeOverlay(); return; }
   if (a === "add-fact") addFactModal();
   if (a === "add-source") addSourceModal();
+  if (a === "new-project") newProjectModal();
+  if (a === "open-project") { state.project = id; go("project"); }
   if (a === "open-fact") factDrawer(id);
   if (a === "open-source") sourceDrawer(id);
+  if (a === "toast") toast(el.dataset.msg);
   if (a === "clear-filters") { state.f = blankFilter(); render(); }
   if (a === "cell") { state.f = { ...blankFilter(), cat: el.dataset.cat, cust: el.dataset.cust || "_cat" }; go("facts"); }
   if (a === "attention") { state.srcTab = "review"; go("sources"); }
@@ -1171,11 +1322,20 @@ document.addEventListener("click", e => {
   if (a === "regen") { const b = BRIEFINGS.find(x => bkey(x) === el.dataset.key); b.status = "current"; b.generated = TODAY; delete b.why; render(); toast("Briefing rebuilt from the current fact set"); }
   if (a === "generate") { const [cat, cust] = el.dataset.key.split("|"); BRIEFINGS.push({ cat, cust: cust || null, status: "current", generated: TODAY }); state.briefKey = el.dataset.key; render(); toast("Briefing generated"); }
   if (a === "try") { Object.assign(state.ask, { q: el.dataset.q, cat: el.dataset.cat, cust: el.dataset.cust }); render(); }
-  if (a === "pick-ws") { state.ws = id; render(); }
-  if (a === "open-ws-brief") { const w = WORKSTREAMS.find(x => x.id === id); state.bf = { q: "", cat: w.cat, cust: w.cust }; state.briefKey = `${w.cat}|${w.cust}`; go("briefings"); }
-  if (a === "ws-search") { const w = WORKSTREAMS.find(x => x.id === id); Object.assign(state.ask, { cat: w.cat, cust: w.cust, audience: w.audience, q: `What should I bring to ${w.cust}?` }); go("search"); }
-  if (a === "attach-buyer") { WORKSTREAMS.find(x => x.id === id).buyer = "Jordan Blake · category buyer"; render(); toast("Buyer attached"); }
-  if (a === "run-tool") runTool(WORKSTREAMS.find(x => x.id === id), el.dataset.tool);
+  if (a === "open-proj-brief") { state.bf = { q: "", cat: p.cat, cust: p.cust }; state.briefKey = `${p.cat}|${p.cust}`; go("briefings"); }
+  if (a === "proj-search") { Object.assign(state.ask, { cat: p.cat, cust: p.cust, audience: p.audience, q: `What should I bring to ${p.cust}?` }); go("search"); }
+  if (a === "attach-buyer") { p.buyer = "Jordan Blake · category buyer"; render(); toast("Buyer attached"); }
+  if (a === "go-review-facts") { state.f = { ...blankFilter(), cat: p.cat, cust: p.cust, status: "needs_review" }; go("facts"); }
+  // Chat actions
+  if (a === "say") userSays(p, el.dataset.text);
+  if (a === "launch") {
+    const T = { coach: `Run Selling Coach on my ${p.cust} deck`, story: `Build a storyline for ${p.cust}`, kb: `What do we know about ${p.cust}?` };
+    userSays(p, T[el.dataset.tool]);
+  }
+  if (a === "cs-deck") runCoach(p, el.dataset.deck);
+  if (a === "st-pick") pickOpp(p, +el.dataset.i);
+  if (a === "st-approve") { lockOld(p); if (p.storyRun) { p.storyRun.status = "Approved"; } push(p, { who: "me", text: "Approve it." }); botReply(p, m => { m.html = `<p>Storyline approved and saved to <b>Recent runs</b>. You can reopen it from there, or ask me to review the deck once you've built the slides.</p>`; m.chips = [`Review my ${p.cust} deck`]; render(); }); }
+  if (a === "st-refine") { const inp = $("#chat-in"); if (inp) { inp.value = "Make the tension sharper on "; inp.focus(); } }
   if (a === "verify" || a === "reject") {
     const f = fact(id);
     if (a === "verify") f.status = "verified"; else FACTS = FACTS.filter(x => x !== f);
@@ -1205,7 +1365,8 @@ document.addEventListener("change", e => {
   const f = e.target.closest("[data-filter]");
   if (f) { state.f[f.dataset.filter] = f.value; render(); return; }
   const b = e.target.closest("[data-bfilter]");
-  if (b) { state.bf[b.dataset.bfilter] = b.value; render(); }
+  if (b) { state.bf[b.dataset.bfilter] = b.value; render(); return; }
+  if (e.target.matches("[data-pfilter]")) { state.pcust = e.target.value; render(); }
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") closeOverlay();
