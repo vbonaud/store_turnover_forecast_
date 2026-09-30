@@ -2,7 +2,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Public+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-/* Layout: app shell. Left rail (sections) + main workspace; detail opens in a right-hand drawer. Collapses to a top bar under 820px. */
+/* Layout: app shell. Left rail (Prepare · Knowledge) + main workspace; detail opens in a right-hand drawer. Collapses to a top bar under 820px. */
 :root {
   --bg: #f4f6f5;
   --surface: #ffffff;
@@ -49,7 +49,7 @@ h1, h2, h3 { font-family: var(--f-display); margin: 0; text-wrap: balance; lette
 p { margin: 0; }
 button, input, select, textarea { font: inherit; color: inherit; }
 button { cursor: pointer; }
-button:disabled { cursor: not-allowed; opacity: .5; }
+button:disabled, select:disabled { cursor: not-allowed; opacity: .5; }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2px; }
 .mono { font-family: var(--f-mono); font-size: 12px; }
@@ -74,7 +74,7 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2
 .nav button:hover { background: var(--surface); color: var(--fg); }
 .nav button[aria-current="true"] { background: var(--surface); color: var(--fg); box-shadow: inset 3px 0 0 var(--accent); }
 .nav .count { font: 500 11px var(--f-mono); color: var(--muted); }
-.nav .badge { font: 600 11px var(--f-mono); color: var(--bad); background: var(--bad-soft); border-radius: 999px; padding: 0 7px; }
+.badge { font: 600 11px var(--f-mono); color: var(--bad); background: var(--bad-soft); border-radius: 999px; padding: 0 7px; }
 .rail-foot { margin-top: auto; padding: 12px 8px 0; border-top: 1px solid var(--line); display: flex; gap: 10px; align-items: center; }
 .avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: grid; place-items: center; font-weight: 600; font-size: 12px; flex: none; }
 .rail-foot div { font-size: 12px; line-height: 1.3; }
@@ -82,6 +82,7 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2
 /* Main */
 .main { min-width: 0; overflow-y: auto; }
 .topbar { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; padding: 22px 28px 16px; border-bottom: 1px solid var(--line); background: var(--surface); }
+.topbar .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
 .topbar h1 { font-size: 22px; }
 .topbar p { margin-top: 4px; color: var(--muted); max-width: 66ch; }
 .actions { display: flex; gap: 8px; flex-wrap: wrap; }
@@ -97,10 +98,11 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2
 .card { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .pad { padding: 14px 16px; }
 .section-title { font-size: 16px; margin-bottom: 10px; }
+.section { margin-top: 24px; }
 
 /* Summary strip */
-.summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
-.summary > button { background: var(--surface); padding: 14px 16px; border: 0; text-align: left; }
+.summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.summary > button, .summary > div { background: var(--surface); padding: 14px 16px; border: 0; text-align: left; }
 .summary > button:hover { background: var(--bg); }
 .summary .num { font: 600 22px var(--f-display); font-variant-numeric: tabular-nums; }
 .summary .sub { font-size: 12px; color: var(--muted); }
@@ -119,13 +121,18 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2
 .gov span { padding: 1px 7px; display: inline-flex; gap: 4px; align-items: center; }
 .gov span + span { border-left: 1px solid var(--line); }
 .gov b { font-weight: 600; }
-.gov .t-governed b { color: var(--ok); } .gov .t-qualified b { color: var(--info); } .gov .t-declared b { color: var(--fg); }
+.gov .t-certified b { color: var(--ok); } .gov .t-reviewed b { color: var(--info); } .gov .t-stated b { color: var(--fg); }
 .gov .s-external b { color: var(--ok); } .gov .s-internal b { color: var(--info); } .gov .s-restricted b { color: var(--bad); }
 .gov .v-private b { color: var(--warn); }
 .facet { font: 500 11px var(--f-mono); color: var(--muted); word-break: break-all; }
 
 /* Home */
 .home { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.mix { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mix-row { display: grid; grid-template-columns: 100px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; }
+.mix-row .bar { height: 8px; border-radius: 4px; background: var(--sunken); overflow: hidden; }
+.mix-row .bar i { display: block; height: 100%; border-radius: 4px; }
+.mix-row .n { text-align: right; font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 12px; }
 .matrix-wrap { overflow-x: auto; }
 .matrix { border-collapse: separate; border-spacing: 4px; width: 100%; min-width: 520px; }
 .matrix th { font-size: 11px; font-weight: 600; color: var(--muted); text-align: left; padding: 4px 6px; }
@@ -137,7 +144,6 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2
 .cell.l1 { background: var(--accent-soft); }
 .cell.l2 { background: color-mix(in srgb, var(--accent) 20%, var(--surface)); }
 .cell.l3 { background: color-mix(in srgb, var(--accent) 32%, var(--surface)); }
-.legend { display: flex; flex-wrap: wrap; gap: 12px; font-size: 12px; color: var(--muted); margin-top: 8px; }
 .todo { display: grid; gap: 1px; background: var(--line); border-radius: 10px; overflow: hidden; border: 1px solid var(--line); }
 .todo button { background: var(--surface); border: 0; text-align: left; padding: 12px 14px; display: grid; gap: 4px; }
 .todo button:hover { background: var(--bg); }
@@ -150,6 +156,12 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2
 .seg button { border: 0; background: none; padding: 6px 10px; font-size: 12px; color: var(--muted); }
 .seg button[aria-pressed="true"] { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
 .check { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+.scope-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin-bottom: 16px; }
+.scope-filters .col { display: grid; gap: 6px; align-content: start; }
+.scope-filters .select { width: 100%; }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); margin-bottom: 16px; }
+.tabs button { border: 0; background: none; padding: 8px 12px; color: var(--muted); font-weight: 500; border-bottom: 2px solid transparent; margin-bottom: -1px; display: inline-flex; gap: 6px; align-items: center; }
+.tabs button[aria-selected="true"] { color: var(--fg); border-bottom-color: var(--accent); }
 
 /* Fact list */
 .fact { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; text-align: left; width: 100%; }
@@ -166,6 +178,7 @@ mark { background: var(--mark); color: inherit; border-radius: 2px; padding: 0 2
 .bitem { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 9px; padding: 11px 13px; display: grid; gap: 5px; }
 .bitem:hover { border-color: var(--muted); }
 .bitem[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.bitem.virtual { border-style: dashed; }
 .bitem strong { font: 600 14px var(--f-display); }
 .doc { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 22px 26px; display: grid; gap: 16px; }
 .doc h2 { font-size: 20px; }
@@ -177,7 +190,7 @@ button.anchor:hover { background: var(--accent); color: var(--accent-fg); }
 .meter { height: 6px; border-radius: 3px; background: var(--sunken); overflow: hidden; }
 .meter i { display: block; height: 100%; background: var(--warn); }
 
-/* Ask */
+/* Search */
 .ask { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; align-items: start; }
 .ask form { display: grid; gap: 12px; }
 .pipeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
@@ -186,12 +199,11 @@ button.anchor:hover { background: var(--accent); color: var(--accent-fg); }
 .answer { display: grid; gap: 10px; }
 .answer ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
 .ftable { width: 100%; border-collapse: collapse; min-width: 720px; }
-.ftable td:nth-child(3) { width: 1%; }
-.ftable .gov { flex-wrap: nowrap; }
 .ftable th, .ftable td { text-align: left; padding: 9px 12px; border-bottom: 1px solid var(--line); vertical-align: top; font-size: 13px; }
 .ftable th { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--sunken); }
 .ftable tr:last-child td { border-bottom: 0; }
 .ftable td.num { font-variant-numeric: tabular-nums; font-family: var(--f-mono); font-size: 12px; }
+.ftable .gov { flex-wrap: nowrap; }
 .table-wrap { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 10px; font-size: 12px; text-align: left; }
@@ -199,15 +211,16 @@ button.anchor:hover { background: var(--accent); color: var(--accent-fg); }
 .linkish { border: 0; background: none; padding: 0; text-align: left; color: inherit; }
 .linkish:hover { color: var(--accent); text-decoration: underline; }
 
-/* Sources */
+/* Sources & runs */
 .stbl { width: 100%; border-collapse: collapse; min-width: 900px; }
+.stbl.narrow { min-width: 620px; }
 .stbl th, .stbl td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
 .stbl th { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--sunken); }
-.stbl tbody tr { cursor: pointer; }
-.stbl tbody tr:hover td { background: var(--bg); }
+.stbl tbody tr[data-act] { cursor: pointer; }
+.stbl tbody tr[data-act]:hover td { background: var(--bg); }
 .stbl tr:last-child td { border-bottom: 0; }
 .stbl .name { font-weight: 600; word-break: break-word; }
-.stbl td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.stbl td.num, .stbl th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .stages { display: flex; gap: 2px; margin-top: 6px; }
 .stages i { width: 16px; height: 4px; border-radius: 2px; background: var(--line); }
 .stages i.done { background: var(--ok); }
@@ -222,6 +235,23 @@ button.anchor:hover { background: var(--accent); color: var(--accent-fg); }
 .versus { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .side-box { border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; display: grid; gap: 4px; background: var(--bg); }
 .side-box .big { font: 600 20px var(--f-display); font-variant-numeric: tabular-nums; }
+
+/* Workstreams */
+.ws-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 20px; }
+.ws { text-align: left; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; }
+.ws:hover { border-color: var(--muted); }
+.ws[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.ws strong { font: 600 15px var(--f-display); }
+.dots { display: inline-flex; gap: 3px; vertical-align: middle; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--line); }
+.dots i.on { background: var(--accent); }
+.pillars { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+.pillar { border: 1px solid var(--line); border-radius: 9px; padding: 10px 12px; display: grid; gap: 4px; background: var(--surface); align-content: start; }
+.pillar.missing { border-style: dashed; background: none; }
+.pillar strong { font: 600 13px var(--f-display); }
+.ws-detail { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; align-items: start; }
+.ws-detail > .stack { align-content: start; }
+.tool { display: grid; gap: 8px; border: 1px solid var(--line); border-radius: 9px; padding: 12px 14px; }
 
 /* Drawer & modal */
 .scrim { position: fixed; inset: 0; background: rgba(8, 16, 12, .42); z-index: 20; }
@@ -255,8 +285,9 @@ pre.excerpt { font: 12px/1.5 var(--f-mono); white-space: pre-wrap; margin: 0; ov
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 8px; font-weight: 500; z-index: 30; box-shadow: var(--shadow); max-width: calc(100% - 32px); }
 
 @media (max-width: 1100px) {
-  .home, .ask { grid-template-columns: minmax(0, 1fr); }
+  .home, .ask, .ws-detail { grid-template-columns: minmax(0, 1fr); }
   .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pillars { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 @media (max-width: 820px) {
   .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
@@ -265,8 +296,9 @@ pre.excerpt { font: 12px/1.5 var(--f-mono); white-space: pre-wrap; margin: 0; ov
   .nav button { width: auto; }
   .nav .label, .nav .count, .rail-foot, .brand small { display: none; }
   .topbar, .content { padding-inline: 16px; }
-  .briefings { grid-template-columns: minmax(0, 1fr); }
+  .briefings, .mix, .scope-filters, .ws-grid { grid-template-columns: minmax(0, 1fr); }
   .grid2, .grid3, .versus, .pipeline { grid-template-columns: minmax(0, 1fr); }
+  .pillars { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .doc { padding: 16px; }
   .kv { grid-template-columns: minmax(0, 1fr); }
 }
@@ -292,6 +324,7 @@ pre.excerpt { font: 12px/1.5 var(--f-mono); white-space: pre-wrap; margin: 0; ov
   <main class="main" id="main">
     <header class="topbar">
       <div>
+        <div class="eyebrow" id="view-eyebrow"></div>
         <h1 id="view-title"></h1>
         <p id="view-sub"></p>
       </div>
@@ -306,7 +339,9 @@ pre.excerpt { font: 12px/1.5 var(--f-mono); white-space: pre-wrap; margin: 0; ov
 
 <script>
 /* =====================================================================
-   Mock data. Sample only: fictional retailers, invented figures.
+   Mock data. Sample only: fictional retailers, people and figures.
+   Labels follow the app: reliability = certified / reviewed / stated;
+   status = verified / needs review / outdated / replaced.
    ===================================================================== */
 const ME = "Camille Martin";
 const TODAY = "30 Sep 2026";
@@ -314,62 +349,83 @@ const CATEGORIES = ["Fabric Care", "Hair Care", "Oral Care"];
 const CUSTOMERS = ["Northgate", "Brightmart", "Harbour & Co"];
 const TYPES = ["metric", "insight", "quote", "recommendation", "event"];
 const STAGES = ["Parse", "Quality gate", "Chunk", "Embed", "Mine facts", "Ground"];
+const REL = ["certified", "reviewed", "stated"];
+const STATUS_LABEL = { verified: "Verified", needs_review: "Needs review", outdated: "Outdated", replaced: "Replaced" };
+const STATUS_CLS = { verified: "ok", needs_review: "warn", outdated: "neutral", replaced: "neutral" };
 
 const SOURCES = [
-  { id: "S-01", name: "uk_retailer_share · certified view v3", kind: "Certified metric view", lane: "Data", cat: null, cust: null, status: "live", sens: "internal", trust: "governed", asOf: "07 Sep 2026", conf: "high", facts: 412, stage: 6 },
-  { id: "S-02", name: "Fabric Care shopper study 2026.pdf", kind: "PDF", lane: "Document", cat: "Fabric Care", cust: null, status: "live", sens: "internal", trust: "qualified", asOf: "12 Mar 2026", conf: "high", facts: 38, stage: 6 },
-  { id: "S-03", name: "Northgate JBP 2026-27.pptx", kind: "Deck", lane: "Document", cat: "Fabric Care", cust: "Northgate", status: "live", sens: "internal", trust: "qualified", asOf: "01 Jul 2026", conf: "high", facts: 24, stage: 6 },
-  { id: "S-04", name: "Northgate Sales Book", kind: "SharePoint Sales Book", lane: "Document", cat: "Fabric Care", cust: "Northgate", status: "live", sens: "internal", trust: "declared", asOf: "15 Aug 2026", conf: "medium", facts: 17, stage: 6 },
-  { id: "S-05", name: "Hair Care category strategy FY26.pdf", kind: "PDF", lane: "Document", cat: "Hair Care", cust: null, status: "live", sens: "restricted", trust: "qualified", asOf: "20 Jan 2026", conf: "high", facts: 29, stage: 6 },
-  { id: "S-11", name: "Brightmart Sales Book", kind: "SharePoint Sales Book", lane: "Document", cat: "Hair Care", cust: "Brightmart", status: "live", sens: "internal", trust: "declared", asOf: "02 Sep 2026", conf: "medium", facts: 9, stage: 6 },
-  { id: "S-10", name: "Harbour & Co Oral Care JBP 2026.pptx", kind: "Deck", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "live", sens: "internal", trust: "qualified", asOf: "10 Feb 2026", conf: "high", facts: 2, stage: 6 },
-  { id: "S-06", name: "Brightmart buyer meeting notes.docx", kind: "Word document", lane: "Document", cat: "Hair Care", cust: "Brightmart", status: "needs_context", sens: "internal", trust: "declared", asOf: "unknown", conf: "low", facts: 0, stage: 1, note: "Content date not found. Possible personal data." },
-  { id: "S-07", name: "Oral Care panel export 2019.xlsx", kind: "Spreadsheet", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "quarantined", sens: "internal", trust: "qualified", asOf: "31 Dec 2019", conf: "high", facts: 0, stage: 1, note: "Older than the 24-month intake limit for panel data." },
-  { id: "S-09", name: "Harbour & Co range review scan.pdf", kind: "PDF", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "failed", sens: "internal", trust: "qualified", asOf: "unknown", conf: "low", facts: 0, stage: 0, note: "The parser could not read the scanned pages." },
-  { id: "S-08", name: "Northgate JBP 2025-26.pptx", kind: "Deck", lane: "Document", cat: "Fabric Care", cust: "Northgate", status: "superseded", sens: "internal", trust: "qualified", asOf: "01 Jul 2025", conf: "high", facts: 21, stage: 6, supersededBy: "S-03" },
+  { id: "S-01", name: "uk_retailer_share · certified view v3", kind: "Certified metric view", lane: "Data", cat: null, cust: null, status: "live", sens: "internal", rel: "certified", asOf: "07 Sep 2026", conf: "high", facts: 412, stage: 6 },
+  { id: "S-02", name: "Fabric Care shopper study 2026.pdf", kind: "PDF", lane: "Document", cat: "Fabric Care", cust: null, status: "live", sens: "internal", rel: "reviewed", asOf: "12 Mar 2026", conf: "high", facts: 38, stage: 6 },
+  { id: "S-03", name: "Northgate JBP 2026-27.pptx", kind: "Deck", lane: "Document", cat: "Fabric Care", cust: "Northgate", status: "live", sens: "internal", rel: "reviewed", asOf: "01 Jul 2026", conf: "high", facts: 24, stage: 6 },
+  { id: "S-04", name: "Northgate Sales Book", kind: "SharePoint Sales Book", lane: "Document", cat: null, cust: "Northgate", status: "live", sens: "internal", rel: "stated", asOf: "15 Aug 2026", conf: "medium", facts: 17, stage: 6 },
+  { id: "S-05", name: "Hair Care category strategy FY26.pdf", kind: "PDF", lane: "Document", cat: "Hair Care", cust: null, status: "live", sens: "restricted", rel: "reviewed", asOf: "20 Jan 2026", conf: "high", facts: 29, stage: 6 },
+  { id: "S-11", name: "Brightmart Sales Book", kind: "SharePoint Sales Book", lane: "Document", cat: "Hair Care", cust: "Brightmart", status: "live", sens: "internal", rel: "stated", asOf: "02 Sep 2026", conf: "medium", facts: 9, stage: 6 },
+  { id: "S-10", name: "Harbour & Co Oral Care JBP 2026.pptx", kind: "Deck", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "live", sens: "internal", rel: "reviewed", asOf: "10 Feb 2026", conf: "high", facts: 2, stage: 6 },
+  { id: "S-06", name: "Brightmart buyer meeting notes.docx", kind: "Word document", lane: "Document", cat: "Hair Care", cust: "Brightmart", status: "needs_context", sens: "internal", rel: "stated", asOf: "unknown", conf: "low", facts: 0, stage: 1, note: "Content date not found. Possible personal data." },
+  { id: "S-07", name: "Oral Care panel export 2019.xlsx", kind: "Spreadsheet", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "quarantined", sens: "internal", rel: "reviewed", asOf: "31 Dec 2019", conf: "high", facts: 0, stage: 1, note: "Older than the 24-month intake limit for panel data." },
+  { id: "S-09", name: "Harbour & Co range review scan.pdf", kind: "PDF", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "failed", sens: "internal", rel: "reviewed", asOf: "unknown", conf: "low", facts: 0, stage: 0, note: "The parser could not read the scanned pages." },
+  { id: "S-08", name: "Northgate JBP 2025-26.pptx", kind: "Deck", lane: "Document", cat: "Fabric Care", cust: "Northgate", status: "superseded", sens: "internal", rel: "reviewed", asOf: "01 Jul 2025", conf: "high", facts: 21, stage: 6, supersededBy: "S-03" },
 ];
 
 let FACTS = [
-  { id: "F-1021", type: "metric", text: "Fabric Care value sales at Northgate grew 4.2% vs. a year ago.", fig: "4.2", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", trust: "governed", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", fresh: "fresh", src: "S-01", loc: "dataset row 18 422", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_m: 431.7, value_sales_growth_pct: 4.2 }, dedup: 3 },
-  { id: "F-1022", type: "metric", text: "Northgate holds 18.6% of UK Fabric Care value sales.", fig: "18.6", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", trust: "governed", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", fresh: "fresh", src: "S-01", loc: "dataset row 18 423", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", retailer_share_pct: 18.6 }, dedup: 2 },
-  { id: "F-1034", type: "insight", text: "Northgate shoppers switch to own label when promotion depth falls below 20%.", fig: "20%", cat: "Fabric Care", cust: "Northgate", trust: "qualified", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", fresh: "fresh", src: "S-02", loc: "page 14 [chunk 3]", excerpt: "…among Northgate laundry shoppers, switching to own label rises sharply once promotion depth falls below 20%, with capsule buyers the least affected…", dedup: 1 },
-  { id: "F-1040", type: "quote", text: "“We want fewer, bigger promotions that bring new shoppers to the aisle.” Northgate category buyer", cat: "Fabric Care", cust: "Northgate", trust: "declared", sens: "internal", owner: null, status: "candidate", asOf: "15 Aug 2026", fresh: "fresh", src: "S-04", loc: "Buyer notes [chunk 2]", excerpt: "Buyer review, 12 Aug: “We want fewer, bigger promotions that bring new shoppers to the aisle.” Asked for a promo calendar by end of month.", dedup: 1 },
-  { id: "F-1045", type: "recommendation", text: "Move the capsules end-cap to weeks 38–41 to line up with back-to-school.", fig: "38–41", cat: "Fabric Care", cust: "Northgate", trust: "qualified", sens: "internal", owner: null, status: "candidate", asOf: "01 Jul 2026", fresh: "fresh", src: "S-03", loc: "slide 9 [chunk 1]", excerpt: "Next steps: move the capsules end-cap to weeks 38–41 to line up with back-to-school traffic.", dedup: 1 },
-  { id: "F-1046", type: "recommendation", text: "Hold promotion depth at 25% or more on capsules to limit own-label switching.", fig: "25%", cat: "Fabric Care", cust: "Northgate", trust: "qualified", sens: "internal", owner: null, status: "verified", asOf: "01 Jul 2026", fresh: "fresh", src: "S-03", loc: "slide 11 [chunk 2]", excerpt: "Recommendation: hold promotion depth at 25% or more on capsules to limit own-label switching.", dedup: 1 },
-  { id: "F-1047", type: "metric", text: "Our Fabric Care margin target at Northgate is 31%.", fig: "31%", period: "FY 2026-27", cat: "Fabric Care", cust: "Northgate", trust: "qualified", sens: "restricted", owner: null, status: "verified", asOf: "01 Jul 2026", fresh: "fresh", src: "S-03", loc: "slide 14 [chunk 1]", excerpt: "FY26-27 targets: net sales +5%, margin 31%, distribution gains on capsules.", dedup: 1 },
-  { id: "F-1051", type: "event", text: "Northgate range review confirmed for 14 Nov 2026.", fig: "14 Nov 2026", cat: "Fabric Care", cust: "Northgate", trust: "declared", sens: "internal", owner: null, status: "verified", asOf: "22 Sep 2026", fresh: "fresh", src: null, loc: "Account memory · Northgate JBP workstream", excerpt: "Workstream signal: meeting with the category buyer set for 14 Nov 2026 (range review).", dedup: 1 },
-  { id: "F-1052", type: "insight", text: "The buyer is under pressure to cut laundry SKU count by about 10%.", fig: "10%", cat: "Fabric Care", cust: "Northgate", trust: "declared", sens: "internal", owner: ME, status: "candidate", asOf: "24 Sep 2026", fresh: "fresh", src: null, loc: "Added by you", excerpt: "Heard after the 22 Sep call: pressure to cut laundry SKUs by about 10%. Not confirmed in writing.", dedup: 1 },
-  { id: "F-1023", type: "metric", text: "The UK Fabric Care market is worth £2.31bn, up 3.1% vs. a year ago.", fig: "3.1", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, trust: "governed", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", fresh: "fresh", src: "S-01", loc: "dataset row 2 104", row: { market: "UK", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_bn: 2.31, value_sales_growth_pct: 3.1 }, dedup: 4 },
-  { id: "F-1024", type: "metric", text: "Capsules make up 38% of UK Fabric Care value sales.", fig: "38", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, trust: "governed", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", fresh: "fresh", src: "S-01", loc: "dataset row 2 117", row: { market: "UK", category: "Fabric Care", segment: "Capsules", period: "52w_2026-09-07", segment_share_pct: 38 }, dedup: 2 },
-  { id: "F-1035", type: "insight", text: "Capsule buyers are 1.6× more likely to buy the premium tier.", fig: "1.6×", cat: "Fabric Care", cust: null, trust: "qualified", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", fresh: "fresh", src: "S-02", loc: "page 22 [chunk 1]", excerpt: "Capsule buyers are 1.6× more likely than liquid buyers to trade up to the premium tier.", dedup: 1 },
-  { id: "F-1060", type: "metric", text: "Hair Care value share at Brightmart fell 0.8 pts vs. a year ago.", fig: "0.8", period: "12 w to 15 Jun 2026", cat: "Hair Care", cust: "Brightmart", trust: "governed", sens: "internal", owner: null, status: "verified", asOf: "15 Jun 2026", fresh: "soft", src: "S-01", loc: "dataset row 30 981", row: { retailer: "Brightmart", category: "Hair Care", period: "12w_2026-06-15", share_change_pts: -0.8 }, dedup: 1 },
-  { id: "F-1062", type: "metric", text: "Brightmart grew Hair Care value sales 2.1% vs. a year ago.", fig: "2.1", period: "52 w to 07 Sep 2026", cat: "Hair Care", cust: "Brightmart", trust: "governed", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", fresh: "fresh", src: "S-01", loc: "dataset row 31 002", row: { retailer: "Brightmart", category: "Hair Care", period: "52w_2026-09-07", value_sales_growth_pct: 2.1 }, dedup: 1 },
-  { id: "F-1061", type: "insight", text: "Brightmart plans to expand its premium hair aisle in 40 stores next spring.", fig: "40", cat: "Hair Care", cust: "Brightmart", trust: "declared", sens: "internal", owner: null, status: "verified", asOf: "02 Sep 2026", fresh: "fresh", src: "S-11", loc: "Account plan [chunk 4]", excerpt: "Buyer confirmed a premium hair aisle expansion in 40 stores from spring 2027.", dedup: 1 },
-  { id: "F-1065", type: "insight", text: "Scalp-care claims drive trial among 25–34 year-olds.", fig: "25–34", cat: "Hair Care", cust: null, trust: "qualified", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", fresh: "fresh", src: "S-05", loc: "page 8 [chunk 2]", excerpt: "Scalp-care claims are the strongest trial driver among 25–34 year-olds.", dedup: 1 },
-  { id: "F-1066", type: "metric", text: "The UK Hair Care market is worth £1.12bn, flat vs. a year ago.", fig: "1.12", period: "52 w to 07 Sep 2026", cat: "Hair Care", cust: null, trust: "governed", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", fresh: "fresh", src: "S-01", loc: "dataset row 2 390", row: { market: "UK", category: "Hair Care", period: "52w_2026-09-07", value_sales_gbp_bn: 1.12, value_sales_growth_pct: 0.0 }, dedup: 3 },
-  { id: "F-1067", type: "recommendation", text: "Lead the FY26 Hair Care story with scalp care in grocery.", cat: "Hair Care", cust: null, trust: "qualified", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", fresh: "fresh", src: "S-05", loc: "page 19 [chunk 1]", excerpt: "In grocery, lead the FY26 story with scalp care.", dedup: 1 },
-  { id: "F-1070", type: "metric", text: "Harbour & Co Oral Care value sales grew 6.4% vs. a year ago.", fig: "6.4", period: "12 w to 31 Mar 2026", cat: "Oral Care", cust: "Harbour & Co", trust: "governed", sens: "internal", owner: null, status: "verified", asOf: "31 Mar 2026", fresh: "hard", src: "S-01", loc: "dataset row 44 210", row: { retailer: "Harbour & Co", category: "Oral Care", period: "12w_2026-03-31", value_sales_growth_pct: 6.4 }, dedup: 1 },
-  { id: "F-1071", type: "recommendation", text: "Launch the whitening range in Harbour & Co's top 120 stores first.", fig: "120", cat: "Oral Care", cust: "Harbour & Co", trust: "qualified", sens: "internal", owner: null, status: "candidate", asOf: "10 Feb 2026", fresh: "fresh", src: "S-10", loc: "slide 6 [chunk 1]", excerpt: "Phase 1: launch whitening in the top 120 stores first, then roll out.", dedup: 1 },
-  { id: "F-1072", type: "insight", text: "Harbour & Co shoppers over-index on electric toothbrush refills.", cat: "Oral Care", cust: "Harbour & Co", trust: "qualified", sens: "internal", owner: null, status: "verified", asOf: "10 Feb 2026", fresh: "fresh", src: "S-10", loc: "slide 3 [chunk 2]", excerpt: "Harbour & Co shoppers over-index on electric toothbrush refills vs. the market.", dedup: 1 },
+  { id: "F-1021", type: "metric", text: "Fabric Care value sales at Northgate grew 4.2% vs. a year ago.", fig: "4.2", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 18 422", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_m: 431.7, value_sales_growth_pct: 4.2 }, dedup: 3 },
+  { id: "F-1022", type: "metric", text: "Northgate holds 18.6% of UK Fabric Care value sales.", fig: "18.6", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 18 423", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", retailer_share_pct: 18.6 }, dedup: 2 },
+  { id: "F-1034", type: "insight", text: "Northgate shoppers switch to own label when promotion depth falls below 20%.", fig: "20%", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", src: "S-02", loc: "page 14 [chunk 3]", excerpt: "…among Northgate laundry shoppers, switching to own label rises sharply once promotion depth falls below 20%, with capsule buyers the least affected…", dedup: 1 },
+  { id: "F-1040", type: "quote", text: "“We want fewer, bigger promotions that bring new shoppers to the aisle.” Northgate category buyer", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: "15 Aug 2026", src: "S-04", loc: "Buyer notes [chunk 2]", excerpt: "Buyer review, 12 Aug: “We want fewer, bigger promotions that bring new shoppers to the aisle.” Asked for a promo calendar by end of month.", dedup: 1 },
+  { id: "F-1045", type: "recommendation", text: "Move the capsules end-cap to weeks 38–41 to line up with back-to-school.", fig: "38–41", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "needs_review", asOf: "01 Jul 2026", src: "S-03", loc: "slide 9 [chunk 1]", excerpt: "Next steps: move the capsules end-cap to weeks 38–41 to line up with back-to-school traffic.", dedup: 1 },
+  { id: "F-1046", type: "recommendation", text: "Hold promotion depth at 25% or more on capsules to limit own-label switching.", fig: "25%", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 11 [chunk 2]", excerpt: "Recommendation: hold promotion depth at 25% or more on capsules to limit own-label switching.", dedup: 1 },
+  { id: "F-1047", type: "metric", text: "Our Fabric Care margin target at Northgate is 31%.", fig: "31%", period: "FY 2026-27", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 14 [chunk 1]", excerpt: "FY26-27 targets: net sales +5%, margin 31%, distribution gains on capsules.", dedup: 1 },
+  { id: "F-1051", type: "event", text: "Northgate range review confirmed for 14 Nov 2026.", fig: "14 Nov 2026", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "22 Sep 2026", src: null, loc: "Account memory · Northgate JBP workstream", excerpt: "Workstream signal: meeting with the category buyer set for 14 Nov 2026 (range review).", dedup: 1 },
+  { id: "F-1052", type: "insight", text: "The buyer is under pressure to cut laundry SKU count by about 10%.", fig: "10%", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: ME, status: "needs_review", asOf: "24 Sep 2026", src: null, loc: "Added by you", excerpt: "Heard after the 22 Sep call: pressure to cut laundry SKUs by about 10%. Not confirmed in writing.", dedup: 1 },
+  { id: "F-0990", type: "metric", text: "Northgate holds 17.9% of UK Fabric Care value sales.", fig: "17.9", period: "52 w to 01 Jun 2025", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "replaced", asOf: "01 Jul 2025", src: "S-08", loc: "slide 4 [chunk 1]", excerpt: "Northgate share of UK Fabric Care: 17.9% (52 w to 01 Jun 2025).", dedup: 1 },
+  { id: "F-1080", type: "insight", text: "Northgate is prioritising own-label growth across household in 2027.", cat: null, cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "15 Aug 2026", src: "S-04", loc: "Customer profile [chunk 1]", excerpt: "2027 priorities: grow own label across household, fewer promotions, more space for new ranges.", dedup: 1 },
+  { id: "F-1023", type: "metric", text: "The UK Fabric Care market is worth £2.31bn, up 3.1% vs. a year ago.", fig: "3.1", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 104", row: { market: "UK", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_bn: 2.31, value_sales_growth_pct: 3.1 }, dedup: 4 },
+  { id: "F-1024", type: "metric", text: "Capsules make up 38% of UK Fabric Care value sales.", fig: "38", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 117", row: { market: "UK", category: "Fabric Care", segment: "Capsules", period: "52w_2026-09-07", segment_share_pct: 38 }, dedup: 2 },
+  { id: "F-1035", type: "insight", text: "Capsule buyers are 1.6× more likely to buy the premium tier.", fig: "1.6×", cat: "Fabric Care", cust: null, rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", src: "S-02", loc: "page 22 [chunk 1]", excerpt: "Capsule buyers are 1.6× more likely than liquid buyers to trade up to the premium tier.", dedup: 1 },
+  { id: "F-1060", type: "metric", text: "Hair Care value share at Brightmart fell 0.8 pts vs. a year ago.", fig: "0.8", period: "12 w to 15 Jun 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "15 Jun 2026", expires: "12 Oct 2026", src: "S-01", loc: "dataset row 30 981", row: { retailer: "Brightmart", category: "Hair Care", period: "12w_2026-06-15", share_change_pts: -0.8 }, dedup: 1 },
+  { id: "F-1062", type: "metric", text: "Brightmart grew Hair Care value sales 2.1% vs. a year ago.", fig: "2.1", period: "52 w to 07 Sep 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 31 002", row: { retailer: "Brightmart", category: "Hair Care", period: "52w_2026-09-07", value_sales_growth_pct: 2.1 }, dedup: 1 },
+  { id: "F-1061", type: "insight", text: "Brightmart plans to expand its premium hair aisle in 40 stores next spring.", fig: "40", cat: "Hair Care", cust: "Brightmart", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "02 Sep 2026", src: "S-11", loc: "Account plan [chunk 4]", excerpt: "Buyer confirmed a premium hair aisle expansion in 40 stores from spring 2027.", dedup: 1 },
+  { id: "F-1065", type: "insight", text: "Scalp-care claims drive trial among 25–34 year-olds.", fig: "25–34", cat: "Hair Care", cust: null, rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", src: "S-05", loc: "page 8 [chunk 2]", excerpt: "Scalp-care claims are the strongest trial driver among 25–34 year-olds.", dedup: 1 },
+  { id: "F-1066", type: "metric", text: "The UK Hair Care market is worth £1.12bn, flat vs. a year ago.", fig: "1.12", period: "52 w to 07 Sep 2026", cat: "Hair Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 390", row: { market: "UK", category: "Hair Care", period: "52w_2026-09-07", value_sales_gbp_bn: 1.12, value_sales_growth_pct: 0.0 }, dedup: 3 },
+  { id: "F-1067", type: "recommendation", text: "Lead the FY26 Hair Care story with scalp care in grocery.", cat: "Hair Care", cust: null, rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", src: "S-05", loc: "page 19 [chunk 1]", excerpt: "In grocery, lead the FY26 story with scalp care.", dedup: 1 },
+  { id: "F-1070", type: "metric", text: "Harbour & Co Oral Care value sales grew 6.4% vs. a year ago.", fig: "6.4", period: "12 w to 31 Mar 2026", cat: "Oral Care", cust: "Harbour & Co", rel: "certified", sens: "internal", owner: null, status: "outdated", asOf: "31 Mar 2026", src: "S-01", loc: "dataset row 44 210", row: { retailer: "Harbour & Co", category: "Oral Care", period: "12w_2026-03-31", value_sales_growth_pct: 6.4 }, dedup: 1 },
+  { id: "F-1071", type: "recommendation", text: "Launch the whitening range in Harbour & Co's top 120 stores first.", fig: "120", cat: "Oral Care", cust: "Harbour & Co", rel: "reviewed", sens: "internal", owner: null, status: "needs_review", asOf: "10 Feb 2026", src: "S-10", loc: "slide 6 [chunk 1]", excerpt: "Phase 1: launch whitening in the top 120 stores first, then roll out.", dedup: 1 },
+  { id: "F-1072", type: "insight", text: "Harbour & Co shoppers over-index on electric toothbrush refills.", cat: "Oral Care", cust: "Harbour & Co", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "10 Feb 2026", src: "S-10", loc: "slide 3 [chunk 2]", excerpt: "Harbour & Co shoppers over-index on electric toothbrush refills vs. the market.", dedup: 1 },
 ];
 
 let BRIEFINGS = [
   { cat: "Fabric Care", cust: "Northgate", status: "current", generated: "28 Sep 2026" },
   { cat: "Fabric Care", cust: null, status: "current", generated: "08 Sep 2026" },
-  { cat: "Hair Care", cust: "Brightmart", status: "stale", generated: "02 Sep 2026", why: "A fact passed its soft freshness window and a new fact arrived." },
+  { cat: "Hair Care", cust: "Brightmart", status: "outdated", generated: "02 Sep 2026", why: "A new fact arrived for this scope after it was generated." },
   { cat: "Hair Care", cust: null, status: "current", generated: "09 Sep 2026" },
   { cat: "Oral Care", cust: "Harbour & Co", status: "current", generated: "12 Feb 2026" },
 ];
 
 let REVIEW = [
-  { id: "R-1", kind: "Numeric contradiction", cls: "bad", title: "Northgate share of UK Fabric Care", body: "Two sources give different figures for the same scope, metric and period. The gap of 0.8 pts is over the 0.3 pt tolerance.",
-    a: { big: "18.6%", src: "uk_retailer_share · certified view v3", loc: "dataset row 18 423", trust: "governed", asOf: "07 Sep 2026" },
-    b: { big: "19.4%", src: "Northgate JBP 2026-27.pptx", loc: "slide 4", trust: "qualified", asOf: "01 Jul 2026" },
+  { id: "R-1", kind: "Numeric contradiction", cls: "bad", conflict: true, title: "Northgate share of UK Fabric Care", body: "Two sources give different figures for the same scope, metric and period. The gap of 0.8 pts is over the 0.3 pt tolerance.",
+    a: { big: "18.6%", src: "uk_retailer_share · certified view v3", loc: "dataset row 18 423", rel: "certified", asOf: "07 Sep 2026" },
+    b: { big: "19.4%", src: "Northgate JBP 2026-27.pptx", loc: "slide 4", rel: "reviewed", asOf: "01 Jul 2026" },
     actions: [["Keep 18.6%", "primary"], ["Keep 19.4%", ""], ["Different periods, keep both", ""]] },
   { id: "R-2", kind: "Stale at intake", cls: "warn", title: "Oral Care panel export 2019.xlsx", body: "Content date 31 Dec 2019 is older than the 24-month intake limit for panel data. It was quarantined, not dropped.", actions: [["Mark canonical", ""], ["Reject source", "danger"]] },
   { id: "R-3", kind: "External verbatim quote", cls: "info", title: "Northgate category buyer quote", body: "“We want fewer, bigger promotions that bring new shoppers to the aisle.” A buyer's verbatim quote needs a person to approve it before a tool can quote it.", actions: [["Approve as quotable", "primary"], ["Keep as background only", ""]], fact: "F-1040" },
   { id: "R-4", kind: "Personal data", cls: "bad", title: "Brightmart buyer meeting notes.docx", body: "The quality gate found what looks like a personal mobile number on page 2. The source is paused until someone decides.", actions: [["Redact and continue", "primary"], ["Reject source", "danger"]] },
-  { id: "R-5", kind: "Supersession overlap", cls: "neutral", title: "Northgate JBP 2025-26 → 2026-27", body: "The newer deck has equal trust and covers the same scope and topics. Confirm that its facts replace the older ones. The old facts are kept for audit.", actions: [["Confirm supersession", "primary"], ["Keep both", ""]] },
+  { id: "R-5", kind: "Supersession overlap", cls: "neutral", title: "Northgate JBP 2025-26 → 2026-27", body: "The newer deck has equal reliability and covers the same scope and topics. Confirm that its facts replace the older ones. The old facts are kept for audit.", actions: [["Confirm replacement", "primary"], ["Keep both", ""]] },
+];
+
+let RUNS = [
+  { status: "Needs attention", source: "sharepoint://sales-books (3 books)", started: "29 Sep 2026 09:26", indexed: 42, failed: 9 },
+  { status: "Needs attention", source: "upload · Brightmart buyer meeting notes.docx", started: "21 Sep 2026 13:42", indexed: 2, failed: 1 },
+  { status: "Complete", source: "upload · Northgate JBP 2026-27.pptx", started: "21 Sep 2026 12:06", indexed: 2, failed: 0 },
+  { status: "Complete", source: "metric projection · uk_retailer_share v3", started: "21 Sep 2026 11:03", indexed: 3, failed: 0 },
+  { status: "Complete", source: "salesbook://selection", started: "21 Sep 2026 10:58", indexed: 3, failed: 0 },
+];
+
+const WORKSTREAMS = [
+  { id: "W-1", name: "Northgate Fabric Care JBP 2026-27", cat: "Fabric Care", cust: "Northgate", audience: "external", buyer: "Alex Morgan · category buyer",
+    runs: [{ tool: "Selling Coach", date: "24 Sep 2026", status: "Completed", note: "JBP deck v3 · 4 of 5 PSF steps grounded", rating: "4/5" }, { tool: "Storyline Generator", date: "18 Sep 2026", status: "Approved", note: "Opportunity: capsules at back-to-school", rating: "5/5" }] },
+  { id: "W-2", name: "Brightmart Hair Care quarterly review", cat: "Hair Care", cust: "Brightmart", audience: "internal", buyer: null,
+    runs: [{ tool: "Selling Coach", date: "03 Sep 2026", status: "Completed", note: "Q3 review deck · 3 of 5 PSF steps grounded", rating: "3/5" }] },
+  { id: "W-3", name: "Harbour & Co whitening launch", cat: "Oral Care", cust: "Harbour & Co", audience: "external", buyer: "Priya Shah · buyer", runs: [] },
 ];
 
 /* =====================================================================
@@ -379,112 +435,134 @@ const $ = (s, el = document) => el.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const src = id => SOURCES.find(s => s.id === id);
 const fact = id => FACTS.find(f => f.id === id);
-const scopeLabel = (cat, cust) => [cat || "All categories", "UK", cust].filter(Boolean).join(" · ");
-const facetKey = (cat, cust) => [cat && `category:${cat.toLowerCase()}`, "country:uk", cust && `customer:${cust.toLowerCase()}`].filter(Boolean).sort().join("|");
-const sameScope = (a, cat, cust) => a.cat === cat && (a.cust || null) === (cust || null);
+const scopeLabel = (cat, cust) => [cat || (cust ? null : "All categories"), "UK", cust].filter(Boolean).join(" · ");
+const facetKey = (cat, cust) => [cat && `category:${cat.toLowerCase()}`, "market:uk", cust && `customer:${cust.toLowerCase()}`].filter(Boolean).sort().join("|");
+const sameScope = (a, cat, cust) => (a.cat || null) === (cat || null) && (a.cust || null) === (cust || null);
+const bkey = b => `${b.cat || ""}|${b.cust || ""}`;
 const hash = s => { let h = 5381; for (const c of s) h = ((h * 33) ^ c.charCodeAt(0)) >>> 0; return h.toString(16).padStart(8, "0"); };
+const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 
 function isLive(f) {
   const s = f.src && src(f.src);
-  return f.status !== "rejected" && f.fresh !== "hard" && (!s || s.status === "live");
+  return (f.status === "verified" || f.status === "needs_review") && (!s || s.status === "live");
 }
 function visibleToMe(f) { return !f.owner || f.owner === ME; }
 function quotable(f, audience) {
-  if (!isLive(f)) return [false, "Not retrievable: expired, rejected or its source is no longer live."];
-  if (f.status !== "verified") return [false, "Candidate. A reviewer must verify it first."];
-  if (f.fresh !== "fresh") return [false, "Past its soft freshness window."];
-  if (audience === "customer" && f.sens !== "external") return [false, `Sensitivity is ${f.sens}: it can inform reasoning but is kept out of customer-facing output.`];
-  return [true, audience === "customer" ? "Verified, fresh and cleared for customers." : "Verified and fresh."];
+  if (!isLive(f)) return [false, "Not retrievable: outdated, replaced, or its source is no longer live."];
+  if (f.status !== "verified") return [false, "Needs review. A curator must verify it first."];
+  if (audience === "external" && f.sens !== "external") return [false, `Sensitivity is ${f.sens}: it can inform reasoning but is kept out of customer-facing output.`];
+  return [true, audience === "external" ? "Verified and cleared for customers." : "Verified."];
 }
 function briefingFacts(b) { return FACTS.filter(f => sameScope(f, b.cat, b.cust) && isLive(f) && !f.owner); }
-function floorOK(b) { const fs = briefingFacts(b); return fs.length >= 3 && fs.some(f => f.type === "metric" && f.trust === "governed"); }
-function briefingState(b) { return floorOK(b) ? b.status : "below"; }
-const B_PILL = { current: ["ok", "Current"], stale: ["warn", "Stale"], below: ["neutral", "Below evidence floor"] };
-const S_PILL = { live: ["ok", "Live"], needs_context: ["warn", "Needs context"], quarantined: ["warn", "Quarantined"], failed: ["bad", "Failed"], superseded: ["neutral", "Superseded"], retired: ["neutral", "Retired"], processing: ["info", "Processing"] };
-const FRESH = { fresh: null, soft: ["warn", "Stale · soft TTL"], hard: ["bad", "Expired · not retrievable"] };
+function floorOK(b) { const fs = briefingFacts(b); return fs.length >= 3 && fs.some(f => f.type === "metric" && f.rel === "certified"); }
+function briefingState(b) { return b.status === "none" ? (floorOK(b) ? "none" : "below") : floorOK(b) ? b.status : "below"; }
+const B_PILL = { current: ["ok", "Current"], outdated: ["warn", "Outdated"], below: ["neutral", "Below evidence floor"], none: ["info", "Ready to generate"] };
+const S_PILL = { live: ["ok", "Live"], needs_context: ["warn", "Needs context"], quarantined: ["warn", "Quarantined"], failed: ["bad", "Failed"], superseded: ["neutral", "Replaced"], retired: ["neutral", "Retired"], processing: ["info", "Processing"] };
 
 function gov(f) {
   const v = f.owner ? `<span class="v-private">Visibility <b>Private · you</b></span>` : `<span>Visibility <b>Shared</b></span>`;
-  return `<span class="gov" title="Trust · Sensitivity · Visibility"><span class="t-${f.trust}">Trust <b>${f.trust}</b></span><span class="s-${f.sens}">Sensitivity <b>${f.sens}</b></span>${v}</span>`;
+  return `<span class="gov" title="Reliability · Sensitivity · Visibility"><span class="t-${f.rel}">Reliability <b>${f.rel}</b></span><span class="s-${f.sens}">Sensitivity <b>${f.sens}</b></span>${v}</span>`;
 }
-function statusPill(f) { return f.status === "verified" ? `<span class="pill ok">Verified</span>` : f.status === "rejected" ? `<span class="pill neutral">Rejected</span>` : `<span class="pill warn">Candidate</span>`; }
-function freshPill(f) { const p = FRESH[f.fresh]; return p ? `<span class="pill ${p[0]}">${p[1]}</span>` : ""; }
+const statusPill = f => `<span class="pill ${STATUS_CLS[f.status]}">${STATUS_LABEL[f.status]}</span>`;
+const expPill = f => f.expires && isLive(f) ? `<span class="pill warn">Expires ${f.expires}</span>` : "";
 function highlight(text, fig) {
   const t = esc(text);
   if (!fig) return t;
   const e = esc(fig);
   return t.includes(e) ? t.replace(e, `<mark>${e}</mark>`) : t;
 }
-function markStale(cat, cust, why) {
-  BRIEFINGS.filter(b => sameScope(b, cat, cust)).forEach(b => { b.status = "stale"; b.why = why; });
+function markOutdated(cat, cust, why) {
+  BRIEFINGS.filter(b => sameScope(b, cat, cust)).forEach(b => { b.status = "outdated"; b.why = why; });
 }
-
 function toast(msg) {
   const t = $("#toast");
   t.textContent = msg; t.hidden = false;
-  clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2600);
+  clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2800);
+}
+
+/* Workstream context pillars. Derived from facts, never set by hand; Buyer is the exception. */
+function pillars(ws) {
+  const live = FACTS.filter(f => isLive(f) && !f.owner);
+  return [
+    { name: "Category", desc: "Category strategy and shopper context", n: live.filter(f => f.cat === ws.cat && !f.cust).length },
+    { name: "Customer", desc: "The retailer's profile and priorities", n: live.filter(f => !f.cat && f.cust === ws.cust).length },
+    { name: "Account", desc: "This customer × category", n: live.filter(f => f.cat === ws.cat && f.cust === ws.cust).length },
+    { name: "Trade panel", desc: "Certified market-share metrics", n: live.filter(f => f.cat === ws.cat && (!f.cust || f.cust === ws.cust) && f.type === "metric" && f.rel === "certified").length },
+    { name: "Buyer", desc: "Buyer attached to the workstream", n: ws.buyer ? 1 : 0, text: ws.buyer },
+  ];
 }
 
 /* =====================================================================
    State & shell
    ===================================================================== */
-const blankFilter = () => ({ q: "", cat: "", cust: "", type: "", status: "", expired: false });
+const blankFilter = () => ({ q: "", cat: "", cust: "", type: "", status: "", rel: "", hidden: false });
 const state = {
   view: "home",
   f: blankFilter(),
-  brief: 0,
+  bf: { q: "", cat: "", cust: "" },
+  briefKey: "Fabric Care|Northgate",
+  srcTab: "sources",
+  ws: "W-1",
   ask: { cat: "Fabric Care", cust: "Northgate", audience: "internal", q: "What should I lead with in the Northgate range review?" },
   todo: [],
 };
 
 const NAV = [
+  { group: "Prepare" },
+  { id: "workstreams", label: "Workstreams", count: () => WORKSTREAMS.length },
   { group: "Knowledge" },
-  { id: "home", label: "Overview" },
-  { id: "facts", label: "Facts", count: () => FACTS.filter(f => isLive(f) && visibleToMe(f)).length },
+  { id: "home", label: "Knowledge Bank" },
+  { id: "search", label: "Search" },
   { id: "briefings", label: "Briefings", count: () => BRIEFINGS.length },
-  { id: "ask", label: "Ask the bank" },
-  { group: "Curation" },
-  { id: "sources", label: "Sources", count: () => SOURCES.length },
-  { id: "review", label: "Review queue", badge: () => REVIEW.length },
+  { id: "facts", label: "Facts", count: () => FACTS.filter(f => isLive(f) && visibleToMe(f)).length },
+  { id: "sources", label: "Manage sources", badge: () => REVIEW.length },
 ];
 
 const VIEWS = {
-  home: { title: "Overview", sub: "What the Knowledge Bank knows for your accounts, and what needs your attention.", actions: `<button class="btn" data-act="add-source">Add source</button><button class="btn primary" data-act="add-fact">Add a fact</button>` },
-  facts: { title: "Facts", sub: "Each fact is one typed, cited assertion with a scope, three governance labels and a content date.", actions: `<button class="btn primary" data-act="add-fact">Add a fact</button>` },
-  briefings: { title: "Briefings", sub: "One generated reading page per scope, built only from that scope's facts. Every sentence cites its evidence.", actions: "" },
-  ask: { title: "Ask the bank", sub: "See which facts an agent would receive for a scope and audience, and how well that scope is covered.", actions: "" },
-  sources: { title: "Sources", sub: "Documents and certified data feeding the bank. Open a source to see which facts and briefings depend on it.", actions: `<button class="btn primary" data-act="add-source">Add source</button>` },
-  review: { title: "Review queue", sub: "Only the cases that need a person: contradictions, stale intake, verbatim quotes, personal data and overlaps.", actions: "" },
+  workstreams: { eyebrow: "Prepare", title: "Workstreams", sub: "One home per account plan. A workstream pulls its context from the Knowledge Bank and runs the sales tools on it.", actions: "" },
+  home: { eyebrow: "Grounded customer evidence", title: "Knowledge Bank", sub: "Find and maintain the cited evidence that grounds every customer workstream.", actions: `<button class="btn" data-view="search">Search evidence</button><button class="btn primary" data-act="add-fact">Add a fact</button>` },
+  search: { eyebrow: "Knowledge Bank", title: "Search", sub: "See which facts a tool would receive for a scope and audience, and how well that scope is covered.", actions: "" },
+  briefings: { eyebrow: "Knowledge Bank", title: "Briefings", sub: "Read or generate a concise, cited summary for a customer, market or category.", actions: "" },
+  facts: { eyebrow: "Knowledge Bank", title: "Facts", sub: "Inspect the atomic facts, their provenance, reliability and freshness behind each answer.", actions: `<button class="btn primary" data-act="add-fact">Add a fact</button>` },
+  sources: { eyebrow: "Knowledge Bank", title: "Manage sources", sub: "Add source material, resolve exceptions, and control what the sales tools may cite.", actions: `<button class="btn primary" data-act="add-source">Add source</button>` },
 };
 
 function renderNav() {
   $("#nav").innerHTML = NAV.map(n => n.group
     ? `<div class="label" style="margin-top:8px">${n.group}</div>`
-    : `<button data-view="${n.id}" aria-current="${n.id === state.view}">${n.label}${n.badge ? (n.badge() ? `<span class="badge">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
+    : `<button data-view="${n.id}" aria-current="${n.id === state.view}">${n.label}${n.badge ? (n.badge() ? `<span class="badge" title="Review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
 }
-
 function render() {
   const v = VIEWS[state.view];
+  $("#view-eyebrow").textContent = v.eyebrow;
   $("#view-title").textContent = v.title;
   $("#view-sub").textContent = v.sub;
   $("#view-actions").innerHTML = v.actions;
   renderNav();
-  $("#view").innerHTML = `<span class="mock-note">Mock-up · sample data with fictional retailers · nothing is saved</span>` + RENDER[state.view]();
+  $("#view").innerHTML = `<span class="mock-note">Mock-up · sample data with fictional retailers and people · nothing is saved</span>` + RENDER[state.view]();
   AFTER[state.view]?.();
 }
 function go(view) { state.view = view; render(); $("#main").scrollTop = 0; }
 
-/* =====================================================================
-   Views
-   ===================================================================== */
 const RENDER = {};
 const AFTER = {};
 
+/* =====================================================================
+   Knowledge Bank home
+   ===================================================================== */
 RENDER.home = () => {
-  const live = FACTS.filter(f => isLive(f) && visibleToMe(f));
-  const verified = live.filter(f => f.status === "verified").length;
+  const all = FACTS.filter(visibleToMe);
+  const live = all.filter(isLive);
   const bStates = BRIEFINGS.map(briefingState);
-  const cand = live.filter(f => f.status === "candidate");
+  const liveSources = SOURCES.filter(s => s.status === "live").length;
+  const needs = live.filter(f => f.status === "needs_review");
+  const expiring = live.filter(f => f.expires);
+  const conflicts = REVIEW.filter(r => r.conflict).length;
+
+  const mixRow = (label, cls, n, total, color) => `<div class="mix-row"><span class="pill ${cls}">${label}</span><span class="bar"><i style="width:${total ? n / total * 100 : 0}%;background:${color}"></i></span><span class="n">${n}</span></div>`;
+  const relMix = [["Certified", "ok", "certified", "var(--ok)"], ["Reviewed", "info", "reviewed", "var(--info)"], ["Stated", "neutral", "stated", "var(--muted)"]]
+    .map(([l, c, k, col]) => mixRow(l, c, live.filter(f => f.rel === k).length, live.length, col)).join("");
+  const statusMix = Object.keys(STATUS_LABEL).map(k => mixRow(STATUS_LABEL[k], STATUS_CLS[k], all.filter(f => f.status === k).length, all.length, `var(--${STATUS_CLS[k] === "neutral" ? "muted" : STATUS_CLS[k]})`)).join("");
 
   const cols = [null, ...CUSTOMERS];
   const matrix = `<table class="matrix"><thead><tr><th></th>${cols.map(c => `<th>${c ? esc(c) : "Category level"}</th>`).join("")}</tr></thead><tbody>
@@ -499,36 +577,54 @@ RENDER.home = () => {
   </tbody></table>`;
 
   state.todo = [
-    ...REVIEW.slice(0, 3).map(r => ({ go: () => go("review"), title: r.title, meta: `<span class="pill ${r.cls}">${r.kind}</span>` })),
-    ...BRIEFINGS.filter(b => briefingState(b) === "stale").map(b => ({ go: () => { state.brief = BRIEFINGS.indexOf(b); go("briefings"); }, title: `Briefing out of date: ${scopeLabel(b.cat, b.cust)}`, meta: `<span class="pill warn">Stale</span>` })),
-    ...(cand.length ? [{ go: () => { state.f = { ...blankFilter(), status: "candidate" }; go("facts"); }, title: `${cand.length} candidate facts waiting to be verified`, meta: `<span class="pill warn">Candidate</span>` }] : []),
+    ...REVIEW.slice(0, 3).map(r => ({ go: () => { state.srcTab = "review"; go("sources"); }, title: r.title, meta: `<span class="pill ${r.cls}">${r.kind}</span>` })),
+    ...BRIEFINGS.filter(b => briefingState(b) === "outdated").map(b => ({ go: () => { state.briefKey = bkey(b); go("briefings"); }, title: `Briefing out of date: ${scopeLabel(b.cat, b.cust)}`, meta: `<span class="pill warn">Outdated</span>` })),
+    ...(needs.length ? [{ go: () => { state.f = { ...blankFilter(), status: "needs_review" }; go("facts"); }, title: `${plural(needs.length, "fact needs", "facts need")} review before tools can quote ${needs.length === 1 ? "it" : "them"}`, meta: `<span class="pill warn">Needs review</span>` }] : []),
   ];
 
+  const runs = RUNS.slice(0, 5).map(r => `<tr><td><span class="pill ${r.status === "Complete" ? "ok" : r.status === "Running" ? "info" : "warn"}">${r.status}</span></td><td class="mono">${esc(r.source)}</td><td class="small">${r.started}</td><td class="num">${r.indexed}</td><td class="num">${r.failed}</td></tr>`).join("");
+
   return `
-    <section class="summary" aria-label="Summary">
-      <button data-view="facts"><div class="label">Live facts</div><div class="num">${live.length}</div><div class="sub">${live.filter(f => f.owner).length} private to you</div></button>
-      <button data-act="facts-status" data-status="verified"><div class="label">Verified</div><div class="num">${verified}</div><div class="sub">${Math.round(verified / live.length * 100)}% of live facts</div></button>
-      <button data-view="briefings"><div class="label">Briefings current</div><div class="num">${bStates.filter(s => s === "current").length}/${BRIEFINGS.length}</div><div class="sub">${bStates.filter(s => s === "stale").length} stale · ${bStates.filter(s => s === "below").length} below floor</div></button>
-      <button data-view="review"><div class="label">Review queue</div><div class="num">${REVIEW.length}</div><div class="sub">cases that need a person</div></button>
+    <section class="summary" aria-label="Corpus health">
+      <button data-view="facts"><div class="label">Facts</div><div class="num">${live.length}</div><div class="sub">live · ${plural(live.filter(f => f.owner).length, "is", "are")} private to you</div></button>
+      <button data-view="briefings"><div class="label">Briefings</div><div class="num">${BRIEFINGS.length}</div><div class="sub">${bStates.filter(s => s === "current").length} current · ${bStates.filter(s => s === "outdated").length} outdated · ${bStates.filter(s => s === "below").length} below floor</div></button>
+      <button data-view="sources"><div class="label">Sources indexed</div><div class="num">${liveSources}</div><div class="sub">of ${SOURCES.length} added</div></button>
+      <button data-act="attention"><div class="label">Needs attention</div><div class="num">${conflicts + expiring.length}</div><div class="sub">${plural(conflicts, "open conflict", "open conflicts")} · ${expiring.length} expiring ≤ 30 d</div></button>
     </section>
-    <div class="home">
+
+    <div class="home section">
       <section class="card pad">
-        <div class="spread" style="margin-bottom:4px"><h2 class="section-title" style="margin:0">Coverage by scope</h2><span class="facet">country:uk · live facts you can see</span></div>
-        <p class="small muted" style="margin-bottom:8px">Rows are categories, columns are customers. Open a cell to see its facts.</p>
+        <div class="spread" style="margin-bottom:4px"><h2 class="section-title" style="margin:0">Coverage by scope</h2><span class="facet">market:uk · live facts</span></div>
+        <p class="small muted" style="margin-bottom:8px">Rows are categories, columns are customers. Open a cell to see its facts. A briefing needs at least 3 live facts, including 1 certified metric.</p>
         <div class="matrix-wrap">${matrix}</div>
-        <div class="legend"><span>A briefing needs at least 3 live facts, including 1 governed metric.</span></div>
       </section>
       <section>
         <h2 class="section-title">Needs your attention</h2>
         ${state.todo.length ? `<div class="todo">${state.todo.map((t, k) => `<button data-act="todo" data-k="${k}"><span class="row">${t.meta}</span><span>${esc(t.title)}</span></button>`).join("")}</div>` : `<div class="empty-state">Nothing waiting on you.</div>`}
       </section>
-    </div>`;
+    </div>
+
+    <section class="section">
+      <h2 class="section-title">Governance mix</h2>
+      <div class="mix">
+        <div class="card pad stack"><div class="label">Reliability · live facts</div>${relMix}</div>
+        <div class="card pad stack"><div class="label">Fact status · all facts</div>${statusMix}</div>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2 class="section-title">Recent ingestion runs</h2>
+      <div class="table-wrap"><table class="stbl narrow"><thead><tr><th>Status</th><th>Source</th><th>Started</th><th class="num">Indexed</th><th class="num">Failed</th></tr></thead><tbody>${runs}</tbody></table></div>
+    </section>`;
 };
 
+/* =====================================================================
+   Facts
+   ===================================================================== */
 function factCard(f) {
   const s = f.src ? src(f.src) : null;
   return `<button class="fact ${isLive(f) ? "" : "dim"}" data-act="open-fact" data-id="${f.id}">
-    <span class="row"><span class="type">${f.type}</span>${statusPill(f)}${freshPill(f)}${s && s.status !== "live" ? `<span class="pill neutral">Source ${s.status}</span>` : ""}${f.dedup > 1 ? `<span class="tag" title="Restatements collapse to one fact">Stated in ${f.dedup} sources</span>` : ""}</span>
+    <span class="row"><span class="type">${f.type}</span>${statusPill(f)}${expPill(f)}${f.dedup > 1 ? `<span class="tag" title="Restatements collapse to one fact">Stated in ${f.dedup} sources</span>` : ""}</span>
     <span class="statement">${esc(f.text)}</span>
     <span class="fact-meta"><span class="facet">${facetKey(f.cat, f.cust)}</span>${gov(f)}</span>
     <span class="fact-meta"><span>${s ? esc(s.name) : "Account memory"} · ${esc(f.loc)}</span><span>as of ${f.asOf}</span><span class="mono">${f.id}</span></span>
@@ -539,23 +635,25 @@ RENDER.facts = () => {
   const F = state.f;
   const q = F.q.toLowerCase();
   const list = FACTS.filter(visibleToMe)
-    .filter(f => F.expired || isLive(f))
+    .filter(f => F.hidden || isLive(f) || F.status === f.status)
     .filter(f => !F.cat || f.cat === F.cat)
     .filter(f => !F.cust || (F.cust === "_cat" ? !f.cust : f.cust === F.cust))
     .filter(f => !F.type || f.type === F.type)
     .filter(f => !F.status || f.status === F.status)
+    .filter(f => !F.rel || f.rel === F.rel)
     .filter(f => !q || f.text.toLowerCase().includes(q));
   const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(([v, l]) => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(l)}</option>`).join("");
   return `
     <div class="filters">
       <input class="search" id="fq" type="search" placeholder="Search facts" value="${esc(F.q)}" aria-label="Search facts">
-      <select class="select" data-filter="cat" aria-label="Category">${opt(CATEGORIES.map(c => [c, c]), F.cat, "All categories")}</select>
-      <select class="select" data-filter="cust" aria-label="Customer">${opt([["_cat", "Category level only"], ...CUSTOMERS.map(c => [c, c])], F.cust, "All customers")}</select>
-      <select class="select" data-filter="status" aria-label="Status">${opt([["candidate", "Candidate"], ["verified", "Verified"]], F.status, "Any status")}</select>
+      <select class="select" data-filter="cat" aria-label="Category">${opt(CATEGORIES.map(c => [c, c]), F.cat, "Category: any")}</select>
+      <select class="select" data-filter="cust" aria-label="Customer">${opt([["_cat", "Category level only"], ...CUSTOMERS.map(c => [c, c])], F.cust, "Customer: any")}</select>
+      <select class="select" data-filter="rel" aria-label="Reliability">${opt(REL.map(r => [r, r[0].toUpperCase() + r.slice(1)]), F.rel, "Reliability: any")}</select>
+      <select class="select" data-filter="status" aria-label="Status">${opt(Object.entries(STATUS_LABEL), F.status, "Status: any")}</select>
       <div class="seg" role="group" aria-label="Fact type">${["", ...TYPES].map(t => `<button data-ftype="${t}" aria-pressed="${t === F.type}">${t || "All types"}</button>`).join("")}</div>
-      <label class="check"><input type="checkbox" id="fexp" ${F.expired ? "checked" : ""}> Show expired and retired</label>
+      <label class="check"><input type="checkbox" id="fhid" ${F.hidden ? "checked" : ""}> Show outdated and replaced</label>
     </div>
-    <p class="small muted" style="margin-bottom:10px">${list.length} ${list.length === 1 ? "fact" : "facts"}${F.cat || F.cust || F.type || F.status || q ? ` · <button class="btn ghost small" data-act="clear-filters">Clear filters</button>` : ""}</p>
+    <p class="small muted" style="margin-bottom:10px">${plural(list.length, "fact", "facts")}${F.cat || F.cust || F.type || F.status || F.rel || q ? ` · <button class="btn ghost small" data-act="clear-filters">Clear filters</button>` : ""}</p>
     ${list.length ? list.map(factCard).join("") : `<div class="empty-state">No facts match these filters. <button class="btn ghost" data-act="add-fact">Add a fact</button></div>`}`;
 };
 AFTER.facts = () => {
@@ -563,33 +661,72 @@ AFTER.facts = () => {
     state.f.q = e.target.value; const p = e.target.selectionStart; render();
     const n = $("#fq"); n.focus(); n.setSelectionRange(p, p);
   });
-  $("#fexp").addEventListener("change", e => { state.f.expired = e.target.checked; render(); });
+  $("#fhid").addEventListener("change", e => { state.f.hidden = e.target.checked; render(); });
 };
 
+/* =====================================================================
+   Briefings
+   ===================================================================== */
+function briefingList() {
+  const B = state.bf, q = B.q.toLowerCase();
+  let list = BRIEFINGS.filter(b => (!B.cat || b.cat === B.cat) && (!B.cust || b.cust === B.cust) && (!q || scopeLabel(b.cat, b.cust).toLowerCase().includes(q)));
+  // A chosen scope without a briefing becomes a "generate" candidate.
+  if (B.cat && !BRIEFINGS.some(b => sameScope(b, B.cat, B.cust || null))) list = [{ cat: B.cat, cust: B.cust || null, status: "none" }, ...list];
+  return list;
+}
 RENDER.briefings = () => {
-  const list = BRIEFINGS.map((x, i) => {
+  const B = state.bf;
+  const list = briefingList();
+  if (!list.some(b => bkey(b) === state.briefKey) && list.length) state.briefKey = bkey(list[0]);
+  const sel = list.find(b => bkey(b) === state.briefKey);
+  const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(v => `<option ${v === cur ? "selected" : ""}>${esc(v)}</option>`).join("");
+  const items = list.map(x => {
     const st = briefingState(x);
-    return `<button class="bitem" data-act="pick-brief" data-i="${i}" aria-pressed="${i === state.brief}">
+    return `<button class="bitem ${x.status === "none" ? "virtual" : ""}" data-act="pick-brief" data-key="${esc(bkey(x))}" aria-pressed="${bkey(x) === state.briefKey}">
       <strong>${esc(scopeLabel(x.cat, x.cust))}</strong>
       <span class="facet">${facetKey(x.cat, x.cust)}</span>
-      <span class="spread"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><span class="small muted">${briefingFacts(x).length} facts</span></span>
+      <span class="spread"><span class="pill ${B_PILL[st][0]}">${x.status === "none" && st === "below" ? "No briefing · below floor" : B_PILL[st][1]}</span><span class="small muted">${plural(briefingFacts(x).length, "fact", "facts")}</span></span>
     </button>`;
   }).join("");
-  return `<div class="briefings"><div class="blist">${list}</div><section>${briefingDoc(BRIEFINGS[state.brief])}</section></div>`;
+  return `
+    <div class="filters"><input class="search" id="bq" type="search" placeholder="Filter by scope name" value="${esc(B.q)}" aria-label="Filter by scope name" style="width:100%"></div>
+    <div class="scope-filters">
+      <div class="col"><span class="label">Product scope</span>
+        <select class="select" data-bfilter="cat" aria-label="Category">${opt(CATEGORIES, B.cat, "Category: any")}</select>
+        <select class="select" disabled aria-label="Sub-category"><option>Sub-category: any</option></select>
+        <select class="select" disabled aria-label="Brand"><option>Brand: any</option></select>
+        <select class="select" disabled aria-label="Product"><option>Product: any</option></select>
+        <span class="hint">No sub-category, brand or product facts in this sample yet.</span>
+      </div>
+      <div class="col"><span class="label">Geography</span>
+        <select class="select" disabled aria-label="Market"><option>Market: UK</option></select>
+        <select class="select" data-bfilter="cust" aria-label="Customer">${opt(CUSTOMERS, B.cust, "Customer: any")}</select>
+        <span class="hint">The MVP trade panel covers the UK only.</span>
+      </div>
+    </div>
+    ${list.length ? `<div class="briefings"><div class="blist">${items}</div><section>${briefingDoc(sel)}</section></div>` : `<div class="empty-state">No briefing matches. Pick a category to generate one.</div>`}`;
+};
+AFTER.briefings = () => {
+  $("#bq").addEventListener("input", e => {
+    state.bf.q = e.target.value; const p = e.target.selectionStart; render();
+    const n = $("#bq"); n.focus(); n.setSelectionRange(p, p);
+  });
 };
 
 function briefingDoc(b) {
   const st = briefingState(b);
   const fs = briefingFacts(b);
-  if (st === "below") {
-    const hasMetric = fs.some(f => f.type === "metric" && f.trust === "governed");
-    const expired = FACTS.filter(f => sameScope(f, b.cat, b.cust) && !isLive(f) && f.type === "metric");
+  if (st === "below" || st === "none") {
+    const hasMetric = fs.some(f => f.type === "metric" && f.rel === "certified");
+    const gone = FACTS.filter(f => sameScope(f, b.cat, b.cust) && f.status === "outdated" && f.type === "metric");
     return `<div class="doc">
       <div class="label">${esc(scopeLabel(b.cat, b.cust))}</div>
-      <h2>No briefing for this scope yet</h2>
-      <p>This scope has ${fs.length} live ${fs.length === 1 ? "fact" : "facts"}${hasMetric ? "" : " and no live governed metric"}. A briefing needs at least 3 facts including 1 governed metric, so agents use the general selling frameworks here instead of a thin page.</p>
-      <div class="meter" role="img" aria-label="${fs.length} of 3 facts"><i style="width:${Math.min(fs.length / 3, 1) * 100}%"></i></div>
-      ${expired.length ? `<div class="callout">${expired.map(f => `“${esc(f.text)}” <span class="mono">${f.id}</span> expired on its freshness window. Refreshing the trade-panel view would bring this scope back over the floor.`).join("<br>")}</div>` : ""}
+      ${st === "none"
+        ? `<h2>No briefing for this scope yet</h2><p>This scope has ${plural(fs.length, "live fact", "live facts")}, including a certified metric. That clears the evidence floor, so a briefing can be generated.</p>
+           <div><button class="btn primary" data-act="generate" data-key="${esc(bkey(b))}">Generate briefing</button></div>`
+        : `<h2>Not enough evidence for a briefing</h2><p>This scope has ${plural(fs.length, "live fact", "live facts")}${hasMetric ? "" : " and no live certified metric"}. A briefing needs at least 3 facts including 1 certified metric, so tools use the general selling frameworks here instead of a thin page.</p>
+           <div class="meter" role="img" aria-label="${fs.length} of 3 facts"><i style="width:${Math.min(fs.length / 3, 1) * 100}%"></i></div>
+           ${gone.length ? `<div class="callout">${gone.map(f => `“${esc(f.text)}” <span class="mono">${f.id}</span> is outdated. The next trade-panel refresh would bring this scope back over the floor.`).join("<br>")}</div>` : ""}`}
       <div>${fs.map(factCard).join("")}</div>
       <div class="row"><button class="btn" data-act="add-source">Add a source for this scope</button><button class="btn ghost" data-act="add-fact">Add a fact</button></div>
     </div>`;
@@ -602,53 +739,57 @@ function briefingDoc(b) {
     const items = fs.filter(f => types.includes(f.type));
     if (!items.length) return "";
     return `<div class="stack"><h3>${h}</h3><ul>${items.map(f => {
-      const n = refOf(f);
-      const extra = [f.sens === "restricted" ? `<span class="pill bad">restricted</span>` : "", f.status === "candidate" ? `<span class="pill warn">candidate</span>` : "", f.fresh === "soft" ? `<span class="pill warn">stale</span>` : ""].join(" ");
-      return `<li>${esc(f.text)} <button class="anchor" data-act="open-fact" data-id="${f.id}" title="Open ${f.id}">S${n}</button> ${extra}</li>`;
+      const extra = [f.sens === "restricted" ? `<span class="pill bad">restricted</span>` : "", f.status === "needs_review" ? `<span class="pill warn">needs review</span>` : "", f.expires ? `<span class="pill warn">expires ${f.expires}</span>` : ""].join(" ");
+      return `<li>${esc(f.text)} <button class="anchor" data-act="open-fact" data-id="${f.id}" title="Open ${f.id}">S${refOf(f)}</button> ${extra}</li>`;
     }).join("")}</ul></div>`;
   }).join("");
   const ih = hash(fs.map(f => f.id).sort().join(","));
   return `<article class="doc">
     <div class="spread">
       <div class="stack" style="gap:4px"><div class="label">Briefing</div><h2>${esc(scopeLabel(b.cat, b.cust))}</h2><span class="facet">${facetKey(b.cat, b.cust)}</span></div>
-      <div class="row"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><button class="btn sm ${st === "stale" ? "primary" : ""}" data-act="regen" ${st === "stale" ? "" : `disabled title="The fact set is unchanged, so regenerating would change nothing."`}>Regenerate</button></div>
+      <div class="row"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><button class="btn sm ${st === "outdated" ? "primary" : ""}" data-act="regen" data-key="${esc(bkey(b))}" ${st === "outdated" ? "" : `disabled title="The fact set is unchanged, so regenerating would change nothing."`}>Regenerate</button></div>
     </div>
-    ${st === "stale" ? `<div class="verdict warn">${esc(b.why || "The facts behind this briefing changed.")} Regenerating rebuilds it from the current fact set.</div>` : ""}
-    <p class="small muted">Generated ${b.generated} from ${fs.length} facts · input hash <span class="mono">${ih}</span> · private facts are never included</p>
+    ${st === "outdated" ? `<div class="verdict warn">${esc(b.why || "The facts behind this briefing changed.")} Regenerating rebuilds it from the current fact set.</div>` : ""}
+    <p class="small muted">Generated ${b.generated} from ${plural(fs.length, "fact", "facts")} · input hash <span class="mono">${ih}</span> · private facts are never included</p>
     ${body}
     <div class="refs"><div class="label">References</div>${refs.map((r, i) => { const s = r.f.src && src(r.f.src); return `<div><span class="anchor">S${i + 1}</span> ${s ? esc(s.name) : "Account memory · workstream signal"} <span class="muted">· ${esc(s ? s.kind : "event")}</span></div>`; }).join("")}</div>
   </article>`;
 }
 
-/* ---- Ask the bank: a visible fact selection (filter, rank, collapse) ---- */
-function runAsk() {
-  const A = state.ask;
-  const words = A.q.toLowerCase().split(/\W+/).filter(w => w.length > 3);
+/* =====================================================================
+   Search: a visible fact selection (filter, rank, collapse)
+   ===================================================================== */
+function selectFacts(cat, cust, q) {
+  const words = (q || "").toLowerCase().split(/\W+/).filter(w => w.length > 3);
   const live = FACTS.filter(visibleToMe).filter(isLive);
-  const inScope = live.filter(f => f.cat === A.cat && (!f.cust || (A.cust && f.cust === A.cust)));
-  const TW = { governed: 1, qualified: .8, declared: .6 };
+  const inScope = live.filter(f => (f.cat === cat && (!f.cust || (cust && f.cust === cust))) || (!f.cat && cust && f.cust === cust));
+  const RW = { certified: 1, reviewed: .8, stated: .6 };
   const ranked = inScope.map(f => {
     const overlap = words.filter(w => f.text.toLowerCase().includes(w)).length;
     const rel = Math.min(1, .45 + overlap * .15 + (f.cust ? .1 : 0));
-    const score = rel * (f.status === "verified" ? 1 : .7) * TW[f.trust] * (f.fresh === "soft" ? .6 : 1);
-    return { f, score };
+    return { f, score: rel * (f.status === "verified" ? 1 : .7) * RW[f.rel] * (f.expires ? .85 : 1) };
   }).sort((a, b) => b.score - a.score).slice(0, 8);
   const merged = ranked.reduce((n, r) => n + (r.f.dedup - 1), 0);
-  const hasMetric = ranked.some(r => r.f.type === "metric" && r.f.trust === "governed");
+  const hasMetric = ranked.some(r => r.f.type === "metric" && r.f.rel === "certified");
   const coverage = !ranked.length ? "none" : ranked.length >= 3 && hasMetric ? "sufficient" : "thin";
   return { live: live.length, inScope: inScope.length, ranked, merged, coverage };
 }
+const COV = { sufficient: ["ok", "Sufficient", "Enough trusted evidence on this scope. Tools use these facts directly."], thin: ["warn", "Thin", "Some evidence, but below the must-have floor. Tools proceed, fall back to general frameworks for the gaps, and flag them."], none: ["bad", "None", "Nothing on this scope. Tools skip Knowledge Bank grounding and use general frameworks only."] };
+function shortWhy(f, audience) {
+  if (f.status !== "verified") return "Needs review";
+  if (audience === "external") return f.sens === "restricted" ? "Restricted" : "Internal only";
+  return "";
+}
 
-RENDER.ask = () => {
+RENDER.search = () => {
   const A = state.ask;
-  const r = runAsk();
-  const COV = { sufficient: ["ok", "Sufficient", "Enough trusted evidence on this scope. Tools use these facts directly."], thin: ["warn", "Thin", "Some evidence, but below the must-have floor. Tools proceed, fall back to general frameworks for the gaps, and flag them."], none: ["bad", "None", "Nothing relevant on this scope. Tools skip Knowledge Bank grounding."] };
+  const r = selectFacts(A.cat, A.cust, A.q);
   const c = COV[r.coverage];
   const rows = r.ranked.map((x, i) => {
     const [ok, why] = quotable(x.f, A.audience);
     return `<tr>
       <td class="num">${i + 1}</td>
-      <td><button class="linkish" data-act="open-fact" data-id="${x.f.id}">${esc(x.f.text)}</button><div class="row" style="margin-top:4px"><span class="type">${x.f.type}</span><span class="facet">${x.f.cust ? "customer" : "category"} scope</span></div></td>
+      <td><button class="linkish" data-act="open-fact" data-id="${x.f.id}">${esc(x.f.text)}</button><div class="row" style="margin-top:4px"><span class="type">${x.f.type}</span><span class="facet">${!x.f.cat ? "customer" : x.f.cust ? "account" : "category"} scope</span></div></td>
       <td>${gov(x.f)}</td>
       <td class="num">${x.score.toFixed(2)}</td>
       <td><span class="pill ${ok ? "ok" : "neutral"}" title="${esc(why)}">${ok ? "Quotable" : "Background"}</span><div class="small muted" style="margin-top:4px">${ok ? "" : shortWhy(x.f, A.audience)}</div></td>
@@ -656,12 +797,12 @@ RENDER.ask = () => {
   }).join("");
   const quot = r.ranked.filter(x => quotable(x.f, A.audience)[0]);
   const bg = r.ranked.length - quot.length;
-  const shown = (A.audience === "customer" ? quot : r.ranked).slice(0, 4);
+  const shown = (A.audience === "external" ? quot : r.ranked).slice(0, 4);
   const answer = r.coverage === "none"
     ? `<p>The bank has nothing on this scope. A tool would answer from general selling frameworks only, with no Knowledge Bank citations.</p>`
     : `<p>For <strong>${esc(scopeLabel(A.cat, A.cust))}</strong>, the strongest evidence is:</p>
        ${shown.length ? `<ul>${shown.map(x => `<li>${esc(x.f.text)} <button class="anchor" data-act="open-fact" data-id="${x.f.id}">${r.ranked.indexOf(x) + 1}</button></li>`).join("")}</ul>` : `<p class="muted">None of the selected facts can be shown to a customer.</p>`}
-       ${bg && A.audience === "customer" ? `<p class="small muted">${bg} more ${bg === 1 ? "fact" : "facts"} shaped this answer but cannot be quoted to a customer. See the Use column.</p>` : ""}`;
+       ${bg && A.audience === "external" ? `<p class="small muted">${plural(bg, "more fact", "more facts")} shaped this answer but cannot be quoted to a customer. See the Use column.</p>` : ""}`;
 
   return `<div class="ask">
     <section class="card pad">
@@ -672,10 +813,10 @@ RENDER.ask = () => {
           <div class="field"><label for="a-cust">Customer</label><select id="a-cust"><option value="">Category level</option>${CUSTOMERS.map(x => `<option ${x === A.cust ? "selected" : ""}>${esc(x)}</option>`).join("")}</select></div>
         </div>
         <div class="field"><span class="flabel">Audience</span>
-          <div class="seg" role="group" aria-label="Audience"><button type="button" data-aud="internal" aria-pressed="${A.audience === "internal"}">Internal prep</button><button type="button" data-aud="customer" aria-pressed="${A.audience === "customer"}">Customer-facing</button></div>
+          <div class="seg" role="group" aria-label="Audience"><button type="button" data-aud="internal" aria-pressed="${A.audience === "internal"}">Internal prep</button><button type="button" data-aud="external" aria-pressed="${A.audience === "external"}">Customer-facing</button></div>
           <span class="hint">Customer-facing keeps internal and restricted facts as background only.</span>
         </div>
-        <button class="btn primary" type="submit">Select facts</button>
+        <button class="btn primary" type="submit">Search evidence</button>
       </form>
       <div class="stack" style="margin-top:16px"><div class="label">Try</div><div class="chips">
         ${[["What should I lead with in the Northgate range review?", "Fabric Care", "Northgate"], ["Why is our Hair Care share slipping at Brightmart?", "Hair Care", "Brightmart"], ["What do we know about Harbour & Co in Oral Care?", "Oral Care", "Harbour & Co"]].map(([q, cat, cu]) => `<button class="chip" data-act="try" data-q="${esc(q)}" data-cat="${cat}" data-cust="${esc(cu)}">${esc(q)}</button>`).join("")}
@@ -684,7 +825,7 @@ RENDER.ask = () => {
     <section class="stack" style="gap:14px">
       <div class="pipeline">
         <div><span class="label">1 · Filter</span><b>${r.inScope}</b><span class="small muted">of ${r.live} live facts match the scope and your access</span></div>
-        <div><span class="label">2 · Rank</span><b>${r.ranked.length}</b><span class="small muted">top facts by relevance, status, trust and recency</span></div>
+        <div><span class="label">2 · Rank</span><b>${r.ranked.length}</b><span class="small muted">top facts by relevance, status, reliability and recency</span></div>
         <div><span class="label">3 · Collapse</span><b>${r.merged}</b><span class="small muted">restatements merged into their best-scored fact</span></div>
       </div>
       <div class="verdict ${c[0]}"><strong>Coverage: ${c[1]}.</strong> ${c[2]}</div>
@@ -693,25 +834,25 @@ RENDER.ask = () => {
     </section>
   </div>`;
 };
-AFTER.ask = () => {
-  $("#askform").addEventListener("submit", e => {
-    e.preventDefault();
-    readAskForm();
-    render(); toast("Facts selected");
-  });
+AFTER.search = () => {
+  $("#askform").addEventListener("submit", e => { e.preventDefault(); readAskForm(); render(); toast("Evidence selected"); });
 };
-function shortWhy(f, audience) {
-  if (f.status !== "verified") return "Not verified yet";
-  if (f.fresh !== "fresh") return "Stale";
-  if (audience === "customer") return f.sens === "restricted" ? "Restricted" : "Internal only";
-  return "";
-}
 function readAskForm() {
   state.ask.q = $("#a-q").value.trim() || state.ask.q;
   state.ask.cat = $("#a-cat").value; state.ask.cust = $("#a-cust").value;
 }
 
+/* =====================================================================
+   Manage sources (sources + review queue)
+   ===================================================================== */
 RENDER.sources = () => {
+  const tabs = `<div class="tabs" role="tablist">
+    <button role="tab" data-tab="sources" aria-selected="${state.srcTab === "sources"}">Sources <span class="muted small">${SOURCES.length}</span></button>
+    <button role="tab" data-tab="review" aria-selected="${state.srcTab === "review"}">Review queue ${REVIEW.length ? `<span class="badge">${REVIEW.length}</span>` : ""}</button>
+  </div>`;
+  return tabs + (state.srcTab === "review" ? reviewQueue() : sourceTable());
+};
+function sourceTable() {
   const rows = SOURCES.map(s => {
     const p = S_PILL[s.status];
     const stalled = ["failed", "needs_context", "quarantined"].includes(s.status);
@@ -721,34 +862,94 @@ RENDER.sources = () => {
       <td>${esc(s.kind)}<div class="small muted">${s.lane} lane</div></td>
       <td class="small">${esc(scopeLabel(s.cat, s.cust))}</td>
       <td><span class="pill ${p[0]}">${p[1]}</span></td>
-      <td><span class="gov"><span class="t-${s.trust}"><b>${s.trust}</b></span><span class="s-${s.sens}"><b>${s.sens}</b></span></span></td>
+      <td><span class="gov"><span class="t-${s.rel}"><b>${s.rel}</b></span><span class="s-${s.sens}"><b>${s.sens}</b></span></span></td>
       <td class="small">${s.asOf}${s.conf === "low" ? `<div><span class="pill warn">low confidence</span></div>` : ""}</td>
       <td class="num">${s.facts}</td>
     </tr>`;
   }).join("");
   const by = st => SOURCES.filter(s => s.status === st).length;
   return `
-    <p class="small muted" style="margin-bottom:12px">${by("live")} live · ${by("needs_context") + by("quarantined")} waiting for review · ${by("failed")} failed · ${by("superseded") + by("retired")} superseded or retired. Pipeline: ${STAGES.join(" → ")}.</p>
+    <p class="small muted" style="margin-bottom:12px">${by("live")} live · ${by("needs_context") + by("quarantined")} waiting for review · ${by("failed")} failed · ${by("superseded") + by("retired")} replaced or retired. Pipeline: ${STAGES.join(" → ")}.</p>
     <div class="table-wrap"><table class="stbl">
-      <thead><tr><th>Source</th><th>Type</th><th>Scope</th><th>Status</th><th>Trust · sensitivity</th><th>Content date</th><th style="text-align:right">Facts</th></tr></thead>
+      <thead><tr><th>Source</th><th>Type</th><th>Scope</th><th>Status</th><th>Reliability · sensitivity</th><th>Content date</th><th class="num">Facts</th></tr></thead>
       <tbody>${rows}</tbody>
     </table></div>`;
-};
-
-RENDER.review = () => {
+}
+function reviewQueue() {
   if (!REVIEW.length) return `<div class="empty-state">The queue is empty. New cases appear here after ingestion and scheduled jobs.</div>`;
-  return `<div class="rq">${REVIEW.map(r => `
+  return `<p class="small muted" style="margin-bottom:12px">Only the cases that need a person: contradictions, stale intake, verbatim quotes, personal data and overlaps.</p>
+  <div class="rq">${REVIEW.map(r => `
     <article class="rcard">
       <div class="spread"><span class="pill ${r.cls}">${r.kind}</span><span class="mono muted">${r.id}</span></div>
       <h3>${esc(r.title)}</h3>
       <p>${esc(r.body)}</p>
-      ${r.a ? `<div class="versus">${[r.a, r.b].map(x => `<div class="side-box"><span class="big">${x.big}</span><span>${esc(x.src)}</span><span class="small muted">${esc(x.loc)} · ${x.trust} · as of ${x.asOf}</span></div>`).join("")}</div>` : ""}
+      ${r.a ? `<div class="versus">${[r.a, r.b].map(x => `<div class="side-box"><span class="big">${x.big}</span><span>${esc(x.src)}</span><span class="small muted">${esc(x.loc)} · ${x.rel} · as of ${x.asOf}</span></div>`).join("")}</div>` : ""}
       <div class="row">${r.actions.map(([l, c]) => `<button class="btn sm ${c}" data-act="resolve" data-id="${r.id}" data-choice="${esc(l)}">${esc(l)}</button>`).join("")}</div>
     </article>`).join("")}</div>`;
+}
+
+/* =====================================================================
+   Workstreams: how a workspace uses the Knowledge Bank
+   ===================================================================== */
+RENDER.workstreams = () => {
+  const cards = WORKSTREAMS.map(w => {
+    const ps = pillars(w), score = ps.filter(p => p.n > 0).length;
+    return `<button class="ws" data-act="pick-ws" data-id="${w.id}" aria-pressed="${w.id === state.ws}">
+      <strong>${esc(w.name)}</strong>
+      <span class="small muted">${esc(w.cust)} × UK · ${w.cat}</span>
+      <span class="spread"><span class="row small"><span class="dots" aria-hidden="true">${ps.map(p => `<i class="${p.n ? "on" : ""}"></i>`).join("")}</span>${score}/5 context</span><span class="pill ${w.audience === "external" ? "info" : "neutral"}">${w.audience === "external" ? "Customer-facing" : "Internal"}</span></span>
+    </button>`;
+  }).join("");
+  const w = WORKSTREAMS.find(x => x.id === state.ws);
+  const ps = pillars(w);
+  const b = BRIEFINGS.find(x => sameScope(x, w.cat, w.cust));
+  const st = b ? briefingState(b) : null;
+  const sel = selectFacts(w.cat, w.cust, "");
+  const quot = sel.ranked.filter(x => quotable(x.f, w.audience)[0]).length;
+  const storyOK = quot > 0;
+  const runs = w.runs.map(r => `<tr><td>${r.tool}</td><td class="small">${esc(r.note)}</td><td class="small">${r.date}</td><td><span class="pill ${r.status === "Running" ? "info" : "ok"}">${r.status}</span></td><td class="small">${r.rating || "—"}</td></tr>`).join("");
+
+  return `
+    <div class="ws-grid">${cards}</div>
+    <section class="card pad">
+      <div class="spread"><div class="stack" style="gap:2px"><h2 style="font-size:18px">${esc(w.name)}</h2><span class="facet">${facetKey(w.cat, w.cust)}</span></div>
+        <span class="pill ${w.audience === "external" ? "info" : "neutral"}">Audience: ${w.audience === "external" ? "customer-facing" : "internal"}</span></div>
+      <div class="section" style="margin-top:16px">
+        <div class="spread" style="margin-bottom:8px"><span class="label">Context evidence</span><span class="small muted">Derived from facts, not set by hand. Private facts never count.</span></div>
+        <div class="pillars">${ps.map(p => `<div class="pillar ${p.n ? "" : "missing"}"><span class="spread"><strong>${p.name}</strong><span class="pill ${p.n ? "ok" : "neutral"}">${p.n ? (p.name === "Buyer" ? "Attached" : plural(p.n, "fact", "facts")) : "Missing"}</span></span><span class="small muted">${esc(p.text || p.desc)}</span>${!p.n && p.name === "Buyer" ? `<button class="btn ghost small" data-act="attach-buyer" data-id="${w.id}">Attach a buyer</button>` : ""}${!p.n && p.name !== "Buyer" ? `<button class="btn ghost small" data-act="add-source">Add a source</button>` : ""}</div>`).join("")}</div>
+      </div>
+      <div class="ws-detail">
+        <div class="stack">
+          <span class="label">Attached Knowledge Bank context</span>
+          <div class="tool">
+            <span class="spread"><strong>Briefing · ${esc(scopeLabel(w.cat, w.cust))}</strong>${st ? `<span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span>` : `<span class="pill neutral">None</span>`}</span>
+            <span class="small muted">${plural(sel.inScope, "live fact", "live facts")} in scope · ${plural(quot, "is", "are")} quotable for this audience · coverage ${COV[sel.coverage][1].toLowerCase()}</span>
+            <div class="row"><button class="btn sm" data-act="open-ws-brief" data-id="${w.id}">Open briefing</button><button class="btn sm" data-act="ws-search" data-id="${w.id}">See selected facts</button></div>
+          </div>
+        </div>
+        <div class="stack">
+          <span class="label">Tools</span>
+          <div class="tool">
+            <span class="spread"><strong>Selling Coach</strong><span class="small muted">PSF deck analysis</span></span>
+            <span class="small muted">Checks each Persuasive Selling Format step of your deck against the facts in scope and cites them.</span>
+            <div><button class="btn sm primary" data-act="run-tool" data-tool="Selling Coach" data-id="${w.id}">Upload deck and run</button></div>
+          </div>
+          <div class="tool">
+            <span class="spread"><strong>Storyline Generator</strong><span class="small muted">Opportunity + PSF storyline</span></span>
+            <span class="small muted">${storyOK ? "Proposes opportunities from the grounded context. You pick one and refine it until you approve." : "Needs at least one quotable fact for a customer-facing audience. This scope has none yet."}</span>
+            <div><button class="btn sm primary" data-act="run-tool" data-tool="Storyline Generator" data-id="${w.id}" ${storyOK ? "" : "disabled"}>Start storyline</button></div>
+          </div>
+        </div>
+      </div>
+      <div class="section">
+        <div class="spread" style="margin-bottom:8px"><span class="label">Recent runs</span><span class="small muted">Completed runs feed new account facts back to the bank for review.</span></div>
+        ${runs ? `<div class="table-wrap"><table class="stbl narrow"><thead><tr><th>Tool</th><th>Result</th><th>Date</th><th>Status</th><th>Rating</th></tr></thead><tbody>${runs}</tbody></table></div>` : `<div class="empty-state">No runs yet.</div>`}
+      </div>
+    </section>`;
 };
 
 /* =====================================================================
-   Drawer (fact detail, source blast radius) and modals
+   Drawer (fact detail, source impact) and modals
    ===================================================================== */
 function openDrawer(html) {
   $("#overlay").innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer" role="dialog" aria-modal="true">${html}</aside>`;
@@ -766,7 +967,7 @@ function factDrawer(id) {
   const f = fact(id);
   const s = f.src ? src(f.src) : null;
   const [qi, whyI] = quotable(f, "internal");
-  const [qc, whyC] = quotable(f, "customer");
+  const [qc, whyC] = quotable(f, "external");
   const cites = BRIEFINGS.filter(b => floorOK(b) && briefingFacts(b).includes(f));
   const figNum = f.fig && String(parseFloat(f.fig));
   const evidence = f.row
@@ -774,12 +975,12 @@ function factDrawer(id) {
     : `<div class="excerpt">${highlight(f.excerpt, f.fig)}</div>`;
   const fidelity = !f.fig ? "" : (f.row || (f.excerpt || "").includes(f.fig)) ? "Figure found in its evidence. Numeric check passed." : "Figure not found in its evidence.";
   openDrawer(`
-    <div class="spread"><span class="row"><span class="type">${f.type}</span>${statusPill(f)}${freshPill(f)}</span><button class="btn sm" data-act="close">Close</button></div>
+    <div class="spread"><span class="row"><span class="type">${f.type}</span>${statusPill(f)}${expPill(f)}</span><button class="btn sm" data-act="close">Close</button></div>
     <h2>${esc(f.text)}</h2>
     <div>${gov(f)}</div>
     <div class="stack"><div class="label">Where it comes from</div>
       <div class="chain">
-        <div><strong>${s ? esc(s.name) : "Account memory"}</strong><span class="small muted">${s ? `${esc(s.kind)} · ${s.lane} lane · ${s.trust} · ${S_PILL[s.status][1].toLowerCase()}` : "Created from a workstream signal"}</span></div>
+        <div><strong>${s ? esc(s.name) : "Account memory"}</strong><span class="small muted">${s ? `${esc(s.kind)} · ${s.lane} lane · ${s.rel} · ${S_PILL[s.status][1].toLowerCase()}` : "Created from a workstream signal"}</span></div>
         <div><strong>${esc(f.loc)}</strong><span class="small muted">${f.row ? "Certified dataset row. The number is read from the query, not written by a model." : "Grounding passage"}</span></div>
         <div style="padding-bottom:0">${evidence}${fidelity ? `<span class="small muted">${fidelity}</span>` : ""}</div>
       </div>
@@ -787,7 +988,7 @@ function factDrawer(id) {
     <dl class="kv">
       <dt>Scope</dt><dd>${esc(scopeLabel(f.cat, f.cust))}<div class="facet">${facetKey(f.cat, f.cust)}</div></dd>
       ${f.period ? `<dt>Period</dt><dd>${esc(f.period)}</dd>` : ""}
-      <dt>Content date</dt><dd>${f.asOf}</dd>
+      <dt>Content date</dt><dd>${f.asOf}${f.expires ? ` · expires ${f.expires}` : ""}</dd>
       <dt>Restated in</dt><dd>${f.dedup} ${f.dedup === 1 ? "source" : "sources, collapsed to this fact"}</dd>
       <dt>Cited by</dt><dd>${cites.length ? cites.map(b => "Briefing: " + esc(scopeLabel(b.cat, b.cust))).join("<br>") : "No briefing"}</dd>
       <dt>ID</dt><dd class="mono">${f.id}</dd>
@@ -796,16 +997,16 @@ function factDrawer(id) {
       <div class="verdict ${qi ? "ok" : "warn"}"><strong>Internal prep: ${qi ? "yes" : "no"}.</strong> ${esc(whyI)}</div>
       <div class="verdict ${qc ? "ok" : "bad"}"><strong>Customer-facing: ${qc ? "yes" : "no"}.</strong> ${esc(whyC)}</div>
     </div>
-    <div class="stack"><div class="label">Curate</div>
+    ${isLive(f) ? `<div class="stack"><div class="label">Curate</div>
       <div class="row">
-        ${f.status === "candidate" ? `<button class="btn primary" data-act="verify" data-id="${f.id}">Verify</button><button class="btn danger" data-act="reject" data-id="${f.id}">Reject</button>` : ""}
+        ${f.status === "needs_review" ? `<button class="btn primary" data-act="verify" data-id="${f.id}">Verify</button><button class="btn danger" data-act="reject" data-id="${f.id}">Reject</button>` : ""}
         <label class="check">Sensitivity <select class="select" id="d-sens">${["external", "internal", "restricted"].map(x => `<option ${x === f.sens ? "selected" : ""}>${x}</option>`).join("")}</select></label>
       </div>
-    </div>`);
-  $("#d-sens").addEventListener("change", e => {
+    </div>` : ""}`);
+  $("#d-sens")?.addEventListener("change", e => {
     f.sens = e.target.value;
-    if (!f.owner) markStale(f.cat, f.cust, "A fact's sensitivity changed.");
-    render(); factDrawer(f.id); toast(`Sensitivity set to ${f.sens}. Briefings citing it are now stale.`);
+    if (!f.owner) markOutdated(f.cat, f.cust, "A fact's sensitivity changed.");
+    render(); factDrawer(f.id); toast(`Sensitivity set to ${f.sens}. Briefings citing it are now outdated.`);
   });
 }
 
@@ -824,25 +1025,25 @@ function sourceDrawer(id) {
       <dt>Type</dt><dd>${esc(s.kind)} · ${s.lane} lane</dd>
       <dt>Scope</dt><dd>${esc(scopeLabel(s.cat, s.cust))}</dd>
       <dt>Content date</dt><dd>${s.asOf} · ${s.conf} confidence</dd>
-      <dt>Trust</dt><dd>${s.trust} <span class="small muted">· set from where the source came from</span></dd>
-      ${s.supersededBy ? `<dt>Superseded by</dt><dd>${esc(src(s.supersededBy).name)}</dd>` : ""}
+      <dt>Reliability</dt><dd>${s.rel} <span class="small muted">· set from where the source came from</span></dd>
+      ${s.supersededBy ? `<dt>Replaced by</dt><dd>${esc(src(s.supersededBy).name)}</dd>` : ""}
       ${s.note ? `<dt>Note</dt><dd>${esc(s.note)}</dd>` : ""}
     </dl>
     <div class="stack"><div class="label">Pipeline</div>
       <div class="row">${STAGES.map((st, i) => `<span class="pill ${i < s.stage ? "ok" : i === s.stage && stalled ? (s.status === "processing" ? "info" : "bad") : "neutral"}">${st}</span>`).join("")}</div>
     </div>
-    <div class="stack"><div class="label">Blast radius</div>
-      <p>${s.facts} ${s.facts === 1 ? "fact comes" : "facts come"} from this source${briefs.length ? ` and ${briefs.length} ${briefs.length === 1 ? "briefing cites" : "briefings cite"} them` : ""}.${s.facts === 0 && s.status === "live" ? " It feeds no live facts and can be cleaned up." : ""}</p>
+    <div class="stack"><div class="label">What depends on it</div>
+      <p>${plural(s.facts, "fact comes", "facts come")} from this source${briefs.length ? ` and ${plural(briefs.length, "briefing cites", "briefings cite")} them` : ""}.${s.facts === 0 && s.status === "live" ? " It feeds no live facts and can be cleaned up." : ""}</p>
       ${fs.slice(0, 4).map(f => `<button class="btn ghost" data-act="open-fact" data-id="${f.id}">${f.id} · ${esc(f.text)}</button>`).join("")}
       ${other && s.facts ? `<span class="small muted">+ ${other} more facts</span>` : ""}
       ${briefs.map(b => `<span class="small">Briefing: ${esc(scopeLabel(b.cat, b.cust))}</span>`).join("")}
     </div>
     <div class="stack"><div class="label">Reclassify</div>
-      <div class="row"><select class="select" id="s-sens" aria-label="New sensitivity">${["external", "internal", "restricted"].map(x => `<option ${x === s.sens ? "selected" : ""}>${x}</option>`).join("")}</select><button class="btn" data-act="reclassify" data-id="${s.id}">Apply to the source and its ${s.facts} facts</button></div>
-      <span class="hint">No re-parsing and no re-mining. The label flows to every fact, and briefings citing them become stale.</span>
+      <div class="row"><select class="select" id="s-sens" aria-label="New sensitivity">${["external", "internal", "restricted"].map(x => `<option ${x === s.sens ? "selected" : ""}>${x}</option>`).join("")}</select><button class="btn" data-act="reclassify" data-id="${s.id}">Apply to the source and its ${plural(s.facts, "fact", "facts")}</button></div>
+      <span class="hint">No re-parsing and no re-mining. The label flows to every fact, and briefings citing them become outdated.</span>
     </div>
     ${canRetire ? `<div class="stack"><div class="label">Retire</div>
-      <label class="check"><input type="checkbox" id="s-confirm"> I understand this removes ${s.facts} facts from retrieval and cannot be undone. The original file is kept for audit.</label>
+      <label class="check"><input type="checkbox" id="s-confirm"> I understand this removes ${plural(s.facts, "fact", "facts")} from retrieval and cannot be undone. The original file is kept for audit.</label>
       <div><button class="btn danger" id="s-retire" data-act="retire" data-id="${s.id}" disabled>Retire source</button></div>
     </div>` : ""}`);
   $("#s-confirm")?.addEventListener("change", e => { $("#s-retire").disabled = !e.target.checked; });
@@ -861,7 +1062,7 @@ function addFactModal() {
       <div class="grid3">
         <div class="field"><label for="n-fig">Figure (optional)</label><input id="n-fig" name="fig" placeholder="10%"></div>
         <div class="field"><label for="n-period">Period (optional)</label><input id="n-period" name="period" placeholder="FY 2026-27"></div>
-        <div class="field"><label for="n-cat">Category</label><select id="n-cat" name="cat">${CATEGORIES.map(c => `<option>${c}</option>`).join("")}</select></div>
+        <div class="field"><label for="n-cat">Category</label><select id="n-cat" name="cat"><option value="">None (customer only)</option>${CATEGORIES.map(c => `<option ${c === "Fabric Care" ? "selected" : ""}>${c}</option>`).join("")}</select></div>
       </div>
       <div class="grid2">
         <div class="field"><label for="n-cust">Customer</label><select id="n-cust" name="cust"><option value="">Category level</option>${CUSTOMERS.map(c => `<option ${c === "Northgate" ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
@@ -873,30 +1074,27 @@ function addFactModal() {
         <div class="field"><label for="n-vis">Visibility</label><select id="n-vis" name="vis"><option value="shared">Shared with the team</option><option value="private">Private to me</option></select></div>
       </div>
       <p class="hint" id="n-err" style="color:var(--bad)" hidden></p>
-      <div class="callout">New facts start as <strong>candidate</strong>. Trust comes from the evidence, so your own knowledge is <strong>declared</strong>. A reviewer verifies it before any tool can quote it.</div>
+      <div class="callout">New facts start as <strong>needs review</strong>. Reliability comes from the evidence, so your own knowledge is <strong>stated</strong>. A curator verifies it before any tool can quote it.</div>
       <div class="foot"><button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary" type="submit">Add fact</button></div>
     </form>`, fd => {
-      const fig = fd.get("fig").trim(), ex = fd.get("excerpt").trim();
-      if (fig && !ex.includes(fig)) {
-        const e = $("#n-err"); e.hidden = false;
-        e.textContent = `The figure “${fig}” is not in the supporting passage. Add it to the passage or remove the figure.`;
-        return;
-      }
+      const fig = fd.get("fig").trim(), ex = fd.get("excerpt").trim(), err = $("#n-err");
+      if (!fd.get("cat") && !fd.get("cust")) { err.hidden = false; err.textContent = "Pick a category, a customer, or both, so the fact has a scope."; return; }
+      if (fig && !ex.includes(fig)) { err.hidden = false; err.textContent = `The figure “${fig}” is not in the supporting passage. Add it to the passage or remove the figure.`; return; }
       const s = fd.get("src") ? src(fd.get("src")) : null;
-      const f = { id: "F-" + (2000 + FACTS.length), type: fd.get("type"), text: fd.get("text").trim(), fig: fig || null, period: fd.get("period").trim() || null, cat: fd.get("cat"), cust: fd.get("cust") || null,
-        trust: s ? s.trust : "declared", sens: fd.get("sens"), owner: fd.get("vis") === "private" ? ME : null, status: "candidate", asOf: fd.get("asOf") || TODAY, fresh: "fresh",
+      const f = { id: "F-" + (2000 + FACTS.length), type: fd.get("type"), text: fd.get("text").trim(), fig: fig || null, period: fd.get("period").trim() || null, cat: fd.get("cat") || null, cust: fd.get("cust") || null,
+        rel: s ? s.rel : "stated", sens: fd.get("sens"), owner: fd.get("vis") === "private" ? ME : null, status: "needs_review", asOf: fd.get("asOf") || TODAY,
         src: s ? s.id : null, loc: "Added by you", excerpt: ex || "No passage given.", dedup: 1 };
       FACTS.unshift(f);
-      if (!f.owner) markStale(f.cat, f.cust, "A new fact arrived for this scope.");
+      if (!f.owner) markOutdated(f.cat, f.cust, "A new fact arrived for this scope.");
       closeOverlay();
-      state.f = { ...blankFilter(), cat: f.cat, cust: f.cust || "_cat" };
-      go("facts"); toast(`Fact added as candidate${f.owner ? " · private to you" : ""}`);
+      state.f = { ...blankFilter(), cat: f.cat || "", cust: f.cust || "_cat" };
+      go("facts"); toast(`Fact added · needs review${f.owner ? " · private to you" : ""}`);
     });
 }
 
 function addSourceModal() {
   openModal(`
-    <header><h2>Add source</h2><p class="muted" style="margin-top:4px">The file is quality-checked, chunked and mined into candidate facts.</p></header>
+    <header><h2>Add source</h2><p class="muted" style="margin-top:4px">The file is quality-checked, chunked and mined into facts that need review.</p></header>
     <form>
       <div class="field"><label for="u-name">File or link</label><input id="u-name" name="name" required placeholder="e.g. Brightmart JBP 2026-27.pptx or a SharePoint Sales Book link"></div>
       <div class="grid2">
@@ -910,15 +1108,38 @@ function addSourceModal() {
       <p class="hint">Certified trade-panel numbers arrive through the data lane on a schedule. You don't upload them.</p>
       <div class="foot"><button type="button" class="btn" data-act="close">Cancel</button><button class="btn primary" type="submit">Start ingestion</button></div>
     </form>`, fd => {
-      const s = { id: "S-" + (20 + SOURCES.length), name: fd.get("name"), kind: fd.get("kind"), lane: "Document", cat: fd.get("cat"), cust: fd.get("cust") || null, status: "processing", sens: fd.get("sens"), trust: fd.get("kind") === "SharePoint Sales Book" ? "declared" : "qualified", asOf: "reading…", conf: "medium", facts: 0, stage: 0 };
-      SOURCES.unshift(s);
-      closeOverlay(); go("sources"); toast("Ingestion started");
+      const s = { id: "S-" + (20 + SOURCES.length), name: fd.get("name"), kind: fd.get("kind"), lane: "Document", cat: fd.get("cat"), cust: fd.get("cust") || null, status: "processing", sens: fd.get("sens"), rel: fd.get("kind") === "SharePoint Sales Book" ? "stated" : "reviewed", asOf: "reading…", conf: "medium", facts: 0, stage: 0 };
+      const run = { status: "Running", source: "upload · " + s.name, started: TODAY + " 14:05", indexed: 0, failed: 0 };
+      SOURCES.unshift(s); RUNS.unshift(run);
+      closeOverlay(); state.srcTab = "sources"; go("sources"); toast("Ingestion started");
       const t = setInterval(() => {
         s.stage++;
-        if (s.stage >= STAGES.length) { clearInterval(t); s.status = "live"; s.asOf = "12 Sep 2026"; s.facts = 11; markStale(s.cat, s.cust, "New facts arrived from a new source."); toast(`${s.name}: 11 candidate facts mined`); }
-        if (state.view === "sources" && !$("#overlay").children.length) render();
+        if (s.stage >= STAGES.length) {
+          clearInterval(t); s.status = "live"; s.asOf = "12 Sep 2026"; s.facts = 11;
+          run.status = "Complete"; run.indexed = 11;
+          markOutdated(s.cat, s.cust, "New facts arrived from a new source.");
+          toast(`${s.name}: 11 facts mined, waiting for review`);
+        }
+        if ((state.view === "sources" || state.view === "home") && !$("#overlay").children.length) render();
       }, 650);
     });
+}
+
+/* A completed tool run writes account facts back to the bank (needs review). */
+function runTool(ws, tool) {
+  const run = { tool, date: TODAY, status: "Running", note: tool === "Selling Coach" ? "Northgate range review deck.pptx" : "Scouting opportunities", rating: "" };
+  ws.runs.unshift(run); render(); toast(`${tool} started`);
+  setTimeout(() => {
+    const sel = selectFacts(ws.cat, ws.cust, "");
+    run.status = tool === "Selling Coach" ? "Completed" : "Ready for review";
+    run.note = tool === "Selling Coach" ? `Range review deck · ${Math.min(5, sel.ranked.length)} of 5 PSF steps grounded` : "3 opportunities proposed · 1 recommended";
+    const f = { id: "F-" + (2000 + FACTS.length), type: "insight", text: tool === "Selling Coach" ? `The ${ws.cust} range review deck has no market-size figure in its Situation step.` : `Recommended opportunity for ${ws.cust}: grow ${ws.cat} premium tier through capsules.`,
+      cat: ws.cat, cust: ws.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, loc: `${tool} run · ${ws.name}`, excerpt: `Written back from a completed ${tool} run on ${TODAY}.`, dedup: 1 };
+    FACTS.unshift(f);
+    markOutdated(ws.cat, ws.cust, "A tool run added an account fact.");
+    if (state.view === "workstreams" && !$("#overlay").children.length) render();
+    toast(`${tool} finished · 1 account fact sent to the bank for review`);
+  }, 1600);
 }
 
 /* =====================================================================
@@ -929,6 +1150,8 @@ document.addEventListener("click", e => {
   if (nav) { closeOverlay(); go(nav.dataset.view); return; }
   const ft = e.target.closest("[data-ftype]");
   if (ft) { state.f.type = ft.dataset.ftype; render(); return; }
+  const tab = e.target.closest("[data-tab]");
+  if (tab) { state.srcTab = tab.dataset.tab; render(); return; }
   const aud = e.target.closest("[data-aud]");
   if (aud) { readAskForm(); state.ask.audience = aud.dataset.aud; render(); return; }
 
@@ -942,38 +1165,47 @@ document.addEventListener("click", e => {
   if (a === "open-source") sourceDrawer(id);
   if (a === "clear-filters") { state.f = blankFilter(); render(); }
   if (a === "cell") { state.f = { ...blankFilter(), cat: el.dataset.cat, cust: el.dataset.cust || "_cat" }; go("facts"); }
-  if (a === "facts-status") { state.f = { ...blankFilter(), status: el.dataset.status }; go("facts"); }
+  if (a === "attention") { state.srcTab = "review"; go("sources"); }
   if (a === "todo") state.todo[+el.dataset.k]?.go();
-  if (a === "pick-brief") { state.brief = +el.dataset.i; render(); }
-  if (a === "regen") { const b = BRIEFINGS[state.brief]; b.status = "current"; b.generated = TODAY; delete b.why; render(); toast("Briefing rebuilt from the current fact set"); }
+  if (a === "pick-brief") { state.briefKey = el.dataset.key; render(); }
+  if (a === "regen") { const b = BRIEFINGS.find(x => bkey(x) === el.dataset.key); b.status = "current"; b.generated = TODAY; delete b.why; render(); toast("Briefing rebuilt from the current fact set"); }
+  if (a === "generate") { const [cat, cust] = el.dataset.key.split("|"); BRIEFINGS.push({ cat, cust: cust || null, status: "current", generated: TODAY }); state.briefKey = el.dataset.key; render(); toast("Briefing generated"); }
   if (a === "try") { Object.assign(state.ask, { q: el.dataset.q, cat: el.dataset.cat, cust: el.dataset.cust }); render(); }
+  if (a === "pick-ws") { state.ws = id; render(); }
+  if (a === "open-ws-brief") { const w = WORKSTREAMS.find(x => x.id === id); state.bf = { q: "", cat: w.cat, cust: w.cust }; state.briefKey = `${w.cat}|${w.cust}`; go("briefings"); }
+  if (a === "ws-search") { const w = WORKSTREAMS.find(x => x.id === id); Object.assign(state.ask, { cat: w.cat, cust: w.cust, audience: w.audience, q: `What should I bring to ${w.cust}?` }); go("search"); }
+  if (a === "attach-buyer") { WORKSTREAMS.find(x => x.id === id).buyer = "Jordan Blake · category buyer"; render(); toast("Buyer attached"); }
+  if (a === "run-tool") runTool(WORKSTREAMS.find(x => x.id === id), el.dataset.tool);
   if (a === "verify" || a === "reject") {
-    const f = fact(id); f.status = a === "verify" ? "verified" : "rejected";
-    if (!f.owner) markStale(f.cat, f.cust, a === "verify" ? "A fact was verified." : "A fact was rejected.");
+    const f = fact(id);
+    if (a === "verify") f.status = "verified"; else FACTS = FACTS.filter(x => x !== f);
+    if (!f.owner) markOutdated(f.cat, f.cust, a === "verify" ? "A fact was verified." : "A fact was rejected.");
     render(); if (a === "verify") factDrawer(id); else closeOverlay();
     toast(a === "verify" ? "Verified. Tools can quote it where its sensitivity allows." : "Rejected. It will not be retrieved.");
   }
   if (a === "reclassify") {
     const s = src(id), v = $("#s-sens").value;
-    s.sens = v; FACTS.filter(f => f.src === id).forEach(f => { f.sens = v; markStale(f.cat, f.cust, "A source it cites was reclassified."); });
-    render(); sourceDrawer(id); toast(`Reclassified to ${v}: the source and its ${s.facts} facts`);
+    s.sens = v; FACTS.filter(f => f.src === id).forEach(f => { f.sens = v; markOutdated(f.cat, f.cust, "A source it cites was reclassified."); });
+    render(); sourceDrawer(id); toast(`Reclassified to ${v}: the source and its ${plural(s.facts, "fact", "facts")}`);
   }
   if (a === "retire") {
     const s = src(id); s.status = "retired";
     const hit = new Set();
-    FACTS.filter(f => f.src === id).forEach(f => { BRIEFINGS.filter(b => sameScope(b, f.cat, f.cust)).forEach(b => hit.add(b)); markStale(f.cat, f.cust, "A source it cited was retired."); });
-    closeOverlay(); render(); toast(`Retired. ${s.facts} facts removed from retrieval, ${hit.size} ${hit.size === 1 ? "briefing" : "briefings"} marked stale`);
+    FACTS.filter(f => f.src === id).forEach(f => { BRIEFINGS.filter(b => sameScope(b, f.cat, f.cust)).forEach(b => hit.add(b)); markOutdated(f.cat, f.cust, "A source it cited was retired."); });
+    closeOverlay(); render(); toast(`Retired. ${plural(s.facts, "fact", "facts")} removed from retrieval, ${plural(hit.size, "briefing", "briefings")} marked outdated`);
   }
   if (a === "resolve") {
     const r = REVIEW.find(x => x.id === id);
-    if (r.fact && el.dataset.choice.startsWith("Approve")) { const f = fact(r.fact); f.status = "verified"; f.sens = "external"; markStale(f.cat, f.cust, "A quote was approved."); }
+    if (r.fact && el.dataset.choice.startsWith("Approve")) { const f = fact(r.fact); f.status = "verified"; f.sens = "external"; markOutdated(f.cat, f.cust, "A quote was approved."); }
     REVIEW = REVIEW.filter(x => x.id !== id);
     render(); toast(`${r.kind}: ${el.dataset.choice}`);
   }
 });
 document.addEventListener("change", e => {
   const f = e.target.closest("[data-filter]");
-  if (f) { state.f[f.dataset.filter] = f.value; render(); }
+  if (f) { state.f[f.dataset.filter] = f.value; render(); return; }
+  const b = e.target.closest("[data-bfilter]");
+  if (b) { state.bf[b.dataset.bfilter] = b.value; render(); }
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") closeOverlay();
