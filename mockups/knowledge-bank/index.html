@@ -11,7 +11,7 @@
   --alert-bg: #FFF6DB; --alert-text: #523D00; --alert-accent: #FABB00; --alert-border: #F2DFA0;
   --ok-bg: #E5FFEF; --ok-text: #003D16; --ok-accent: #008530; --ok-border: #9FE4BC;
   --err-bg: #FFF1F0; --err-text: #510400; --err-accent: #DE1409; --err-border: #F6C3BF;
-  --info-bg: #F5EAFD; --info-text: #380A59; --info-accent: #7115B2;
+  --info-accent: #7115B2;
   --ink: #0B1B3B; --mark: #FFF1B8; --scrim: rgba(0, 0, 0, .45);
   --radius: 10px;
   --shadow: 0 1px 2px rgba(20, 23, 27, .06), 0 4px 16px rgba(20, 23, 27, .05);
@@ -39,10 +39,16 @@ svg.i { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor;
 .stack { display: grid; gap: 10px; }
 .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .spread { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.term { border-bottom: 1px dotted var(--steel); cursor: help; }
+details > summary { cursor: pointer; color: var(--primary); font-weight: 600; font-size: 12.5px; list-style: none; display: inline-flex; gap: 6px; align-items: center; }
+details > summary::-webkit-details-marker { display: none; }
+details > summary::before { content: "+"; font-weight: 700; }
+details[open] > summary::before { content: "\2212"; }
+details[open] > summary { margin-bottom: 10px; }
 
 /* Shell */
 .app { display: grid; grid-template-columns: 208px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); height: 100%; }
-.appbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; background: var(--surface); border-bottom: 1px solid var(--light-gray); padding: 11px 20px; }
+.appbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 12px; background: var(--surface); border-bottom: 1px solid var(--light-gray); padding: 10px 20px; flex-wrap: wrap; }
 .appbar__mark { width: 32px; height: 32px; border-radius: 7px; background: var(--ink); color: var(--white); display: grid; place-items: center; }
 .appbar__name { font-weight: 500; font-size: 14px; }
 .appbar__spacer { flex: 1; }
@@ -80,35 +86,39 @@ svg.i { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor;
 .btn.ghost { border-color: transparent; background: none; color: var(--primary); padding: 2px 4px; white-space: normal; text-align: left; border-radius: 6px; }
 .card { background: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius); box-shadow: var(--shadow); }
 .card-hd { padding: 13px 16px; border-bottom: 1px solid var(--light-gray); font: 600 14px var(--mont); display: flex; align-items: center; gap: 8px; justify-content: space-between; flex-wrap: wrap; }
+.card-hd .aside { font: 400 12px var(--inter); color: var(--steel); }
 .pad { padding: 16px; }
 .section { margin-top: 26px; }
 .section-title { font: 700 16px var(--mont); margin-bottom: 12px; }
 .pill { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 99px; border: 1px solid; white-space: nowrap; }
+.pill svg.i { width: 13px; height: 13px; stroke-width: 2; }
 .pill.ok { background: var(--ok-bg); color: var(--ok-text); border-color: var(--ok-border); }
 .pill.warn { background: var(--alert-bg); color: var(--alert-text); border-color: var(--alert-border); }
 .pill.bad { background: var(--err-bg); color: var(--err-text); border-color: var(--err-border); }
 .pill.info { background: var(--primary-light); color: var(--primary); border-color: var(--border-primary-light); }
 .pill.solid { background: var(--primary); color: var(--white); border-color: var(--primary); }
 .pill.neutral { background: var(--surface); color: var(--steel); border-color: var(--light-gray); }
-.tag { font: 500 11px var(--mono); color: var(--steel); border: 1px solid var(--light-gray); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
-.type { font: 600 11px var(--mono); color: var(--primary); background: var(--primary-light); border-radius: 4px; padding: 1px 6px; }
+.pill.lg { font-size: 12.5px; padding: 4px 12px; }
+.tag { font-size: 11px; font-weight: 500; color: var(--steel); border: 1px solid var(--light-gray); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.type { font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-light); border-radius: 4px; padding: 1px 7px; }
 .gov { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--light-gray); border-radius: 6px; overflow: hidden; font-size: 11px; white-space: nowrap; color: var(--steel); background: var(--white); }
-.gov span { padding: 1px 7px; display: inline-flex; gap: 4px; align-items: center; }
+.gov span { padding: 1px 7px; }
 .gov span + span { border-left: 1px solid var(--light-gray); }
-.gov b { font-weight: 600; }
-.gov .t-certified b { color: var(--ok-accent); } .gov .t-reviewed b { color: var(--primary); } .gov .t-stated b { color: var(--charcoal); }
-.gov .s-external b { color: var(--ok-accent); } .gov .s-internal b { color: var(--primary); } .gov .s-restricted b { color: var(--err-accent); }
-.gov .v-private b { color: var(--alert-text); }
+.gov b { font-weight: 600; color: var(--charcoal); }
 .facet { font: 500 11px var(--mono); color: var(--steel); word-break: break-all; }
 .callout { border-radius: 8px; padding: 12px 14px; border-left: 4px solid; font-size: 13px; }
 .callout.info { background: var(--primary-light); border-color: var(--primary); color: #0D2F6B; }
 .callout.warn { background: var(--alert-bg); border-color: var(--alert-accent); color: var(--alert-text); }
 .callout.ok { background: var(--ok-bg); border-color: var(--ok-accent); color: var(--ok-text); }
 .callout.bad { background: var(--err-bg); border-color: var(--err-accent); color: var(--err-text); }
+.callout.neutral { background: var(--snow); border-color: var(--gray); color: var(--slate); }
 .empty-state { border: 1px dashed var(--border-default); border-radius: var(--radius); padding: 26px; text-align: center; color: var(--steel); font-size: 13px; background: var(--snow); }
 .hint { font-size: 11.5px; color: var(--steel); }
 
-/* Summary strip (matches the projects hub strip) */
+/* Role switch */
+.roleswitch { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--steel); }
+
+/* Summary strip */
 .summary { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--border-primary-light); border: 1px solid var(--border-primary-light); border-radius: var(--radius); overflow: hidden; }
 .summary.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .summary > button, .summary > div { background: var(--primary-light); padding: 13px 16px; border: 0; text-align: left; }
@@ -117,17 +127,25 @@ svg.i { width: 18px; height: 18px; flex: none; fill: none; stroke: currentColor;
 .summary .num { font: 700 20px var(--mont); font-variant-numeric: tabular-nums; }
 .summary .sub { font-size: 11.5px; color: var(--steel); }
 
+/* Intro cards */
+.intro { border: 1px solid var(--border-primary-light); border-radius: 14px; background: linear-gradient(180deg, #F7FAFF, var(--white)); padding: 16px 18px; margin-bottom: 20px; }
+.intro-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.intro-card { background: var(--white); border: 1px solid var(--light-gray); border-radius: 10px; padding: 12px 14px; display: grid; gap: 6px; align-content: start; }
+.intro-card .ico { width: 32px; height: 32px; border-radius: 8px; background: var(--primary); color: var(--white); display: grid; place-items: center; }
+.intro-card b { font: 600 14px var(--mont); }
+.intro-card p { font-size: 12.5px; color: var(--slate); }
+
 /* Filters, tabs, segmented */
 .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
-.search, .select, .input { border: 1px solid var(--border-default); background: var(--white); border-radius: 8px; padding: 8px 11px; font-size: 13px; max-width: 100%; }
+.search, .select { border: 1px solid var(--border-default); background: var(--white); border-radius: 8px; padding: 8px 11px; font-size: 13px; max-width: 100%; }
 .search { width: 260px; }
-.search:focus, .select:focus, .input:focus, textarea:focus { outline: 2px solid var(--border-primary-light); border-color: var(--primary); }
+.search:focus, .select:focus, textarea:focus, input:focus { outline: 2px solid var(--border-primary-light); border-color: var(--primary); }
 .seg { display: inline-flex; flex-wrap: wrap; background: var(--surface); border: 1px solid var(--light-gray); border-radius: 8px; padding: 3px; }
-.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--steel); }
+.seg button { border: 0; background: transparent; padding: 5px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; color: var(--steel); }
 .seg button[aria-pressed="true"] { background: var(--white); color: var(--primary); box-shadow: var(--shadow); }
 .check { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--slate); }
 .tabs { display: flex; gap: 6px; border-bottom: 2px solid var(--primary); margin-bottom: 18px; flex-wrap: wrap; }
-.tabs button { border: 0; background: var(--primary-light); color: var(--primary); font-weight: 600; font-size: 13px; padding: 9px 18px; border-radius: 8px 8px 0 0; display: inline-flex; gap: 6px; align-items: center; }
+.tabs button { border: 0; background: var(--primary-light); color: var(--primary); font-weight: 600; font-size: 13px; padding: 9px 18px; border-radius: 8px 8px 0 0; }
 .tabs button[aria-selected="true"] { background: var(--primary); color: var(--white); }
 .scope-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin-bottom: 16px; }
 .scope-filters .col { display: grid; gap: 6px; align-content: start; }
@@ -140,38 +158,47 @@ th { text-align: left; font: 600 11.5px var(--mont); color: var(--slate); text-t
 td { padding: 11px 12px; border-bottom: 1px solid var(--light-gray); vertical-align: top; color: var(--slate); }
 tr:last-child td { border-bottom: 0; }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-.stbl { min-width: 900px; } .stbl.narrow { min-width: 620px; } .ftable { min-width: 720px; }
+.stbl { min-width: 860px; } .stbl.narrow { min-width: 600px; }
 .stbl tbody tr[data-act] { cursor: pointer; }
 .stbl tbody tr[data-act]:hover td { background: var(--primary-light); }
 .stbl .name { font-weight: 600; color: var(--charcoal); word-break: break-word; }
-.ftable .gov { flex-wrap: nowrap; }
 .stages { display: flex; gap: 2px; margin-top: 6px; }
 .stages i { width: 16px; height: 4px; border-radius: 2px; background: var(--light-gray); }
 .stages i.done { background: var(--ok-accent); } .stages i.fail { background: var(--err-accent); } .stages i.run { background: var(--alert-accent); }
 
-/* Knowledge Bank home */
+/* Accounts home */
 .home { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 20px; align-items: start; }
-.mix { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.mix-row { display: grid; grid-template-columns: 104px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; }
-.mix-row .bar { height: 7px; border-radius: 99px; background: var(--light-gray); overflow: hidden; }
-.mix-row .bar i { display: block; height: 100%; border-radius: 99px; }
-.mix-row .n { text-align: right; font: 600 12.5px var(--inter); font-variant-numeric: tabular-nums; }
 .matrix-wrap { overflow-x: auto; }
-.matrix { border-collapse: separate; border-spacing: 4px; min-width: 520px; }
+.matrix { border-collapse: separate; border-spacing: 5px; min-width: 540px; }
 .matrix th { background: none; border: 0; padding: 4px 6px; font-size: 11px; }
 .matrix td { padding: 0; border: 0; }
-.cell { width: 100%; border: 1px solid var(--light-gray); background: var(--white); border-radius: 8px; padding: 8px 10px; text-align: left; display: grid; gap: 4px; min-height: 62px; }
-.cell:hover { border-color: var(--primary); }
-.cell .n { font: 700 16px var(--mont); font-variant-numeric: tabular-nums; }
-.cell.empty { color: var(--steel); background: var(--snow); border-style: dashed; }
-.cell.l1 { background: var(--primary-light); }
-.cell.l2 { background: var(--primary-lighter); }
-.cell.l3 { background: #B9D2FB; }
+.cell { width: 100%; border: 1px solid var(--light-gray); background: var(--white); border-radius: 9px; padding: 9px 10px; text-align: left; display: grid; gap: 5px; min-height: 70px; }
+.cell:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+.cell.ready { background: var(--ok-bg); border-color: var(--ok-border); }
+.cell.thin { background: var(--alert-bg); border-color: var(--alert-border); }
+.cell.missing { background: var(--snow); border-style: dashed; }
+.cell b { font: 600 13px var(--mont); }
 .todo { display: grid; gap: 1px; background: var(--light-gray); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--light-gray); }
 .todo button { background: var(--white); border: 0; text-align: left; padding: 12px 14px; display: grid; gap: 4px; }
 .todo button:hover { background: var(--primary-light); }
+.mix { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.mix-row { display: grid; grid-template-columns: 150px minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; }
+.mix-row .bar { height: 7px; border-radius: 99px; background: var(--light-gray); overflow: hidden; }
+.mix-row .bar i { display: block; height: 100%; border-radius: 99px; }
+.mix-row .n { text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; }
 
-/* Facts */
+/* Account page */
+.acct { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+.qsec + .qsec { margin-top: 18px; }
+.qsec h3 { font-size: 14px; margin-bottom: 8px; }
+.frow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; align-items: start; padding: 11px 14px; border: 1px solid var(--light-gray); border-radius: 9px; background: var(--white); text-align: left; width: 100%; }
+.frow + .frow { margin-top: 6px; }
+.frow:hover { border-color: var(--primary); }
+.frow .t { font-size: 13.5px; color: var(--charcoal); font-weight: 500; }
+.frow .m { grid-column: 1 / -1; font-size: 11.5px; color: var(--steel); display: flex; flex-wrap: wrap; gap: 4px 12px; }
+.frow.dim { opacity: .6; }
+
+/* Fact cards (curator list) */
 .fact { background: var(--white); border: 1px solid var(--light-gray); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 8px; text-align: left; width: 100%; box-shadow: var(--shadow); }
 .fact:hover { border-color: var(--primary); }
 .fact + .fact { margin-top: 8px; }
@@ -180,9 +207,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .fact-meta { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 12px; color: var(--steel); }
 
 /* Briefings */
-.briefings { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 20px; align-items: start; }
+.briefings { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 20px; align-items: start; }
 .blist { display: grid; gap: 8px; }
-.bitem { text-align: left; border: 1px solid var(--light-gray); background: var(--white); border-radius: var(--radius); padding: 11px 13px; display: grid; gap: 5px; }
+.bitem { text-align: left; border: 1px solid var(--light-gray); background: var(--white); border-radius: var(--radius); padding: 11px 13px; display: grid; gap: 6px; }
 .bitem:hover { border-color: var(--primary); background: var(--primary-light); }
 .bitem[aria-pressed="true"] { border-color: var(--primary); background: var(--primary-light); box-shadow: 0 0 0 1px var(--primary); }
 .bitem.virtual { border-style: dashed; }
@@ -193,28 +220,17 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .doc ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 78ch; }
 .anchor { font: 700 10px var(--inter); color: var(--primary); background: var(--primary-light); border: 0; border-radius: 3px; padding: 0 4px; vertical-align: 2px; }
 button.anchor:hover { background: var(--primary); color: var(--white); }
-.bgtag { font-size: 10px; font-weight: 600; color: var(--steel); background: var(--surface); border-radius: 3px; padding: 0 4px; vertical-align: 2px; }
+.bgtag { font-size: 10px; font-weight: 600; color: var(--steel); background: var(--surface); border: 0; border-radius: 3px; padding: 0 5px; vertical-align: 2px; }
 .refs { border-top: 1px dashed var(--light-gray); padding-top: 12px; display: grid; gap: 4px; font-size: 12px; color: var(--steel); }
 .meter { height: 7px; border-radius: 99px; background: var(--light-gray); overflow: hidden; }
 .meter i { display: block; height: 100%; background: var(--alert-accent); }
-
-/* Search */
-.ask { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; align-items: start; }
-.ask form { display: grid; gap: 12px; }
-.pipeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: var(--light-gray); border: 1px solid var(--light-gray); border-radius: var(--radius); overflow: hidden; }
-.pipeline div { background: var(--snow); padding: 10px 14px; }
-.pipeline b { font: 700 18px var(--mont); font-variant-numeric: tabular-nums; display: block; }
-.answer { display: grid; gap: 10px; }
-.answer ul, .bubble ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; }
-.chip { border: 1px solid var(--border-primary-light); background: var(--white); color: var(--primary); border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 500; text-align: left; }
-.chip:hover { background: var(--primary-light); }
-.linkish { border: 0; background: none; padding: 0; text-align: left; color: var(--charcoal); }
-.linkish:hover { color: var(--primary); text-decoration: underline; }
 .verdict { border-radius: 8px; padding: 10px 12px; font-size: 13px; border-left: 4px solid; }
 .verdict.ok { background: var(--ok-bg); border-color: var(--ok-accent); color: var(--ok-text); }
 .verdict.warn { background: var(--alert-bg); border-color: var(--alert-accent); color: var(--alert-text); }
 .verdict.bad { background: var(--err-bg); border-color: var(--err-accent); color: var(--err-text); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--border-primary-light); background: var(--white); color: var(--primary); border-radius: 999px; padding: 5px 11px; font-size: 12px; font-weight: 500; text-align: left; }
+.chip:hover { background: var(--primary-light); }
 
 /* Review queue */
 .rq { display: grid; gap: 12px; }
@@ -241,15 +257,16 @@ button.anchor:hover { background: var(--primary); color: var(--white); }
 /* Project workspace + chat */
 .proj { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
 .chat { display: flex; flex-direction: column; min-height: 560px; }
-.thread { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: calc(100vh - 330px); min-height: 380px; background: var(--snow); border-radius: 0 0 0 0; }
+.thread { flex: 1; padding: 18px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; max-height: calc(100vh - 330px); min-height: 380px; background: var(--snow); }
 .msg { display: flex; gap: 10px; align-items: flex-start; max-width: 100%; }
 .msg.me { justify-content: flex-end; }
 .msg .who { width: 30px; height: 30px; border-radius: 8px; background: var(--primary); color: var(--white); display: grid; place-items: center; flex: none; }
 .msg.me .who { background: linear-gradient(135deg, var(--info-accent), var(--primary)); border-radius: 99px; font: 700 11px var(--mont); order: 2; }
-.bubble { background: var(--white); border: 1px solid var(--light-gray); border-radius: 4px 12px 12px 12px; padding: 12px 14px; box-shadow: var(--shadow); display: grid; gap: 10px; min-width: 0; max-width: min(640px, 100%); font-size: 13.5px; }
+.bubble { background: var(--white); border: 1px solid var(--light-gray); border-radius: 4px 12px 12px 12px; padding: 12px 14px; box-shadow: var(--shadow); display: grid; gap: 10px; min-width: 0; max-width: min(660px, 100%); font-size: 13.5px; }
+.bubble ul { margin: 0; padding-left: 18px; display: grid; gap: 5px; }
 .msg.me .bubble { background: var(--primary); color: var(--white); border-color: var(--primary); border-radius: 12px 4px 12px 12px; }
 .bubble .tool-hd { display: flex; align-items: center; gap: 8px; font: 600 13px var(--mont); color: var(--primary); }
-.bubble table { font-size: 12.5px; }
+.locked [data-act="cs-deck"], .locked [data-act="st-pick"], .locked [data-act="st-approve"], .locked [data-act="st-refine"] { pointer-events: none; opacity: .5; }
 .typing { display: inline-flex; gap: 4px; padding: 4px 0; }
 .typing i { width: 6px; height: 6px; border-radius: 50%; background: var(--steel); opacity: .4; animation: blink 1s infinite; }
 .typing i:nth-child(2) { animation-delay: .15s; } .typing i:nth-child(3) { animation-delay: .3s; }
@@ -262,13 +279,13 @@ button.anchor:hover { background: var(--primary); color: var(--white); }
 .stagelist li.ok { color: var(--charcoal); }
 .stagelist li.ok .ico { background: var(--ok-accent); border-color: var(--ok-accent); }
 @keyframes spin { to { transform: rotate(360deg); } }
-.locked [data-act="cs-deck"], .locked [data-act="st-pick"], .locked [data-act="st-approve"], .locked [data-act="st-refine"] { pointer-events: none; opacity: .5; }
 .opt { border: 1px solid var(--light-gray); border-radius: 8px; padding: 11px 13px; display: grid; gap: 6px; background: var(--white); }
 .opt.rec { border-color: var(--primary); background: var(--primary-light); }
 .opt strong { font: 600 13.5px var(--mont); }
 .filepick { border: 1px dashed var(--border-primary-light); border-radius: 8px; background: var(--primary-light); padding: 10px 12px; display: grid; gap: 6px; }
 .filerow { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border: 1px solid var(--light-gray); border-radius: 8px; background: var(--white); font-size: 12.5px; width: 100%; text-align: left; }
 .filerow:hover:not(:disabled) { border-color: var(--primary); }
+.whybox { background: var(--snow); border: 1px solid var(--light-gray); border-radius: 8px; padding: 10px 12px; display: grid; gap: 8px; font-size: 12.5px; }
 .composer { border-top: 1px solid var(--light-gray); padding: 12px 14px; display: grid; gap: 10px; background: var(--white); border-radius: 0 0 var(--radius) var(--radius); }
 .composer form { display: flex; gap: 8px; align-items: flex-end; }
 .composer textarea { flex: 1; min-width: 0; border: 1px solid var(--border-default); border-radius: 10px; padding: 10px 12px; resize: none; font-size: 13.5px; line-height: 1.5; }
@@ -292,9 +309,12 @@ button.anchor:hover { background: var(--primary); color: var(--white); }
 .chain > div::before { content: ""; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--white); border: 2px solid var(--primary); }
 .excerpt { background: var(--snow); border: 1px solid var(--light-gray); border-radius: 8px; padding: 10px 12px; font-size: 13px; }
 pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; overflow-x: auto; }
-.kv { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 6px 12px; font-size: 13px; margin: 0; }
+.kv { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 6px 12px; font-size: 13px; margin: 0; }
 .kv dt { color: var(--steel); }
 .kv dd { margin: 0; }
+.roles { display: grid; gap: 6px; font-size: 13px; }
+.roles > div { display: flex; gap: 10px; align-items: flex-start; }
+.roles .dot { width: 22px; height: 22px; border-radius: 99px; display: grid; place-items: center; flex: none; font-size: 11px; font-weight: 700; color: var(--white); }
 .modal-wrap { position: fixed; inset: 0; display: grid; place-items: center; padding: 16px; z-index: 22; }
 .modal { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow-lg); width: 100%; max-width: 580px; max-height: 90vh; overflow-y: auto; }
 .modal header { padding: 16px 20px; border-bottom: 1px solid var(--light-gray); }
@@ -310,8 +330,8 @@ pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; over
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--charcoal); color: var(--white); padding: 10px 16px; border-radius: 8px; font-weight: 500; z-index: 30; box-shadow: var(--shadow-lg); max-width: calc(100% - 32px); }
 
 @media (max-width: 1100px) {
-  .home, .ask, .proj { grid-template-columns: minmax(0, 1fr); }
-  .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .home, .proj, .acct { grid-template-columns: minmax(0, 1fr); }
+  .summary, .intro-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 820px) {
   .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
@@ -319,11 +339,12 @@ pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; over
   .sidebar .group, .navitem .count { display: none; }
   .navitem { width: auto; padding: 6px 10px; }
   .content { padding-inline: 16px; }
-  .briefings, .mix, .scope-filters, .summary.three { grid-template-columns: minmax(0, 1fr); }
-  .grid2, .grid3, .versus, .pipeline { grid-template-columns: minmax(0, 1fr); }
+  .briefings, .mix, .scope-filters, .summary.three, .intro-grid { grid-template-columns: minmax(0, 1fr); }
+  .grid2, .grid3, .versus { grid-template-columns: minmax(0, 1fr); }
   .kv { grid-template-columns: minmax(0, 1fr); }
   .thread { max-height: none; }
   .search { width: 100%; }
+  .mix-row { grid-template-columns: 120px minmax(0, 1fr) 36px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .projcard, .stagelist li.run .ico, .typing i { transition: none; animation: none; }
@@ -335,7 +356,8 @@ pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; over
     <span class="appbar__mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/></svg></span>
     <span class="appbar__name">AI Sales Assistant</span>
     <span class="appbar__spacer"></span>
-    <span class="avatar" title="Camille Martin">CM</span>
+    <span class="roleswitch"><span>Viewing as</span><span class="seg" role="group" aria-label="Viewing as" id="roleswitch"></span></span>
+    <span class="avatar" id="avatar" title="Camille Martin">CM</span>
   </header>
   <aside class="sidebar" id="nav" aria-label="Sections"></aside>
   <main class="main" id="main"><div class="content" id="view"></div></main>
@@ -347,23 +369,25 @@ pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; over
 <script>
 /* =====================================================================
    Mock data. Sample only: fictional retailers, people and figures.
-   Labels follow the app: reliability = certified / reviewed / stated;
-   status = verified / needs review / outdated / replaced.
    ===================================================================== */
-const ME = "Camille Martin";
 const TODAY = "30 Sep 2026";
 const CATEGORIES = ["Fabric Care", "Hair Care", "Oral Care"];
 const CUSTOMERS = ["Northgate", "Brightmart", "Harbour & Co"];
 const TYPES = ["metric", "insight", "quote", "recommendation", "event"];
-const STAGES = ["Parse", "Quality gate", "Chunk", "Embed", "Mine facts", "Ground"];
+const TYPE_LABEL = { metric: "Number", insight: "Insight", quote: "Quote", recommendation: "Recommendation", event: "Event" };
+const STAGES = ["Read file", "Quality check", "Split into passages", "Index", "Extract facts", "Link to evidence"];
 const REL = ["certified", "reviewed", "stated"];
-const STATUS_LABEL = { verified: "Verified", needs_review: "Needs review", outdated: "Outdated", replaced: "Replaced" };
-const STATUS_CLS = { verified: "ok", needs_review: "warn", outdated: "neutral", replaced: "neutral" };
+const REL_LABEL = { certified: "Official data", reviewed: "Checked document", stated: "Someone's note" };
+const REL_TIP = { certified: "Numbers read straight from certified market data. The most reliable.", reviewed: "From a study, plan or deck that went through a review.", stated: "Written by a person, for example a Sales Book entry or a KAM note." };
+const SENS_LABEL = { external: "For customers", internal: "Internal", restricted: "Restricted" };
+const STATUS_LABEL = { verified: "Checked", needs_review: "Waiting for review", outdated: "Out of date", replaced: "Replaced" };
+const CURATOR = { "Fabric Care": "Sam Okafor", "Hair Care": "Lena Fischer", "Oral Care": "Tom Reyes" };
+const PEOPLE = { kam: { name: "Camille Martin", init: "CM", role: "KAM · Fabric Care UK" }, curator: { name: "Sam Okafor", init: "SO", role: "Curator · Fabric Care" } };
 
 const ICON = {
   grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   db: '<ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
-  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  store: '<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9h16v2a2.5 2.5 0 0 1-5 0 2.5 2.5 0 0 1-5 0 2.5 2.5 0 0 1-5 0z"/><path d="M5 12v8h14v-8"/>',
   book: '<path d="M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3z"/><path d="M21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/>',
   facts: '<path d="M10 6h10M10 12h10M10 18h10"/><path d="M3 6l1.5 1.5L7 5M3 12l1.5 1.5L7 11M3 18l1.5 1.5L7 17"/>',
   folder: '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M12 16v-6M9 12l3-3 3 3"/>',
@@ -373,84 +397,88 @@ const ICON = {
   send: '<path d="M4 12l16-8-6 16-2-7z"/>',
   file: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>',
   plus: '<path d="M12 5v14M5 12h14"/>',
-  gap: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+  lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17v.5"/>',
+  people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.2c2.9.4 5 2.8 5 5.8"/>',
 };
 const icon = n => `<svg class="i" viewBox="0 0 24 24" aria-hidden="true">${ICON[n]}</svg>`;
 
 const SOURCES = [
-  { id: "S-01", name: "uk_retailer_share · certified view v3", kind: "Certified metric view", lane: "Data", cat: null, cust: null, status: "live", sens: "internal", rel: "certified", asOf: "07 Sep 2026", conf: "high", facts: 412, stage: 6 },
-  { id: "S-02", name: "Fabric Care shopper study 2026.pdf", kind: "PDF", lane: "Document", cat: "Fabric Care", cust: null, status: "live", sens: "internal", rel: "reviewed", asOf: "12 Mar 2026", conf: "high", facts: 38, stage: 6 },
-  { id: "S-03", name: "Northgate JBP 2026-27.pptx", kind: "Deck", lane: "Document", cat: "Fabric Care", cust: "Northgate", status: "live", sens: "internal", rel: "reviewed", asOf: "01 Jul 2026", conf: "high", facts: 24, stage: 6 },
-  { id: "S-04", name: "Northgate Sales Book", kind: "SharePoint Sales Book", lane: "Document", cat: null, cust: "Northgate", status: "live", sens: "internal", rel: "stated", asOf: "15 Aug 2026", conf: "medium", facts: 17, stage: 6 },
-  { id: "S-05", name: "Hair Care category strategy FY26.pdf", kind: "PDF", lane: "Document", cat: "Hair Care", cust: null, status: "live", sens: "restricted", rel: "reviewed", asOf: "20 Jan 2026", conf: "high", facts: 29, stage: 6 },
-  { id: "S-11", name: "Brightmart Sales Book", kind: "SharePoint Sales Book", lane: "Document", cat: "Hair Care", cust: "Brightmart", status: "live", sens: "internal", rel: "stated", asOf: "02 Sep 2026", conf: "medium", facts: 9, stage: 6 },
-  { id: "S-10", name: "Harbour & Co Oral Care JBP 2026.pptx", kind: "Deck", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "live", sens: "internal", rel: "reviewed", asOf: "10 Feb 2026", conf: "high", facts: 2, stage: 6 },
-  { id: "S-06", name: "Brightmart buyer meeting notes.docx", kind: "Word document", lane: "Document", cat: "Hair Care", cust: "Brightmart", status: "needs_context", sens: "internal", rel: "stated", asOf: "unknown", conf: "low", facts: 0, stage: 1, note: "Content date not found. Possible personal data." },
-  { id: "S-07", name: "Oral Care panel export 2019.xlsx", kind: "Spreadsheet", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "quarantined", sens: "internal", rel: "reviewed", asOf: "31 Dec 2019", conf: "high", facts: 0, stage: 1, note: "Older than the 24-month intake limit for panel data." },
-  { id: "S-09", name: "Harbour & Co range review scan.pdf", kind: "PDF", lane: "Document", cat: "Oral Care", cust: "Harbour & Co", status: "failed", sens: "internal", rel: "reviewed", asOf: "unknown", conf: "low", facts: 0, stage: 0, note: "The parser could not read the scanned pages." },
-  { id: "S-08", name: "Northgate JBP 2025-26.pptx", kind: "Deck", lane: "Document", cat: "Fabric Care", cust: "Northgate", status: "superseded", sens: "internal", rel: "reviewed", asOf: "01 Jul 2025", conf: "high", facts: 21, stage: 6, supersededBy: "S-03" },
+  { id: "S-01", name: "UK retailer share · official market data", kind: "Certified market data", cat: null, cust: null, status: "live", sens: "internal", rel: "certified", asOf: "07 Sep 2026", conf: "high", facts: 412, stage: 6 },
+  { id: "S-02", name: "Fabric Care shopper study 2026.pdf", kind: "Study (PDF)", cat: "Fabric Care", cust: null, status: "live", sens: "internal", rel: "reviewed", asOf: "12 Mar 2026", conf: "high", facts: 38, stage: 6 },
+  { id: "S-03", name: "Northgate JBP 2026-27.pptx", kind: "Deck", cat: "Fabric Care", cust: "Northgate", status: "live", sens: "internal", rel: "reviewed", asOf: "01 Jul 2026", conf: "high", facts: 24, stage: 6 },
+  { id: "S-04", name: "Northgate Sales Book", kind: "SharePoint Sales Book", cat: null, cust: "Northgate", status: "live", sens: "internal", rel: "stated", asOf: "15 Aug 2026", conf: "medium", facts: 17, stage: 6 },
+  { id: "S-05", name: "Hair Care category strategy FY26.pdf", kind: "Strategy (PDF)", cat: "Hair Care", cust: null, status: "live", sens: "restricted", rel: "reviewed", asOf: "20 Jan 2026", conf: "high", facts: 29, stage: 6 },
+  { id: "S-11", name: "Brightmart Sales Book", kind: "SharePoint Sales Book", cat: "Hair Care", cust: "Brightmart", status: "live", sens: "internal", rel: "stated", asOf: "02 Sep 2026", conf: "medium", facts: 9, stage: 6 },
+  { id: "S-10", name: "Harbour & Co Oral Care JBP 2026.pptx", kind: "Deck", cat: "Oral Care", cust: "Harbour & Co", status: "live", sens: "internal", rel: "reviewed", asOf: "10 Feb 2026", conf: "high", facts: 2, stage: 6 },
+  { id: "S-06", name: "Brightmart buyer meeting notes.docx", kind: "Word document", cat: "Hair Care", cust: "Brightmart", status: "needs_context", sens: "internal", rel: "stated", asOf: "unknown", conf: "low", facts: 0, stage: 1, note: "No date found in the file, and it may contain personal data." },
+  { id: "S-07", name: "Oral Care panel export 2019.xlsx", kind: "Spreadsheet", cat: "Oral Care", cust: "Harbour & Co", status: "quarantined", sens: "internal", rel: "reviewed", asOf: "31 Dec 2019", conf: "high", facts: 0, stage: 1, note: "Older than the 2-year limit for market data." },
+  { id: "S-09", name: "Harbour & Co range review scan.pdf", kind: "PDF", cat: "Oral Care", cust: "Harbour & Co", status: "failed", sens: "internal", rel: "reviewed", asOf: "unknown", conf: "low", facts: 0, stage: 0, note: "Scanned pages could not be read. Upload a text version." },
+  { id: "S-08", name: "Northgate JBP 2025-26.pptx", kind: "Deck", cat: "Fabric Care", cust: "Northgate", status: "superseded", sens: "internal", rel: "reviewed", asOf: "01 Jul 2025", conf: "high", facts: 21, stage: 6, supersededBy: "S-03" },
 ];
 
 let FACTS = [
-  { id: "F-1021", type: "metric", text: "Fabric Care value sales at Northgate grew 4.2% vs. a year ago.", fig: "4.2", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 18 422", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_m: 431.7, value_sales_growth_pct: 4.2 }, dedup: 3 },
-  { id: "F-1022", type: "metric", text: "Northgate holds 18.6% of UK Fabric Care value sales.", fig: "18.6", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 18 423", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", retailer_share_pct: 18.6 }, dedup: 2 },
-  { id: "F-1034", type: "insight", text: "Northgate shoppers switch to own label when promotion depth falls below 20%.", fig: "20%", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", src: "S-02", loc: "page 14 [chunk 3]", excerpt: "…among Northgate laundry shoppers, switching to own label rises sharply once promotion depth falls below 20%, with capsule buyers the least affected…", dedup: 1 },
-  { id: "F-1040", type: "quote", text: "“We want fewer, bigger promotions that bring new shoppers to the aisle.” Northgate category buyer", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: "15 Aug 2026", src: "S-04", loc: "Buyer notes [chunk 2]", excerpt: "Buyer review, 12 Aug: “We want fewer, bigger promotions that bring new shoppers to the aisle.” Asked for a promo calendar by end of month.", dedup: 1 },
-  { id: "F-1045", type: "recommendation", text: "Move the capsules end-cap to weeks 38–41 to line up with back-to-school.", fig: "38–41", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "needs_review", asOf: "01 Jul 2026", src: "S-03", loc: "slide 9 [chunk 1]", excerpt: "Next steps: move the capsules end-cap to weeks 38–41 to line up with back-to-school traffic.", dedup: 1 },
-  { id: "F-1046", type: "recommendation", text: "Hold promotion depth at 25% or more on capsules to limit own-label switching.", fig: "25%", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 11 [chunk 2]", excerpt: "Recommendation: hold promotion depth at 25% or more on capsules to limit own-label switching.", dedup: 1 },
-  { id: "F-1047", type: "metric", text: "Our Fabric Care margin target at Northgate is 31%.", fig: "31%", period: "FY 2026-27", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 14 [chunk 1]", excerpt: "FY26-27 targets: net sales +5%, margin 31%, distribution gains on capsules.", dedup: 1 },
-  { id: "F-1051", type: "event", text: "Northgate range review confirmed for 14 Nov 2026.", fig: "14 Nov 2026", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "external", owner: null, status: "verified", asOf: "22 Sep 2026", src: null, loc: "Account memory · Northgate range review project", excerpt: "Project signal: meeting with the category buyer set for 14 Nov 2026 (range review).", dedup: 1 },
-  { id: "F-1052", type: "insight", text: "The buyer is under pressure to cut laundry SKU count by about 10%.", fig: "10%", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: ME, status: "needs_review", asOf: "24 Sep 2026", src: null, loc: "Added by you", excerpt: "Heard after the 22 Sep call: pressure to cut laundry SKUs by about 10%. Not confirmed in writing.", dedup: 1 },
-  { id: "F-0990", type: "metric", text: "Northgate holds 17.9% of UK Fabric Care value sales.", fig: "17.9", period: "52 w to 01 Jun 2025", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "replaced", asOf: "01 Jul 2025", src: "S-08", loc: "slide 4 [chunk 1]", excerpt: "Northgate share of UK Fabric Care: 17.9% (52 w to 01 Jun 2025).", dedup: 1 },
-  { id: "F-1080", type: "insight", text: "Northgate is prioritising own-label growth across household in 2027.", cat: null, cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "15 Aug 2026", src: "S-04", loc: "Customer profile [chunk 1]", excerpt: "2027 priorities: grow own label across household, fewer promotions, more space for new ranges.", dedup: 1 },
-  { id: "F-1023", type: "metric", text: "The UK Fabric Care market is worth £2.31bn, up 3.1% vs. a year ago.", fig: "3.1", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 104", row: { market: "UK", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_bn: 2.31, value_sales_growth_pct: 3.1 }, dedup: 4 },
-  { id: "F-1024", type: "metric", text: "Capsules make up 38% of UK Fabric Care value sales.", fig: "38", period: "52 w to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 117", row: { market: "UK", category: "Fabric Care", segment: "Capsules", period: "52w_2026-09-07", segment_share_pct: 38 }, dedup: 2 },
-  { id: "F-1035", type: "insight", text: "Capsule buyers are 1.6× more likely to buy the premium tier.", fig: "1.6×", cat: "Fabric Care", cust: null, rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", src: "S-02", loc: "page 22 [chunk 1]", excerpt: "Capsule buyers are 1.6× more likely than liquid buyers to trade up to the premium tier.", dedup: 1 },
-  { id: "F-1060", type: "metric", text: "Hair Care value share at Brightmart fell 0.8 pts vs. a year ago.", fig: "0.8", period: "12 w to 15 Jun 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "15 Jun 2026", expires: "12 Oct 2026", src: "S-01", loc: "dataset row 30 981", row: { retailer: "Brightmart", category: "Hair Care", period: "12w_2026-06-15", share_change_pts: -0.8 }, dedup: 1 },
-  { id: "F-1062", type: "metric", text: "Brightmart grew Hair Care value sales 2.1% vs. a year ago.", fig: "2.1", period: "52 w to 07 Sep 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 31 002", row: { retailer: "Brightmart", category: "Hair Care", period: "52w_2026-09-07", value_sales_growth_pct: 2.1 }, dedup: 1 },
-  { id: "F-1061", type: "insight", text: "Brightmart plans to expand its premium hair aisle in 40 stores next spring.", fig: "40", cat: "Hair Care", cust: "Brightmart", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "02 Sep 2026", src: "S-11", loc: "Account plan [chunk 4]", excerpt: "Buyer confirmed a premium hair aisle expansion in 40 stores from spring 2027.", dedup: 1 },
-  { id: "F-1065", type: "insight", text: "Scalp-care claims drive trial among 25–34 year-olds.", fig: "25–34", cat: "Hair Care", cust: null, rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", src: "S-05", loc: "page 8 [chunk 2]", excerpt: "Scalp-care claims are the strongest trial driver among 25–34 year-olds.", dedup: 1 },
-  { id: "F-1066", type: "metric", text: "The UK Hair Care market is worth £1.12bn, flat vs. a year ago.", fig: "1.12", period: "52 w to 07 Sep 2026", cat: "Hair Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "dataset row 2 390", row: { market: "UK", category: "Hair Care", period: "52w_2026-09-07", value_sales_gbp_bn: 1.12, value_sales_growth_pct: 0.0 }, dedup: 3 },
-  { id: "F-1067", type: "recommendation", text: "Lead the FY26 Hair Care story with scalp care in grocery.", cat: "Hair Care", cust: null, rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", src: "S-05", loc: "page 19 [chunk 1]", excerpt: "In grocery, lead the FY26 story with scalp care.", dedup: 1 },
-  { id: "F-1070", type: "metric", text: "Harbour & Co Oral Care value sales grew 6.4% vs. a year ago.", fig: "6.4", period: "12 w to 31 Mar 2026", cat: "Oral Care", cust: "Harbour & Co", rel: "certified", sens: "internal", owner: null, status: "outdated", asOf: "31 Mar 2026", src: "S-01", loc: "dataset row 44 210", row: { retailer: "Harbour & Co", category: "Oral Care", period: "12w_2026-03-31", value_sales_growth_pct: 6.4 }, dedup: 1 },
-  { id: "F-1071", type: "recommendation", text: "Launch the whitening range in Harbour & Co's top 120 stores first.", fig: "120", cat: "Oral Care", cust: "Harbour & Co", rel: "reviewed", sens: "internal", owner: null, status: "needs_review", asOf: "10 Feb 2026", src: "S-10", loc: "slide 6 [chunk 1]", excerpt: "Phase 1: launch whitening in the top 120 stores first, then roll out.", dedup: 1 },
-  { id: "F-1072", type: "insight", text: "Harbour & Co shoppers over-index on electric toothbrush refills.", cat: "Oral Care", cust: "Harbour & Co", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "10 Feb 2026", src: "S-10", loc: "slide 3 [chunk 2]", excerpt: "Harbour & Co shoppers over-index on electric toothbrush refills vs. the market.", dedup: 1 },
+  { id: "F-1021", type: "metric", text: "Fabric Care value sales at Northgate grew 4.2% vs. a year ago.", fig: "4.2", period: "52 weeks to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "data row 18 422", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_m: 431.7, value_sales_growth_pct: 4.2 }, dedup: 3 },
+  { id: "F-1022", type: "metric", text: "Northgate holds 18.6% of UK Fabric Care value sales.", fig: "18.6", period: "52 weeks to 07 Sep 2026", cat: "Fabric Care", cust: "Northgate", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "data row 18 423", row: { retailer: "Northgate", category: "Fabric Care", period: "52w_2026-09-07", retailer_share_pct: 18.6 }, dedup: 2 },
+  { id: "F-1034", type: "insight", text: "Northgate shoppers switch to own label when promotion depth falls below 20%.", fig: "20%", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", src: "S-02", loc: "page 14", excerpt: "…among Northgate laundry shoppers, switching to own label rises sharply once promotion depth falls below 20%, with capsule buyers the least affected…", dedup: 1 },
+  { id: "F-1040", type: "quote", text: "“We want fewer, bigger promotions that bring new shoppers to the aisle.” Northgate category buyer", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: "15 Aug 2026", src: "S-04", loc: "Buyer notes", excerpt: "Buyer review, 12 Aug: “We want fewer, bigger promotions that bring new shoppers to the aisle.” Asked for a promo calendar by end of month.", dedup: 1, by: "Camille Martin" },
+  { id: "F-1045", type: "recommendation", text: "Move the capsules end-cap to weeks 38–41 to line up with back-to-school.", fig: "38–41", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "needs_review", asOf: "01 Jul 2026", src: "S-03", loc: "slide 9", excerpt: "Next steps: move the capsules end-cap to weeks 38–41 to line up with back-to-school traffic.", dedup: 1 },
+  { id: "F-1046", type: "recommendation", text: "Hold promotion depth at 25% or more on capsules to limit own-label switching.", fig: "25%", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 11", excerpt: "Recommendation: hold promotion depth at 25% or more on capsules to limit own-label switching.", dedup: 1 },
+  { id: "F-1047", type: "metric", text: "Our Fabric Care margin target at Northgate is 31%.", fig: "31%", period: "FY 2026-27", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "01 Jul 2026", src: "S-03", loc: "slide 14", excerpt: "FY26-27 targets: net sales +5%, margin 31%, distribution gains on capsules.", dedup: 1 },
+  { id: "F-1051", type: "event", text: "Northgate range review confirmed for 14 Nov 2026.", fig: "14 Nov 2026", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "external", owner: null, status: "verified", asOf: "22 Sep 2026", src: null, loc: "From the Northgate range review project", excerpt: "Project signal: meeting with the category buyer set for 14 Nov 2026 (range review).", dedup: 1 },
+  { id: "F-1052", type: "insight", text: "The buyer is under pressure to cut laundry SKU count by about 10%.", fig: "10%", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: "Camille Martin", status: "needs_review", asOf: "24 Sep 2026", src: null, loc: "Added by Camille Martin", excerpt: "Heard after the 22 Sep call: pressure to cut laundry SKUs by about 10%. Not confirmed in writing.", dedup: 1, by: "Camille Martin" },
+  { id: "F-0990", type: "metric", text: "Northgate holds 17.9% of UK Fabric Care value sales.", fig: "17.9", period: "52 weeks to 01 Jun 2025", cat: "Fabric Care", cust: "Northgate", rel: "reviewed", sens: "internal", owner: null, status: "replaced", asOf: "01 Jul 2025", src: "S-08", loc: "slide 4", excerpt: "Northgate share of UK Fabric Care: 17.9% (52 w to 01 Jun 2025).", dedup: 1 },
+  { id: "F-1080", type: "insight", text: "Northgate is prioritising own-label growth across household in 2027.", cat: null, cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "15 Aug 2026", src: "S-04", loc: "Customer profile", excerpt: "2027 priorities: grow own label across household, fewer promotions, more space for new ranges.", dedup: 1 },
+  { id: "F-1023", type: "metric", text: "The UK Fabric Care market is worth £2.31bn, up 3.1% vs. a year ago.", fig: "3.1", period: "52 weeks to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "data row 2 104", row: { market: "UK", category: "Fabric Care", period: "52w_2026-09-07", value_sales_gbp_bn: 2.31, value_sales_growth_pct: 3.1 }, dedup: 4 },
+  { id: "F-1024", type: "metric", text: "Capsules make up 38% of UK Fabric Care value sales.", fig: "38", period: "52 weeks to 07 Sep 2026", cat: "Fabric Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "data row 2 117", row: { market: "UK", category: "Fabric Care", segment: "Capsules", period: "52w_2026-09-07", segment_share_pct: 38 }, dedup: 2 },
+  { id: "F-1035", type: "insight", text: "Capsule buyers are 1.6× more likely to buy the premium tier.", fig: "1.6×", cat: "Fabric Care", cust: null, rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "12 Mar 2026", src: "S-02", loc: "page 22", excerpt: "Capsule buyers are 1.6× more likely than liquid buyers to trade up to the premium tier.", dedup: 1 },
+  { id: "F-1060", type: "metric", text: "Hair Care value share at Brightmart fell 0.8 pts vs. a year ago.", fig: "0.8", period: "12 weeks to 15 Jun 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "15 Jun 2026", expires: "12 Oct 2026", src: "S-01", loc: "data row 30 981", row: { retailer: "Brightmart", category: "Hair Care", period: "12w_2026-06-15", share_change_pts: -0.8 }, dedup: 1 },
+  { id: "F-1062", type: "metric", text: "Brightmart grew Hair Care value sales 2.1% vs. a year ago.", fig: "2.1", period: "52 weeks to 07 Sep 2026", cat: "Hair Care", cust: "Brightmart", rel: "certified", sens: "internal", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "data row 31 002", row: { retailer: "Brightmart", category: "Hair Care", period: "52w_2026-09-07", value_sales_growth_pct: 2.1 }, dedup: 1 },
+  { id: "F-1061", type: "insight", text: "Brightmart plans to expand its premium hair aisle in 40 stores next spring.", fig: "40", cat: "Hair Care", cust: "Brightmart", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "02 Sep 2026", src: "S-11", loc: "Account plan", excerpt: "Buyer confirmed a premium hair aisle expansion in 40 stores from spring 2027.", dedup: 1 },
+  { id: "F-1065", type: "insight", text: "Scalp-care claims drive trial among 25–34 year-olds.", fig: "25–34", cat: "Hair Care", cust: null, rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", src: "S-05", loc: "page 8", excerpt: "Scalp-care claims are the strongest trial driver among 25–34 year-olds.", dedup: 1 },
+  { id: "F-1066", type: "metric", text: "The UK Hair Care market is worth £1.12bn, flat vs. a year ago.", fig: "1.12", period: "52 weeks to 07 Sep 2026", cat: "Hair Care", cust: null, rel: "certified", sens: "external", owner: null, status: "verified", asOf: "07 Sep 2026", src: "S-01", loc: "data row 2 390", row: { market: "UK", category: "Hair Care", period: "52w_2026-09-07", value_sales_gbp_bn: 1.12, value_sales_growth_pct: 0.0 }, dedup: 3 },
+  { id: "F-1067", type: "recommendation", text: "Lead the FY26 Hair Care story with scalp care in grocery.", cat: "Hair Care", cust: null, rel: "reviewed", sens: "restricted", owner: null, status: "verified", asOf: "20 Jan 2026", src: "S-05", loc: "page 19", excerpt: "In grocery, lead the FY26 story with scalp care.", dedup: 1 },
+  { id: "F-1070", type: "metric", text: "Harbour & Co Oral Care value sales grew 6.4% vs. a year ago.", fig: "6.4", period: "12 weeks to 31 Mar 2026", cat: "Oral Care", cust: "Harbour & Co", rel: "certified", sens: "internal", owner: null, status: "outdated", asOf: "31 Mar 2026", src: "S-01", loc: "data row 44 210", row: { retailer: "Harbour & Co", category: "Oral Care", period: "12w_2026-03-31", value_sales_growth_pct: 6.4 }, dedup: 1 },
+  { id: "F-1071", type: "recommendation", text: "Launch the whitening range in Harbour & Co's top 120 stores first.", fig: "120", cat: "Oral Care", cust: "Harbour & Co", rel: "reviewed", sens: "internal", owner: null, status: "needs_review", asOf: "10 Feb 2026", src: "S-10", loc: "slide 6", excerpt: "Phase 1: launch whitening in the top 120 stores first, then roll out.", dedup: 1 },
+  { id: "F-1072", type: "insight", text: "Harbour & Co shoppers over-index on electric toothbrush refills.", cat: "Oral Care", cust: "Harbour & Co", rel: "reviewed", sens: "internal", owner: null, status: "verified", asOf: "10 Feb 2026", src: "S-10", loc: "slide 3", excerpt: "Harbour & Co shoppers over-index on electric toothbrush refills vs. the market.", dedup: 1 },
 ];
 
 let BRIEFINGS = [
   { cat: "Fabric Care", cust: "Northgate", status: "current", generated: "28 Sep 2026" },
   { cat: "Fabric Care", cust: null, status: "current", generated: "08 Sep 2026" },
-  { cat: "Hair Care", cust: "Brightmart", status: "outdated", generated: "02 Sep 2026", why: "A new fact arrived for this scope after it was generated." },
+  { cat: "Hair Care", cust: "Brightmart", status: "outdated", generated: "02 Sep 2026", why: "A new fact arrived after it was written." },
   { cat: "Hair Care", cust: null, status: "current", generated: "09 Sep 2026" },
   { cat: "Oral Care", cust: "Harbour & Co", status: "current", generated: "12 Feb 2026" },
 ];
 
 let REVIEW = [
-  { id: "R-1", kind: "Numeric contradiction", cls: "bad", conflict: true, title: "Northgate share of UK Fabric Care", body: "Two sources give different figures for the same scope, metric and period. The gap of 0.8 pts is over the 0.3 pt tolerance.",
-    a: { big: "18.6%", src: "uk_retailer_share · certified view v3", loc: "dataset row 18 423", rel: "certified", asOf: "07 Sep 2026" },
+  { id: "R-1", kind: "Two numbers disagree", cls: "bad", conflict: true, cat: "Fabric Care", title: "Northgate share of UK Fabric Care", body: "Two documents give different figures for the same thing and the same period. The gap is 0.8 points, more than the 0.3 point tolerance.",
+    a: { big: "18.6%", src: "UK retailer share · official market data", loc: "data row 18 423", rel: "certified", asOf: "07 Sep 2026" },
     b: { big: "19.4%", src: "Northgate JBP 2026-27.pptx", loc: "slide 4", rel: "reviewed", asOf: "01 Jul 2026" },
     actions: [["Keep 18.6%", "primary"], ["Keep 19.4%", ""], ["Different periods, keep both", ""]] },
-  { id: "R-2", kind: "Stale at intake", cls: "warn", title: "Oral Care panel export 2019.xlsx", body: "Content date 31 Dec 2019 is older than the 24-month intake limit for panel data. It was quarantined, not dropped.", actions: [["Mark canonical", ""], ["Reject source", "danger"]] },
-  { id: "R-3", kind: "External verbatim quote", cls: "info", title: "Northgate category buyer quote", body: "“We want fewer, bigger promotions that bring new shoppers to the aisle.” A buyer's verbatim quote needs a person to approve it before a tool can quote it.", actions: [["Approve as quotable", "primary"], ["Keep as background only", ""]], fact: "F-1040" },
-  { id: "R-4", kind: "Personal data", cls: "bad", title: "Brightmart buyer meeting notes.docx", body: "The quality gate found what looks like a personal mobile number on page 2. The source is paused until someone decides.", actions: [["Redact and continue", "primary"], ["Reject source", "danger"]] },
-  { id: "R-5", kind: "Supersession overlap", cls: "neutral", title: "Northgate JBP 2025-26 → 2026-27", body: "The newer deck has equal reliability and covers the same scope and topics. Confirm that its facts replace the older ones. The old facts are kept for audit.", actions: [["Confirm replacement", "primary"], ["Keep both", ""]] },
+  { id: "R-2", kind: "Too old to import", cls: "warn", cat: "Oral Care", title: "Oral Care panel export 2019.xlsx", body: "The data is from December 2019, older than the 2-year limit for market data. It's on hold, not deleted.", actions: [["Import anyway", ""], ["Reject the file", "danger"]] },
+  { id: "R-3", kind: "Buyer quote to approve", cls: "info", cat: "Fabric Care", title: "Northgate category buyer quote", body: "“We want fewer, bigger promotions that bring new shoppers to the aisle.” Word-for-word quotes need a person to approve them before a tool can use them.", actions: [["Approve for customer use", "primary"], ["Keep internal", ""]], fact: "F-1040" },
+  { id: "R-4", kind: "Personal data found", cls: "bad", cat: "Hair Care", title: "Brightmart buyer meeting notes.docx", body: "The quality check found what looks like a personal mobile number on page 2. The file is paused until someone decides.", actions: [["Remove it and continue", "primary"], ["Reject the file", "danger"]] },
+  { id: "R-5", kind: "Newer version found", cls: "neutral", cat: "Fabric Care", title: "Northgate JBP 2025-26 → 2026-27", body: "The newer deck covers the same account and topics. Confirm that its facts replace the older ones. The old facts are kept for audit.", actions: [["Confirm replacement", "primary"], ["Keep both", ""]] },
 ];
 
 let RUNS = [
-  { status: "Needs attention", source: "sharepoint://sales-books (3 books)", started: "29 Sep 2026 09:26", indexed: 42, failed: 9 },
-  { status: "Needs attention", source: "upload · Brightmart buyer meeting notes.docx", started: "21 Sep 2026 13:42", indexed: 2, failed: 1 },
-  { status: "Complete", source: "upload · Northgate JBP 2026-27.pptx", started: "21 Sep 2026 12:06", indexed: 2, failed: 0 },
-  { status: "Complete", source: "metric projection · uk_retailer_share v3", started: "21 Sep 2026 11:03", indexed: 3, failed: 0 },
-  { status: "Complete", source: "salesbook://selection", started: "21 Sep 2026 10:58", indexed: 3, failed: 0 },
+  { status: "Needs attention", source: "3 SharePoint Sales Books", started: "29 Sep 2026 09:26", indexed: 42, failed: 9 },
+  { status: "Needs attention", source: "Brightmart buyer meeting notes.docx", started: "21 Sep 2026 13:42", indexed: 2, failed: 1 },
+  { status: "Complete", source: "Northgate JBP 2026-27.pptx", started: "21 Sep 2026 12:06", indexed: 2, failed: 0 },
+  { status: "Complete", source: "UK retailer share · official market data", started: "21 Sep 2026 11:03", indexed: 3, failed: 0 },
+  { status: "Complete", source: "Selected Sales Book pages", started: "21 Sep 2026 10:58", indexed: 3, failed: 0 },
 ];
 
 let PROJECTS = [
   { id: "P-1", name: "Northgate range review", cat: "Fabric Care", cust: "Northgate", audience: "external", meeting: "14 Nov 2026", buyer: "Alex Morgan · category buyer",
     objective: "Land the capsules plan before the 14 Nov range review.", decks: ["Northgate range review v2.pptx", "Northgate JBP 2026-27.pptx"],
-    runs: [{ tool: "Selling Coach", date: "24 Sep 2026", status: "Completed", note: "Range review v1 · 4 of 5 PSF steps grounded" }, { tool: "Storyline Generator", date: "18 Sep 2026", status: "Approved", note: "Capsules at back-to-school" }] },
+    runs: [{ tool: "Selling Coach", date: "24 Sep 2026", status: "Completed", note: "Range review v1 · 4 of 5 steps backed by facts" }, { tool: "Storyline Generator", date: "18 Sep 2026", status: "Approved", note: "Capsules at back-to-school" }] },
   { id: "P-2", name: "Brightmart quarterly review", cat: "Hair Care", cust: "Brightmart", audience: "internal", meeting: "22 Oct 2026", buyer: null,
     objective: "Explain the share dip and agree the spring premium aisle.", decks: ["Brightmart Q3 review.pptx"],
-    runs: [{ tool: "Selling Coach", date: "03 Sep 2026", status: "Completed", note: "Q3 review · 3 of 5 PSF steps grounded" }] },
+    runs: [{ tool: "Selling Coach", date: "03 Sep 2026", status: "Completed", note: "Q3 review · 3 of 5 steps backed by facts" }] },
   { id: "P-3", name: "Harbour & Co whitening launch", cat: "Oral Care", cust: "Harbour & Co", audience: "external", meeting: null, buyer: "Priya Shah · buyer",
     objective: "Shape the first launch opportunity.", decks: [], runs: [] },
 ];
@@ -463,110 +491,258 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "
 const src = id => SOURCES.find(s => s.id === id);
 const fact = id => FACTS.find(f => f.id === id);
 const proj = id => PROJECTS.find(p => p.id === id);
-const scopeLabel = (cat, cust) => [cat || (cust ? null : "All categories"), "UK", cust].filter(Boolean).join(" · ");
-const facetKey = (cat, cust) => [cat && `category:${cat.toLowerCase()}`, "market:uk", cust && `customer:${cust.toLowerCase()}`].filter(Boolean).sort().join("|");
 const sameScope = (a, cat, cust) => (a.cat || null) === (cat || null) && (a.cust || null) === (cust || null);
 const bkey = b => `${b.cat || ""}|${b.cust || ""}`;
-const hash = s => { let h = 5381; for (const c of s) h = ((h * 33) ^ c.charCodeAt(0)) >>> 0; return h.toString(16).padStart(8, "0"); };
 const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
 const AUD = { external: "Customer-facing", internal: "Internal team" };
+const term = (w, tip) => `<span class="term" title="${esc(tip)}">${w}</span>`;
+/* Plain scope names: customer first, the way a KAM talks about an account. */
+function scopeLabel(cat, cust) {
+  if (cat && cust) return `${cust} · ${cat}`;
+  if (cust) return `${cust} · all categories`;
+  return `${cat || "All categories"} · all customers`;
+}
+const facetKey = (cat, cust) => [cat && `category:${cat.toLowerCase()}`, "market:uk", cust && `customer:${cust.toLowerCase()}`].filter(Boolean).sort().join("|");
+function daysBetween(a, b) { const x = Date.parse(a), y = Date.parse(b); return isNaN(x) || isNaN(y) ? null : Math.round((y - x) / 864e5); }
+function age(d) {
+  const n = daysBetween(d, TODAY);
+  if (n === null) return d;
+  const s = n < 1 ? "today" : n < 14 ? plural(n, "day", "days") + " old" : n < 60 ? plural(Math.round(n / 7), "week", "weeks") + " old" : n < 730 ? plural(Math.round(n / 30), "month", "months") + " old" : plural(Math.round(n / 365), "year", "years") + " old";
+  return `<span title="Content date ${esc(d)}">${s}</span>`;
+}
+const expiresIn = f => f.expires ? daysBetween(TODAY, f.expires) : null;
+const curatorFor = f => CURATOR[f.cat] || "the account curator";
 
 function isLive(f) {
   const s = f.src && src(f.src);
   return (f.status === "verified" || f.status === "needs_review") && (!s || s.status === "live");
 }
-function visibleToMe(f) { return !f.owner || f.owner === ME; }
+const visibleToMe = f => !f.owner || f.owner === PEOPLE.kam.name;
+const liveFacts = () => FACTS.filter(f => isLive(f) && visibleToMe(f));   // the one count used everywhere
 function quotable(f, audience) {
-  if (!isLive(f)) return [false, "Not retrievable: outdated, replaced, or its source is no longer live."];
-  if (f.status !== "verified") return [false, "Needs review. A curator must verify it first."];
-  if (audience === "external" && f.sens !== "external") return [false, `Sensitivity is ${f.sens}: it can inform reasoning but is kept out of customer-facing output.`];
-  return [true, audience === "external" ? "Verified and cleared for customers." : "Verified."];
+  if (!isLive(f) || f.status !== "verified") return false;
+  return audience !== "external" || f.sens === "external";
 }
+
+/* One plain answer to "Can I use this?". The three labels live in the details. */
+function usage(f) {
+  if (!isLive(f)) {
+    const s = f.src && src(f.src);
+    return { k: "out", label: "Out of date", cls: "neutral", ic: "alert", short: "out of date",
+      why: f.status === "replaced" ? "A newer document replaced it. Tools no longer use it." : f.status === "outdated" ? "Its data is too old. Tools no longer use it." : `Its source ${s ? "is " + S_PILL[s.status][1].toLowerCase() : "is no longer in use"}. Tools no longer use it.` };
+  }
+  if (f.status === "needs_review") return { k: "review", label: "Not yet · needs review", cls: "warn", ic: "clock", short: "not yet",
+    why: `Waiting for ${curatorFor(f)} (curator) to check it. Until then no tool can quote it.` };
+  if (f.sens === "external") return { k: "customer", label: "Use with customer", cls: "ok", ic: "check", short: "",
+    why: "Checked and cleared for customer slides and conversations." };
+  return { k: "internal", label: "Internal only", cls: "info", ic: "lock", short: "internal only",
+    why: f.sens === "restricted" ? "Restricted: use it for your own preparation only. Don't share it outside the account team." : "Fine for your preparation and internal decks. Keep it off customer slides." };
+}
+const USE_KEYS = [["customer", "Use with customer"], ["internal", "Internal only"], ["review", "Not yet · needs review"], ["out", "Out of date"]];
+function usePill(f, lg) {
+  const u = usage(f), e = expiresIn(f);
+  return `<span class="pill ${u.cls} ${lg ? "lg" : ""}" title="${esc(u.why)}">${icon(u.ic)}${u.label}</span>${e !== null && isLive(f) ? `<span class="pill warn" title="Expires ${f.expires}">Expires in ${e} days</span>` : ""}`;
+}
+
 function briefingFacts(b) { return FACTS.filter(f => sameScope(f, b.cat, b.cust) && isLive(f) && !f.owner); }
 function floorOK(b) { const fs = briefingFacts(b); return fs.length >= 3 && fs.some(f => f.type === "metric" && f.rel === "certified"); }
 function briefingState(b) { return b.status === "none" ? (floorOK(b) ? "none" : "below") : floorOK(b) ? b.status : "below"; }
-const B_PILL = { current: ["ok", "Current"], outdated: ["warn", "Outdated"], below: ["neutral", "Below evidence floor"], none: ["info", "Ready to generate"] };
-const S_PILL = { live: ["ok", "Live"], needs_context: ["warn", "Needs context"], quarantined: ["warn", "Quarantined"], failed: ["bad", "Failed"], superseded: ["neutral", "Replaced"], retired: ["neutral", "Retired"], processing: ["info", "Processing"] };
+const B_PILL = { current: ["ok", "Up to date"], outdated: ["warn", "Needs refresh"], below: ["neutral", "Not enough information yet"], none: ["info", "Ready to write"] };
+const S_PILL = { live: ["ok", "In use"], needs_context: ["warn", "Needs a date"], quarantined: ["warn", "On hold · too old"], failed: ["bad", "Couldn't read"], superseded: ["neutral", "Replaced by newer"], retired: ["neutral", "Retired"], processing: ["info", "Reading…"] };
 
-function gov(f) {
-  const v = f.owner ? `<span class="v-private">Visibility <b>Private · you</b></span>` : `<span>Visibility <b>Shared</b></span>`;
-  return `<span class="gov" title="Reliability · Sensitivity · Visibility"><span class="t-${f.rel}">Reliability <b>${f.rel}</b></span><span class="s-${f.sens}">Sensitivity <b>${f.sens}</b></span>${v}</span>`;
+/* Readiness of an account, in the same terms the briefing uses. */
+function readiness(cat, cust) {
+  const fs = FACTS.filter(f => sameScope(f, cat, cust) && isLive(f) && !f.owner);
+  const hasNum = fs.some(f => f.type === "metric" && f.rel === "certified");
+  if (fs.length >= 3 && hasNum) return { k: "ready", label: "Ready", cls: "ok", n: fs.length, tip: "Enough checked facts, including official market numbers." };
+  if (fs.length) return { k: "thin", label: "Thin", cls: "warn", n: fs.length, tip: hasNum ? "Fewer than 3 facts." : "No official market number yet." };
+  return { k: "missing", label: "Missing", cls: "neutral", n: 0, tip: "Nothing in the bank yet." };
 }
-const statusPill = f => `<span class="pill ${STATUS_CLS[f.status]}">${STATUS_LABEL[f.status]}</span>`;
-const expPill = f => f.expires && isLive(f) ? `<span class="pill warn">Expires ${f.expires}</span>` : "";
+
 function highlight(text, fig) {
   const t = esc(text);
   if (!fig) return t;
   const e = esc(fig);
   return t.includes(e) ? t.replace(e, `<mark>${e}</mark>`) : t;
 }
-function markOutdated(cat, cust, why) {
-  BRIEFINGS.filter(b => sameScope(b, cat, cust)).forEach(b => { b.status = "outdated"; b.why = why; });
-}
+function markOutdated(cat, cust, why) { BRIEFINGS.filter(b => sameScope(b, cat, cust)).forEach(b => { b.status = "outdated"; b.why = why; }); }
 function toast(msg) {
   const t = $("#toast");
   t.textContent = msg; t.hidden = false;
   clearTimeout(toast._t); toast._t = setTimeout(() => (t.hidden = true), 2800);
 }
+const store = { get(k) { try { return localStorage.getItem(k); } catch { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch {} } };
 
 /* Project context pillars. Derived from facts, never set by hand; Buyer is the exception. */
 function pillars(p) {
   const live = FACTS.filter(f => isLive(f) && !f.owner);
-  return [
-    { name: "Category", desc: "Category strategy and shopper context", n: live.filter(f => f.cat === p.cat && !f.cust).length },
-    { name: "Customer", desc: "The retailer's profile and priorities", n: live.filter(f => !f.cat && f.cust === p.cust).length },
-    { name: "Account", desc: "This customer × category", n: live.filter(f => f.cat === p.cat && f.cust === p.cust).length },
-    { name: "Trade panel", desc: "Certified market-share metrics", n: live.filter(f => f.cat === p.cat && (!f.cust || f.cust === p.cust) && f.type === "metric" && f.rel === "certified").length },
-    { name: "Buyer", desc: "Buyer attached to the project", n: p.buyer ? 1 : 0, text: p.buyer },
+  const all = [
+    { name: "Category knowledge", desc: "strategy and shopper facts for the category", n: live.filter(f => f.cat === p.cat && !f.cust).length },
+    { name: "Customer profile", desc: "the retailer's priorities", n: p.cust ? live.filter(f => !f.cat && f.cust === p.cust).length : null },
+    { name: "This account", desc: "facts on this customer and category", n: p.cust ? live.filter(f => f.cat === p.cat && f.cust === p.cust).length : null },
+    { name: "Market numbers", desc: "official market-share data", n: live.filter(f => f.cat === p.cat && (!f.cust || f.cust === p.cust) && f.type === "metric" && f.rel === "certified").length },
   ];
+  if ("buyer" in p) all.push({ name: "Buyer", desc: "buyer attached to the project", n: p.buyer ? 1 : 0, text: p.buyer });
+  return all.filter(x => x.n !== null);
 }
 const score = p => pillars(p).filter(x => x.n > 0).length;
-function covTone(s) { return s >= 4 ? ["var(--ok-accent)", "Strong context"] : s >= 3 ? ["var(--alert-accent)", "Thin context"] : ["var(--err-accent)", "Insufficient context"]; }
+function covTone(s, of = 5) { const r = s / of; return r >= .8 ? ["var(--ok-accent)", "Strong context"] : r >= .6 ? ["var(--alert-accent)", "Thin context"] : ["var(--err-accent)", "Not enough context"]; }
 
 /* =====================================================================
    State & shell
    ===================================================================== */
-const blankFilter = () => ({ q: "", cat: "", cust: "", type: "", status: "", rel: "", hidden: false });
+const blankFilter = () => ({ q: "", cat: "", cust: "", type: "", use: "", hidden: false });
 const state = {
-  view: "project",
-  project: "P-1",
-  pq: "", pcust: "",
-  f: blankFilter(),
-  bf: { q: "", cat: "", cust: "" },
-  briefKey: "Fabric Care|Northgate",
-  srcTab: "sources",
-  ask: { cat: "Fabric Care", cust: "Northgate", audience: "internal", q: "What should I lead with in the Northgate range review?" },
-  todo: [],
+  view: "project", role: "kam", project: "P-1", account: { cat: "Fabric Care", cust: "Northgate" },
+  pq: "", pcust: "", f: blankFilter(), bf: { q: "", cat: "", cust: "" }, briefKey: "Fabric Care|Northgate", srcTab: "sources", todo: [],
+  intro: store.get("kb-intro-hidden") !== "1",
 };
+const curatorMode = () => state.role === "curator";
 
 const NAV = [
   { id: "projects", label: "My Projects", icon: "grid", count: () => PROJECTS.length, match: ["projects", "project"] },
   { group: "Knowledge Bank" },
-  { id: "home", label: "Overview", icon: "db" },
-  { id: "search", label: "Search", icon: "search" },
+  { id: "accounts", label: "Accounts", icon: "store", match: ["accounts", "account"] },
+  { group: "Curator tools" },
+  { id: "facts", label: "All facts", icon: "facts", count: () => liveFacts().length },
   { id: "briefings", label: "Briefings", icon: "book", count: () => BRIEFINGS.length },
-  { id: "facts", label: "Facts", icon: "facts", count: () => FACTS.filter(f => isLive(f) && visibleToMe(f)).length },
-  { id: "sources", label: "Manage sources", icon: "folder", badge: () => REVIEW.length },
+  { id: "sources", label: "Sources & review", icon: "folder", badge: () => REVIEW.length },
 ];
 
-function renderNav() {
+function renderShell() {
   $("#nav").innerHTML = NAV.map(n => n.group
     ? `<div class="group">${n.group}</div>`
-    : `<button class="navitem" data-view="${n.id}" aria-current="${(n.match || [n.id]).includes(state.view)}">${icon(n.icon)}${n.label}${n.badge ? (n.badge() ? `<span class="badge-n" title="Review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
+    : `<button class="navitem" data-view="${n.id}" aria-current="${(n.match || [n.id]).includes(state.view)}">${icon(n.icon)}${n.label}${n.badge ? (n.badge() ? `<span class="badge-n" title="Waiting in the review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
+  $("#roleswitch").innerHTML = ["kam", "curator"].map(r => `<button data-role="${r}" aria-pressed="${state.role === r}" title="${esc(PEOPLE[r].name + " · " + PEOPLE[r].role)}">${r === "kam" ? "KAM" : "Curator"}</button>`).join("");
+  const me = PEOPLE[state.role];
+  $("#avatar").textContent = me.init; $("#avatar").title = `${me.name} · ${me.role}`;
 }
 function head(crumb, title, sub, actions = "") {
   return `<div class="crumb">${crumb}</div><div class="pagehead"><div><h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ""}</div>${actions ? `<div class="actions">${actions}</div>` : ""}</div>`;
 }
 const NOTE = `<span class="mock-note">Mock-up · sample data with fictional retailers and people · nothing is saved</span>`;
-function render() {
-  renderNav();
-  $("#view").innerHTML = RENDER[state.view]();
-  AFTER[state.view]?.();
-}
+function render() { renderShell(); $("#view").innerHTML = RENDER[state.view](); AFTER[state.view]?.(); }
 function go(view) { state.view = view; render(); $("#main").scrollTop = 0; }
+function openAccount(cat, cust) { state.account = { cat, cust: cust || null }; go("account"); }
 
 const RENDER = {};
 const AFTER = {};
+
+/* =====================================================================
+   Shared fact row (account page and chat context)
+   ===================================================================== */
+function sourceName(f) { const s = f.src && src(f.src); return s ? s.name : f.origin || "Account memory"; }
+function factRow(f, ctx) {
+  const scopeNote = ctx && !sameScope(f, ctx.cat, ctx.cust) ? (!f.cust ? `Applies to all ${f.cat} customers` : `Applies to all ${f.cust} categories`) : "";
+  return `<button class="frow ${isLive(f) ? "" : "dim"}" data-act="open-fact" data-id="${f.id}">
+    <span class="t">${esc(f.text)}</span><span class="row" style="justify-content:flex-end">${usePill(f)}</span>
+    <span class="m"><span>${esc(sourceName(f))}</span><span>${age(f.asOf)}</span>${f.dedup > 1 ? `<span>Confirmed by ${f.dedup} documents</span>` : ""}${scopeNote ? `<span>${scopeNote}</span>` : ""}${f.origin ? `<span class="pill info">From ${esc(f.origin)}</span>` : ""}${f.owner ? `<span class="pill warn">Only you can see this</span>` : ""}</span>
+  </button>`;
+}
+function factCard(f) {
+  return `<button class="fact ${isLive(f) ? "" : "dim"}" data-act="open-fact" data-id="${f.id}">
+    <span class="row"><span class="type">${TYPE_LABEL[f.type]}</span>${usePill(f)}${f.dedup > 1 ? `<span class="tag">Confirmed by ${f.dedup} documents</span>` : ""}${f.origin ? `<span class="pill info">From ${esc(f.origin)}</span>` : ""}</span>
+    <span class="statement">${esc(f.text)}</span>
+    <span class="fact-meta"><span>${esc(scopeLabel(f.cat, f.cust))}</span><span>${esc(sourceName(f))}</span><span>${age(f.asOf)}</span>${f.owner ? `<span class="pill warn">Only you can see this</span>` : ""}</span>
+  </button>`;
+}
+
+/* =====================================================================
+   Accounts (Knowledge Bank home)
+   ===================================================================== */
+function introBlock() {
+  if (!state.intro) return "";
+  const cards = [
+    ["facts", "Facts", "One checked statement each, like a market number or a buyer quote, always linked to the document it came from."],
+    ["book", "Briefings", "A short summary for each account, written only from its facts. It shows what we know at a glance."],
+    ["folder", "Sources", "The decks, studies, Sales Books and official market data the facts are taken from."],
+    ["people", "Who does what", `<b>KAMs</b> add facts and documents. <b>Curators</b> check them. The system reads documents and flags anything out of date.`],
+  ];
+  return `<section class="intro" aria-label="How the Knowledge Bank works"><div class="spread"><b style="font:600 15px var(--mont)">How the Knowledge Bank works</b><button class="btn sm plain" data-act="hide-intro">Got it, hide this</button></div>
+    <div class="intro-grid">${cards.map(([ic, t, d]) => `<div class="intro-card"><span class="ico">${icon(ic)}</span><b>${t}</b><p>${d}</p></div>`).join("")}</div></section>`;
+}
+RENDER.accounts = () => {
+  const live = liveFacts();
+  const cnt = k => live.filter(f => usage(f).k === k).length;
+  const cells = CATEGORIES.flatMap(cat => [null, ...CUSTOMERS].map(cust => ({ cat, cust, r: readiness(cat, cust) })));
+  const cols = [null, ...CUSTOMERS];
+  const matrix = `<table class="matrix"><thead><tr><th></th>${cols.map(c => `<th>${c ? esc(c) : "All customers"}</th>`).join("")}</tr></thead><tbody>
+    ${CATEGORIES.map(cat => `<tr><th>${cat}</th>${cols.map(cust => {
+      const r = readiness(cat, cust);
+      return `<td><button class="cell ${r.k}" data-act="open-account" data-cat="${cat}" data-cust="${esc(cust || "")}" title="${esc(r.tip)}"><b>${r.label}</b><span class="small muted">${r.n ? plural(r.n, "fact", "facts") : "No facts yet"}</span></button></td>`;
+    }).join("")}</tr>`).join("")}</tbody></table>`;
+
+  const mine = live.filter(f => f.status === "needs_review" && f.by === PEOPLE.kam.name);
+  state.todo = curatorMode() ? [
+    ...REVIEW.slice(0, 4).map(r => ({ go: () => { state.srcTab = "review"; go("sources"); }, title: r.title, meta: `<span class="pill ${r.cls}">${r.kind}</span>` })),
+    { go: () => { state.f = { ...blankFilter(), use: "review" }; go("facts"); }, title: `${plural(cnt("review"), "fact is", "facts are")} waiting for you to check`, meta: `<span class="pill warn">${icon("clock")}Not yet · needs review</span>` },
+  ] : [
+    ...(mine.length ? [{ go: () => { state.f = { ...blankFilter(), use: "review" }; go("facts"); }, title: `${plural(mine.length, "fact you added is", "facts you added are")} waiting for a curator`, meta: `<span class="pill warn">${icon("clock")}Waiting on curator</span>` }] : []),
+    ...PROJECTS.filter(p => readiness(p.cat, p.cust).k !== "ready").map(p => ({ go: () => openAccount(p.cat, p.cust), title: `Your project “${p.name}” has thin information on ${scopeLabel(p.cat, p.cust)}`, meta: `<span class="pill warn">Thin</span>` })),
+    ...BRIEFINGS.filter(b => briefingState(b) === "outdated").map(b => ({ go: () => openAccount(b.cat, b.cust), title: `The briefing for ${scopeLabel(b.cat, b.cust)} needs a refresh`, meta: `<span class="pill warn">Needs refresh</span>` })),
+  ];
+
+  return head("Knowledge Bank", "What we know about your accounts", "Every fact is linked to the document it came from. Open an account to see what you can use with the customer.",
+    `<button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + introBlock() + `
+    <section class="summary" aria-label="Summary">
+      <button data-act="facts-use" data-use="customer"><div class="k">Use with customer</div><div class="num">${cnt("customer")}</div><div class="sub">checked and cleared</div></button>
+      <button data-act="facts-use" data-use="internal"><div class="k">Internal only</div><div class="num">${cnt("internal")}</div><div class="sub">for your preparation</div></button>
+      <button data-act="facts-use" data-use="review"><div class="k">Waiting for review</div><div class="num">${cnt("review")}</div><div class="sub">tools can't quote these yet</div></button>
+      <button data-act="facts-use" data-use=""><div class="k">Accounts ready</div><div class="num">${cells.filter(c => c.r.k === "ready").length}/${cells.length}</div><div class="sub">${plural(live.length, "usable fact", "usable facts")} in total</div></button>
+    </section>
+    <p class="hint" style="margin-top:6px">A fact confirmed by several documents counts once.</p>
+    <div class="home section">
+      <section class="card">
+        <div class="card-hd">How well do we know each account? <span class="aside">Open one to see its facts</span></div>
+        <div class="pad"><div class="matrix-wrap">${matrix}</div>
+          <div class="row small muted" style="margin-top:10px"><span class="pill ok">Ready</span>3+ checked facts incl. official market numbers<span class="pill warn">Thin</span>some facts, gaps remain<span class="pill neutral">Missing</span>nothing yet</div></div>
+      </section>
+      <section>
+        <h2 class="section-title">${curatorMode() ? "Waiting for you" : "Needs your attention"}</h2>
+        ${state.todo.length ? `<div class="todo">${state.todo.map((t, k) => `<button data-act="todo" data-k="${k}"><span class="row">${t.meta}</span><span>${esc(t.title)}</span></button>`).join("")}</div>` : `<div class="empty-state">Nothing waiting on you.</div>`}
+        ${!state.intro ? `<button class="btn ghost small" style="margin-top:10px" data-act="show-intro">How does the Knowledge Bank work?</button>` : ""}
+      </section>
+    </div>`;
+};
+
+/* ---- Account page: organised by the questions a KAM asks ---- */
+RENDER.account = () => {
+  const { cat, cust } = state.account;
+  const r = readiness(cat, cust);
+  const inScope = FACTS.filter(visibleToMe).filter(f => sameScope(f, cat, cust) || (cust && f.cat === cat && !f.cust) || (cust && !f.cat && f.cust === cust));
+  const live = inScope.filter(isLive), old = inScope.filter(f => !isLive(f));
+  const Q = [["How is the business doing?", ["metric"]], ["What do shoppers and the buyer say?", ["insight", "quote"]], ["What should we do next?", ["recommendation"]], ["What happened recently?", ["event"]]];
+  const order = f => ({ customer: 0, internal: 1, review: 2 }[usage(f).k] ?? 3);
+  const b = BRIEFINGS.find(x => sameScope(x, cat, cust));
+  const bst = b ? briefingState(b) : (floorOK({ cat, cust }) ? "none" : "below");
+  const ps = pillars({ cat, cust }), miss = ps.filter(x => !x.n);
+  const projs = PROJECTS.filter(p => p.cat === cat && (!cust || p.cust === cust));
+  const cnt = k => live.filter(f => usage(f).k === k).length;
+  return `<div class="crumb"><button data-view="accounts">Accounts</button><span>›</span><span>${esc(scopeLabel(cat, cust))}</span></div>
+    <div class="pagehead"><div><h1>${esc(scopeLabel(cat, cust))}</h1><p class="sub">UK · ${plural(live.length, "usable fact", "usable facts")}: ${cnt("customer")} for customers, ${cnt("internal")} internal only, ${cnt("review")} waiting for review.</p></div>
+      <div class="actions"><span class="pill ${r.cls} lg" title="${esc(r.tip)}">${r.label}</span><button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button></div></div>
+    ${NOTE}
+    <div class="acct">
+      <section>
+        ${Q.map(([q, types]) => {
+          const fs = live.filter(f => types.includes(f.type)).sort((a, b) => order(a) - order(b));
+          return `<div class="qsec"><h3>${q}</h3>${fs.length ? fs.map(f => factRow(f, { cat, cust })).join("") : `<div class="empty-state" style="padding:14px;text-align:left">Nothing here yet. <button class="btn ghost small" data-act="add-fact">Add a fact</button></div>`}</div>`;
+        }).join("")}
+        ${old.length ? `<details class="section"><summary>Out of date (${old.length})</summary>${old.map(f => factRow(f, { cat, cust })).join("")}</details>` : ""}
+      </section>
+      <aside class="side">
+        <div class="card"><div class="card-hd">Briefing <span class="pill ${B_PILL[bst][0]}">${B_PILL[bst][1]}</span></div>
+          <div class="pad stack"><p class="small muted">${bst === "below" ? "Needs at least 3 checked facts, including an official market number, before a summary can be written." : bst === "none" ? "There's enough information to write a summary." : `A short summary written from this account's facts, ${b.generated}.`}</p>
+            <div class="row">${bst === "none" ? `<button class="btn sm primary" data-act="generate" data-key="${esc(bkey({ cat, cust }))}">Write briefing</button>` : bst !== "below" ? `<button class="btn sm" data-act="open-brief" data-key="${esc(bkey({ cat, cust }))}">Read briefing</button>` : ""}</div></div></div>
+        <div class="card"><div class="card-hd">What's missing <span class="aside">${ps.length - miss.length}/${ps.length} covered</span></div>
+          <div class="plist">${ps.map(x => `<div><span>${x.name}<div class="hint">${esc(x.desc)}</div></span>${x.n ? `<span class="pill ok">${plural(x.n, "fact", "facts")}</span>` : `<span class="pill neutral">Missing</span>`}</div>`).join("")}</div>
+          ${miss.length ? `<div class="pad row"><button class="btn sm" data-act="add-source">Add a document</button><button class="btn sm plain" data-act="add-fact">Add a fact</button></div>` : ""}</div>
+        <div class="card"><div class="card-hd">Projects on this account</div>
+          ${projs.length ? `<div class="plist">${projs.map(p => `<div><button class="btn ghost" data-act="open-project" data-id="${p.id}">${esc(p.name)}</button><span class="pill ${p.audience === "external" ? "info" : "solid"}">${AUD[p.audience]}</span></div>`).join("")}</div>` : `<div class="pad hint">No project uses this account yet.</div>`}</div>
+        <div class="card pad"><details><summary>Documents behind these facts</summary>${[...new Set(live.map(f => f.src).filter(Boolean))].map(id => `<button class="btn ghost small" style="display:block" data-act="open-source" data-id="${id}">${esc(src(id).name)}</button>`).join("")}</details></div>
+      </aside>
+    </div>`;
+};
 
 /* =====================================================================
    My Projects
@@ -586,17 +762,15 @@ RENDER.projects = () => {
       <span class="hint">${plural(p.runs.length, "run", "runs")}${p.runs[0] ? ` · last ${p.runs[0].date}` : ""}</span>
     </button>`;
   }).join("");
-  return head("Customer workspace hub", "My Projects", "Pick up where you left off. Every tool inside a project uses the same customer scope and Knowledge Bank evidence, set once.",
+  return head("Customer workspace hub", "My Projects", "Pick up where you left off. Every tool inside a project uses the same customer and Knowledge Bank facts, set once.",
     `<button class="btn primary" data-act="new-project">${icon("plus")}New project</button>`) + NOTE + `
     <div class="filters"><input class="search" id="pq" type="search" placeholder="Search projects, customer, market…" value="${esc(state.pq)}" aria-label="Search projects">
       <select class="select" data-pfilter aria-label="Customer"><option value="">All customers</option>${CUSTOMERS.map(c => `<option ${c === state.pcust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
     <div class="summary three" style="margin-bottom:18px"><div><div class="k">Active projects</div><div class="num">${PROJECTS.length}</div></div><div><div class="k">Completed runs</div><div class="num">${runs}</div></div><div><div class="k">Customers</div><div class="num">${new Set(PROJECTS.map(p => p.cust)).size}</div></div></div>
     ${list.length ? `<div class="projgrid">${cards}</div>` : `<div class="empty-state">No project matches. <button class="btn ghost" data-act="new-project">Create one</button></div>`}
-    <div class="callout info section"><b>A project is the scope, set once.</b> Customer, market and category live on the project. Selling Coach and the Storyline Generator use that scope, so a run never asks for it again. Launch either one from the project chat.</div>`;
+    <div class="callout info section"><b>A project is the scope, set once.</b> Customer, market and category live on the project. Selling Coach and the Storyline Generator use them, so a run never asks again. Launch either one from the project chat.</div>`;
 };
-AFTER.projects = () => {
-  $("#pq").addEventListener("input", e => { state.pq = e.target.value; const p = e.target.selectionStart; render(); const n = $("#pq"); n.focus(); n.setSelectionRange(p, p); });
-};
+AFTER.projects = () => { $("#pq").addEventListener("input", e => { state.pq = e.target.value; const p = e.target.selectionStart; render(); const n = $("#pq"); n.focus(); n.setSelectionRange(p, p); }); };
 
 /* =====================================================================
    Project workspace with the conversational assistant
@@ -604,14 +778,10 @@ AFTER.projects = () => {
 function seedChat(p) {
   if (p.chat) return;
   const s = selectFacts(p.cat, p.cust, "");
-  const q = s.ranked.filter(x => quotable(x.f, p.audience)[0]).length;
-  p.chat = [{ who: "bot", html: `<p>Hi Camille. This project is scoped to <b>${esc(scopeLabel(p.cat, p.cust))}</b> for a <b>${AUD[p.audience].toLowerCase()}</b> audience. The Knowledge Bank has ${plural(s.inScope, "live fact", "live facts")} here, ${plural(q, "is", "are")} quotable for this audience.</p>
-    <p>Tell me what you need. I can review a deck with <b>Selling Coach</b>, build a storyline with the <b>Storyline Generator</b>, or answer from the Knowledge Bank.</p>`, chips: suggestions(p) }];
+  const q = s.ranked.filter(x => quotable(x.f, p.audience)).length;
+  p.chat = [{ who: "bot", html: `<p>Hi Camille. This project covers <b>${esc(scopeLabel(p.cat, p.cust))}</b> for a <b>${AUD[p.audience].toLowerCase()}</b> audience. The Knowledge Bank has ${plural(s.inScope, "usable fact", "usable facts")} here${p.audience === "external" ? `, and ${plural(q, "is", "are")} cleared to use with the customer` : ""}.</p>
+    <p>Tell me what you need. I can review a deck with <b>Selling Coach</b>, build a storyline with the <b>Storyline Generator</b>, or answer from the Knowledge Bank.</p>`, chips: [`Review my ${p.cust} deck`, `Build a storyline for ${p.cust}`, `What do we know about ${p.cust}?`, "What context is missing?"] }];
 }
-function suggestions(p) {
-  return [`Review my ${p.cust} deck`, `Build a storyline for ${p.cust}`, `What do we know about ${p.cust}?`, "What context is missing?"];
-}
-
 RENDER.project = () => {
   const p = proj(state.project);
   seedChat(p);
@@ -620,42 +790,34 @@ RENDER.project = () => {
   const st = b ? briefingState(b) : null;
   return `<div class="crumb"><button data-view="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
-      <div class="projchips" style="margin-top:8px"><span class="projchip">${esc(p.cust)} × UK</span><span class="projchip">${p.cat}</span><span class="projchip">${p.meeting ? "Meeting " + p.meeting : "No meeting set"}</span><span class="pill ${p.audience === "external" ? "info" : "solid"}">${AUD[p.audience]}</span></div></div>
+      <div class="projchips" style="margin-top:8px"><span class="projchip">${esc(p.cust)} · UK</span><span class="projchip">${p.cat}</span><span class="projchip">${p.meeting ? "Meeting " + p.meeting : "No meeting set"}</span><span class="pill ${p.audience === "external" ? "info" : "solid"}">${AUD[p.audience]}</span></div></div>
       <div class="actions"><button class="btn plain sm" data-view="projects">Switch project</button></div></div>
     ${NOTE}
     <div class="proj">
       <section class="card chat" aria-label="Project assistant">
-        <div class="card-hd"><span class="row">${icon("spark")}Project assistant</span><span class="small muted" style="font:400 12px var(--inter)">Launches tools with this project's scope</span></div>
+        <div class="card-hd"><span class="row">${icon("spark")}Project assistant</span><span class="aside">Runs tools with this project's customer and facts</span></div>
         <div class="thread" id="thread" aria-live="polite">${threadHTML(p)}</div>
         <div class="composer">
           <div class="launchers"><span class="small muted">Launch:</span>
             <button class="launcher" data-act="launch" data-tool="coach">${icon("coach")}Selling Coach</button>
             <button class="launcher" data-act="launch" data-tool="story">${icon("story")}Storyline Generator</button>
-            <button class="launcher" data-act="launch" data-tool="kb">${icon("db")}Ask the Knowledge Bank</button>
-          </div>
-          <form id="chatform"><textarea id="chat-in" rows="2" placeholder="Ask anything, or say which tool to run…" aria-label="Message the project assistant"></textarea><button class="btn primary" type="submit" aria-label="Send">${icon("send")}Send</button></form>
+            <button class="launcher" data-act="launch" data-tool="kb">${icon("db")}Ask the Knowledge Bank</button></div>
+          <form id="chatform"><textarea id="chat-in" rows="2" placeholder="Ask anything, or say which tool to run…" aria-label="Message the project assistant"></textarea><button class="btn primary" type="submit">${icon("send")}Send</button></form>
         </div>
       </section>
       <aside class="side">
-        <div class="card">
-          <div class="card-hd">Context evidence <span class="small" style="font:600 12px var(--inter);color:${col}">${s}/5 · ${lab.toLowerCase()}</span></div>
+        <div class="card"><div class="card-hd">Context <span class="small" style="font:600 12px var(--inter);color:${col}">${s}/5 · ${lab.toLowerCase()}</span></div>
           <div class="plist">${ps.map(x => `<div><span>${x.name}${x.name === "Buyer" && x.text ? `<div class="hint">${esc(x.text)}</div>` : ""}</span>${x.n ? `<span class="pill ok">${x.name === "Buyer" ? "Attached" : plural(x.n, "fact", "facts")}</span>` : x.name === "Buyer" ? `<button class="btn ghost small" data-act="attach-buyer">Attach</button>` : `<span class="pill neutral">Missing</span>`}</div>`).join("")}</div>
-          <div class="pad" style="padding-top:10px"><span class="hint">Worked out from Knowledge Bank facts. Private facts never count.</span></div>
-        </div>
-        <div class="card">
-          <div class="card-hd">Briefing ${st ? `<span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span>` : `<span class="pill neutral">None</span>`}</div>
-          <div class="pad stack"><span class="facet">${facetKey(p.cat, p.cust)}</span><div class="row"><button class="btn sm" data-act="open-proj-brief">Open briefing</button><button class="btn sm plain" data-act="proj-search">Selected facts</button></div></div>
-        </div>
-        <div class="card">
-          <div class="card-hd">Recent runs <span class="small muted" style="font:400 12px var(--inter)">${p.runs.length}</span></div>
-          ${p.runs.length ? `<div class="runs">${p.runs.slice(0, 5).map(r => `<div><span class="spread"><b style="font-weight:600">${r.tool}</b><span class="pill ${r.status === "Running" ? "info" : "ok"}">${r.status}</span></span><span class="muted">${esc(r.note)}</span><span class="hint">${r.date}</span></div>`).join("")}</div>` : `<div class="pad hint">No runs yet. Ask the assistant to launch a tool.</div>`}
-        </div>
+          <div class="pad" style="padding-top:10px"><span class="hint">Worked out from Knowledge Bank facts. Private facts never count.</span></div></div>
+        <div class="card"><div class="card-hd">Account ${st ? `<span class="pill ${B_PILL[st][0]}">Briefing: ${B_PILL[st][1].toLowerCase()}</span>` : ""}</div>
+          <div class="pad row"><button class="btn sm" data-act="open-account" data-cat="${p.cat}" data-cust="${esc(p.cust)}">Open ${esc(scopeLabel(p.cat, p.cust))}</button></div></div>
+        <div class="card"><div class="card-hd">Recent runs <span class="aside">${p.runs.length}</span></div>
+          ${p.runs.length ? `<div class="runs">${p.runs.slice(0, 5).map(r => `<div><span class="spread"><b style="font-weight:600">${r.tool}</b><span class="pill ${r.status === "Running" ? "info" : "ok"}">${r.status}</span></span><span class="muted">${esc(r.note)}</span><span class="hint">${r.date}</span></div>`).join("")}</div>` : `<div class="pad hint">No runs yet. Ask the assistant to launch a tool.</div>`}</div>
       </aside>
     </div>`;
 };
 AFTER.project = () => {
-  const p = proj(state.project);
-  const inp = $("#chat-in");
+  const p = proj(state.project), inp = $("#chat-in");
   $("#chatform").addEventListener("submit", e => { e.preventDefault(); const v = inp.value.trim(); if (!v) return; inp.value = ""; userSays(p, v); });
   inp.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("#chatform").requestSubmit(); } });
   scrollThread();
@@ -666,17 +828,11 @@ function threadHTML(p) {
     if (m.who === "me") return `<div class="msg me"><div class="bubble">${esc(m.text)}</div><div class="who" aria-hidden="true">CM</div></div>`;
     let body = m.typing ? `<span class="typing" aria-label="Assistant is typing"><i></i><i></i><i></i></span>` : m.html;
     if (m.stages) body = `${m.html || ""}<ul class="stagelist">${m.stages.map((s, k) => `<li class="${k < m.done ? "ok" : k === m.done ? "run" : ""}"><span class="ico">${k < m.done ? "✓" : ""}</span>${esc(s)}</li>`).join("")}</ul>`;
-    if (m.chips && !m.used) body += `<div class="chips">${m.chips.map(c => `<button class="chip" data-act="say" data-text="${esc(c)}" data-m="${i}">${esc(c)}</button>`).join("")}</div>`;
+    if (m.chips && !m.used) body += `<div class="chips">${m.chips.map(c => `<button class="chip" data-act="say" data-text="${esc(c)}">${esc(c)}</button>`).join("")}</div>`;
     return `<div class="msg"><div class="who" aria-hidden="true">${icon("spark")}</div><div class="bubble ${m.lock ? "locked" : ""}">${body}</div></div>`;
   }).join("");
 }
-function paintThread() {
-  const p = proj(state.project);
-  const t = $("#thread");
-  if (state.view !== "project" || !t) return;
-  t.innerHTML = threadHTML(p);
-  scrollThread();
-}
+function paintThread() { const t = $("#thread"); if (state.view !== "project" || !t) return; t.innerHTML = threadHTML(proj(state.project)); scrollThread(); }
 function scrollThread() { const t = $("#thread"); if (t) t.scrollTop = t.scrollHeight; }
 function push(p, m) { p.chat.push(m); if (state.project === p.id) paintThread(); return m; }
 function botReply(p, fn, delay = 550) {
@@ -696,59 +852,59 @@ function userSays(p, text) {
   push(p, { who: "me", text });
   const hits = INTENT.filter(([, re]) => re.test(text)).map(([k]) => k);
   const intent = hits.includes("coach") && hits.includes("story") ? "which" : hits[0] || "kb";
-  if (intent === "coach") startCoach(p);
-  else if (intent === "story") startStory(p);
-  else if (intent === "gaps") contextGaps(p);
-  else if (intent === "which") askWhich(p);
-  else kbAnswer(p, text);
+  ({ coach: startCoach, story: startStory, gaps: contextGaps, which: askWhich, kb: t => kbAnswer(p, text) })[intent](p);
 }
 
-/* Citations respect the audience: quotable facts get a number, the rest steer but are not cited. */
+/* Citations respect the audience: usable facts get a number, the rest are labelled. */
 function citer(p) {
   const nums = [];
   return f => {
-    if (!f) return `<span class="bgtag">no evidence</span>`;
-    if (!quotable(f, p.audience)[0]) return `<button class="bgtag" data-act="open-fact" data-id="${f.id}" style="border:0" title="${esc(quotable(f, p.audience)[1])}">background</button>`;
+    if (!f) return `<span class="bgtag">no fact</span>`;
+    if (!quotable(f, p.audience)) { const u = usage(f); return `<button class="bgtag" data-act="open-fact" data-id="${f.id}" title="${esc(u.why)}">${u.k === "internal" ? "internal only" : u.short}</button>`; }
     let n = nums.indexOf(f.id); if (n < 0) { nums.push(f.id); n = nums.length - 1; }
-    return `<button class="anchor" data-act="open-fact" data-id="${f.id}" title="${f.id}">${n + 1}</button>`;
+    return `<button class="anchor" data-act="open-fact" data-id="${f.id}" title="Open this fact">${n + 1}</button>`;
   };
 }
+const preferQuotable = (fs, p) => [...fs.filter(f => quotable(f, p.audience)), ...fs.filter(f => !quotable(f, p.audience))];
+function citeNote(p) { return p.audience === "external" ? `<p class="hint">This project is customer-facing: only facts cleared for customers get a number. Others are labelled and stay off slides.</p>` : ""; }
 
-/* Tools reach for facts they may quote to this audience first; the rest only steer. */
-function preferQuotable(fs, p) { return [...fs.filter(f => quotable(f, p.audience)[0]), ...fs.filter(f => !quotable(f, p.audience)[0])]; }
+/* "Why these facts?": the selection internals, on demand only. */
+function whyBox(r, p) {
+  return `<details><summary>Why these facts?</summary><div class="whybox">
+    <span>I looked at <b>${plural(r.live, "usable fact", "usable facts")}</b> you can see. <b>${r.inScope}</b> match ${esc(scopeLabel(p.cat, p.cust))}. I kept the <b>${r.ranked.length}</b> most relevant, preferring checked facts, official data and recent content${r.merged ? `, and merged ${plural(r.merged, "repeat", "repeats")} of the same figure` : ""}.</span>
+    <table><thead><tr><th>Fact</th><th>Can I use it?</th><th class="num">Match</th></tr></thead><tbody>${r.ranked.map(x => `<tr><td>${esc(x.f.text)}</td><td>${usePill(x.f)}</td><td class="num">${Math.round(x.score * 100)}%</td></tr>`).join("")}</tbody></table>
+  </div></details>`;
+}
 
 function askWhich(p) {
   botReply(p, m => { m.html = `<p>Which tool do you want?</p><div class="row"><button class="btn sm" data-act="launch" data-tool="coach">${icon("coach")}Selling Coach · review a deck</button><button class="btn sm" data-act="launch" data-tool="story">${icon("story")}Storyline Generator · build a story</button></div>`; });
 }
-
+const COV = { sufficient: ["ok", "Good coverage", "Enough checked facts to answer well."], thin: ["warn", "Thin coverage", "Some facts, but gaps remain. I'll say where I'm relying on general guidance."], none: ["bad", "No coverage", "Nothing in the bank for this account yet."] };
 function kbAnswer(p, q) {
   botReply(p, m => {
-    const r = selectFacts(p.cat, p.cust, q), cite = citer(p);
-    const c = COV[r.coverage];
+    const r = selectFacts(p.cat, p.cust, q), cite = citer(p), c = COV[r.coverage];
     m.html = r.coverage === "none"
-      ? `<p>The Knowledge Bank has nothing on <b>${esc(scopeLabel(p.cat, p.cust))}</b> yet. Add a source and I'll pick it up once it's reviewed.</p>`
-      : `<div class="tool-hd">${icon("db")}Knowledge Bank · ${plural(r.ranked.length, "fact", "facts")} selected</div>
-         <ul>${r.ranked.slice(0, 5).map(x => `<li>${esc(x.f.text)} ${cite(x.f)}</li>`).join("")}</ul>
-         <div class="verdict ${c[0]}"><b>Coverage: ${c[1]}.</b> ${c[2]}</div>
-         ${p.audience === "external" ? `<p class="hint">This project is customer-facing: only facts cleared for customers get a number. The rest are marked background.</p>` : ""}
-         <div class="row"><button class="btn sm plain" data-act="proj-search">See all selected facts</button><button class="btn sm plain" data-act="open-proj-brief">Open briefing</button></div>`;
+      ? `<p>The Knowledge Bank has nothing on <b>${esc(scopeLabel(p.cat, p.cust))}</b> yet. Add a document and I'll use it once a curator has checked it.</p>`
+      : `<div class="tool-hd">${icon("db")}From the Knowledge Bank</div>
+         <ul>${preferQuotable(r.ranked.map(x => x.f), p).slice(0, 5).map(f => `<li>${esc(f.text)} ${cite(f)}</li>`).join("")}</ul>
+         <div class="verdict ${c[0]}"><b>${c[1]}.</b> ${c[2]}</div>${citeNote(p)}${whyBox(r, p)}
+         <div class="row"><button class="btn sm plain" data-act="open-account" data-cat="${p.cat}" data-cust="${esc(p.cust)}">Open the account</button></div>`;
   }, 700);
 }
-
 function contextGaps(p) {
   botReply(p, m => {
-    const ps = pillars(p), miss = ps.filter(x => !x.n);
-    m.html = !miss.length ? `<p>All five context pillars are covered for this project. Tools have the full picture.</p>`
-      : `<p>${plural(miss.length, "pillar is", "pillars are")} missing, so tool results will be thinner:</p>
-         <ul>${miss.map(x => `<li><b>${x.name}</b>: ${x.name === "Buyer" ? "no buyer attached to the project." : x.name === "Trade panel" ? "no live certified metric. The last one may be outdated." : `no ${x.desc.toLowerCase()} facts yet.`}</li>`).join("")}</ul>
-         <div class="row">${miss.some(x => x.name === "Buyer") ? `<button class="btn sm" data-act="attach-buyer">Attach a buyer</button>` : ""}<button class="btn sm plain" data-act="add-source">Add a source</button></div>`;
+    const miss = pillars(p).filter(x => !x.n);
+    m.html = !miss.length ? `<p>All five parts of the context are covered. Tools have the full picture.</p>`
+      : `<p>${plural(miss.length, "part of the context is", "parts of the context are")} missing, so tool results will be thinner:</p>
+         <ul>${miss.map(x => `<li><b>${x.name}</b>: ${x.name === "Buyer" ? "no buyer attached to the project." : x.name === "Market numbers" ? "no current official market number. The last one is out of date." : `nothing on ${x.desc} yet.`}</li>`).join("")}</ul>
+         <div class="row">${miss.some(x => x.name === "Buyer") ? `<button class="btn sm" data-act="attach-buyer">Attach a buyer</button>` : ""}<button class="btn sm plain" data-act="add-source">Add a document</button></div>`;
   });
 }
 
 /* ---- Selling Coach ---- */
 function startCoach(p) {
   botReply(p, m => {
-    m.html = `<div class="tool-hd">${icon("coach")}Selling Coach</div><p>I'll analyse your deck against the five PSF steps using this project's Knowledge Bank scope. Which deck?</p>
+    m.html = `<div class="tool-hd">${icon("coach")}Selling Coach</div><p>I'll check your deck against the five steps of the selling framework, using this project's facts. Which deck?</p>
       <div class="filepick">${p.decks.map(d => `<button class="filerow" data-act="cs-deck" data-deck="${esc(d)}">${icon("file")}${esc(d)}<span class="hint" style="margin-left:auto">in this project</span></button>`).join("")}
       <button class="filerow" data-act="cs-deck" data-deck="${esc(p.cust)} deck ${TODAY.slice(0, 6)}.pptx">${icon("plus")}Upload another deck</button></div>`;
   });
@@ -760,70 +916,62 @@ function runCoach(p, deck) {
   const r = selectFacts(p.cat, p.cust, "");
   const run = { tool: "Selling Coach", date: TODAY, status: "Running", note: deck };
   p.runs.unshift(run);
-  const m = push(p, { who: "bot", html: `<div class="tool-hd">${icon("coach")}Selling Coach · ${esc(deck)}</div>`, stages: [`Resolve Knowledge Bank scope · ${plural(r.inScope, "fact", "facts")}`, "Prepare the deck · 18 slides", "Analyse the five PSF steps", "Fact-check the deck against the bank", "Check strategy fit"], done: 0 });
-  const t = setInterval(() => {
-    m.done++;
-    if (m.done >= m.stages.length) { clearInterval(t); finishCoach(p, deck, r, run); }
-    if (state.project === p.id) paintThread();
-  }, 650);
+  const m = push(p, { who: "bot", html: `<div class="tool-hd">${icon("coach")}Selling Coach · ${esc(deck)}</div>`, stages: [`Gather this account's facts · ${r.inScope} found`, "Read the deck · 18 slides", "Check the five selling steps", "Compare the deck's numbers with the bank", "Check fit with the category strategy"], done: 0 });
+  const t = setInterval(() => { m.done++; if (m.done >= m.stages.length) { clearInterval(t); finishCoach(p, deck, r, run); } if (state.project === p.id) paintThread(); }, 650);
   if (state.view === "project") render();
 }
 function finishCoach(p, deck, r, run) {
   const cite = citer(p), fs = preferQuotable(r.ranked.map(x => x.f), p);
   const pick = (...types) => fs.find(f => types.includes(f.type));
   const steps = [
-    ["Summarise the situation", pick("metric"), "Open with the certified market picture"],
+    ["Summarise the situation", pick("metric"), "Open with the official market picture"],
     ["State the idea", pick("recommendation", "insight"), "Make the idea one clear sentence"],
     ["Explain how it works", pick("recommendation"), "Show the mechanism, not just the ambition"],
     ["Reinforce key benefits", fs.filter(f => f.type === "metric" || f.type === "insight")[1], "Quantify the upside for the customer"],
     ["Suggest an easy next step", pick("event"), "End on a concrete, low-effort ask"],
   ];
   const grounded = steps.filter(s => s[1]).length;
-  const conflict = p.cust === "Northgate";
-  run.status = "Completed"; run.note = `${deck} · ${grounded} of 5 PSF steps grounded`;
-  push(p, { who: "bot", html: `<div class="tool-hd">${icon("coach")}Selling Coach result · ${grounded} of 5 steps grounded</div>
-    <div class="table-wrap"><table><thead><tr><th>PSF step</th><th>Evidence</th><th>Feedback</th></tr></thead><tbody>
-    ${steps.map(([s, f, tip]) => `<tr><td style="color:var(--charcoal);font-weight:600">${s}</td><td>${f ? `<span class="pill ok">Grounded</span>` : `<span class="pill warn">No evidence</span>`}</td><td>${f ? `${tip}: “${esc(f.text)}” ${cite(f)}` : `${tip}. The bank has nothing to back this step yet.`}</td></tr>`).join("")}
+  run.status = "Completed"; run.note = `${deck} · ${grounded} of 5 steps backed by facts`;
+  push(p, { who: "bot", html: `<div class="tool-hd">${icon("coach")}Selling Coach result · ${grounded} of 5 steps backed by facts</div>
+    <div class="table-wrap"><table><thead><tr><th>Step</th><th>Backed by a fact?</th><th>Feedback</th></tr></thead><tbody>
+    ${steps.map(([s, f, tip]) => `<tr><td style="color:var(--charcoal);font-weight:600">${s}</td><td>${f ? `<span class="pill ok">Yes</span>` : `<span class="pill warn">No</span>`}</td><td>${f ? `${tip}: “${esc(f.text)}” ${cite(f)}` : `${tip}. The bank has nothing to back this step yet.`}</td></tr>`).join("")}
     </tbody></table></div>
-    ${conflict ? `<div class="verdict bad"><b>Fact-check: 1 conflict.</b> Slide 4 says Northgate holds 19.4% of UK Fabric Care. The certified figure is 18.6% ${cite(fact("F-1022"))}. Use the certified number.</div>` : `<div class="verdict ok"><b>Fact-check: no conflicts.</b> Every figure in the deck matches the bank or has no counterpart.</div>`}
-    <p class="hint">1 account fact from this run was sent to the Knowledge Bank for review.</p>
-    <div class="row"><button class="btn sm primary" data-act="launch" data-tool="story">Build a storyline next</button><button class="btn sm plain" data-act="toast" data-msg="The full report opens in Selling Coach.">Open full report</button></div>` });
-  FACTS.unshift({ id: "F-" + (2000 + FACTS.length), type: "insight", text: `The ${p.cust} deck “${deck}” is missing evidence for ${5 - grounded} PSF ${5 - grounded === 1 ? "step" : "steps"}.`, cat: p.cat, cust: p.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, loc: `Selling Coach run · ${p.name}`, excerpt: `Written back from a completed Selling Coach run on ${TODAY}.`, dedup: 1 });
-  markOutdated(p.cat, p.cust, "A tool run added an account fact.");
+    ${p.cust === "Northgate" ? `<div class="verdict bad"><b>1 number to fix.</b> Slide 4 says Northgate holds 19.4% of UK Fabric Care. The official figure is 18.6% ${cite(fact("F-1022"))}.</div>` : `<div class="verdict ok"><b>No number to fix.</b> Every figure in the deck matches the bank.</div>`}
+    ${citeNote(p)}` });
+  // The write-back is shown, not hidden in a toast.
+  const nf = { id: "F-" + (2000 + FACTS.length), type: "insight", text: `The ${p.cust} deck “${deck}” has no fact behind ${plural(5 - grounded, "selling step", "selling steps")}.`, cat: p.cat, cust: p.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, origin: "your Selling Coach run", loc: `Selling Coach run · ${p.name}`, excerpt: `Written back from a completed Selling Coach run on ${TODAY}.`, dedup: 1, by: PEOPLE.kam.name };
+  FACTS.unshift(nf);
+  markOutdated(p.cat, p.cust, "A tool run added a fact.");
+  push(p, { who: "bot", html: `<div class="callout ok"><b>Saved to the Knowledge Bank.</b> So the next run starts from here, I added this to ${esc(scopeLabel(p.cat, p.cust))}:<br>“${esc(nf.text)}”</div>
+    <div class="row">${usePill(nf)}<button class="btn sm plain" data-act="open-fact" data-id="${nf.id}">Open the fact</button><button class="btn sm primary" data-act="launch" data-tool="story">Build a storyline next</button></div>` });
   if (state.view === "project") render();
-  toast("Selling Coach finished · 1 account fact sent for review");
 }
 
 /* ---- Storyline Generator ---- */
 const OPP_TITLE = { "F-1045": "Capsules at back-to-school", "F-1046": "Protect capsules from own-label switching", "F-1035": "Trade capsule buyers up to premium", "F-1034": "Win back own-label switchers", "F-1061": "Anchor the spring premium aisle", "F-1067": "Lead with scalp care in grocery", "F-1065": "Scalp care drives trial", "F-1071": "Top-120-store whitening launch", "F-1072": "Refills-led whitening launch" };
 function startStory(p) {
   const r = selectFacts(p.cat, p.cust, "");
-  const q = r.ranked.filter(x => quotable(x.f, p.audience)[0]);
-  if (!q.length) {
+  if (!r.ranked.some(x => quotable(x.f, p.audience))) {
     botReply(p, m => { m.html = `<div class="tool-hd">${icon("story")}Storyline Generator</div>
-      <div class="verdict warn"><b>I can't start a storyline yet.</b> This project is customer-facing and none of its ${plural(r.inScope, "fact is", "facts are")} cleared to quote to a customer. A storyline needs at least one.</div>
-      <p>You can verify the facts waiting for review, add a source with customer-cleared evidence, or switch this project to an internal audience.</p>
-      <div class="row"><button class="btn sm" data-act="go-review-facts">Review waiting facts</button><button class="btn sm plain" data-act="add-source">Add a source</button></div>`; });
+      <div class="verdict warn"><b>I can't start a storyline yet.</b> This project is customer-facing, and none of its ${plural(r.inScope, "fact is", "facts are")} cleared to use with the customer. A storyline needs at least one.</div>
+      <p>A curator can check the facts that are waiting, or you can add a document with customer-ready evidence.</p>
+      <div class="row"><button class="btn sm" data-act="open-account" data-cat="${p.cat}" data-cust="${esc(p.cust)}">See the account's facts</button><button class="btn sm plain" data-act="add-source">Add a document</button></div>`; });
     return;
   }
-  const m = push(p, { who: "bot", html: `<div class="tool-hd">${icon("story")}Storyline Generator</div>`, stages: [`Read grounded context · ${plural(r.inScope, "fact", "facts")}`, "Scout proposes opportunities", "Cross-check with a second model"], done: 0 });
-  const t = setInterval(() => {
-    m.done++;
-    if (m.done >= m.stages.length) { clearInterval(t); showOpps(p, r); }
-    if (state.project === p.id) paintThread();
-  }, 650);
+  const m = push(p, { who: "bot", html: `<div class="tool-hd">${icon("story")}Storyline Generator</div>`, stages: [`Read this account's facts · ${r.inScope} found`, "Propose opportunities", "Double-check with a second model"], done: 0 });
+  const t = setInterval(() => { m.done++; if (m.done >= m.stages.length) { clearInterval(t); showOpps(p, r); } if (state.project === p.id) paintThread(); }, 650);
 }
 function showOpps(p, r) {
   const fs = r.ranked.map(x => x.f);
   const cands = fs.filter(f => f.type === "recommendation" || f.type === "insight").slice(0, 3);
-  const tension = fs.find(f => f.type === "metric" && quotable(f, p.audience)[0]) || fs.find(f => f.type === "metric");
-  p.opps = cands.map((f, i) => ({ f, title: OPP_TITLE[f.id] || f.text, tension, rec: i === 0, agree: i === 0 ? "both" : i === 1 ? "primary only" : "cross-check only" }));
+  const tension = fs.find(f => f.type === "metric" && quotable(f, p.audience)) || fs.find(f => f.type === "metric");
+  p.opps = cands.map((f, i) => ({ f, title: OPP_TITLE[f.id] || f.text, tension, rec: i === 0, agree: i === 0 ? "Both models agree" : "One model only" }));
   const cite = citer(p);
-  push(p, { who: "bot", html: `<p>Here are ${plural(p.opps.length, "opportunity", "opportunities")}. I recommend the first one because it has the strongest evidence and both models raised it.</p>
+  push(p, { who: "bot", html: `<p>Here are ${plural(p.opps.length, "opportunity", "opportunities")}. I recommend the first: it has the strongest facts and both models raised it.</p>
     ${p.opps.map((o, i) => `<div class="opt ${o.rec ? "rec" : ""}"><span class="spread"><strong>${esc(o.title)}</strong><span class="row">${o.rec ? `<span class="pill solid">Recommended</span>` : ""}<span class="pill neutral">${o.agree}</span></span></span>
       <span class="small">${esc(o.f.text)} ${cite(o.f)}</span>
-      ${o.tension ? `<span class="small muted"><b>Tension:</b> ${esc(o.tension.text)} ${cite(o.tension)}</span>` : ""}
-      <div><button class="btn sm ${o.rec ? "primary" : ""}" data-act="st-pick" data-i="${i}">Choose this one</button></div></div>`).join("")}` });
+      ${o.tension ? `<span class="small muted"><b>Why now:</b> ${esc(o.tension.text)} ${cite(o.tension)}</span>` : ""}
+      <div><button class="btn sm ${o.rec ? "primary" : ""}" data-act="st-pick" data-i="${i}">Choose this one</button></div></div>`).join("")}${citeNote(p)}` });
 }
 function pickOpp(p, i) {
   lockOld(p);
@@ -831,123 +979,47 @@ function pickOpp(p, i) {
   push(p, { who: "me", text: `Go with “${o.title}”.` });
   botReply(p, m => {
     const r = selectFacts(p.cat, p.cust, ""), fs = preferQuotable(r.ranked.map(x => x.f), p), cite = citer(p);
-    const byType = t => fs.filter(f => f.type === t);
     const steps = [
       ["Summarise the situation", o.tension],
       ["State the idea", o.f, o.title],
-      ["Explain how it works", byType("recommendation").find(f => f !== o.f) || o.f],
+      ["Explain how it works", fs.find(f => f.type === "recommendation" && f !== o.f) || o.f],
       ["Reinforce key benefits", fs.find(f => (f.type === "metric" || f.type === "insight") && f !== o.tension && f !== o.f)],
-      ["Suggest an easy next step", byType("event")[0]],
+      ["Suggest an easy next step", fs.find(f => f.type === "event")],
     ];
     const run = { tool: "Storyline Generator", date: TODAY, status: "Ready for review", note: o.title };
     p.runs.unshift(run); p.storyRun = run;
-    m.html = `<div class="tool-hd">${icon("story")}PSF storyline · ${esc(o.title)}</div>
+    m.html = `<div class="tool-hd">${icon("story")}Storyline · ${esc(o.title)}</div>
       <div class="table-wrap"><table><thead><tr><th>Step</th><th>Headline</th></tr></thead><tbody>
       ${steps.map(([s, f, lead]) => `<tr><td style="color:var(--charcoal);font-weight:600;white-space:nowrap">${s}</td><td>${lead ? `<b>${esc(lead)}.</b> ` : ""}${f ? esc(f.text) : "Agree the next step with the buyer."} ${cite(f)}</td></tr>`).join("")}
-      </tbody></table></div>
-      ${p.audience === "external" ? `<p class="hint">Customer-facing: only customer-cleared facts are numbered. Background facts shaped the story but will not appear on slides.</p>` : ""}
+      </tbody></table></div>${citeNote(p)}
       <div class="row"><button class="btn sm primary" data-act="st-approve">Approve storyline</button><button class="btn sm plain" data-act="st-refine">Refine</button></div>`;
     if (state.view === "project") render();
   }, 900);
 }
 
 /* =====================================================================
-   Knowledge Bank overview
+   All facts (curator tool)
    ===================================================================== */
-RENDER.home = () => {
-  const all = FACTS.filter(visibleToMe);
-  const live = all.filter(isLive);
-  const bStates = BRIEFINGS.map(briefingState);
-  const liveSources = SOURCES.filter(s => s.status === "live").length;
-  const needs = live.filter(f => f.status === "needs_review");
-  const expiring = live.filter(f => f.expires);
-  const conflicts = REVIEW.filter(r => r.conflict).length;
-
-  const mixRow = (label, cls, n, total, color) => `<div class="mix-row"><span class="pill ${cls}">${label}</span><span class="bar"><i style="width:${total ? n / total * 100 : 0}%;background:${color}"></i></span><span class="n">${n}</span></div>`;
-  const relMix = [["Certified", "ok", "certified", "var(--ok-accent)"], ["Reviewed", "info", "reviewed", "var(--primary)"], ["Stated", "neutral", "stated", "var(--steel)"]]
-    .map(([l, c, k, col]) => mixRow(l, c, live.filter(f => f.rel === k).length, live.length, col)).join("");
-  const SC = { ok: "var(--ok-accent)", warn: "var(--alert-accent)", neutral: "var(--steel)" };
-  const statusMix = Object.keys(STATUS_LABEL).map(k => mixRow(STATUS_LABEL[k], STATUS_CLS[k], all.filter(f => f.status === k).length, all.length, SC[STATUS_CLS[k]])).join("");
-
-  const cols = [null, ...CUSTOMERS];
-  const matrix = `<table class="matrix"><thead><tr><th></th>${cols.map(c => `<th>${c ? esc(c) : "Category level"}</th>`).join("")}</tr></thead><tbody>
-    ${CATEGORIES.map(cat => `<tr><th>${cat}</th>${cols.map(cust => {
-      const n = live.filter(f => sameScope(f, cat, cust)).length;
-      const b = BRIEFINGS.find(x => sameScope(x, cat, cust));
-      const st = b ? briefingState(b) : null;
-      const lvl = n === 0 ? "empty" : n < 3 ? "l1" : n < 6 ? "l2" : "l3";
-      const bl = st ? `<span class="pill ${B_PILL[st][0]}" style="justify-self:start">${st === "below" ? "Below floor" : B_PILL[st][1]}</span>` : `<span class="small muted">No briefing</span>`;
-      return `<td><button class="cell ${lvl}" data-act="cell" data-cat="${cat}" data-cust="${esc(cust || "")}" aria-label="${esc(scopeLabel(cat, cust))}: ${n} facts"><span class="n">${n}</span>${bl}</button></td>`;
-    }).join("")}</tr>`).join("")}
-  </tbody></table>`;
-
-  state.todo = [
-    ...REVIEW.slice(0, 3).map(r => ({ go: () => { state.srcTab = "review"; go("sources"); }, title: r.title, meta: `<span class="pill ${r.cls}">${r.kind}</span>` })),
-    ...BRIEFINGS.filter(b => briefingState(b) === "outdated").map(b => ({ go: () => { state.briefKey = bkey(b); go("briefings"); }, title: `Briefing out of date: ${scopeLabel(b.cat, b.cust)}`, meta: `<span class="pill warn">Outdated</span>` })),
-    ...(needs.length ? [{ go: () => { state.f = { ...blankFilter(), status: "needs_review" }; go("facts"); }, title: `${plural(needs.length, "fact needs", "facts need")} review before tools can quote ${needs.length === 1 ? "it" : "them"}`, meta: `<span class="pill warn">Needs review</span>` }] : []),
-  ];
-  const runs = RUNS.slice(0, 5).map(r => `<tr><td><span class="pill ${r.status === "Complete" ? "ok" : r.status === "Running" ? "info" : "warn"}">${r.status}</span></td><td class="mono">${esc(r.source)}</td><td>${r.started}</td><td class="num">${r.indexed}</td><td class="num">${r.failed}</td></tr>`).join("");
-
-  return head("Knowledge Bank", "Grounded customer evidence", "Find and maintain the cited evidence that grounds every customer project.",
-    `<button class="btn" data-view="search">${icon("search")}Search evidence</button><button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + `
-    <section class="summary" aria-label="Corpus health">
-      <button data-view="facts"><div class="k">Facts</div><div class="num">${live.length}</div><div class="sub">live · ${plural(live.filter(f => f.owner).length, "is", "are")} private to you</div></button>
-      <button data-view="briefings"><div class="k">Briefings</div><div class="num">${BRIEFINGS.length}</div><div class="sub">${bStates.filter(s => s === "current").length} current · ${bStates.filter(s => s === "outdated").length} outdated · ${bStates.filter(s => s === "below").length} below floor</div></button>
-      <button data-view="sources"><div class="k">Sources indexed</div><div class="num">${liveSources}</div><div class="sub">of ${SOURCES.length} added</div></button>
-      <button data-act="attention"><div class="k">Needs attention</div><div class="num">${conflicts + expiring.length}</div><div class="sub">${plural(conflicts, "open conflict", "open conflicts")} · ${expiring.length} expiring ≤ 30 d</div></button>
-    </section>
-    <div class="home section">
-      <section class="card">
-        <div class="card-hd">Coverage by scope <span class="facet" style="font-weight:500">market:uk · live facts</span></div>
-        <div class="pad"><p class="small muted" style="margin-bottom:8px">Rows are categories, columns are customers. Open a cell to see its facts. A briefing needs at least 3 live facts, including 1 certified metric.</p><div class="matrix-wrap">${matrix}</div></div>
-      </section>
-      <section>
-        <h2 class="section-title">Needs your attention</h2>
-        ${state.todo.length ? `<div class="todo">${state.todo.map((t, k) => `<button data-act="todo" data-k="${k}"><span class="row">${t.meta}</span><span>${esc(t.title)}</span></button>`).join("")}</div>` : `<div class="empty-state">Nothing waiting on you.</div>`}
-      </section>
-    </div>
-    <section class="section"><h2 class="section-title">Governance mix</h2>
-      <div class="mix"><div class="card pad stack"><div class="label">Reliability · live facts</div>${relMix}</div><div class="card pad stack"><div class="label">Fact status · all facts</div>${statusMix}</div></div>
-    </section>
-    <section class="section"><h2 class="section-title">Recent ingestion runs</h2>
-      <div class="table-wrap"><table class="stbl narrow"><thead><tr><th>Status</th><th>Source</th><th>Started</th><th class="num">Indexed</th><th class="num">Failed</th></tr></thead><tbody>${runs}</tbody></table></div>
-    </section>`;
-};
-
-/* =====================================================================
-   Facts
-   ===================================================================== */
-function factCard(f) {
-  const s = f.src ? src(f.src) : null;
-  return `<button class="fact ${isLive(f) ? "" : "dim"}" data-act="open-fact" data-id="${f.id}">
-    <span class="row"><span class="type">${f.type}</span>${statusPill(f)}${expPill(f)}${f.dedup > 1 ? `<span class="tag" title="Restatements collapse to one fact">Stated in ${f.dedup} sources</span>` : ""}</span>
-    <span class="statement">${esc(f.text)}</span>
-    <span class="fact-meta"><span class="facet">${facetKey(f.cat, f.cust)}</span>${gov(f)}</span>
-    <span class="fact-meta"><span>${s ? esc(s.name) : "Account memory"} · ${esc(f.loc)}</span><span>as of ${f.asOf}</span><span class="mono">${f.id}</span></span>
-  </button>`;
-}
 RENDER.facts = () => {
   const F = state.f, q = F.q.toLowerCase();
   const list = FACTS.filter(visibleToMe)
-    .filter(f => F.hidden || isLive(f) || F.status === f.status)
+    .filter(f => F.hidden || isLive(f) || F.use === "out")
     .filter(f => !F.cat || f.cat === F.cat)
     .filter(f => !F.cust || (F.cust === "_cat" ? !f.cust : f.cust === F.cust))
     .filter(f => !F.type || f.type === F.type)
-    .filter(f => !F.status || f.status === F.status)
-    .filter(f => !F.rel || f.rel === F.rel)
+    .filter(f => !F.use || usage(f).k === F.use)
     .filter(f => !q || f.text.toLowerCase().includes(q));
   const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(([v, l]) => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(l)}</option>`).join("");
-  return head("Knowledge Bank", "Facts", "Inspect the atomic facts, their provenance, reliability and freshness behind each answer.", `<button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + `
+  return head("Curator tools", "All facts", "Every fact in the bank, with whether it can be used and where it came from.", `<button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + `
     <div class="filters">
       <input class="search" id="fq" type="search" placeholder="Search facts" value="${esc(F.q)}" aria-label="Search facts">
+      <select class="select" data-filter="use" aria-label="Can I use it?">${opt(USE_KEYS, F.use, "Can I use it? Any")}</select>
       <select class="select" data-filter="cat" aria-label="Category">${opt(CATEGORIES.map(c => [c, c]), F.cat, "Category: any")}</select>
-      <select class="select" data-filter="cust" aria-label="Customer">${opt([["_cat", "Category level only"], ...CUSTOMERS.map(c => [c, c])], F.cust, "Customer: any")}</select>
-      <select class="select" data-filter="rel" aria-label="Reliability">${opt(REL.map(r => [r, r[0].toUpperCase() + r.slice(1)]), F.rel, "Reliability: any")}</select>
-      <select class="select" data-filter="status" aria-label="Status">${opt(Object.entries(STATUS_LABEL), F.status, "Status: any")}</select>
+      <select class="select" data-filter="cust" aria-label="Customer">${opt([["_cat", "All-customer facts only"], ...CUSTOMERS.map(c => [c, c])], F.cust, "Customer: any")}</select>
     </div>
-    <div class="filters"><div class="seg" role="group" aria-label="Fact type">${["", ...TYPES].map(t => `<button data-ftype="${t}" aria-pressed="${t === F.type}">${t || "All types"}</button>`).join("")}</div>
-      <label class="check"><input type="checkbox" id="fhid" ${F.hidden ? "checked" : ""}> Show outdated and replaced</label></div>
-    <p class="small muted" style="margin-bottom:10px">${plural(list.length, "fact", "facts")}${F.cat || F.cust || F.type || F.status || F.rel || q ? ` · <button class="btn ghost small" data-act="clear-filters">Clear filters</button>` : ""}</p>
+    <div class="filters"><div class="seg" role="group" aria-label="Kind of fact">${["", ...TYPES].map(t => `<button data-ftype="${t}" aria-pressed="${t === F.type}">${t ? TYPE_LABEL[t] + "s" : "All kinds"}</button>`).join("")}</div>
+      <label class="check"><input type="checkbox" id="fhid" ${F.hidden ? "checked" : ""}> Include out-of-date facts</label></div>
+    <p class="small muted" style="margin-bottom:10px">${plural(list.length, "fact", "facts")} · a fact confirmed by several documents counts once${F.cat || F.cust || F.type || F.use || q ? ` · <button class="btn ghost small" data-act="clear-filters">Clear filters</button>` : ""}</p>
     ${list.length ? list.map(factCard).join("") : `<div class="empty-state">No facts match these filters. <button class="btn ghost" data-act="add-fact">Add a fact</button></div>`}`;
 };
 AFTER.facts = () => {
@@ -956,7 +1028,7 @@ AFTER.facts = () => {
 };
 
 /* =====================================================================
-   Briefings
+   Briefings (curator tool)
    ===================================================================== */
 function briefingList() {
   const B = state.bf, q = B.q.toLowerCase();
@@ -969,74 +1041,59 @@ RENDER.briefings = () => {
   if (!list.some(b => bkey(b) === state.briefKey) && list.length) state.briefKey = bkey(list[0]);
   const sel = list.find(b => bkey(b) === state.briefKey);
   const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(v => `<option ${v === cur ? "selected" : ""}>${esc(v)}</option>`).join("");
-  const items = list.map(x => {
-    const st = briefingState(x);
-    return `<button class="bitem ${x.status === "none" ? "virtual" : ""}" data-act="pick-brief" data-key="${esc(bkey(x))}" aria-pressed="${bkey(x) === state.briefKey}">
-      <strong>${esc(scopeLabel(x.cat, x.cust))}</strong><span class="facet">${facetKey(x.cat, x.cust)}</span>
-      <span class="spread"><span class="pill ${B_PILL[st][0]}">${x.status === "none" && st === "below" ? "No briefing · below floor" : B_PILL[st][1]}</span><span class="small muted">${plural(briefingFacts(x).length, "fact", "facts")}</span></span>
-    </button>`;
-  }).join("");
-  return head("Knowledge Bank", "Briefings", "Read or generate a concise, cited summary for a customer, market or category.") + NOTE + `
-    <div class="filters"><input class="search" id="bq" type="search" placeholder="Filter by scope name" value="${esc(B.q)}" aria-label="Filter by scope name" style="width:100%"></div>
+  const items = list.map(x => { const st = briefingState(x); return `<button class="bitem ${x.status === "none" ? "virtual" : ""}" data-act="pick-brief" data-key="${esc(bkey(x))}" aria-pressed="${bkey(x) === state.briefKey}">
+      <strong>${esc(scopeLabel(x.cat, x.cust))}</strong><span class="spread"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><span class="small muted">${plural(briefingFacts(x).length, "fact", "facts")}</span></span></button>`; }).join("");
+  return head("Curator tools", "Briefings", "A short summary for each account, written only from its facts. Every line links to the fact behind it.") + NOTE + `
+    <div class="filters"><input class="search" id="bq" type="search" placeholder="Find an account" value="${esc(B.q)}" aria-label="Find an account" style="width:100%"></div>
     <div class="scope-filters">
-      <div class="col"><span class="label">Product scope</span>
+      <div class="col"><span class="label">Product</span>
         <select class="select" data-bfilter="cat" aria-label="Category">${opt(CATEGORIES, B.cat, "Category: any")}</select>
         <select class="select" disabled aria-label="Sub-category"><option>Sub-category: any</option></select>
         <select class="select" disabled aria-label="Brand"><option>Brand: any</option></select>
-        <select class="select" disabled aria-label="Product"><option>Product: any</option></select>
-        <span class="hint">No sub-category, brand or product facts in this sample yet.</span></div>
-      <div class="col"><span class="label">Geography</span>
+        <span class="hint">No sub-category or brand facts in this sample yet.</span></div>
+      <div class="col"><span class="label">Customer</span>
         <select class="select" disabled aria-label="Market"><option>Market: UK</option></select>
         <select class="select" data-bfilter="cust" aria-label="Customer">${opt(CUSTOMERS, B.cust, "Customer: any")}</select>
-        <span class="hint">The MVP trade panel covers the UK only.</span></div>
+        <span class="hint">UK only for now.</span></div>
     </div>
-    ${list.length ? `<div class="briefings"><div class="blist">${items}</div><section>${briefingDoc(sel)}</section></div>` : `<div class="empty-state">No briefing matches. Pick a category to generate one.</div>`}`;
+    ${list.length ? `<div class="briefings"><div class="blist">${items}</div><section>${briefingDoc(sel)}</section></div>` : `<div class="empty-state">No briefing matches. Pick a category to write one.</div>`}`;
 };
-AFTER.briefings = () => {
-  $("#bq").addEventListener("input", e => { state.bf.q = e.target.value; const p = e.target.selectionStart; render(); const n = $("#bq"); n.focus(); n.setSelectionRange(p, p); });
-};
+AFTER.briefings = () => { $("#bq").addEventListener("input", e => { state.bf.q = e.target.value; const p = e.target.selectionStart; render(); const n = $("#bq"); n.focus(); n.setSelectionRange(p, p); }); };
 function briefingDoc(b) {
   const st = briefingState(b), fs = briefingFacts(b);
   if (st === "below" || st === "none") {
     const hasMetric = fs.some(f => f.type === "metric" && f.rel === "certified");
-    const gone = FACTS.filter(f => sameScope(f, b.cat, b.cust) && f.status === "outdated" && f.type === "metric");
     return `<div class="doc"><div class="label">${esc(scopeLabel(b.cat, b.cust))}</div>
       ${st === "none"
-        ? `<h2>No briefing for this scope yet</h2><p>This scope has ${plural(fs.length, "live fact", "live facts")}, including a certified metric. That clears the evidence floor, so a briefing can be generated.</p><div><button class="btn primary" data-act="generate" data-key="${esc(bkey(b))}">Generate briefing</button></div>`
-        : `<h2>Not enough evidence for a briefing</h2><p>This scope has ${plural(fs.length, "live fact", "live facts")}${hasMetric ? "" : " and no live certified metric"}. A briefing needs at least 3 facts including 1 certified metric, so tools use the general selling frameworks here instead of a thin page.</p>
-           <div class="meter" role="img" aria-label="${fs.length} of 3 facts"><i style="width:${Math.min(fs.length / 3, 1) * 100}%"></i></div>
-           ${gone.length ? `<div class="callout warn">${gone.map(f => `“${esc(f.text)}” <span class="mono">${f.id}</span> is outdated. The next trade-panel refresh would bring this scope back over the floor.`).join("<br>")}</div>` : ""}`}
-      <div>${fs.map(factCard).join("")}</div>
-      <div class="row"><button class="btn" data-act="add-source">Add a source for this scope</button><button class="btn ghost" data-act="add-fact">Add a fact</button></div></div>`;
+        ? `<h2>No briefing yet</h2><p>This account has ${plural(fs.length, "checked fact", "checked facts")}, including an official market number. That's enough to write one.</p><div><button class="btn primary" data-act="generate" data-key="${esc(bkey(b))}">Write briefing</button></div>`
+        : `<h2>Not enough information yet</h2><p>This account has ${plural(fs.length, "fact", "facts")}${hasMetric ? "" : " and no current official market number"}. A briefing needs at least 3 facts, including an official market number. Until then, tools use general selling guidance for this account.</p>
+           <div class="meter" role="img" aria-label="${fs.length} of 3 facts"><i style="width:${Math.min(fs.length / 3, 1) * 100}%"></i></div>`}
+      <div class="row"><button class="btn" data-act="open-account" data-cat="${b.cat}" data-cust="${esc(b.cust || "")}">See the account's facts</button><button class="btn ghost" data-act="add-source">Add a document</button></div></div>`;
   }
   const refs = [];
   const refOf = f => { const key = f.src || "memory:" + f.id; let i = refs.findIndex(r => r.key === key); if (i < 0) { refs.push({ key, f }); i = refs.length - 1; } return i + 1; };
-  const SECTIONS = [["Where the business stands", ["metric"]], ["What shoppers and the buyer tell us", ["insight", "quote"]], ["What to do next", ["recommendation"]], ["Account memory", ["event"]]];
+  const SECTIONS = [["How the business is doing", ["metric"]], ["What shoppers and the buyer say", ["insight", "quote"]], ["What to do next", ["recommendation"]], ["What happened recently", ["event"]]];
   const body = SECTIONS.map(([h, types]) => {
     const items = fs.filter(f => types.includes(f.type));
     if (!items.length) return "";
-    return `<div class="stack"><h3>${h}</h3><ul>${items.map(f => {
-      const extra = [f.sens === "restricted" ? `<span class="pill bad">restricted</span>` : "", f.status === "needs_review" ? `<span class="pill warn">needs review</span>` : "", f.expires ? `<span class="pill warn">expires ${f.expires}</span>` : ""].join(" ");
-      return `<li>${esc(f.text)} <button class="anchor" data-act="open-fact" data-id="${f.id}" title="Open ${f.id}">S${refOf(f)}</button> ${extra}</li>`;
-    }).join("")}</ul></div>`;
+    return `<div class="stack"><h3>${h}</h3><ul>${items.map(f => { const u = usage(f); return `<li>${esc(f.text)} <button class="anchor" data-act="open-fact" data-id="${f.id}" title="Open this fact">${refOf(f)}</button> ${u.k !== "customer" ? `<span class="pill ${u.cls}" title="${esc(u.why)}">${u.label}</span>` : ""}</li>`; }).join("")}</ul></div>`;
   }).join("");
-  const ih = hash(fs.map(f => f.id).sort().join(","));
   return `<article class="doc">
-    <div class="spread"><div class="stack" style="gap:4px"><div class="label">Briefing</div><h2>${esc(scopeLabel(b.cat, b.cust))}</h2><span class="facet">${facetKey(b.cat, b.cust)}</span></div>
-      <div class="row"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><button class="btn sm ${st === "outdated" ? "primary" : ""}" data-act="regen" data-key="${esc(bkey(b))}" ${st === "outdated" ? "" : `disabled title="The fact set is unchanged, so regenerating would change nothing."`}>Regenerate</button></div></div>
-    ${st === "outdated" ? `<div class="callout warn">${esc(b.why || "The facts behind this briefing changed.")} Regenerating rebuilds it from the current fact set.</div>` : ""}
-    <p class="small muted">Generated ${b.generated} from ${plural(fs.length, "fact", "facts")} · input hash <span class="mono">${ih}</span> · private facts are never included</p>
+    <div class="spread"><div class="stack" style="gap:4px"><div class="label">Briefing</div><h2>${esc(scopeLabel(b.cat, b.cust))}</h2></div>
+      <div class="row"><span class="pill ${B_PILL[st][0]}">${B_PILL[st][1]}</span><button class="btn sm ${st === "outdated" ? "primary" : ""}" data-act="regen" data-key="${esc(bkey(b))}" ${st === "outdated" ? "" : `disabled title="Nothing has changed since it was written."`}>Refresh briefing</button></div></div>
+    ${st === "outdated" ? `<div class="callout warn">${esc(b.why || "Its facts changed.")} Refreshing rewrites it from the current facts.</div>` : ""}
+    <p class="small muted">Written ${b.generated} from ${plural(fs.length, "fact", "facts")}. Private notes are never included.</p>
     ${body}
-    <div class="refs"><div class="label">References</div>${refs.map((r, i) => { const s = r.f.src && src(r.f.src); return `<div><span class="anchor">S${i + 1}</span> ${s ? esc(s.name) : "Account memory · project signal"} <span class="muted">· ${esc(s ? s.kind : "event")}</span></div>`; }).join("")}</div>
+    <div class="refs"><div class="label">Sources</div>${refs.map((r, i) => { const s = r.f.src && src(r.f.src); return `<div><span class="anchor">${i + 1}</span> ${s ? esc(s.name) : "Account memory"} <span class="muted">· ${esc(s ? REL_LABEL[s.rel] : "project signal")}</span></div>`; }).join("")}</div>
   </article>`;
 }
 
 /* =====================================================================
-   Search: a visible fact selection (filter, rank, collapse)
+   Fact selection used by the chat (filter, rank, merge repeats)
    ===================================================================== */
 function selectFacts(cat, cust, q) {
   const words = (q || "").toLowerCase().split(/\W+/).filter(w => w.length > 3);
-  const live = FACTS.filter(visibleToMe).filter(isLive);
+  const live = liveFacts();
   const inScope = live.filter(f => (f.cat === cat && (!f.cust || (cust && f.cust === cust))) || (!f.cat && cust && f.cust === cust));
   const RW = { certified: 1, reviewed: .8, stated: .6 };
   const ranked = inScope.map(f => {
@@ -1046,104 +1103,56 @@ function selectFacts(cat, cust, q) {
   }).sort((a, b) => b.score - a.score).slice(0, 8);
   const merged = ranked.reduce((n, r) => n + (r.f.dedup - 1), 0);
   const hasMetric = ranked.some(r => r.f.type === "metric" && r.f.rel === "certified");
-  const coverage = !ranked.length ? "none" : ranked.length >= 3 && hasMetric ? "sufficient" : "thin";
-  return { live: live.length, inScope: inScope.length, ranked, merged, coverage };
+  return { live: live.length, inScope: inScope.length, ranked, merged, coverage: !ranked.length ? "none" : ranked.length >= 3 && hasMetric ? "sufficient" : "thin" };
 }
-const COV = { sufficient: ["ok", "Sufficient", "Enough trusted evidence on this scope. Tools use these facts directly."], thin: ["warn", "Thin", "Some evidence, but below the must-have floor. Tools proceed, fall back to general frameworks for the gaps, and flag them."], none: ["bad", "None", "Nothing on this scope. Tools skip Knowledge Bank grounding and use general frameworks only."] };
-function shortWhy(f, audience) {
-  if (f.status !== "verified") return "Needs review";
-  if (audience === "external") return f.sens === "restricted" ? "Restricted" : "Internal only";
-  return "";
-}
-RENDER.search = () => {
-  const A = state.ask, r = selectFacts(A.cat, A.cust, A.q), c = COV[r.coverage];
-  const rows = r.ranked.map((x, i) => {
-    const [ok, why] = quotable(x.f, A.audience);
-    return `<tr><td class="num">${i + 1}</td>
-      <td><button class="linkish" data-act="open-fact" data-id="${x.f.id}">${esc(x.f.text)}</button><div class="row" style="margin-top:4px"><span class="type">${x.f.type}</span><span class="facet">${!x.f.cat ? "customer" : x.f.cust ? "account" : "category"} scope</span></div></td>
-      <td>${gov(x.f)}</td><td class="num mono">${x.score.toFixed(2)}</td>
-      <td><span class="pill ${ok ? "ok" : "neutral"}" title="${esc(why)}">${ok ? "Quotable" : "Background"}</span><div class="hint" style="margin-top:4px">${ok ? "" : shortWhy(x.f, A.audience)}</div></td></tr>`;
-  }).join("");
-  const quot = r.ranked.filter(x => quotable(x.f, A.audience)[0]);
-  const bg = r.ranked.length - quot.length;
-  const shown = (A.audience === "external" ? quot : r.ranked).slice(0, 4);
-  const answer = r.coverage === "none" ? `<p>The bank has nothing on this scope. A tool would answer from general selling frameworks only, with no Knowledge Bank citations.</p>`
-    : `<p>For <b>${esc(scopeLabel(A.cat, A.cust))}</b>, the strongest evidence is:</p>
-       ${shown.length ? `<ul>${shown.map(x => `<li>${esc(x.f.text)} <button class="anchor" data-act="open-fact" data-id="${x.f.id}">${r.ranked.indexOf(x) + 1}</button></li>`).join("")}</ul>` : `<p class="muted">None of the selected facts can be shown to a customer.</p>`}
-       ${bg && A.audience === "external" ? `<p class="hint">${plural(bg, "more fact", "more facts")} shaped this answer but cannot be quoted to a customer. See the Use column.</p>` : ""}`;
-  return head("Knowledge Bank", "Search", "See which facts a tool would receive for a scope and audience, and how well that scope is covered.") + NOTE + `<div class="ask">
-    <section class="card pad">
-      <form id="askform">
-        <div class="field"><label for="a-q">Question</label><textarea id="a-q" rows="3">${esc(A.q)}</textarea></div>
-        <div class="grid2">
-          <div class="field"><label for="a-cat">Category</label><select id="a-cat">${CATEGORIES.map(x => `<option ${x === A.cat ? "selected" : ""}>${x}</option>`).join("")}</select></div>
-          <div class="field"><label for="a-cust">Customer</label><select id="a-cust"><option value="">Category level</option>${CUSTOMERS.map(x => `<option ${x === A.cust ? "selected" : ""}>${esc(x)}</option>`).join("")}</select></div>
-        </div>
-        <div class="field"><span class="flabel">Audience</span>
-          <div class="seg" role="group" aria-label="Audience"><button type="button" data-aud="internal" aria-pressed="${A.audience === "internal"}">Internal team</button><button type="button" data-aud="external" aria-pressed="${A.audience === "external"}">Customer-facing</button></div>
-          <span class="hint">Customer-facing keeps internal and restricted facts as background only.</span></div>
-        <button class="btn primary" type="submit">${icon("search")}Search evidence</button>
-      </form>
-      <div class="stack" style="margin-top:16px"><div class="label">Try</div><div class="chips">
-        ${[["What should I lead with in the Northgate range review?", "Fabric Care", "Northgate"], ["Why is our Hair Care share slipping at Brightmart?", "Hair Care", "Brightmart"], ["What do we know about Harbour & Co in Oral Care?", "Oral Care", "Harbour & Co"]].map(([q, cat, cu]) => `<button class="chip" data-act="try" data-q="${esc(q)}" data-cat="${cat}" data-cust="${esc(cu)}">${esc(q)}</button>`).join("")}
-      </div></div>
-    </section>
-    <section class="stack" style="gap:14px">
-      <div class="pipeline">
-        <div><span class="label">1 · Filter</span><b>${r.inScope}</b><span class="small muted">of ${r.live} live facts match the scope and your access</span></div>
-        <div><span class="label">2 · Rank</span><b>${r.ranked.length}</b><span class="small muted">top facts by relevance, status, reliability and recency</span></div>
-        <div><span class="label">3 · Collapse</span><b>${r.merged}</b><span class="small muted">restatements merged into their best-scored fact</span></div>
-      </div>
-      <div class="verdict ${c[0]}"><b>Coverage: ${c[1]}.</b> ${c[2]}</div>
-      <div class="card pad answer"><div class="label">Draft answer · built only from the facts below</div>${answer}</div>
-      ${r.ranked.length ? `<div class="table-wrap"><table class="ftable"><thead><tr><th>#</th><th>Fact</th><th>Governance</th><th class="num">Score</th><th>Use</th></tr></thead><tbody>${rows}</tbody></table></div>` : ""}
-    </section></div>`;
-};
-AFTER.search = () => { $("#askform").addEventListener("submit", e => { e.preventDefault(); readAskForm(); render(); toast("Evidence selected"); }); };
-function readAskForm() { state.ask.q = $("#a-q").value.trim() || state.ask.q; state.ask.cat = $("#a-cat").value; state.ask.cust = $("#a-cust").value; }
 
 /* =====================================================================
-   Manage sources (sources + review queue)
+   Sources & review (curator tool)
    ===================================================================== */
 RENDER.sources = () => {
   const tabs = `<div class="tabs" role="tablist">
-    <button role="tab" data-tab="sources" aria-selected="${state.srcTab === "sources"}">Sources (${SOURCES.length})</button>
-    <button role="tab" data-tab="review" aria-selected="${state.srcTab === "review"}">Review queue (${REVIEW.length})</button></div>`;
-  return head("Knowledge Bank", "Manage sources", "Add source material, resolve exceptions, and control what the sales tools may cite.", `<button class="btn primary" data-act="add-source">${icon("plus")}Add source</button>`) + NOTE + tabs + (state.srcTab === "review" ? reviewQueue() : sourceTable());
+    <button role="tab" data-tab="sources" aria-selected="${state.srcTab === "sources"}">Documents (${SOURCES.length})</button>
+    <button role="tab" data-tab="review" aria-selected="${state.srcTab === "review"}">Review queue (${REVIEW.length})</button>
+    <button role="tab" data-tab="health" aria-selected="${state.srcTab === "health"}">Health</button></div>`;
+  const body = { sources: sourceTable, review: reviewQueue, health: healthTab }[state.srcTab]();
+  return head("Curator tools", "Sources & review", "The documents and data behind the facts, the cases that need a person, and overall health.", `<button class="btn primary" data-act="add-source">${icon("plus")}Add a document</button>`) + NOTE + tabs + body;
 };
 function sourceTable() {
   const rows = SOURCES.map(s => {
     const p = S_PILL[s.status], stalled = ["failed", "needs_context", "quarantined"].includes(s.status);
     const stages = STAGES.map((_, i) => `<i class="${i < s.stage ? "done" : i === s.stage && stalled ? "fail" : i === s.stage && s.status === "processing" ? "run" : ""}"></i>`).join("");
     return `<tr data-act="open-source" data-id="${s.id}" tabindex="0">
-      <td><div class="name">${esc(s.name)}</div><div class="stages" title="${STAGES.join(" → ")}">${stages}</div>${s.note ? `<div class="hint" style="margin-top:4px">${esc(s.note)}</div>` : ""}</td>
-      <td>${esc(s.kind)}<div class="hint">${s.lane} lane</div></td><td>${esc(scopeLabel(s.cat, s.cust))}</td>
-      <td><span class="pill ${p[0]}">${p[1]}</span></td>
-      <td><span class="gov"><span class="t-${s.rel}"><b>${s.rel}</b></span><span class="s-${s.sens}"><b>${s.sens}</b></span></span></td>
-      <td>${s.asOf}${s.conf === "low" ? `<div><span class="pill warn">low confidence</span></div>` : ""}</td><td class="num">${s.facts}</td></tr>`;
+      <td><div class="name">${esc(s.name)}</div><div class="stages" title="Import progress">${stages}</div>${s.note ? `<div class="hint" style="margin-top:4px">${esc(s.note)}</div>` : ""}</td>
+      <td>${esc(s.kind)}</td><td>${esc(scopeLabel(s.cat, s.cust))}</td><td><span class="pill ${p[0]}">${p[1]}</span></td>
+      <td>${term(REL_LABEL[s.rel], REL_TIP[s.rel])}</td><td>${SENS_LABEL[s.sens]}</td><td>${age(s.asOf)}</td><td class="num">${s.facts}</td></tr>`;
   }).join("");
-  const by = st => SOURCES.filter(s => s.status === st).length;
-  return `<p class="small muted" style="margin-bottom:12px">${by("live")} live · ${by("needs_context") + by("quarantined")} waiting for review · ${by("failed")} failed · ${by("superseded") + by("retired")} replaced or retired. Pipeline: ${STAGES.join(" → ")}.</p>
-    <div class="table-wrap"><table class="stbl"><thead><tr><th>Source</th><th>Type</th><th>Scope</th><th>Status</th><th>Reliability · sensitivity</th><th>Content date</th><th class="num">Facts</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  return `<div class="table-wrap"><table class="stbl"><thead><tr><th>Document</th><th>Type</th><th>Account</th><th>Status</th><th>Trust</th><th>Audience</th><th>Content age</th><th class="num">Facts</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 function reviewQueue() {
-  if (!REVIEW.length) return `<div class="empty-state">The queue is empty. New cases appear here after ingestion and scheduled jobs.</div>`;
-  return `<p class="small muted" style="margin-bottom:12px">Only the cases that need a person: contradictions, stale intake, verbatim quotes, personal data and overlaps.</p>
+  if (!REVIEW.length) return `<div class="empty-state">The queue is empty. New cases appear here after imports and scheduled checks.</div>`;
+  const locked = !curatorMode();
+  return `${locked ? `<div class="callout info" style="margin-bottom:12px"><b>Curators resolve these.</b> You can see what's pending and who it's assigned to. Switch to “Curator” at the top to try resolving them.</div>` : `<p class="small muted" style="margin-bottom:12px">Only the cases that need a person.</p>`}
   <div class="rq">${REVIEW.map(r => `<article class="rcard">
-      <div class="spread"><span class="pill ${r.cls}">${r.kind}</span><span class="mono muted">${r.id}</span></div>
+      <div class="spread"><span class="pill ${r.cls}">${r.kind}</span><span class="hint">Assigned to ${CURATOR[r.cat]} (curator)</span></div>
       <h3>${esc(r.title)}</h3><p>${esc(r.body)}</p>
-      ${r.a ? `<div class="versus">${[r.a, r.b].map(x => `<div class="side-box"><span class="big">${x.big}</span><span>${esc(x.src)}</span><span class="hint">${esc(x.loc)} · ${x.rel} · as of ${x.asOf}</span></div>`).join("")}</div>` : ""}
-      <div class="row">${r.actions.map(([l, c]) => `<button class="btn sm ${c || "plain"}" data-act="resolve" data-id="${r.id}" data-choice="${esc(l)}">${esc(l)}</button>`).join("")}</div>
+      ${r.a ? `<div class="versus">${[r.a, r.b].map(x => `<div class="side-box"><span class="big">${x.big}</span><span>${esc(x.src)}</span><span class="hint">${esc(x.loc)} · ${REL_LABEL[x.rel]} · ${age(x.asOf)}</span></div>`).join("")}</div>` : ""}
+      <div class="row">${r.actions.map(([l, c]) => `<button class="btn sm ${c || "plain"}" data-act="resolve" data-id="${r.id}" data-choice="${esc(l)}" ${locked ? "disabled" : ""}>${esc(l)}</button>`).join("")}</div>
     </article>`).join("")}</div>`;
+}
+function healthTab() {
+  const all = FACTS.filter(visibleToMe), live = all.filter(isLive);
+  const row = (label, cls, n, total, color) => `<div class="mix-row"><span class="pill ${cls}">${label}</span><span class="bar"><i style="width:${total ? n / total * 100 : 0}%;background:${color}"></i></span><span class="n">${n}</span></div>`;
+  const trust = REL.map((k, i) => row(REL_LABEL[k], ["ok", "info", "neutral"][i], live.filter(f => f.rel === k).length, live.length, ["var(--ok-accent)", "var(--primary)", "var(--steel)"][i])).join("");
+  const use = USE_KEYS.map(([k, l], i) => row(l, ["ok", "info", "warn", "neutral"][i], all.filter(f => usage(f).k === k).length, all.length, ["var(--ok-accent)", "var(--primary)", "var(--alert-accent)", "var(--steel)"][i])).join("");
+  const runs = RUNS.slice(0, 5).map(r => `<tr><td><span class="pill ${r.status === "Complete" ? "ok" : r.status === "Running" ? "info" : "warn"}">${r.status}</span></td><td>${esc(r.source)}</td><td>${r.started}</td><td class="num">${r.indexed}</td><td class="num">${r.failed}</td></tr>`).join("");
+  return `<div class="mix"><div class="card pad stack"><div class="label">Where usable facts come from</div>${trust}</div><div class="card pad stack"><div class="label">Can they be used?</div>${use}</div></div>
+    <section class="section"><h2 class="section-title">Recent imports</h2><div class="table-wrap"><table class="stbl narrow"><thead><tr><th>Status</th><th>What was imported</th><th>Started</th><th class="num">Facts found</th><th class="num">Problems</th></tr></thead><tbody>${runs}</tbody></table></div></section>`;
 }
 
 /* =====================================================================
    Drawer (fact detail, source impact) and modals
    ===================================================================== */
-function openDrawer(html) {
-  $("#overlay").innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer" role="dialog" aria-modal="true">${html}</aside>`;
-  $(".drawer button")?.focus();
-}
+function openDrawer(html) { $("#overlay").innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer" role="dialog" aria-modal="true">${html}</aside>`; $(".drawer button")?.focus(); }
 function openModal(html, onSubmit) {
   $("#overlay").innerHTML = `<div class="scrim"></div><div class="modal-wrap" data-act="close"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
   const form = $(".modal form");
@@ -1153,38 +1162,45 @@ function openModal(html, onSubmit) {
 function closeOverlay() { $("#overlay").innerHTML = ""; }
 
 function factDrawer(id) {
-  const f = fact(id), s = f.src ? src(f.src) : null;
-  const [qi, whyI] = quotable(f, "internal"), [qc, whyC] = quotable(f, "external");
+  const f = fact(id), s = f.src ? src(f.src) : null, u = usage(f);
   const cites = BRIEFINGS.filter(b => floorOK(b) && briefingFacts(b).includes(f));
   const figNum = f.fig && String(parseFloat(f.fig));
   const evidence = f.row ? `<pre class="excerpt">${esc(JSON.stringify(f.row, null, 2)).replace(figNum, `<mark>${figNum}</mark>`)}</pre>` : `<div class="excerpt">${highlight(f.excerpt, f.fig)}</div>`;
-  const fidelity = !f.fig ? "" : (f.row || (f.excerpt || "").includes(f.fig)) ? "Figure found in its evidence. Numeric check passed." : "Figure not found in its evidence.";
+  const numberOK = f.fig && (f.row || (f.excerpt || "").includes(f.fig));
+  const cur = curatorFor(f);
+  const who = [
+    ["var(--primary)", "1", f.by ? `<b>${esc(f.by)}</b> added it${f.origin ? ` (from ${esc(f.origin)})` : ""}.` : s ? `The system took it from <b>${esc(s.name)}</b>.` : `The system recorded it from a project.`],
+    [f.status === "verified" ? "var(--ok-accent)" : "var(--alert-accent)", "2", f.status === "verified" ? `<b>Checked</b> by ${cur} (curator).` : f.status === "needs_review" ? `<b>Waiting for ${cur}</b> (curator) to check it.` : `No longer in use.`],
+    ["var(--steel)", "3", f.expires ? `The system will flag it on ${f.expires} when its data gets too old.` : "The system flags it automatically if it gets too old or a newer document replaces it."],
+  ];
   openDrawer(`
-    <div class="spread"><span class="row"><span class="type">${f.type}</span>${statusPill(f)}${expPill(f)}</span><button class="btn sm plain" data-act="close">Close</button></div>
-    <h2>${esc(f.text)}</h2><div>${gov(f)}</div>
+    <div class="spread"><span class="type">${TYPE_LABEL[f.type]}</span><button class="btn sm plain" data-act="close">Close</button></div>
+    <h2>${esc(f.text)}</h2>
+    <div class="stack"><div class="label">Can I use this?</div><div class="row">${usePill(f, true)}</div><div class="callout ${u.cls === "ok" ? "ok" : u.cls === "warn" ? "warn" : u.cls === "info" ? "info" : "neutral"}">${esc(u.why)}</div></div>
     <div class="stack"><div class="label">Where it comes from</div>
       <div class="chain">
-        <div><b>${s ? esc(s.name) : "Account memory"}</b><span class="hint">${s ? `${esc(s.kind)} · ${s.lane} lane · ${s.rel} · ${S_PILL[s.status][1].toLowerCase()}` : "Created from a project signal or tool run"}</span></div>
-        <div><b>${esc(f.loc)}</b><span class="hint">${f.row ? "Certified dataset row. The number is read from the query, not written by a model." : "Grounding passage"}</span></div>
-        <div style="padding-bottom:0">${evidence}${fidelity ? `<span class="hint">${fidelity}</span>` : ""}</div>
+        <div><b>${s ? esc(s.name) : esc(f.origin ? "Your " + f.origin.replace(/^your /, "") : "Account memory")}</b><span class="hint">${s ? `${term(REL_LABEL[s.rel], REL_TIP[s.rel])} · ${age(f.asOf)}` : age(f.asOf)}</span></div>
+        <div><b>${esc(f.loc)}</b>${f.dedup > 1 ? `<span class="hint">Confirmed by ${f.dedup} documents</span>` : ""}</div>
+        <div style="padding-bottom:0">${evidence}${f.fig ? `<span class="hint">${numberOK ? "The number appears in the source exactly as stated." : "The number could not be found in the source."}</span>` : ""}</div>
       </div></div>
-    <dl class="kv">
-      <dt>Scope</dt><dd>${esc(scopeLabel(f.cat, f.cust))}<div class="facet">${facetKey(f.cat, f.cust)}</div></dd>
+    <div class="stack"><div class="label">Who does what</div><div class="roles">${who.map(([c, n, t]) => `<div><span class="dot" style="background:${c}">${n}</span><span>${t}</span></div>`).join("")}</div></div>
+    <div class="row">
+      ${f.status === "needs_review" && curatorMode() ? `<button class="btn sm primary" data-act="verify" data-id="${f.id}">Mark as checked</button><button class="btn sm danger" data-act="reject" data-id="${f.id}">Reject</button>` : ""}
+      ${f.status === "needs_review" && !curatorMode() ? `<button class="btn sm" data-act="nudge" data-id="${f.id}">Remind ${cur}</button>` : ""}
+    </div>
+    <details><summary>Details for curators</summary><dl class="kv">
+      <dt>Labels</dt><dd><span class="gov"><span>Trust <b>${REL_LABEL[f.rel]}</b></span><span>Audience <b>${SENS_LABEL[f.sens]}</b></span><span>Visible to <b>${f.owner ? "only " + esc(f.owner) : "the team"}</b></span></span></dd>
+      <dt>Account</dt><dd>${esc(scopeLabel(f.cat, f.cust))} · UK<div class="facet">${facetKey(f.cat, f.cust)}</div></dd>
       ${f.period ? `<dt>Period</dt><dd>${esc(f.period)}</dd>` : ""}
-      <dt>Content date</dt><dd>${f.asOf}${f.expires ? ` · expires ${f.expires}` : ""}</dd>
-      <dt>Restated in</dt><dd>${f.dedup} ${f.dedup === 1 ? "source" : "sources, collapsed to this fact"}</dd>
-      <dt>Cited by</dt><dd>${cites.length ? cites.map(b => "Briefing: " + esc(scopeLabel(b.cat, b.cust))).join("<br>") : "No briefing"}</dd>
-      <dt>ID</dt><dd class="mono">${f.id}</dd></dl>
-    <div class="stack"><div class="label">Can a tool quote it?</div>
-      <div class="verdict ${qi ? "ok" : "warn"}"><b>Internal team: ${qi ? "yes" : "no"}.</b> ${esc(whyI)}</div>
-      <div class="verdict ${qc ? "ok" : "bad"}"><b>Customer-facing: ${qc ? "yes" : "no"}.</b> ${esc(whyC)}</div></div>
-    ${isLive(f) ? `<div class="stack"><div class="label">Curate</div><div class="row">
-        ${f.status === "needs_review" ? `<button class="btn sm primary" data-act="verify" data-id="${f.id}">Verify</button><button class="btn sm danger" data-act="reject" data-id="${f.id}">Reject</button>` : ""}
-        <label class="check">Sensitivity <select class="select" id="d-sens">${["external", "internal", "restricted"].map(x => `<option ${x === f.sens ? "selected" : ""}>${x}</option>`).join("")}</select></label></div></div>` : ""}`);
+      <dt>Content date</dt><dd>${f.asOf}</dd><dt>Status</dt><dd>${STATUS_LABEL[f.status]}</dd>
+      <dt>Used in</dt><dd>${cites.length ? cites.map(b => "Briefing: " + esc(scopeLabel(b.cat, b.cust))).join("<br>") : "No briefing"}</dd>
+      <dt>ID</dt><dd class="mono">${f.id}</dd>
+      ${curatorMode() && isLive(f) ? `<dt>Audience</dt><dd><select class="select" id="d-sens">${Object.entries(SENS_LABEL).map(([k, l]) => `<option value="${k}" ${k === f.sens ? "selected" : ""}>${l}</option>`).join("")}</select></dd>` : ""}
+    </dl></details>`);
   $("#d-sens")?.addEventListener("change", e => {
     f.sens = e.target.value;
-    if (!f.owner) markOutdated(f.cat, f.cust, "A fact's sensitivity changed.");
-    render(); factDrawer(f.id); toast(`Sensitivity set to ${f.sens}. Briefings citing it are now outdated.`);
+    if (!f.owner) markOutdated(f.cat, f.cust, "A fact's audience changed.");
+    render(); factDrawer(f.id); toast(`Audience set to ${SENS_LABEL[f.sens].toLowerCase()}.`);
   });
 }
 
@@ -1192,83 +1208,83 @@ function sourceDrawer(id) {
   const s = src(id), fs = FACTS.filter(f => f.src === id);
   const briefs = BRIEFINGS.filter(b => fs.some(f => sameScope(f, b.cat, b.cust)));
   const other = Math.max(0, s.facts - fs.length), p = S_PILL[s.status];
-  const canRetire = !["retired", "superseded", "processing"].includes(s.status);
+  const canRetire = curatorMode() && !["retired", "superseded", "processing"].includes(s.status);
   const stalled = !["live", "superseded", "retired"].includes(s.status);
   openDrawer(`
     <div class="spread"><span class="pill ${p[0]}">${p[1]}</span><button class="btn sm plain" data-act="close">Close</button></div>
     <h2>${esc(s.name)}</h2>
-    <dl class="kv"><dt>Type</dt><dd>${esc(s.kind)} · ${s.lane} lane</dd><dt>Scope</dt><dd>${esc(scopeLabel(s.cat, s.cust))}</dd>
-      <dt>Content date</dt><dd>${s.asOf} · ${s.conf} confidence</dd><dt>Reliability</dt><dd>${s.rel} <span class="hint">· set from where the source came from</span></dd>
+    <dl class="kv"><dt>Type</dt><dd>${esc(s.kind)}</dd><dt>Account</dt><dd>${esc(scopeLabel(s.cat, s.cust))}</dd>
+      <dt>Content age</dt><dd>${age(s.asOf)}${s.conf === "low" ? " · date uncertain" : ""}</dd><dt>Trust</dt><dd>${term(REL_LABEL[s.rel], REL_TIP[s.rel])}</dd><dt>Audience</dt><dd>${SENS_LABEL[s.sens]}</dd>
       ${s.supersededBy ? `<dt>Replaced by</dt><dd>${esc(src(s.supersededBy).name)}</dd>` : ""}${s.note ? `<dt>Note</dt><dd>${esc(s.note)}</dd>` : ""}</dl>
-    <div class="stack"><div class="label">Pipeline</div><div class="row">${STAGES.map((st, i) => `<span class="pill ${i < s.stage ? "ok" : i === s.stage && stalled ? (s.status === "processing" ? "info" : "bad") : "neutral"}">${st}</span>`).join("")}</div></div>
+    <div class="stack"><div class="label">Import progress</div><div class="row">${STAGES.map((st, i) => `<span class="pill ${i < s.stage ? "ok" : i === s.stage && stalled ? (s.status === "processing" ? "info" : "bad") : "neutral"}">${st}</span>`).join("")}</div></div>
     <div class="stack"><div class="label">What depends on it</div>
-      <p>${plural(s.facts, "fact comes", "facts come")} from this source${briefs.length ? ` and ${plural(briefs.length, "briefing cites", "briefings cite")} them` : ""}.${s.facts === 0 && s.status === "live" ? " It feeds no live facts and can be cleaned up." : ""}</p>
-      ${fs.slice(0, 4).map(f => `<button class="btn ghost" data-act="open-fact" data-id="${f.id}">${f.id} · ${esc(f.text)}</button>`).join("")}
-      ${other && s.facts ? `<span class="hint">+ ${other} more facts</span>` : ""}${briefs.map(b => `<span class="small">Briefing: ${esc(scopeLabel(b.cat, b.cust))}</span>`).join("")}</div>
-    <div class="stack"><div class="label">Reclassify</div>
-      <div class="row"><select class="select" id="s-sens" aria-label="New sensitivity">${["external", "internal", "restricted"].map(x => `<option ${x === s.sens ? "selected" : ""}>${x}</option>`).join("")}</select><button class="btn sm" data-act="reclassify" data-id="${s.id}">Apply to the source and its ${plural(s.facts, "fact", "facts")}</button></div>
-      <span class="hint">No re-parsing and no re-mining. The label flows to every fact, and briefings citing them become outdated.</span></div>
+      <p>${plural(s.facts, "fact comes", "facts come")} from this document${briefs.length ? `, used in ${plural(briefs.length, "briefing", "briefings")}` : ""}.</p>
+      ${fs.slice(0, 4).map(f => `<button class="btn ghost" data-act="open-fact" data-id="${f.id}">${esc(f.text)}</button>`).join("")}
+      ${other && s.facts ? `<span class="hint">+ ${other} more facts</span>` : ""}</div>
+    ${curatorMode() ? `<div class="stack"><div class="label">Change the audience</div>
+      <div class="row"><select class="select" id="s-sens" aria-label="New audience">${Object.entries(SENS_LABEL).map(([k, l]) => `<option value="${k}" ${k === s.sens ? "selected" : ""}>${l}</option>`).join("")}</select><button class="btn sm" data-act="reclassify" data-id="${s.id}">Apply to the document and its ${plural(s.facts, "fact", "facts")}</button></div></div>` : `<div class="callout info">Curators can change this document's audience or retire it.</div>`}
     ${canRetire ? `<div class="stack"><div class="label">Retire</div>
-      <label class="check"><input type="checkbox" id="s-confirm"> I understand this removes ${plural(s.facts, "fact", "facts")} from retrieval and cannot be undone. The original file is kept for audit.</label>
-      <div><button class="btn sm danger" id="s-retire" data-act="retire" data-id="${s.id}" disabled>Retire source</button></div></div>` : ""}`);
+      <label class="check"><input type="checkbox" id="s-confirm"> I understand this stops ${plural(s.facts, "fact", "facts")} being used and can't be undone. The file is kept for audit.</label>
+      <div><button class="btn sm danger" id="s-retire" data-act="retire" data-id="${s.id}" disabled>Retire document</button></div></div>` : ""}`);
   $("#s-confirm")?.addEventListener("change", e => { $("#s-retire").disabled = !e.target.checked; });
 }
 
 function addFactModal() {
+  const a = state.view === "account" ? state.account : state.view === "project" ? proj(state.project) : { cat: "Fabric Care", cust: "Northgate" };
   const srcOpts = SOURCES.filter(s => s.status === "live").map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("");
   openModal(`<header><h2>Add a fact</h2></header>
     <form>
-      <p class="small muted">One assertion per fact. Write it so a colleague could check it against the evidence.</p>
-      <div class="grid2"><div class="field"><label for="n-type">Type</label><select id="n-type" name="type">${TYPES.map(t => `<option>${t}</option>`).join("")}</select></div>
-        <div class="field"><label for="n-date">Content date</label><input id="n-date" name="asOf" value="${TODAY}"><span class="hint">The date the fact is about, not today's date.</span></div></div>
-      <div class="field"><label for="n-text">Statement</label><textarea id="n-text" name="text" required placeholder="e.g. Northgate will cut laundry SKUs by 10% at the November range review."></textarea></div>
-      <div class="grid3"><div class="field"><label for="n-fig">Figure (optional)</label><input id="n-fig" name="fig" placeholder="10%"></div>
-        <div class="field"><label for="n-period">Period (optional)</label><input id="n-period" name="period" placeholder="FY 2026-27"></div>
-        <div class="field"><label for="n-cat">Category</label><select id="n-cat" name="cat"><option value="">None (customer only)</option>${CATEGORIES.map(c => `<option ${c === "Fabric Care" ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
-      <div class="grid2"><div class="field"><label for="n-cust">Customer</label><select id="n-cust" name="cust"><option value="">Category level</option>${CUSTOMERS.map(c => `<option ${c === "Northgate" ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
-        <div class="field"><label for="n-src">Evidence</label><select id="n-src" name="src"><option value="">My own knowledge</option>${srcOpts}</select></div></div>
-      <div class="field"><label for="n-ex">Supporting passage</label><textarea id="n-ex" name="excerpt" rows="2" placeholder="Paste the sentence or note that backs this up. Any figure must appear here."></textarea></div>
-      <div class="grid2"><div class="field"><label for="n-sens">Sensitivity</label><select id="n-sens" name="sens"><option>internal</option><option>external</option><option>restricted</option></select></div>
-        <div class="field"><label for="n-vis">Visibility</label><select id="n-vis" name="vis"><option value="shared">Shared with the team</option><option value="private">Private to me</option></select></div></div>
+      <p class="small muted">One statement per fact. Write it so a colleague could check it against the source.</p>
+      <div class="field"><label for="n-text">What do you know?</label><textarea id="n-text" name="text" required placeholder="e.g. Northgate will cut laundry SKUs by 10% at the November range review."></textarea></div>
+      <div class="grid2"><div class="field"><label for="n-cust">Customer</label><select id="n-cust" name="cust"><option value="">All customers</option>${CUSTOMERS.map(c => `<option ${c === a.cust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
+        <div class="field"><label for="n-cat">Category</label><select id="n-cat" name="cat"><option value="">All categories</option>${CATEGORIES.map(c => `<option ${c === a.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
+      <div class="grid2"><div class="field"><label for="n-type">Kind</label><select id="n-type" name="type">${TYPES.map(t => `<option value="${t}">${TYPE_LABEL[t]}</option>`).join("")}</select></div>
+        <div class="field"><label for="n-date">When is it true?</label><input id="n-date" name="asOf" value="${TODAY}"><span class="hint">The date the fact is about, not today's date.</span></div></div>
+      <div class="field"><label for="n-src">Where did you learn it?</label><select id="n-src" name="src"><option value="">I know it myself (meeting, call…)</option>${srcOpts}</select></div>
+      <div class="field"><label for="n-ex">Supporting note or passage</label><textarea id="n-ex" name="excerpt" rows="2" placeholder="Paste the sentence that backs this up. If you include a number, it must appear here."></textarea></div>
+      <div class="grid2"><div class="field"><label for="n-fig">Key number (optional)</label><input id="n-fig" name="fig" placeholder="10%"></div>
+        <div class="field"><label for="n-vis">Who can see it?</label><select id="n-vis" name="vis"><option value="shared">The account team</option><option value="private">Only me</option></select></div></div>
+      <div class="field"><label for="n-sens">Can it go in front of the customer?</label><select id="n-sens" name="sens"><option value="internal">No, internal only</option><option value="external">Yes, customer-ready</option><option value="restricted">No, restricted</option></select></div>
       <p class="hint" id="n-err" style="color:var(--err-accent)" hidden></p>
-      <div class="callout info">New facts start as <b>needs review</b>. Reliability comes from the evidence, so your own knowledge is <b>stated</b>. A curator verifies it before any tool can quote it.</div>
+      <div class="callout info"><b>What happens next:</b> it's saved as <b>Not yet · needs review</b>. The category curator checks it, usually within 2 working days. After that, tools can use it.</div>
       <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Add fact</button></div>
     </form>`, fd => {
       const fig = fd.get("fig").trim(), ex = fd.get("excerpt").trim(), err = $("#n-err");
-      if (!fd.get("cat") && !fd.get("cust")) { err.hidden = false; err.textContent = "Pick a category, a customer, or both, so the fact has a scope."; return; }
-      if (fig && !ex.includes(fig)) { err.hidden = false; err.textContent = `The figure “${fig}” is not in the supporting passage. Add it to the passage or remove the figure.`; return; }
+      if (!fd.get("cat") && !fd.get("cust")) { err.hidden = false; err.textContent = "Pick a customer, a category, or both, so the fact is filed under an account."; return; }
+      if (fig && !ex.includes(fig)) { err.hidden = false; err.textContent = `The number “${fig}” isn't in the supporting note. Add it there or remove it.`; return; }
       const s = fd.get("src") ? src(fd.get("src")) : null;
-      const f = { id: "F-" + (2000 + FACTS.length), type: fd.get("type"), text: fd.get("text").trim(), fig: fig || null, period: fd.get("period").trim() || null, cat: fd.get("cat") || null, cust: fd.get("cust") || null,
-        rel: s ? s.rel : "stated", sens: fd.get("sens"), owner: fd.get("vis") === "private" ? ME : null, status: "needs_review", asOf: fd.get("asOf") || TODAY,
-        src: s ? s.id : null, loc: "Added by you", excerpt: ex || "No passage given.", dedup: 1 };
+      const f = { id: "F-" + (2000 + FACTS.length), type: fd.get("type"), text: fd.get("text").trim(), fig: fig || null, cat: fd.get("cat") || null, cust: fd.get("cust") || null,
+        rel: s ? s.rel : "stated", sens: fd.get("sens"), owner: fd.get("vis") === "private" ? PEOPLE.kam.name : null, status: "needs_review", asOf: fd.get("asOf") || TODAY,
+        src: s ? s.id : null, loc: `Added by ${PEOPLE.kam.name}`, excerpt: ex || "No note given.", dedup: 1, by: PEOPLE.kam.name };
       FACTS.unshift(f);
-      if (!f.owner) markOutdated(f.cat, f.cust, "A new fact arrived for this scope.");
+      if (!f.owner) markOutdated(f.cat, f.cust, "A new fact arrived.");
       closeOverlay();
-      state.f = { ...blankFilter(), cat: f.cat || "", cust: f.cust || "_cat" };
-      go("facts"); toast(`Fact added · needs review${f.owner ? " · private to you" : ""}`);
+      if (state.view !== "project") openAccount(f.cat || "Fabric Care", f.cust); else render();
+      toast(`Fact added. Waiting for ${curatorFor(f)} to check it.`);
     });
 }
 
 function addSourceModal() {
-  openModal(`<header><h2>Add source</h2></header>
+  const a = state.view === "account" ? state.account : state.view === "project" ? proj(state.project) : {};
+  openModal(`<header><h2>Add a document</h2></header>
     <form>
-      <p class="small muted">The file is quality-checked, chunked and mined into facts that need review.</p>
+      <p class="small muted">We read it, check its quality and pull out facts. A curator checks the facts before tools use them.</p>
       <div class="field"><label for="u-name">File or link</label><input id="u-name" name="name" required placeholder="e.g. Brightmart JBP 2026-27.pptx or a SharePoint Sales Book link"></div>
+      <div class="grid2"><div class="field"><label for="u-cust">Customer</label><select id="u-cust" name="cust"><option value="">All customers</option>${CUSTOMERS.map(c => `<option ${c === a.cust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
+        <div class="field"><label for="u-cat">Category</label><select id="u-cat" name="cat">${CATEGORIES.map(c => `<option ${c === a.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
       <div class="grid2"><div class="field"><label for="u-kind">Type</label><select id="u-kind" name="kind"><option>Deck</option><option>PDF</option><option>SharePoint Sales Book</option><option>Word document</option><option>Spreadsheet</option></select></div>
-        <div class="field"><label for="u-sens">Sensitivity</label><select id="u-sens" name="sens"><option>internal</option><option>external</option><option>restricted</option></select></div></div>
-      <div class="grid2"><div class="field"><label for="u-cat">Category</label><select id="u-cat" name="cat">${CATEGORIES.map(c => `<option>${c}</option>`).join("")}</select></div>
-        <div class="field"><label for="u-cust">Customer</label><select id="u-cust" name="cust"><option value="">Category level</option>${CUSTOMERS.map(c => `<option>${esc(c)}</option>`).join("")}</select></div></div>
-      <p class="hint">Certified trade-panel numbers arrive through the data lane on a schedule. You don't upload them.</p>
-      <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Start ingestion</button></div>
+        <div class="field"><label for="u-sens">Can it go in front of the customer?</label><select id="u-sens" name="sens"><option value="internal">No, internal only</option><option value="external">Yes, customer-ready</option><option value="restricted">No, restricted</option></select></div></div>
+      <p class="hint">Official market numbers arrive automatically. You don't need to upload them.</p>
+      <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Import</button></div>
     </form>`, fd => {
-      const s = { id: "S-" + (20 + SOURCES.length), name: fd.get("name"), kind: fd.get("kind"), lane: "Document", cat: fd.get("cat"), cust: fd.get("cust") || null, status: "processing", sens: fd.get("sens"), rel: fd.get("kind") === "SharePoint Sales Book" ? "stated" : "reviewed", asOf: "reading…", conf: "medium", facts: 0, stage: 0 };
-      const run = { status: "Running", source: "upload · " + s.name, started: TODAY + " 14:05", indexed: 0, failed: 0 };
+      const s = { id: "S-" + (20 + SOURCES.length), name: fd.get("name"), kind: fd.get("kind"), cat: fd.get("cat"), cust: fd.get("cust") || null, status: "processing", sens: fd.get("sens"), rel: fd.get("kind") === "SharePoint Sales Book" ? "stated" : "reviewed", asOf: TODAY, conf: "medium", facts: 0, stage: 0 };
+      const run = { status: "Running", source: s.name, started: TODAY + " 14:05", indexed: 0, failed: 0 };
       SOURCES.unshift(s); RUNS.unshift(run);
-      closeOverlay(); state.srcTab = "sources"; go("sources"); toast("Ingestion started");
+      closeOverlay(); state.srcTab = "sources"; go("sources"); toast("Import started");
       const t = setInterval(() => {
         s.stage++;
-        if (s.stage >= STAGES.length) { clearInterval(t); s.status = "live"; s.asOf = "12 Sep 2026"; s.facts = 11; run.status = "Complete"; run.indexed = 11; markOutdated(s.cat, s.cust, "New facts arrived from a new source."); toast(`${s.name}: 11 facts mined, waiting for review`); }
-        if ((state.view === "sources" || state.view === "home") && !$("#overlay").children.length) render();
+        if (s.stage >= STAGES.length) { clearInterval(t); s.status = "live"; s.facts = 11; run.status = "Complete"; run.indexed = 11; markOutdated(s.cat, s.cust, "New facts arrived from a new document."); toast(`${s.name}: 11 facts found, waiting for a curator`); }
+        if (state.view === "sources" && !$("#overlay").children.length) render();
       }, 650);
     });
 }
@@ -1276,11 +1292,11 @@ function addSourceModal() {
 function newProjectModal() {
   openModal(`<header><h2>New project</h2></header>
     <form>
-      <p class="small muted">Set the scope once. Every tool in the project uses it.</p>
+      <p class="small muted">Set the customer and category once. Every tool in the project uses them.</p>
       <div class="field"><label for="np-name">Project name</label><input id="np-name" name="name" required placeholder="e.g. Brightmart spring premium aisle"></div>
       <div class="grid2"><div class="field"><label for="np-cust">Customer</label><select id="np-cust" name="cust">${CUSTOMERS.map(c => `<option>${esc(c)}</option>`).join("")}</select></div>
         <div class="field"><label for="np-cat">Category</label><select id="np-cat" name="cat">${CATEGORIES.map(c => `<option>${c}</option>`).join("")}</select></div></div>
-      <div class="grid2"><div class="field"><label for="np-aud">Audience</label><select id="np-aud" name="aud"><option value="internal">Internal team</option><option value="external">Customer-facing</option></select></div>
+      <div class="grid2"><div class="field"><label for="np-aud">Who is the output for?</label><select id="np-aud" name="aud"><option value="internal">Internal team</option><option value="external">The customer</option></select></div>
         <div class="field"><label for="np-meet">Meeting date (optional)</label><input id="np-meet" name="meeting" placeholder="e.g. 05 Nov 2026"></div></div>
       <div class="field"><label for="np-obj">Objective</label><input id="np-obj" name="objective" placeholder="What should this project achieve?"></div>
       <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Create project</button></div>
@@ -1296,12 +1312,12 @@ function newProjectModal() {
 document.addEventListener("click", e => {
   const nav = e.target.closest("[data-view]");
   if (nav) { closeOverlay(); go(nav.dataset.view); return; }
+  const role = e.target.closest("[data-role]");
+  if (role) { state.role = role.dataset.role; closeOverlay(); render(); toast(`Viewing as ${PEOPLE[state.role].name} · ${PEOPLE[state.role].role}`); return; }
   const ft = e.target.closest("[data-ftype]");
   if (ft) { state.f.type = ft.dataset.ftype; render(); return; }
   const tab = e.target.closest("[data-tab]");
   if (tab) { state.srcTab = tab.dataset.tab; render(); return; }
-  const aud = e.target.closest("[data-aud]");
-  if (aud) { readAskForm(); state.ask.audience = aud.dataset.aud; render(); return; }
 
   const el = e.target.closest("[data-act]");
   if (!el) return;
@@ -1310,49 +1326,43 @@ document.addEventListener("click", e => {
   if (a === "add-fact") addFactModal();
   if (a === "add-source") addSourceModal();
   if (a === "new-project") newProjectModal();
-  if (a === "open-project") { state.project = id; go("project"); }
+  if (a === "open-project") { closeOverlay(); state.project = id; go("project"); }
+  if (a === "open-account") { closeOverlay(); openAccount(el.dataset.cat, el.dataset.cust); }
   if (a === "open-fact") factDrawer(id);
   if (a === "open-source") sourceDrawer(id);
-  if (a === "toast") toast(el.dataset.msg);
+  if (a === "hide-intro") { state.intro = false; store.set("kb-intro-hidden", "1"); render(); }
+  if (a === "show-intro") { state.intro = true; store.set("kb-intro-hidden", "0"); render(); }
   if (a === "clear-filters") { state.f = blankFilter(); render(); }
-  if (a === "cell") { state.f = { ...blankFilter(), cat: el.dataset.cat, cust: el.dataset.cust || "_cat" }; go("facts"); }
-  if (a === "attention") { state.srcTab = "review"; go("sources"); }
+  if (a === "facts-use") { state.f = { ...blankFilter(), use: el.dataset.use }; go("facts"); }
   if (a === "todo") state.todo[+el.dataset.k]?.go();
   if (a === "pick-brief") { state.briefKey = el.dataset.key; render(); }
-  if (a === "regen") { const b = BRIEFINGS.find(x => bkey(x) === el.dataset.key); b.status = "current"; b.generated = TODAY; delete b.why; render(); toast("Briefing rebuilt from the current fact set"); }
-  if (a === "generate") { const [cat, cust] = el.dataset.key.split("|"); BRIEFINGS.push({ cat, cust: cust || null, status: "current", generated: TODAY }); state.briefKey = el.dataset.key; render(); toast("Briefing generated"); }
-  if (a === "try") { Object.assign(state.ask, { q: el.dataset.q, cat: el.dataset.cat, cust: el.dataset.cust }); render(); }
-  if (a === "open-proj-brief") { state.bf = { q: "", cat: p.cat, cust: p.cust }; state.briefKey = `${p.cat}|${p.cust}`; go("briefings"); }
-  if (a === "proj-search") { Object.assign(state.ask, { cat: p.cat, cust: p.cust, audience: p.audience, q: `What should I bring to ${p.cust}?` }); go("search"); }
+  if (a === "open-brief") { const [cat, cust] = el.dataset.key.split("|"); state.bf = { q: "", cat, cust: cust || "" }; state.briefKey = el.dataset.key; go("briefings"); }
+  if (a === "regen") { const b = BRIEFINGS.find(x => bkey(x) === el.dataset.key); b.status = "current"; b.generated = TODAY; delete b.why; render(); toast("Briefing refreshed from the current facts"); }
+  if (a === "generate") { const [cat, cust] = el.dataset.key.split("|"); BRIEFINGS.push({ cat, cust: cust || null, status: "current", generated: TODAY }); state.briefKey = el.dataset.key; render(); toast("Briefing written"); }
+  if (a === "nudge") { toast(`Reminder sent to ${curatorFor(fact(id))}.`); }
   if (a === "attach-buyer") { p.buyer = "Jordan Blake · category buyer"; render(); toast("Buyer attached"); }
-  if (a === "go-review-facts") { state.f = { ...blankFilter(), cat: p.cat, cust: p.cust, status: "needs_review" }; go("facts"); }
-  // Chat actions
   if (a === "say") userSays(p, el.dataset.text);
-  if (a === "launch") {
-    const T = { coach: `Run Selling Coach on my ${p.cust} deck`, story: `Build a storyline for ${p.cust}`, kb: `What do we know about ${p.cust}?` };
-    userSays(p, T[el.dataset.tool]);
-  }
+  if (a === "launch") userSays(p, { coach: `Run Selling Coach on my ${p.cust} deck`, story: `Build a storyline for ${p.cust}`, kb: `What do we know about ${p.cust}?` }[el.dataset.tool]);
   if (a === "cs-deck") runCoach(p, el.dataset.deck);
   if (a === "st-pick") pickOpp(p, +el.dataset.i);
-  if (a === "st-approve") { lockOld(p); if (p.storyRun) { p.storyRun.status = "Approved"; } push(p, { who: "me", text: "Approve it." }); botReply(p, m => { m.html = `<p>Storyline approved and saved to <b>Recent runs</b>. You can reopen it from there, or ask me to review the deck once you've built the slides.</p>`; m.chips = [`Review my ${p.cust} deck`]; render(); }); }
-  if (a === "st-refine") { const inp = $("#chat-in"); if (inp) { inp.value = "Make the tension sharper on "; inp.focus(); } }
+  if (a === "st-approve") { lockOld(p); if (p.storyRun) p.storyRun.status = "Approved"; push(p, { who: "me", text: "Approve it." }); botReply(p, m => { m.html = `<p>Storyline approved and saved to <b>Recent runs</b>. Once you've built the slides, ask me to review the deck.</p>`; m.chips = [`Review my ${p.cust} deck`]; render(); }); }
+  if (a === "st-refine") { const inp = $("#chat-in"); if (inp) { inp.value = "Make the “why now” sharper on "; inp.focus(); } }
   if (a === "verify" || a === "reject") {
     const f = fact(id);
     if (a === "verify") f.status = "verified"; else FACTS = FACTS.filter(x => x !== f);
-    if (!f.owner) markOutdated(f.cat, f.cust, a === "verify" ? "A fact was verified." : "A fact was rejected.");
+    if (!f.owner) markOutdated(f.cat, f.cust, a === "verify" ? "A fact was checked." : "A fact was rejected.");
     render(); if (a === "verify") factDrawer(id); else closeOverlay();
-    toast(a === "verify" ? "Verified. Tools can quote it where its sensitivity allows." : "Rejected. It will not be retrieved.");
+    toast(a === "verify" ? "Marked as checked. Tools can now use it." : "Rejected. It won't be used.");
   }
   if (a === "reclassify") {
     const s = src(id), v = $("#s-sens").value;
-    s.sens = v; FACTS.filter(f => f.src === id).forEach(f => { f.sens = v; markOutdated(f.cat, f.cust, "A source it cites was reclassified."); });
-    render(); sourceDrawer(id); toast(`Reclassified to ${v}: the source and its ${plural(s.facts, "fact", "facts")}`);
+    s.sens = v; FACTS.filter(f => f.src === id).forEach(f => { f.sens = v; markOutdated(f.cat, f.cust, "A document's audience changed."); });
+    render(); sourceDrawer(id); toast(`Audience set to ${SENS_LABEL[v].toLowerCase()} for the document and its facts`);
   }
   if (a === "retire") {
     const s = src(id); s.status = "retired";
-    const hit = new Set();
-    FACTS.filter(f => f.src === id).forEach(f => { BRIEFINGS.filter(b => sameScope(b, f.cat, f.cust)).forEach(b => hit.add(b)); markOutdated(f.cat, f.cust, "A source it cited was retired."); });
-    closeOverlay(); render(); toast(`Retired. ${plural(s.facts, "fact", "facts")} removed from retrieval, ${plural(hit.size, "briefing", "briefings")} marked outdated`);
+    FACTS.filter(f => f.src === id).forEach(f => markOutdated(f.cat, f.cust, "A document it relied on was retired."));
+    closeOverlay(); render(); toast(`Retired. ${plural(s.facts, "fact is", "facts are")} no longer used.`);
   }
   if (a === "resolve") {
     const r = REVIEW.find(x => x.id === id);
