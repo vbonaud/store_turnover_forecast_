@@ -336,6 +336,100 @@ pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; over
 .foot { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; padding-top: 14px; border-top: 1px solid var(--light-gray); }
 .toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--charcoal); color: var(--white); padding: 10px 16px; border-radius: 8px; font-weight: 500; z-index: 30; box-shadow: var(--shadow-lg); max-width: calc(100% - 32px); }
 
+
+/* Integrated flows: home, wizard, profiles, Selling Coach, training */
+.homescope { display: flex; align-items: center; gap: 10px; background: var(--primary-light); border: 1px solid var(--border-primary-light); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; flex-wrap: wrap; }
+.homescope .btn { margin-left: auto; }
+.welcome { text-align: center; padding: 8px 0 14px; }
+.welcome h1 { font-size: 26px; font-weight: 600; display: inline-flex; align-items: center; gap: 10px; }
+.welcome h1 svg.i { color: var(--primary); width: 24px; height: 24px; }
+.welcome p { max-width: 760px; margin: 8px auto 0; }
+.inbox { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+.inbox > span:nth-child(2) { flex: 1; min-width: 220px; }
+.toolgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.toolcard { border: 1px solid var(--surface); border-radius: 16px; background: var(--white); box-shadow: var(--shadow); padding: 8px; display: flex; flex-direction: column; transition: transform .18s ease, box-shadow .18s ease; }
+.toolcard:hover { transform: translateY(-4px); box-shadow: 0 12px 26px rgba(20, 23, 27, .10); }
+.toolcard__head { background: var(--primary-light); border-radius: 10px; padding: 16px 15px 14px; }
+.toolcard__ico { width: 38px; height: 38px; border-radius: 7px; background: var(--white); border: 2px solid var(--primary); display: grid; place-items: center; color: var(--primary); margin-bottom: 10px; }
+.toolcard__head h3 { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+.toolcard__head p { font-size: 13px; color: var(--slate); }
+.toolcard__body { padding: 6px 10px 4px; display: flex; flex-direction: column; flex: 1; }
+.checkline { display: flex; align-items: center; gap: 9px; padding: 9px 0; border-bottom: 1px solid var(--light-gray); font-size: 13px; }
+.checkline:last-of-type { border-bottom: 0; }
+.checkline svg.i, .newcard li svg.i { color: var(--ok-accent); width: 16px; height: 16px; }
+.toolcard__cta { margin-top: auto; padding: 10px 2px 4px; }
+.toolcard__cta .btn, .newcard > .btn { width: 100%; justify-content: center; }
+.newband { display: flex; align-items: center; gap: 12px; margin: 28px 0 14px; }
+.newband h2 { font-size: 16px; display: inline-flex; align-items: center; gap: 8px; min-width: 0; text-wrap: balance; }
+.newband h2 svg.i { color: var(--primary); }
+.newband .line { flex: 1; min-width: 24px; height: 1px; background: var(--light-gray); }
+.newgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.newcard { border: 1px solid var(--border-primary-light); border-radius: 16px; background: linear-gradient(180deg, #F7FAFF, var(--white)); padding: 18px; position: relative; display: flex; flex-direction: column; gap: 8px; }
+.newcard .chip-new { position: absolute; top: 14px; right: 14px; }
+.newcard__ico { width: 38px; height: 38px; border-radius: 10px; background: var(--primary); color: var(--white); display: grid; place-items: center; }
+.newcard h3 { font-size: 15px; padding-right: 46px; }
+.newcard > p { font-size: 12.5px; color: var(--slate); }
+.newcard ul { margin: 0 0 6px; padding: 0; list-style: none; display: grid; gap: 6px; }
+.newcard li { display: flex; gap: 8px; font-size: 12px; color: var(--slate); }
+.newcard > .btn { margin-top: auto; }
+.histsec { margin-top: 28px; border: 1px solid var(--surface); border-radius: 16px; background: var(--white); box-shadow: var(--shadow); padding: 18px 20px; }
+.stepper { display: flex; align-items: center; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
+.step { display: flex; align-items: center; gap: 9px; padding: 8px 14px; border-radius: 99px; background: var(--white); border: 1px solid var(--light-gray); font-size: 12.5px; color: var(--steel); font-weight: 500; }
+.step .n { width: 21px; height: 21px; border-radius: 99px; background: var(--light-gray); color: var(--steel); display: grid; place-items: center; font-size: 11px; font-weight: 700; }
+.step.active { border-color: var(--primary); background: var(--primary-light); color: var(--primary); font-weight: 600; }
+.step.active .n { background: var(--primary); color: var(--white); }
+.step.done { border-color: var(--ok-border); background: var(--ok-bg); color: var(--ok-text); }
+.step.done .n { background: var(--ok-accent); color: var(--white); }
+.step-sep { height: 1px; width: 16px; background: var(--gray); }
+.wizard { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 20px; align-items: start; }
+.scopeprev { border: 1px solid var(--light-gray); border-radius: 14px; background: var(--snow); padding: 18px; position: sticky; top: 16px; }
+.scopeprev h4 { font-size: 15px; margin-bottom: 12px; }
+.entity { display: flex; gap: 12px; align-items: flex-start; padding: 11px 13px; border: 1px solid var(--light-gray); border-radius: 8px; background: var(--white); cursor: pointer; font-size: 13px; }
+.entity:hover { border-color: var(--primary); background: var(--primary-light); }
+.entity.sel { border-color: var(--primary); background: var(--primary-light); }
+.entity input { margin-top: 3px; }
+.ppl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.custcard, .buyercard { border: 1px solid var(--light-gray); border-radius: 12px; background: var(--white); overflow: hidden; }
+.custcard .top, .buyercard__hd { background: var(--primary-light); padding: 12px 16px; display: flex; align-items: center; gap: 10px; }
+.custcard.missing .top { background: var(--snow); }
+.custcard .top b, .buyercard__hd b { font: 600 14.5px var(--mont); }
+.custcard .bot, .buyercard__bd { padding: 14px 16px; font-size: 13px; }
+.buyercard.add { border-style: dashed; background: var(--snow); display: grid; place-items: center; gap: 6px; padding: 26px; color: var(--primary); }
+.bldg { width: 34px; height: 34px; border-radius: 8px; background: var(--white); border: 1px solid var(--border-primary-light); color: var(--primary); display: grid; place-items: center; flex: none; }
+.dropzone { border: 1px dashed var(--border-primary-light); border-radius: 10px; background: var(--primary-light); padding: 22px; display: grid; justify-items: center; gap: 6px; text-align: center; color: var(--primary); }
+.wiqhero { display: flex; align-items: center; gap: 14px; border: 1px solid var(--border-primary-light); background: linear-gradient(120deg, var(--primary-light), #F7FAFF); border-radius: 10px; padding: 14px 16px; }
+.wiqhero__ico { width: 40px; height: 40px; flex: none; border-radius: 10px; background: var(--primary); color: var(--white); display: grid; place-items: center; }
+.sepgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+.sepcol { border-radius: 8px; padding: 10px 12px; border: 1px solid; font-size: 12.5px; display: grid; gap: 4px; align-content: start; }
+.sepcol b { font-size: 12.5px; }
+.sep-ok { background: var(--ok-bg); border-color: var(--ok-border); color: var(--ok-text); }
+.sep-warn { background: var(--alert-bg); border-color: var(--alert-border); color: var(--alert-text); }
+.sep-err { background: var(--err-bg); border-color: var(--err-border); color: var(--err-text); }
+.profilebox { border: 1px solid var(--light-gray); border-radius: 8px; padding: 16px 18px; background: var(--white); line-height: 1.7; font-size: 13.5px; }
+.profilebox h4 { font-size: 12.5px; color: var(--primary); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; display: flex; gap: 8px; align-items: center; }
+.profilebox ul { margin: 0; padding-left: 18px; }
+.profilebox textarea { width: 100%; border: 1px solid var(--border-default); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
+sup.ref { color: var(--primary); font-weight: 700; font-size: 10px; }
+.mk { padding: 1px 2px; border-radius: 2px; }
+.mk.add { background: var(--ok-bg); border-bottom: 2px solid var(--ok-accent); }
+.mk.rep { background: var(--primary-light); border-bottom: 2px solid var(--primary); }
+.mk.mrg { background: #F5EAFD; border-bottom: 2px solid var(--info-accent); }
+i.mk { display: inline-block; width: 11px; height: 11px; vertical-align: -1px; margin-right: 4px; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 11.5px; color: var(--steel); margin-top: 12px; }
+.meterrow { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--snow); border: 1px solid var(--light-gray); border-radius: 8px; }
+.okmark { width: 48px; height: 48px; border-radius: 99px; background: var(--ok-accent); color: var(--white); display: grid; place-items: center; font-size: 24px; font-weight: 700; }
+.pad > textarea, .stack > textarea, .stack textarea:not([class]) { width: 100%; border: 1px solid var(--border-default); border-radius: 8px; padding: 8px 10px; font-size: 13px; background: var(--white); }
+.diffbox { border: 1px solid var(--light-gray); border-radius: 8px; overflow: hidden; font-size: 13px; }
+.diffbox div { padding: 10px 12px; }
+.diffbox .was { background: var(--err-bg); color: var(--err-text); border-bottom: 1px solid var(--light-gray); }
+.diffbox .now { background: var(--ok-bg); color: var(--ok-text); }
+.mailhd { background: var(--snow); border: 1px solid var(--light-gray); border-radius: 8px; padding: 10px 12px; color: var(--steel); }
+.mailhd b { color: var(--charcoal); }
+.stagelist .agent { margin-left: auto; font-size: 10.5px; color: var(--steel); font-weight: 500; background: var(--surface); border: 1px solid var(--light-gray); padding: 2px 7px; border-radius: 99px; }
+.result-hd { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.bigscore { font: 700 34px var(--mont); color: var(--primary); }
+.bigscore span { font-size: 16px; color: var(--steel); }
+@media (max-width: 1100px) { .wizard { grid-template-columns: minmax(0, 1fr); } .scopeprev { position: static; } }
 @media (max-width: 1100px) {
   .home, .proj, .acct { grid-template-columns: minmax(0, 1fr); }
   .summary, .intro-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -585,6 +679,7 @@ const store = { get(k) { try { return localStorage.getItem(k); } catch { return 
 /* Project context pillars. Derived from facts, never set by hand; Buyer is the exception. */
 function pillars(p) {
   const live = FACTS.filter(f => isLive(f) && !f.owner);
+  if (!p.cat) return [{ name: "Customer profile", desc: "the retailer's priorities", n: live.filter(f => !f.cat && f.cust === p.cust).length }];
   const all = [
     { name: "Category knowledge", desc: "strategy and shopper facts for the category", n: live.filter(f => f.cat === p.cat && !f.cust).length },
     { name: "Customer profile", desc: "the retailer's priorities", n: p.cust ? live.filter(f => !f.cat && f.cust === p.cust).length : null },
@@ -602,7 +697,7 @@ function covTone(s, of = 5) { const r = s / of; return r >= .8 ? ["var(--ok-acce
    ===================================================================== */
 const blankFilter = () => ({ q: "", cat: "", cust: "", type: "", use: "", hidden: false });
 const state = {
-  view: "project", role: "kam", project: "P-1", account: { cat: "Fabric Care", cust: "Northgate" },
+  view: "start", role: "kam", project: "P-1", account: { cat: "Fabric Care", cust: "Northgate" },
   pq: "", pcust: "", f: blankFilter(), bf: { q: "", cat: "", cust: "" }, briefKey: "Fabric Care|Northgate", srcTab: "sources", todo: [],
   intro: store.get("kb-intro-hidden") !== "1", gq: "", lastFocus: null,
 };
@@ -610,11 +705,18 @@ const curatorMode = () => state.role === "curator";
 
 const myRequests = () => [...FACTS.filter(f => f.by === PEOPLE.kam.name && f.status === "needs_review"), ...FACTS.filter(f => f.clearReq || f.reported)];
 const NAV = [
-  { id: "projects", label: "My Projects", icon: "grid", count: () => PROJECTS.length, match: ["projects", "project"] },
+  { id: "start", label: "Home", icon: "home" },
+  { id: "projects", label: "My Projects", icon: "grid", count: () => PROJECTS.length, match: ["projects", "project", "projnew"] },
+  { id: "coach", label: "Selling Coach", icon: "coach" },
+  { id: "roleplay", label: "Role-Play Coach", icon: "mic" },
+  { id: "stewardship", label: "Stewardship Q&A", icon: "chat" },
   { group: "Knowledge Bank" },
   { id: "accounts", label: "Accounts", icon: "store", match: ["accounts", "account", "find"] },
+  { id: "people", label: "Customers & buyers", icon: "user", match: ["people", "custnew", "buyernew"] },
   { id: "facts", label: "All facts", icon: "facts", count: () => liveFacts().length },
-  { id: "requests", label: "My requests", icon: "clock", kamOnly: true, count: () => new Set(myRequests()).size + SOURCES.filter(x => x.by && x.status !== "live").length },
+  { id: "requests", label: "My requests", icon: "clock", kamOnly: true, count: () => new Set(myRequests()).size + SOURCES.filter(x => x.by && x.status !== "live").length + REQS.length },
+  { group: "Training Center" },
+  { id: "training", label: "Onboarding & handover", icon: "cap" },
   { group: "Curator tools", curatorOnly: true },
   { id: "briefings", label: "Briefings", icon: "book", count: () => BRIEFINGS.length },
   { id: "sources", label: "Sources & review", icon: "folder", badge: () => REVIEW.length },
@@ -738,6 +840,7 @@ RENDER.requests = () => {
     ${added.length ? added.map(f => factRow(f)).join("") : `<div class="empty-state">You haven't added a fact yet. <button class="btn ghost" data-act="add-fact">Add one</button></div>`}
     <h2 class="section-title section">Your requests to curators</h2>
     ${asked.length ? asked.map(reqRow).join("") : `<div class="empty-state">No open requests. From any fact you can ask to use it with customers or report a problem.</div>`}
+    ${REQS.length ? `<h2 class="section-title section">Customer profile requests</h2>${REQS.map(r => `<div class="frow"><span class="t">${esc(r.title)}</span><span class="row" style="justify-content:flex-end"><span class="pill info">${esc(r.status)}</span></span><span class="m"><span>${esc(r.kind)}</span><span>Sent to ${esc(r.to)}</span></span></div>`).join("")}` : ""}
     <p class="hint section">Curators usually answer within 2 working days. You can send a reminder from the fact.</p>`;
 };
 
@@ -963,7 +1066,8 @@ function startCoach(p) {
   botReply(p, m => {
     m.html = `<div class="tool-hd">${icon("coach")}Selling Coach</div><p>I'll check your deck against the five steps of the selling framework, using this project's facts. Which deck?</p>
       <div class="filepick">${p.decks.map(d => `<button class="filerow" data-act="cs-deck" data-deck="${esc(d)}">${icon("file")}${esc(d)}<span class="hint" style="margin-left:auto">in this project</span></button>`).join("")}
-      <button class="filerow" data-act="cs-deck" data-deck="${esc(p.cust)} deck ${TODAY.slice(0, 6)}.pptx">${icon("plus")}Upload another deck</button></div>`;
+      <button class="filerow" data-act="cs-deck" data-deck="${esc(p.cust)} deck ${TODAY.slice(0, 6)}.pptx">${icon("plus")}Upload another deck</button></div>
+      <div class="row"><span class="hint">Want to set the meeting objective, minutes or your personal context first?</span><button class="btn sm plain" data-x="coach-from-project">Open the full Selling Coach</button></div>`;
   });
 }
 function runCoach(p, deck) {
@@ -1396,7 +1500,7 @@ document.addEventListener("click", e => {
   if (a === "close") { if (e.target === el || el.tagName === "BUTTON") closeOverlay(); return; }
   if (a === "add-fact") addFactModal();
   if (a === "add-source") addSourceModal();
-  if (a === "new-project") newProjectModal();
+  if (a === "new-project") { state.pn = null; go("projnew"); }
   if (a === "open-project") { closeOverlay(); state.project = id; go("project"); }
   if (a === "open-account") { closeOverlay(); openAccount(el.dataset.cat, el.dataset.cust); }
   if (a === "open-fact") factDrawer(id);
@@ -1480,6 +1584,558 @@ document.addEventListener("keydown", e => {
       else if (!box.contains(document.activeElement)) { e.preventDefault(); first.focus(); } }
   }
   if (e.key === "Enter" && e.target.matches("tr[data-act]")) e.target.click();
+});
+
+/* =====================================================================
+   Integrated from the customer-profile-builder mock-up (v9):
+   Home, project wizard, Selling Coach page, customer and buyer profiles
+   (Work IQ, proposal-first), profile freshness, Training Center.
+   Retailers and people stay fictional.
+   ===================================================================== */
+const OBJECTIVES = ["Customer Business Review (CBR)", "Category Growth & Market Share Strategy Meeting", "New Product Innovation (NPI) / Line Extension Presentation", "Joint Business Planning (JBP) Session", "Internal Innovation Deployment for Sales Teams", "Internal Account Review & Growth Plan", "Promotion Strategy Alignment", "Post-Promotional Performance Review", "Space & Assortment Optimization Review", "Seasonal & Event-Based Program Pitch", "Digital & E-commerce Strategy Session", "Key Brand Strategic Alignment Meeting", "Supply Chain & Logistics Optimization Meeting", "Sustainability Initiative Collaboration", "New Retailer Onboarding Presentation", "Store Operations & Field Execution Pitch", "Top to Top Meeting"];
+const OBJ_DESC = { 0: "Review past business performance with the customer, pinpointing achievements and challenges. Analyse sales trends, market share and operational metrics, then propose solutions and next-quarter strategies.", 3: "Agree the joint plan for the year: shared targets, category growth levers, promotions and investment.", 8: "Review range and space with the buyer, using shopper and sales data to justify listings and shelf share." };
+
+let PROFILES = [
+  { cust: "Northgate", owner: "Camille Martin", reviewed: "14 Mar 2026", version: 3, channels: ["Hypermarket", "Supermarket", "Convenience"],
+    objectives: ["Price competitiveness against discounters is the stated commercial priority.", "Own-label growth across household is a 2027 priority.", "Click-and-collect and rapid delivery are positioned as the main growth vector."],
+    info: ["One of the UK's largest grocers, trading through large stores, supermarkets and convenience.", "Runs a recurring price-investment programme on about 3,000 high-rotation lines."],
+    posture: "Stable but transactional: joint planning is dominated by price and promotion. Our priority is to move the conversation to category growth.",
+    sources: ["Northgate annual report 2025 · public", "Northgate newsroom · public", "Northgate JBP 2026-27.pptx · owner-only", "UK customer landscape.docx · owner-only"] },
+  { cust: "Brightmart", owner: "Jordan Reyes", reviewed: "02 Jun 2026", version: 2, channels: ["Supermarket", "eCommerce"],
+    objectives: ["Grow premium beauty and hair aisles.", "Lift online basket size."], info: ["Mid-size grocer with a strong online business."],
+    posture: "Collaborative and open to joint category projects.", sources: ["Brightmart investor update · public", "Brightmart Sales Book · owner-only"] },
+];
+let BUYERS = [
+  { id: "B-1", name: "Alex Morgan", role: "Category buyer", cust: "Northgate", cat: "Fabric Care", disc: "Dominant · data-led", updated: "11 days ago", owner: "Camille Martin",
+    goals: "Grow own label in laundry while protecting margin on premium liquids. Judges suppliers on promotion return and on-shelf availability.", style: "Concise and evidence-first. Decides fast on a quantified case and dislikes long decks.", friction: "Pushed back on premium shelf space at the last review; agreed to revisit with data." },
+  { id: "B-2", name: "Sam Patel", role: "Assistant buyer", cust: "Northgate", cat: "Fabric Care", disc: "Steady · relationship-led", updated: "2 months ago", owner: "Camille Martin",
+    goals: "Owns the promotion calendar and in-store execution.", style: "Prefers an early heads-up and written follow-ups.", friction: "Calendar clashes with competitor promotions." },
+  { id: "B-3", name: "Priya Shah", role: "Buyer", cust: "Harbour & Co", cat: "Oral Care", disc: "Influential · social", updated: "3 weeks ago", owner: "Camille Martin",
+    goals: "Wants launches that bring new shoppers to the aisle.", style: "Responds to shopper stories and visuals more than tables.", friction: "Little shelf space in small stores." },
+];
+let UPDATES = [{ id: "U-1", cust: "Northgate", items: [
+  { field: "info", i: 1, was: "Runs a recurring price-investment programme on about 3,000 high-rotation lines.", now: "Extended its price-investment programme to 4,500 lines in June 2026.", src: "Northgate newsroom · 9 Jun 2026" },
+  { field: "objectives", i: 1, was: "Own-label growth across household is a 2027 priority.", now: "Own label reached 41% of household sales in the first half of 2026.", src: "Northgate half-year results · 24 Jul 2026" },
+] }];
+let REQS = [];
+let HISTORY = [];
+let HANDOVERS = [];
+
+const ICON2 = {
+  home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/>',
+  chat: '<path d="M4 5h16v11H8l-4 4z"/>',
+  cap: '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c0 1.5 2.7 3 6 3s6-1.5 6-3v-5"/>',
+  user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+};
+Object.assign(ICON, ICON2);
+
+/* ---------- shared helpers ---------- */
+const profileOf = cust => PROFILES.find(p => p.cust === cust);
+const stepper = (steps, cur) => `<div class="stepper">${steps.map((s, i) => `<div class="step ${i < cur ? "done" : i === cur ? "active" : ""}"><span class="n">${i < cur ? "✓" : i + 1}</span>${s}</div>${i < steps.length - 1 ? '<span class="step-sep"></span>' : ""}`).join("")}</div>`;
+const stagesHTML = (stages, done) => `<ul class="stagelist">${stages.map((s, k) => `<li class="${k < done ? "ok" : k === done ? "run" : ""}"><span class="ico">${k < done ? "✓" : ""}</span>${esc(s[0])}${s[1] ? `<span class="agent">${esc(s[1])}</span>` : ""}</li>`).join("")}</ul>`;
+function animate(obj, n, onDone, ms = 550) {
+  obj.done = 0;
+  const t = setInterval(() => { obj.done++; if (obj.done >= n) { clearInterval(t); onDone(); } if (!$("#overlay").children.length) render(); }, ms);
+}
+function setPath(path, v) { const ks = path.split("."); let o = state; ks.slice(0, -1).forEach(k => o = o[k]); o[ks.at(-1)] = v; }
+const chk = (on, attrs) => `<input type="checkbox" ${on ? "checked" : ""} ${attrs}>`;
+
+/* =====================================================================
+   Home
+   ===================================================================== */
+RENDER.start = () => {
+  const p = proj(state.project);
+  const tools = [
+    ["coach", "Selling Coach", "Upload your presentation and get feedback on each step of the selling framework, backed by Knowledge Bank facts.", ["Upload your sales material", "Feedback and scoring", "Selling framework steps", "Numbers checked against the bank"], "Start coaching", `data-view="coach"`],
+    ["mic", "Role-play Coach", "Practise customer meetings with voice, with real-time scoring and feedback.", ["Voice-based practice", "Meeting rehearsal", "Objection handling", "Uses your buyer profiles"], "Start practice", `data-view="roleplay"`],
+    ["chat", "Stewardship Q&A", "Ask questions about sales stewardship and competition-law guidance.", ["Always-on assistant", "Global and local guidance", "Compliance guidance", "Policy clarification"], "Ask questions", `data-view="stewardship"`],
+  ];
+  const news = [
+    ["user", "Create a customer with Work IQ", "Work IQ proposes a customer profile from documents you already have. You review, edit and approve.", ["Proposal first, no blank form", "Public sources pass a trust check", "Three approval gates"], "Create a customer", `data-x="cust-new"`],
+    ["spark", "Personal context in Selling Coach", "Work IQ proposes the context that matters for this meeting: your plans, strategies and notes.", ["A proposal you adjust", "Better feedback every run", "Used for the run only"], "Try it", `data-view="coach"`],
+    ["cap", "Onboarding and handover", "Train joiners from the Knowledge Bank, and capture a leaver's knowledge back into it.", ["Programs built from account facts", "One handover pack", "Handover feeds onboarding"], "Open", `data-view="training"`],
+    ["mail", "Profiles keep themselves current", "When public sources move, the profile owner gets a checked update to approve in one click.", ["Triggered by findings", "One-click approval", "The owner stays in control"], "See the update", UPDATES.length ? `data-x="open-update" data-id="${UPDATES[0].id}"` : `data-view="people"`],
+  ];
+  const hist = [...HISTORY, ...PROJECTS.flatMap(x => x.runs.map(r => ({ ...r, proj: x.name, pid: x.id })))].slice(0, 6);
+  const upd = UPDATES.filter(u => profileOf(u.cust)?.owner === PEOPLE.kam.name);
+  return `${p ? `<div class="homescope">${icon("grid")}<span>Active project: <b>${esc(p.name)}</b>. Every tool below uses its customer and facts.</span><button class="btn plain sm" data-view="projects">Switch project</button></div>` : ""}
+    <div class="welcome"><h1>${icon("spark")}Welcome to AI Sales Assistant</h1><p>Hello ${PEOPLE[state.role].name.split(" ")[0]}! Choose a tool, or open a project to keep everything for one customer in one place.</p></div>
+    ${NOTE}
+    ${upd.length ? `<div class="callout info inbox"><span>${icon("mail")}</span><span><b>${plural(upd[0].items.length, "public update", "public updates")} found for the ${esc(upd[0].cust)} profile you own.</b> Both come from the customer's own published material and passed the trust check.</span><button class="btn sm primary" data-x="open-update" data-id="${upd[0].id}">Review</button></div>` : ""}
+    <div class="toolgrid">${tools.map(([ic, t, d, ls, cta, at]) => `<div class="toolcard"><div class="toolcard__head"><div class="toolcard__ico">${icon(ic)}</div><h3>${t}</h3><p>${d}</p></div>
+      <div class="toolcard__body">${ls.map(l => `<div class="checkline">${icon("check")}${l}</div>`).join("")}<div class="toolcard__cta"><button class="btn primary" ${at}>${cta}</button></div></div></div>`).join("")}</div>
+    <div class="newband"><h2>${icon("spark")}New: powered by Work IQ and the Knowledge Bank</h2><span class="line"></span></div>
+    <div class="newgrid">${news.map(([ic, t, d, ls, cta, at]) => `<div class="newcard"><span class="pill info chip-new">New</span><div class="newcard__ico">${icon(ic)}</div><h3>${t}</h3><p>${d}</p><ul>${ls.map(l => `<li>${icon("check")}${l}</li>`).join("")}</ul><button class="btn primary" ${at}>${cta}</button></div>`).join("")}</div>
+    <section class="histsec"><div class="spread"><h3 style="font-size:18px">History</h3><button class="btn ghost small" data-view="projects">View all projects</button></div>
+      ${hist.length ? `<div class="table-wrap" style="margin-top:12px"><table class="stbl narrow"><thead><tr><th>Tool</th><th>Material or result</th><th>Project</th><th>Date</th><th>Status</th></tr></thead><tbody>${hist.map(h => `<tr ${h.pid ? `data-act="open-project" data-id="${h.pid}"` : ""}><td class="name">${h.tool}</td><td>${esc(h.note)}</td><td>${esc(h.proj || "No project")}</td><td>${h.date}</td><td><span class="pill ${h.status === "Running" ? "info" : "ok"}">${h.status}</span></td></tr>`).join("")}</tbody></table></div>` : `<div class="empty-state" style="margin-top:12px">No recent analyses. Upload your first presentation to get started.</div>`}
+    </section>`;
+};
+
+RENDER.roleplay = () => soonPage("Role-play Coach", "Practise customer meetings with voice and get real-time feedback.", "Buyer profiles you create in the Knowledge Bank will become role-play personas.");
+RENDER.stewardship = () => soonPage("Stewardship Q&A", "Ask questions about sales stewardship and competition-law guidance.", "Answers will cite the policy they come from, the same way Knowledge Bank facts cite their source.");
+function soonPage(t, d, link) {
+  return head("AI Sales Assistant", t, d) + NOTE + `<div class="empty-state" style="text-align:left"><b>Not part of this mock-up.</b> This tool exists in the live platform and is shown here only so the navigation matches. ${link}</div>`;
+}
+
+/* =====================================================================
+   Create a project: scope, buyer and meeting, then review
+   ===================================================================== */
+function pnDefaults() { return { step: 0, cust: "Brightmart", cat: "Hair Care", buyers: [], name: "", objective: "", date: "", aud: "internal" }; }
+RENDER.projnew = () => {
+  const n = state.pn || (state.pn = pnDefaults());
+  const buyers = BUYERS.filter(b => b.cust === n.cust && b.owner === PEOPLE.kam.name);
+  const pl = { cat: n.cat, cust: n.cust, buyer: n.buyers.length ? "x" : null };
+  const s = score(pl), sel = selectFacts(n.cat, n.cust, ""), [col, lab] = covTone(s);
+  const certified = sel.ranked.filter(x => x.f.rel === "certified").length;
+  const preview = `<aside class="scopeprev"><h4>Scope preview</h4>
+    <div class="projchips"><span class="projchip">UK</span><span class="projchip">${esc(n.cust)}</span><span class="projchip">${esc(n.cat)}</span>${n.buyers.map(id => `<span class="projchip">${icon("user")}${esc(BUYERS.find(b => b.id === id).name)}</span>`).join("")}</div>
+    <div class="spread small" style="margin-top:14px"><span>Context covered</span><b>${s} of 5 parts</b></div>
+    <div class="covbar" style="margin:6px 0 12px"><span style="width:${s * 20}%;background:${col}"></span></div>
+    <div class="callout ${s >= 4 ? "ok" : s >= 3 ? "warn" : "bad"}"><b>${lab}.</b> ${plural(sel.inScope, "usable fact", "usable facts")}, ${certified} from official data.${s < 4 ? ` Missing: ${pillars(pl).filter(x => !x.n).map(x => x.name.toLowerCase()).join(", ")}.` : ""}</div>
+    <p class="hint" style="margin-top:10px">The project opens with this scope. Tools won't ask for it again.</p></aside>`;
+  const body = n.step === 0 ? `
+    <div class="card"><div class="card-hd">Define the customer scope<span class="aside">Decides which Knowledge Bank facts every tool can use</span></div><div class="pad grid3">
+      <div class="field"><label>Market</label><select disabled><option>United Kingdom</option></select></div>
+      <div class="field"><label for="pn-cust">Customer</label><select id="pn-cust" data-bind="pn.cust" data-rerender>${CUSTOMERS.map(c => `<option ${c === n.cust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select>${profileOf(n.cust) ? "" : `<button class="btn ghost small" data-x="cust-new" data-name="${esc(n.cust)}" data-from="projnew">No profile yet: create one</button>`}</div>
+      <div class="field"><label for="pn-cat">Category</label><select id="pn-cat" data-bind="pn.cat" data-rerender>${CATEGORIES.map(c => `<option ${c === n.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div>
+    </div></div>
+    <div class="card" style="margin-top:14px"><div class="card-hd">Attach buyer profiles<span class="aside">Optional. Tailors coaching and future role-play</span></div><div class="pad stack">
+      ${buyers.length ? buyers.map(b => `<label class="entity ${n.buyers.includes(b.id) ? "sel" : ""}">${chk(n.buyers.includes(b.id), `data-x="pn-buyer" data-id="${b.id}"`)}<span><b>${esc(b.name)}</b> · ${esc(b.role)}<br><span class="hint">${esc(b.cust)} · ${esc(b.disc)} · updated ${b.updated}</span></span></label>`).join("") : `<p class="small muted">You have no buyer profile for ${esc(n.cust)} yet.</p>`}
+      <div><button class="btn sm plain" data-x="buyer-new" data-cust="${esc(n.cust)}" data-from="projnew">${icon("plus")}Add buyer</button></div></div></div>
+    <div class="card" style="margin-top:14px"><div class="card-hd">Set the meeting context<span class="aside">Gives tools a clear objective and time horizon</span></div><div class="pad stack">
+      <div class="grid2"><div class="field"><label for="pn-name">Project name</label><input id="pn-name" data-bind="pn.name" value="${esc(n.name)}" placeholder="${esc(n.cust)} ${esc(n.cat)} review"></div>
+        <div class="field"><label for="pn-date">Meeting date</label><input id="pn-date" data-bind="pn.date" value="${esc(n.date)}" placeholder="e.g. 22 Oct 2026"></div></div>
+      <div class="field"><label for="pn-obj">Meeting objective</label><input id="pn-obj" data-bind="pn.objective" value="${esc(n.objective)}" placeholder="e.g. Explain the share dip and agree the spring premium aisle."></div>
+      <div class="field"><span class="flabel">Who is the output for?</span><div class="seg"><button type="button" data-x="pn-aud" data-v="internal" aria-pressed="${n.aud === "internal"}">Internal team</button><button type="button" data-x="pn-aud" data-v="external" aria-pressed="${n.aud === "external"}">The customer</button></div></div>
+      <div class="actions"><button class="btn primary" data-x="pn-next">Continue to review →</button></div></div></div>`
+  : `<div class="card"><div class="card-hd">Review the project<span class="aside">Confirm the context every tool will use</span></div><div class="pad stack">
+      <div class="custcard"><div class="top"><b>${esc(n.cust.toUpperCase())}</b><span class="hint">UK · ${esc(n.cat)}</span></div><div class="bot stack"><b style="font:600 15px var(--mont)">${esc(n.name || `${n.cust} ${n.cat} review`)}</b><span>${esc(n.objective || "No objective set yet.")}</span>
+        <div class="projchips"><span class="projchip">${AUD[n.aud]}</span>${n.date ? `<span class="projchip">Meeting ${esc(n.date)}</span>` : ""}${n.buyers.map(id => `<span class="projchip">${icon("user")}${esc(BUYERS.find(b => b.id === id).name)}</span>`).join("")}</div></div></div>
+      <div class="actions"><button class="btn plain" data-x="pn-back">Back</button><button class="btn primary" data-x="pn-create">Create project</button></div></div></div>`;
+  return `<div class="crumb"><button data-view="projects">My Projects</button><span>›</span><span>New project</span></div>
+    <div class="pagehead"><div><h1>Create a project</h1><p class="sub">Choose the context once. Every tool and result in the project uses it.</p></div></div>${NOTE}
+    ${stepper(["Scope, buyer and meeting", "Review"], n.step)}<div class="wizard"><div>${body}</div>${preview}</div>`;
+};
+
+/* =====================================================================
+   Selling Coach (full page): material, meeting context, personal context
+   ===================================================================== */
+function scDefaults(p) {
+  const b = p ? BUYERS.find(x => x.cust === p.cust) : BUYERS[0];
+  return { deck: null, obj: 0, minutes: 30, lang: "English (EN)", notation: "Not applicable", cust: p?.cust || "Northgate", cat: p?.cat || "Fabric Care", buyer: b?.id || "", context: "", pc: "off", items: null, done: 0, run: null, from: p ? p.id : null };
+}
+function pcItems(c) {
+  const b = BUYERS.find(x => x.id === c.buyer);
+  return [
+    { t: `${c.cust} plan 2026-27: distribution targets and the Q4 promotion windows`, s: "SharePoint · joint business plan", on: true },
+    { t: `Your note from 22 Sep on ${c.cust}: the buyer wants fewer SKUs before the next range review`, s: "Your notes · private", on: true },
+    { t: `Email thread with ${b ? b.name : "the buyer"}: asks for a promotion calendar by the end of the month`, s: "Outlook · 12 Aug", on: true },
+    { t: `${c.cat} category strategy: premium trade-up is the main growth lever`, s: "SharePoint · strategy", on: true },
+    { t: `Your last Selling Coach run: the Situation step had no market-size figure`, s: "Your History", on: true },
+    ...(b ? [{ t: `Buyer profile: ${b.style}`, s: "Your buyer profile · private", on: true }] : []),
+  ];
+}
+RENDER.coach = () => {
+  const c = state.sc || (state.sc = scDefaults(state.view === "coach" && state.coachFrom ? proj(state.coachFrom) : null));
+  if (c.run) return coachRunView(c);
+  const p = c.from && proj(c.from);
+  const buyers = BUYERS.filter(b => b.cust === c.cust && b.owner === PEOPLE.kam.name);
+  const decks = [...new Set(PROJECTS.filter(x => x.cust === c.cust).flatMap(x => x.decks))];
+  const sel = c.items ? c.items.filter(i => i.on).length : 0;
+  const ready = c.deck && (c.pc === "attached" || c.pc === "skipped");
+  return `<div class="crumb"><button data-view="start">Home</button><span>›</span><span>Selling Coach</span></div>
+    <div class="pagehead"><div><h1>Selling Coach</h1><p class="sub">Upload your presentation, set the meeting context and, if you want, let Work IQ add the personal context you already have. You review that context before it's used.</p></div></div>${NOTE}
+    ${p ? `<div class="homescope">${icon("grid")}<span>From project <b>${esc(p.name)}</b>: customer, category and buyer are filled in.</span></div>` : ""}
+    ${stepper(["Material", "Meeting context", "Personal context"], !c.deck ? 0 : c.pc === "attached" || c.pc === "skipped" ? 3 : 2)}
+    <div class="card"><div class="card-hd">Step 1 · Upload the sales material (PDF or PPTX)</div><div class="pad stack">
+      ${c.deck ? `<div class="filerow">${icon("file")}<b>${esc(c.deck)}</b><span class="hint">18 slides · read in place</span><span class="pill ok" style="margin-left:auto">Ready</span><button class="btn ghost small" data-x="sc-deck" data-deck="">Change</button></div>`
+      : `<div class="dropzone"><span>${icon("folder")}</span><b>Drag and drop a file here</b><span class="hint">PPTX or PDF, up to 500 MB</span><button class="btn sm" data-x="sc-deck" data-deck="${esc(decks[0] || c.cust + " deck.pptx")}">Browse file</button></div>
+         ${decks.length ? `<div class="stack"><span class="label">Or use a deck from your projects</span>${decks.map(d => `<button class="filerow" data-x="sc-deck" data-deck="${esc(d)}">${icon("file")}${esc(d)}</button>`).join("")}</div>` : ""}`}
+    </div></div>
+    <div class="card" style="margin-top:14px"><div class="card-hd">Step 2 · Tell us about the meeting</div><div class="pad stack">
+      <div class="field"><label for="sc-obj">Meeting objective</label><select id="sc-obj" data-bind="sc.obj" data-rerender>${OBJECTIVES.map((o, i) => `<option value="${i}" ${+c.obj === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select><span class="hint">${OBJ_DESC[c.obj] || "Tell the coach what this meeting must achieve in the important context below."}</span></div>
+      <div class="grid3"><div class="field"><label for="sc-min">Available minutes</label><input id="sc-min" type="number" min="5" data-bind="sc.minutes" value="${c.minutes}"></div>
+        <div class="field"><label for="sc-lang">Analysis language</label><select id="sc-lang" data-bind="sc.lang">${["English (EN)", "French (FR)", "Spanish (ES)", "German (DE)", "Italian (IT)"].map(l => `<option ${l === c.lang ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+        <div class="field"><label for="sc-not">Number notation</label><select id="sc-not" data-bind="sc.notation">${["Not applicable", "Thousands (1,000)", "Millions (1M)", "Local currency"].map(l => `<option ${l === c.notation ? "selected" : ""}>${l}</option>`).join("")}</select></div></div>
+      <div class="grid3"><div class="field"><label for="sc-cust">Customer</label><select id="sc-cust" data-bind="sc.cust" data-rerender>${CUSTOMERS.map(x => `<option ${x === c.cust ? "selected" : ""}>${esc(x)}</option>`).join("")}<option value="__req">Can't find it? Request a customer…</option></select>${profileOf(c.cust) ? "" : `<button class="btn ghost small" data-x="cust-new" data-name="${esc(c.cust)}" data-from="coach">No profile yet: create one</button>`}</div>
+        <div class="field"><label for="sc-cat">Category</label><select id="sc-cat" data-bind="sc.cat">${CATEGORIES.map(x => `<option ${x === c.cat ? "selected" : ""}>${x}</option>`).join("")}</select></div>
+        <div class="field"><label for="sc-buyer">Buyer</label><select id="sc-buyer" data-bind="sc.buyer" data-rerender><option value="">No buyer</option>${buyers.map(b => `<option value="${b.id}" ${b.id === c.buyer ? "selected" : ""}>${esc(b.name)} · ${esc(b.role)}</option>`).join("")}<option value="__new">Add a buyer profile…</option></select></div></div>
+      <div class="field"><label for="sc-ctx">Important context</label><textarea id="sc-ctx" data-bind="sc.context" rows="3" placeholder="What must the coach know about this meeting?">${esc(c.context)}</textarea>
+        <div class="row"><button class="btn sm plain" data-x="sc-propose">${icon("spark")}Propose from my latest meetings</button><span class="hint">Work IQ drafts this from your recent meetings, notes and emails with ${esc(c.cust)}. You edit it.</span></div></div>
+    </div></div>
+    <div class="card" style="margin-top:14px"><div class="card-hd">Step 3 · Use my personal context (Work IQ)<span class="aside">Optional</span></div><div class="pad stack">
+      ${c.pc === "off" ? `<p class="small">On top of the fields above, Work IQ reads the plans, strategies, notes and emails you can access for ${esc(c.cust)} · ${esc(c.cat)} and proposes what matters for this meeting. You review it first. Nothing is stored.</p>
+          <div class="row"><button class="btn primary" data-x="sc-pc-build">${icon("spark")}Build my context with Work IQ</button><button class="btn plain" data-x="sc-pc-skip">Skip, run on the deck only</button></div>`
+      : c.pc === "loading" ? `<b>Work IQ is gathering your context for ${esc(c.cust)}</b>${stagesHTML([["Finding what you can access on this customer", "Work IQ"], ["Reading plans, strategies, notes and emails in place", "Work IQ"], ["Keeping only what's relevant to this meeting", "Work IQ"], ["Proposing your personal context", "Work IQ"]], c.done)}<p class="hint">Used for this run only and never written into the customer profile.</p>`
+      : c.pc === "proposal" ? `<div class="spread"><b>Work IQ's proposed context</b><span class="pill info">9 documents read</span></div><p class="small muted">A proposal you adjust, not a checklist you fill in. Untick anything you don't want, or add something Work IQ couldn't see.</p>
+          ${c.items.map((it, i) => `<label class="entity ${it.on ? "sel" : ""}">${chk(it.on, `data-x="sc-item" data-i="${i}"`)}<span>${esc(it.t)}<br><span class="hint">${esc(it.s)}</span></span></label>`).join("")}
+          <div class="row"><input class="search" id="sc-add" placeholder="Add your own context for this run" style="flex:1"><button class="btn sm plain" data-x="sc-add">Add</button></div>
+          <p class="hint">The context isn't stored. The result is saved to your History, which only you can see.</p>
+          <div class="actions"><button class="btn plain" data-x="sc-pc-skip">Skip</button><button class="btn primary" data-x="sc-pc-use">Use ${plural(sel, "item", "items")} in the analysis</button></div>`
+      : c.pc === "attached" ? `<div class="callout ok"><b>Personal context attached.</b> ${plural(sel, "item", "items")} will be used for this run only. <button class="btn ghost small" data-x="sc-pc-review">Review again</button></div>`
+      : `<div class="callout neutral">Running on the deck and Knowledge Bank facts only. <button class="btn ghost small" data-x="sc-pc-build">Use personal context instead</button></div>`}
+    </div></div>
+    <div class="actions section" style="justify-content:flex-end">${ready ? "" : `<span class="hint">${!c.deck ? "Choose a deck first." : "Build or skip your personal context first."}</span>`}<button class="btn primary" data-x="sc-run" ${ready ? "" : "disabled"}>${icon("coach")}Run the Selling Coach</button></div>`;
+};
+function coachRunView(c) {
+  const r = c.run;
+  const head2 = `<div class="crumb"><button data-view="start">Home</button><span>›</span><button data-x="sc-new">Selling Coach</button><span>›</span><span>Result</span></div><div class="pagehead"><div><h1>${esc(c.deck)}</h1><p class="sub">${esc(OBJECTIVES[c.obj])} · ${esc(c.cust)} · ${esc(c.cat)} · ${c.minutes} minutes</p></div></div>${NOTE}`;
+  if (!r.html) return head2 + `<div class="card pad">${stagesHTML(r.stages, c.done)}</div>`;
+  return head2 + r.html;
+}
+function coachResult(c) {
+  const pl = { cat: c.cat, cust: c.cust, audience: "internal" };
+  const r = selectFacts(c.cat, c.cust, ""), cite = citer(pl), fs = r.ranked.map(x => x.f);
+  const pick = (...t) => fs.find(f => t.includes(f.type));
+  const b = BUYERS.find(x => x.id === c.buyer), used = c.pc === "attached" ? c.items.filter(i => i.on) : [];
+  const steps = [["Summarise the situation", pick("metric"), "Open with the official market picture"], ["State the idea", pick("recommendation", "insight"), "Make the idea one clear sentence"], ["Explain how it works", pick("recommendation"), "Show the mechanism, not just the ambition"], ["Reinforce key benefits", fs.filter(f => f.type === "metric" || f.type === "insight")[1], "Quantify the upside for the customer"], ["Suggest an easy next step", pick("event"), "End on a concrete, low-effort ask"]];
+  const grounded = steps.filter(s => s[1]).length;
+  const score = Math.min(5, grounded + (used.length ? 0.5 : 0) - (c.cust === "Northgate" ? 0.5 : 0)).toFixed(1);
+  return { grounded, html: `<div class="result-hd card pad"><div><span class="label">Overall</span><div class="bigscore">${score}<span>/5</span></div></div><div class="stack" style="gap:4px"><b>${grounded} of 5 selling steps backed by facts</b><span class="small muted">${used.length ? `Personal context used: ${plural(used.length, "item", "items")}.` : "No personal context used."} ${b ? `Tailored to ${esc(b.name)} (${esc(b.disc)}).` : ""}</span><span class="hint">Saved to your History. Only you can see it.</span></div></div>
+    <div class="card section"><div class="card-hd">Feedback by step</div><div class="table-wrap" style="border:0;border-radius:0"><table><thead><tr><th>Step</th><th>Backed by a fact?</th><th>Feedback</th></tr></thead><tbody>
+    ${steps.map(([s, f, tip]) => `<tr><td style="color:var(--charcoal);font-weight:600">${s}</td><td>${f ? `<span class="pill ok">Yes</span>` : `<span class="pill warn">No</span>`}</td><td>${f ? `${tip}: “${esc(f.text)}” ${cite(f)}` : `${tip}. The bank has nothing to back this step yet.`}</td></tr>`).join("")}</tbody></table></div></div>
+    ${c.cust === "Northgate" ? `<div class="verdict bad section"><b>1 number to fix.</b> Slide 4 says Northgate holds 19.4% of UK Fabric Care. The official figure is 18.6% ${cite(fact("F-1022"))}.</div>` : ""}
+    ${b ? `<div class="callout info section"><b>Buyer fit · ${esc(b.name)}.</b> ${esc(b.style)} ${c.minutes <= 30 ? `With ${c.minutes} minutes, cut to about 12 slides and lead with the number.` : ""} Watch out: ${esc(b.friction)}</div>` : ""}
+    ${used.length ? `<div class="card pad section stack"><b>Context that changed the feedback</b>${used.map(i => `<span class="small">• ${esc(i.t)} <span class="hint">${esc(i.s)}</span></span>`).join("")}</div>` : ""}
+    <div class="callout ok section"><b>Saved to the Knowledge Bank.</b> 1 account fact from this run waits for a curator, so the next run starts from here.</div>
+    <div class="actions section">${c.from ? `<button class="btn primary" data-act="open-project" data-id="${c.from}">Back to the project</button>` : ""}<button class="btn" data-x="sc-new">New analysis</button><button class="btn plain" data-view="start">Home</button></div>` };
+}
+
+/* =====================================================================
+   Knowledge Bank · customers and buyers
+   ===================================================================== */
+RENDER.people = () => {
+  const tab = state.pplTab || "customers";
+  const myBuyers = BUYERS.filter(b => b.owner === PEOPLE.kam.name);
+  const tabs = `<div class="tabs" role="tablist"><button role="tab" data-x="ppl-tab" data-v="customers" aria-selected="${tab === "customers"}">Customers (${CUSTOMERS.length})</button><button role="tab" data-x="ppl-tab" data-v="buyers" aria-selected="${tab === "buyers"}">Your buyers (${curatorMode() ? 0 : myBuyers.length})</button></div>`;
+  const custs = CUSTOMERS.map(cu => { const pr = profileOf(cu);
+    return pr ? `<div class="custcard"><div class="top"><span class="bldg">${icon("store")}</span><span><b>${esc(cu)}</b><div class="hint">UK · ${pr.channels.join(" · ")}</div></span><span class="pill neutral" style="margin-left:auto">Version ${pr.version}</span></div>
+      <div class="bot stack"><span class="small">${esc(pr.objectives[0])}</span><span class="hint">Owner: ${esc(pr.owner)}${pr.owner === PEOPLE.kam.name ? " (you)" : ""} · reviewed ${pr.reviewed} · ${plural(pr.sources.length, "source", "sources")}</span>
+      <div class="row"><button class="btn sm" data-x="open-profile" data-v="${esc(cu)}">Open profile</button><button class="btn sm plain" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all facts</button>${pr.owner !== PEOPLE.kam.name ? `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>` : ""}</div></div></div>`
+    : `<div class="custcard missing"><div class="top"><span class="bldg">${icon("store")}</span><span><b>${esc(cu)}</b><div class="hint">UK · no profile yet</div></span></div>
+      <div class="bot stack"><span class="small muted">Nobody has created a customer profile yet. Work IQ can draft one from documents you already have.</span><div class="row"><button class="btn sm primary" data-x="cust-new" data-name="${esc(cu)}">${icon("spark")}Create with Work IQ</button></div></div></div>`; }).join("");
+  const buyers = curatorMode() ? `<div class="callout info">Buyer profiles are private to the KAM who creates them. Switch to “KAM” to see Camille's buyers.</div>`
+    : myBuyers.map(b => `<div class="buyercard"><div class="buyercard__hd"><span class="bldg">${icon("user")}</span><span><b>${esc(b.name)}</b><div class="hint">${esc(b.role)} · ${esc(b.cust)} · ${esc(b.cat)}</div></span><span class="pill warn" style="margin-left:auto">Private to you</span></div>
+      <div class="buyercard__bd stack"><span class="small"><b>Style (DISC):</b> ${esc(b.disc)}</span><span class="small"><b>Goals:</b> ${esc(b.goals)}</span><span class="small"><b>Watch out for:</b> ${esc(b.friction)}</span><span class="hint">Updated ${b.updated}</span>
+      <div class="row"><button class="btn sm" data-x="buyer-coach" data-id="${b.id}">Use in Selling Coach</button>${PROJECTS.some(p => p.cust === b.cust) ? `<button class="btn sm plain" data-x="buyer-attach" data-id="${b.id}">Attach to ${esc(PROJECTS.find(p => p.cust === b.cust).name)}</button>` : ""}</div></div></div>`).join("") + `<button class="buyercard add" data-x="buyer-new">${icon("plus")}<b>Add a buyer</b><span class="hint">Work IQ proposes a profile from where the buyer talks</span></button>`;
+  return head("Knowledge Bank", "Customers & buyers", "Customer profiles are shared across the company and built on checked facts. Buyer profiles are private to you and feed coaching and role-play.",
+    `<button class="btn plain" data-x="buyer-new">${icon("plus")}Add buyer</button><button class="btn primary" data-x="cust-new">${icon("plus")}Add customer</button>`) + NOTE + tabs +
+    (tab === "customers" ? `<div class="ppl-grid">${custs}</div>` : `<div class="ppl-grid">${buyers}</div>`) +
+    `<div class="ppl-grid section"><div class="card pad stack"><b>Can't find a customer?</b><span class="small muted">Ask the profile owner to add it. They get a Work IQ draft, not a blank form, and you're told when it's saved.</span><div><button class="btn sm" data-x="request-cust">Request a customer</button></div></div>
+      <div class="card pad stack"><b>Spotted something out of date?</b><span class="small muted">Flag it to the profile owner in one click. They can have the change drafted for them.</span><div><button class="btn sm" data-x="suggest-edit" data-v="Brightmart">Suggest an edit</button></div></div></div>`;
+};
+function profileDrawer(cu) {
+  const pr = profileOf(cu); if (!pr) return;
+  openDrawer(`<div class="spread"><span class="pill neutral">Customer profile · version ${pr.version}</span><button class="btn sm plain" data-act="close">Close</button></div>
+    <h2>${esc(cu)} · UK</h2><span class="hint">Owner: ${esc(pr.owner)} · reviewed ${pr.reviewed} · visible to everyone in the company</span>
+    <div class="profilebox"><h4>Customer objectives and KPIs</h4><ul>${pr.objectives.map(o => `<li>${esc(o)}</li>`).join("")}</ul>
+      <h4 style="margin-top:14px">Key customer information</h4><ul>${pr.info.map(o => `<li>${esc(o)}</li>`).join("")}</ul>
+      <h4 style="margin-top:14px">Our strategic approach</h4><p class="small">${esc(pr.posture)}</p></div>
+    <div class="stack"><div class="label">Sources</div>${pr.sources.map(s => `<span class="small">• ${esc(s)}</span>`).join("")}<span class="hint">Owner-only file names are hidden from other viewers; they see the facts and public sources.</span></div>
+    <div class="row"><button class="btn sm" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all ${esc(cu)} facts</button>${pr.owner !== PEOPLE.kam.name ? `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>` : ""}</div>`);
+}
+
+/* =====================================================================
+   Create a customer profile · Work IQ, three approval gates
+   ===================================================================== */
+function cnDefaults(name, from) {
+  return { step: "name", name: name || "Harbour & Co", from: from || null, entity: 0, done: 0, posture: false, docs: [true, true, true],
+    objectives: "Wants launches that bring new shoppers into the store, especially in health and beauty.\nOwn-label expansion in oral care is planned for 2027.\nTracks like-for-like growth, own-label share and on-shelf availability.",
+    info: "Regional grocer with about 320 stores, mostly small supermarkets.\nStrong loyalty scheme with high member penetration.",
+    postureText: "[PROPOSED FROM YOUR JBP — confirm or edit] New relationship with limited joint planning so far. Our priority: earn a first category-growth project around the whitening launch.",
+    kpi: "", enrich: [true, true, true, false] };
+}
+const CN_DOCS = [["Harbour & Co Oral Care JBP 2026.pptx", "SharePoint · 10 Feb 2026", "High"], ["UK customer landscape.docx", "OneDrive · 28 Jan 2026", "High"], ["Harbour & Co store list 2026.xlsx", "SharePoint · 06 Feb 2026", "Medium"]];
+const CN_ENRICH = [
+  ["Harbour & Co reported like-for-like growth of 3.4% in its 2026 half-year results.", "Harbour & Co half-year results", "18 Jul 2026", "Objectives", "Added as new", "add"],
+  ["The loyalty scheme reached 4.1 million active members.", "Harbour & Co annual report 2025", "12 Apr 2026", "Information", "Replaced a vague statement", "rep"],
+  ["Plans 25 new convenience stores in 2027.", "Harbour & Co newsroom", "03 Sep 2026", "Information", "Added as new", "add"],
+  ["Health and beauty is named a priority aisle for 2027.", "Trade press interview with the CEO", "21 Aug 2026", "Objectives", "Merged into an existing point", "mrg"],
+];
+RENDER.custnew = () => {
+  const n = state.cn || (state.cn = cnDefaults());
+  const gate = { name: 0, entity: 0, reading: 0, gate1: 1, verifying: 1, gate2: 2, gate3: 3, saved: 4 }[n.step];
+  const top = `<div class="crumb"><button data-view="people">Customers & buyers</button><span>›</span><span>Create a customer profile</span></div>
+    <div class="pagehead"><div><h1>Create a customer profile</h1><p class="sub">Name the customer and Work IQ proposes a first profile from the material you already have. You review, edit and add. You never start from a blank form.</p></div><span class="pill info lg">${icon("spark")}Work IQ · proposal first</span></div>${NOTE}
+    ${stepper(["Customer and Work IQ", "Review proposal", "Review enrichments", "Final and save"], gate)}`;
+  let body = "";
+  if (n.step === "name") body = `<div class="card"><div class="card-hd">Step 1 · Which customer? Work IQ drafts the first version</div><div class="pad stack">
+      <div class="grid2"><div class="field"><label for="cn-name">Customer name</label><input id="cn-name" data-bind="cn.name" value="${esc(n.name)}"></div><div class="field"><label>Country</label><select disabled><option>United Kingdom</option></select></div></div>
+      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Let Work IQ build the first draft</b><br><span class="small muted">Work IQ reads the SharePoint, OneDrive and Teams material you can already access, in place. Nothing is uploaded or copied. You get a proposed profile to review, not a pile of files to sort.</span></span></div>
+      <details><summary>Have a “golden” document or notes to start from? (optional)</summary><div class="stack"><button class="filerow" data-x="toast" data-msg="In the live tool this opens a Work IQ file picker.">${icon("file")}Pick one document via Work IQ</button><textarea rows="2" placeholder="Or paste what you know"></textarea><span class="hint">Buyer-specific or internal-only content is separated out automatically before drafting. You'll see exactly what was removed.</span></div></details>
+      <div class="actions"><button class="btn plain" data-view="people">Cancel</button><button class="btn primary" data-x="cn-go">${icon("spark")}Build proposal with Work IQ</button></div></div></div>`;
+  if (n.step === "entity") body = `<div class="card"><div class="card-hd">Confirm which company, before anything is drafted</div><div class="pad stack">
+      <div class="callout warn"><b>“${esc(n.name)}” matches more than one company.</b> Drafting against the wrong one wastes a run and produces a profile that looks right but is about the wrong business.</div>
+      <div class="callout ok"><b>Duplicate check: no existing profile.</b> If one existed, you'd be offered to open it or suggest an edit instead.</div>
+      ${[[`${n.name} Ltd`, "UK operating company · about 320 stores"], [`${n.name} Group plc`, "Listed parent company · 2 countries"], [`${n.name} Ireland`, "Separate company, separate buyers"]].map(([t, d], i) => `<label class="entity ${n.entity === i ? "sel" : ""}"><input type="radio" name="cn-ent" ${n.entity === i ? "checked" : ""} data-x="cn-entity" data-i="${i}"><span><b>${esc(t)}</b><br><span class="hint">${d}</span></span></label>`).join("")}
+      <div class="actions"><button class="btn plain" data-x="cn-step" data-v="name">Back</button><button class="btn primary" data-x="cn-read">Confirm and build proposal</button></div></div></div>`;
+  if (n.step === "reading") body = `<div class="card pad stack"><b>Work IQ is reading your material on ${esc(n.name)}</b>${stagesHTML([["Finding documents you can access", "Work IQ"], ["Reading 14 documents in place", "Work IQ"], ["Separating customer, buyer and internal-only content", "Input separator"], ["Consolidating one proposed profile", "Work IQ"]], n.done)}<p class="hint">Nothing is stored yet. You review the proposal first.</p></div>`;
+  if (n.step === "gate1") body = `<div class="callout info"><b>Gate 1 of 3 · approve the proposal once.</b> Work IQ read 14 documents you already have and drafted the two fields below. Edit them here. When you approve, checking and public research run in the background and you won't be asked about these two fields again.</div>
+    <div class="grid2 section">
+      <div class="field"><label for="cn-obj">Customer objectives and KPIs <span class="pill ok">High confidence</span></label><textarea id="cn-obj" rows="6" data-bind="cn.objectives">${esc(n.objectives)}</textarea></div>
+      <div class="field"><label for="cn-info">Key customer information</label><textarea id="cn-info" rows="6" data-bind="cn.info">${esc(n.info)}</textarea><span class="hint">Your edits are treated as authoritative and won't be overwritten by public research.</span></div></div>
+    <div class="card section"><div class="card-hd">Our strategic approach · proposed, needs your confirmation ${n.posture ? `<span class="pill ok">Confirmed</span>` : `<span class="pill warn">Not confirmed</span>`}</div><div class="pad stack">
+      <span class="small muted">A plan deck describes the relationship, so Work IQ drafted a starting point from it. It's a proposal, not a fact. Confirm or edit it now, so there's no blocker at the end.</span>
+      <textarea rows="3" data-bind="cn.postureText">${esc(n.postureText)}</textarea><div>${n.posture ? "" : `<button class="btn sm primary" data-x="cn-posture">Confirm approach</button>`}</div></div></div>
+    <div class="callout warn section"><b>2 gaps Work IQ couldn't fill from your material:</b> no recent public financials and no market-share figure. After you approve, it searches annual reports, filings, official press releases and recognised industry reports.</div>
+    <div class="grid2 section"><div class="card"><div class="card-hd">Documents Work IQ used</div><div class="pad stack">${CN_DOCS.map(([t, s, c], i) => `<label class="entity ${n.docs[i] ? "sel" : ""}">${chk(n.docs[i], `data-x="cn-doc" data-i="${i}"`)}<span>${t}<br><span class="hint">${s} · ${c} confidence</span></span></label>`).join("")}<span class="hint">Untick a document and the proposal rebuilds without it. File names are stored owner-only.</span></div></div>
+      <div class="card"><div class="card-hd">What Work IQ kept out of the profile</div><div class="pad sepgrid">
+        <div class="sepcol sep-ok"><b>Kept · 9 facts</b>Company-wide, non-confidential</div>
+        <div class="sepcol sep-warn"><b>Buyer-level · 3</b>“Buyer prefers visual stories” and 2 more<button class="btn ghost small" data-x="buyer-new" data-cust="${esc(n.name)}" data-from="custnew">Move to a buyer profile</button></div>
+        <div class="sepcol sep-err"><b>Internal only · 2</b>“FY27 target +12% net sales” and a margin bridge. Not stored</div>
+        <div class="sepcol sep-warn"><b>Confidential · 2 flagged</b>Statements drawn only from labelled-confidential files are flagged for your review</div></div></div></div>
+    <div class="card section"><div class="card-hd">Retailer-specific KPIs · your input makes this good<span class="aside">Optional</span></div><div class="pad"><textarea rows="2" data-bind="cn.kpi" placeholder="The metric they actually track, how they judge us, any deal-breakers">${esc(n.kpi)}</textarea></div></div>
+    <div class="actions section"><button class="btn plain" data-x="cn-step" data-v="name">Restart with different input</button><span style="flex:1"></span><span class="hint">Work IQ proposal · gate 1 of 3</span><button class="btn primary" data-x="cn-approve">Approve and find enrichments</button></div>`;
+  if (n.step === "verifying") body = `<div class="card pad stack"><b>Approved. Checking and researching in the background</b>${stagesHTML([["Locking your approved proposal", "Drafter"], ["Searching public sources to fill the 2 gaps", "Researcher"], ["Checking each source is attributable, dated and reputable", "Trust check"], ["Checking every statement against its source", "Verifier"]], n.done)}<p class="hint">You already approved the content, so you'll only see new findings next.</p></div>`;
+  if (n.step === "gate2") { const words = 620 + n.enrich.filter(Boolean).length * 60;
+    body = `<div class="callout info"><b>Gate 2 of 3 · proposed enrichments.</b> Each finding passed all five trust criteria. Nothing is added unless you tick it.</div>
+    <div class="meterrow section"><span class="small">Word budget</span><div class="covbar" style="flex:1"><span style="width:${words / 10}%;background:var(--primary)"></span></div><b class="small">${words} of 1,000 words</b></div>
+    <div class="table-wrap section"><table><thead><tr><th></th><th>Finding</th><th>Source</th><th>Date</th><th>Goes to</th><th>Effect</th></tr></thead><tbody>${CN_ENRICH.map((e, i) => `<tr><td>${chk(n.enrich[i], `data-x="cn-enrich" data-i="${i}" aria-label="Include finding ${i + 1}"`)}</td><td style="color:var(--charcoal)">${esc(e[0])}</td><td>${esc(e[1])}</td><td>${e[2]}</td><td>${e[3]}</td><td><span class="mk ${e[5]}">${e[4]}</span></td></tr>`).join("")}</tbody></table></div>
+    <details class="section"><summary>3 sources were found but rejected by the trust check</summary><div class="stack small">
+      <span>“${esc(n.name)} said to be up for sale” · rumour blog, undated · <span class="pill bad">Not reputable</span> <span class="pill bad">Not factual</span></span>
+      <span>“Margins will collapse in 2027” · social post, author unknown · <span class="pill bad">Not attributable</span></span>
+      <span>“Launches own-label toothpaste” · company newsroom, Jan 2024 · <span class="pill bad">Older than 18 months</span> <span class="pill warn">Category detail: belongs in a buyer profile</span></span></div></details>
+    <div class="actions section"><button class="btn plain" data-x="cn-enrich-all" data-v="0">Reject all</button><button class="btn plain" data-x="cn-enrich-all" data-v="1">Approve all</button><span style="flex:1"></span><button class="btn primary" data-x="cn-step" data-v="gate3">Continue with ${plural(n.enrich.filter(Boolean).length, "finding", "findings")}</button></div>`; }
+  if (n.step === "gate3") { const add = CN_ENRICH.filter((e, i) => n.enrich[i]);
+    body = `<div class="callout info"><b>Gate 3 of 3 · final profile.</b> Shows where each statement came from and what the merge step changed.</div>
+    <div class="profilebox section"><h4>Customer objectives and KPIs</h4><ul>${n.objectives.split("\n").filter(Boolean).map(l => `<li>${esc(l)}</li>`).join("")}${add.filter(e => e[3] === "Objectives").map(e => `<li><span class="mk ${e[5]}">${esc(e[0])}</span></li>`).join("")}</ul>
+      <h4 style="margin-top:14px">Key customer information</h4><ul>${n.info.split("\n").filter(Boolean).map(l => `<li>${esc(l)}</li>`).join("")}${add.filter(e => e[3] === "Information").map(e => `<li><span class="mk ${e[5]}">${esc(e[0])}</span></li>`).join("")}</ul>
+      <h4 style="margin-top:14px">Our strategic approach</h4><p class="small">${esc(n.postureText.replace(/^\[[^\]]*\]\s*/, ""))}</p>
+      <div class="legend"><span><i class="mk add"></i>Added as new</span><span><i class="mk rep"></i>Replaced a vague statement</span><span><i class="mk mrg"></i>Merged into an existing point</span></div></div>
+    <div class="card section"><div class="card-hd">Sources kept with this profile</div><div class="pad stack small">${[...CN_DOCS.filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public · ${e[2]}`)].map(s => `<span>• ${esc(s)}</span>`).join("")}</div></div>
+    ${n.posture ? "" : `<div class="callout bad section"><b>Can't save yet.</b> The strategic approach proposed at gate 1 hasn't been confirmed. <button class="btn sm" data-x="cn-posture">Confirm it now</button></div>`}
+    <div class="actions section"><button class="btn plain" data-x="cn-step" data-v="gate2">Back to enrichments</button><span style="flex:1"></span><button class="btn primary" data-x="cn-save" ${n.posture ? "" : "disabled"}>Save to the Knowledge Bank</button></div>`; }
+  if (n.step === "saved") body = `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>${esc(n.name)} added to the Knowledge Bank</h2><p class="small muted" style="max-width:60ch">Available to everyone in the company, with its sources attached. You're recorded as the owner, so edit suggestions and freshness updates come to you. ${n.added} customer facts were added to the bank and checked by you as the owner.</p>
+    ${n.from ? `<div class="callout ok" style="text-align:left"><b>Already selected for you.</b> You came from ${n.from === "coach" ? "Selling Coach" : "a new project"}, so ${esc(n.name)} is now selected there.</div>` : ""}
+    <div class="row">${n.from ? `<button class="btn primary" data-view="${n.from}">Back to ${n.from === "coach" ? "Selling Coach" : "the new project"}</button>` : ""}<button class="btn" data-act="open-account" data-cat="" data-cust="${esc(n.name)}">See its facts</button><button class="btn plain" data-x="cust-new">Create another customer</button></div></div>`;
+  return top + body;
+};
+function saveProfile(n) {
+  const add = CN_ENRICH.filter((e, i) => n.enrich[i]);
+  const objectives = [...n.objectives.split("\n").filter(Boolean), ...add.filter(e => e[3] === "Objectives").map(e => e[0])];
+  const info = [...n.info.split("\n").filter(Boolean), ...add.filter(e => e[3] === "Information").map(e => e[0])];
+  PROFILES.push({ cust: n.name, owner: PEOPLE.kam.name, reviewed: TODAY, version: 1, channels: ["Supermarket", "Convenience"], objectives, info, posture: n.postureText.replace(/^\[[^\]]*\]\s*/, ""),
+    sources: [...CN_DOCS.filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public`)] });
+  if (!CUSTOMERS.includes(n.name)) CUSTOMERS.push(n.name);
+  const lines = [...objectives, ...info];
+  lines.forEach((t, i) => FACTS.unshift({ id: "F-" + (3000 + FACTS.length), type: "insight", text: t, cat: null, cust: n.name, rel: i < objectives.length - 0 && add.some(e => e[0] === t) ? "reviewed" : "stated", sens: "internal", owner: null, status: "verified", asOf: TODAY, src: null, origin: "the customer profile", loc: `Customer profile · ${n.name}`, excerpt: "Approved by the profile owner through three gates.", dedup: 1, by: PEOPLE.kam.name }));
+  n.added = lines.length;
+  if (n.from === "coach" && state.sc) state.sc.cust = n.name;
+  if (n.from === "projnew" && state.pn) state.pn.cust = n.name;
+}
+
+/* =====================================================================
+   Create a buyer profile · private, from where the buyer talks
+   ===================================================================== */
+function bnDefaults(cust, from) { return { step: "form", name: "Jordan Blake", cust: cust || "Brightmart", cat: "Hair Care", role: "Category buyer", known: "", from: from || null, done: 0, disc: false, discText: "[INFERRED — confirm or edit] Dominant · data-led. Prefers concise, evidence-first recommendations with a clear next step.", src: [true, true, true, true], pushed: false }; }
+RENDER.buyernew = () => {
+  const n = state.bn || (state.bn = bnDefaults());
+  const top = `<div class="crumb"><button data-view="people">Customers & buyers</button><span>›</span><span>New buyer</span></div>
+    <div class="pagehead"><div><h1>Create a buyer profile</h1><p class="sub">The private counterpart to the customer profile: this buyer's goals, style and friction points. Only you can see it.</p></div><span class="pill warn lg">Private to you</span></div>${NOTE}`;
+  if (n.step === "form") return top + `<div class="card"><div class="card-hd">Which buyer, and for which customer?</div><div class="pad stack">
+      <div class="grid2"><div class="field"><label for="bn-name">Buyer name</label><input id="bn-name" data-bind="bn.name" value="${esc(n.name)}"></div><div class="field"><label for="bn-role">Role</label><input id="bn-role" data-bind="bn.role" value="${esc(n.role)}"></div></div>
+      <div class="grid2"><div class="field"><label for="bn-cust">Customer</label><select id="bn-cust" data-bind="bn.cust">${CUSTOMERS.map(c => `<option ${c === n.cust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div><div class="field"><label for="bn-cat">Category</label><select id="bn-cat" data-bind="bn.cat">${CATEGORIES.map(c => `<option ${c === n.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
+      <div class="field"><label for="bn-known">What do you already know about this buyer? (optional)</label><textarea id="bn-known" rows="2" data-bind="bn.known">${esc(n.known)}</textarea></div>
+      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Use personal context to propose the profile</b><br><span class="small muted">Reads the emails, calls and meetings where this buyer actually talks and proposes goals, a DISC read and friction points, each tied to its source. You confirm the inferred parts before saving.</span></span></div>
+      <div class="actions"><button class="btn plain" data-view="people">Cancel</button><button class="btn primary" data-x="bn-go">${icon("spark")}Build proposal</button></div></div></div>`;
+  if (n.step === "reading") return top + `<div class="card pad stack"><b>Drafting the buyer profile for ${esc(n.name)}</b>${stagesHTML([["Reading the emails, calls and meetings where this buyer talks", "Personal context"], ["Keeping buyer-level signals, removing personal or sensitive data", "Input separator"], ["Checking each signal has a recent source", "Trust check"], ["Separating direct quotes from inferred traits", "Verifier"], ["Proposing goals, DISC read and friction points", "Personal context"]], n.done)}</div>`;
+  if (n.step === "proposal") { const srcs = [["Email thread · “Spring plan and own label” (buyer replied)", "Direct quote · Outlook · 2 Sep 2026"], ["Quarterly review minutes", "High · SharePoint · 12 Mar 2026"], ["Tone across emails and calls (basis for the DISC read)", "Inference · 3 sources"], ["Call notes · pre-review alignment", "High · Teams · 20 Aug 2026"]];
+    return top + `<div class="callout info"><b>Built from evidence. Review it like a customer profile.</b> Direct quotes are treated as fact. The DISC read is an inference you confirm before saving.</div>
+    <div class="profilebox section"><h4>Goals and KPIs <span class="pill ok">High confidence</span></h4><ul><li>Grow own label while protecting margin on premium lines <sup class="ref">1</sup></li><li>Judges suppliers on promotion return and on-shelf availability at peaks <sup class="ref">2</sup></li><li>Wants fewer SKUs but deeper promotions in the spring window <sup class="ref">1</sup></li></ul>
+      <h4 style="margin-top:14px">Style · DISC read <span class="pill warn">Inferred · confirm</span></h4><textarea rows="2" data-bind="bn.discText">${esc(n.discText)}</textarea><div class="row" style="margin-top:6px">${n.disc ? `<span class="pill ok">Confirmed by you</span>` : `<button class="btn sm primary" data-x="bn-disc">Confirm DISC read</button>`}<span class="hint">Inferred from how the buyer writes and talks <sup class="ref">3</sup>, not something they stated.</span></div>
+      <h4 style="margin-top:14px">Friction points</h4><ul><li>Pushed back on premium shelf space last review; agreed to revisit with data <sup class="ref">2</sup></li><li>Sensitive to promotion clashes with competitors <sup class="ref">4</sup></li></ul></div>
+    <div class="grid2 section"><div class="card"><div class="card-hd">Where this buyer talks</div><div class="pad stack">${srcs.map(([t, s], i) => `<label class="entity ${n.src[i] ? "sel" : ""}">${chk(n.src[i], `data-x="bn-src" data-i="${i}"`)}<span><sup class="ref">${i + 1}</sup> ${t}<br><span class="hint">${s}</span></span></label>`).join("")}<span class="hint">Untick a source to rebuild without it. Stored owner-only.</span></div></div>
+      <div class="card"><div class="card-hd">What was kept out</div><div class="pad sepgrid"><div class="sepcol sep-ok"><b>Kept</b>Goals, criteria, negotiation style, friction</div>
+        <div class="sepcol sep-warn"><b>Pushed to the customer profile · 1</b>“${esc(n.cust)} is growing own label company-wide”${n.pushed ? `<span class="pill ok">Sent to the owner</span>` : `<button class="btn ghost small" data-x="bn-push">Move to the customer profile</button>`}</div>
+        <div class="sepcol sep-err"><b>Excluded</b>Personal contact details, out-of-office and health mentions. Never stored</div></div></div></div>
+    ${n.disc ? "" : `<div class="callout warn section">Confirm the inferred DISC read above before saving.</div>`}
+    <div class="actions section"><button class="btn plain" data-x="bn-back">Back</button><span style="flex:1"></span><button class="btn primary" data-x="bn-save" ${n.disc ? "" : "disabled"}>Save buyer profile</button></div>`; }
+  const p = PROJECTS.find(x => x.cust === n.cust);
+  return top + `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>${esc(n.name)} saved to your buyers</h2><p class="small muted">Private to you. You can now use it in a Selling Coach run or attach it to a project for ${esc(n.cust)}.</p>
+    <div class="row">${n.from ? `<button class="btn primary" data-view="${n.from}">Back to where you were</button>` : ""}<button class="btn" data-x="buyer-coach" data-id="${n.saved}">Use in Selling Coach</button>${p ? `<button class="btn plain" data-x="buyer-attach" data-id="${n.saved}">Attach to ${esc(p.name)}</button>` : ""}<button class="btn plain" data-view="people">Back to the Knowledge Bank</button></div></div>`;
+};
+
+/* =====================================================================
+   Training Center · onboarding and handover, from the Knowledge Bank
+   ===================================================================== */
+function tcDefaults() { return { tab: "on", on: { step: "form", joiner: "Ana Novak", role: "Key Account Manager", acct: "Fabric Care|Northgate", start: "14 Oct 2026", mods: null, done: 0 }, off: { step: "form", leaver: "Camille Martin", successor: "Ana Novak", reason: "Role change", items: null, done: 0 } }; }
+function modulesFor(acct) {
+  const [cat, cust] = acct.split("|"), b = BRIEFINGS.find(x => sameScope(x, cat, cust)), fs = FACTS.filter(f => sameScope(f, cat, cust) && isLive(f) && !f.owner);
+  const buyer = BUYERS.find(x => x.cust === cust);
+  return [
+    { t: `Read the ${cust} · ${cat} briefing`, d: b ? `Written from ${plural(briefingFacts(b).length, "checked fact", "checked facts")}` : "Short summary of the account", m: 8, on: true },
+    { t: "The numbers that matter", d: `${fs.filter(f => f.type === "metric").length} official and checked figures for this account`, m: 10, on: true },
+    { t: "What the customer wants", d: profileOf(cust) ? `From the ${cust} customer profile (version ${profileOf(cust).version})` : "No customer profile yet", m: 8, on: !!profileOf(cust) },
+    { t: "Open recommendations and what's next", d: `${fs.filter(f => f.type === "recommendation" || f.type === "event").length} recommendations and dated events`, m: 10, on: true },
+    { t: "Meet the buyer", d: buyer ? `Handed over from the previous KAM's private profile of ${buyer.name}` : "No buyer profile handed over", m: 5, on: !!buyer },
+    { t: "Practise: run Selling Coach on the last approved storyline", d: "Training Center module · selling framework refresher", m: 15, on: true },
+  ];
+}
+function handoverFor(leaver) {
+  const profs = PROFILES.filter(p => p.owner === leaver), buyers = BUYERS.filter(b => b.owner === leaver), priv = FACTS.filter(f => f.owner === leaver);
+  return [
+    { t: `Ownership of ${plural(profs.length, "customer profile", "customer profiles")}: ${profs.map(p => p.cust).join(", ") || "none"}`, d: "Edit suggestions and freshness updates will go to the successor", on: true },
+    { t: `${plural(buyers.length, "private buyer profile", "private buyer profiles")}`, d: buyers.map(b => b.name).join(", "), on: true },
+    { t: `${plural(priv.length, "private note", "private notes")} in the Knowledge Bank`, d: "Shared through a handover grant, without re-importing anything", on: true },
+    { t: `${plural(PROJECTS.length, "project", "projects")} with chat history and runs`, d: PROJECTS.map(p => p.name).join(" · "), on: true },
+    { t: "Open requests to curators", d: `${new Set(myRequests()).size} still waiting`, on: true },
+  ];
+}
+RENDER.training = () => {
+  const t = state.tc || (state.tc = tcDefaults()), o = t.on, f = t.off;
+  const tabs = `<div class="tabs" role="tablist"><button role="tab" data-x="tc-tab" data-v="on" aria-selected="${t.tab === "on"}">Onboarding · a new joiner</button><button role="tab" data-x="tc-tab" data-v="off" aria-selected="${t.tab === "off"}">Handover · a leaver or role change</button></div>`;
+  let body;
+  if (t.tab === "on") {
+    const accts = BRIEFINGS.filter(b => b.cust).map(b => `${b.cat}|${b.cust}`);
+    body = o.step === "form" ? `<div class="card"><div class="card-hd">${esc(o.joiner)} is joining an account team</div><div class="pad stack">
+        <div class="grid2"><div class="field"><label for="on-j">New joiner</label><input id="on-j" data-bind="tc.on.joiner" value="${esc(o.joiner)}"></div><div class="field"><label for="on-r">Role</label><input id="on-r" data-bind="tc.on.role" value="${esc(o.role)}"></div></div>
+        <div class="grid2"><div class="field"><label for="on-a">Account</label><select id="on-a" data-bind="tc.on.acct">${accts.map(a => `<option value="${esc(a)}" ${a === o.acct ? "selected" : ""}>${esc(a.split("|")[1])} · ${esc(a.split("|")[0])}</option>`).join("")}</select></div><div class="field"><label for="on-s">Start date</label><input id="on-s" data-bind="tc.on.start" value="${esc(o.start)}"></div></div>
+        <div class="wiqhero"><span class="wiqhero__ico">${icon("db")}</span><span><b>Build the program from the Knowledge Bank</b><br><span class="small muted">Uses the account's checked facts, briefing, customer profile and Training Center modules, so the joiner learns this customer, not a generic course.</span></span></div>
+        <div class="actions"><button class="btn primary" data-x="on-build">Build program from the Knowledge Bank</button></div></div></div>`
+      : o.step === "building" ? `<div class="card pad stack"><b>Building ${esc(o.joiner)}'s onboarding program</b>${stagesHTML([["Scoping the checked knowledge for this account", "Knowledge Bank"], ["Reading facts, briefing and Training Center modules", "Knowledge Bank"], ["Selecting what a new KAM on this account needs first", "Knowledge Bank"], ["Proposing a personalised program", "Knowledge Bank"]], o.done)}</div>`
+      : o.step === "proposal" ? `<div class="callout info"><b>A program you adjust, not a fixed course.</b> Built from ${esc(o.acct.split("|")[1])}'s live material, so it stays current when the account changes.</div>
+        <div class="stack section">${o.mods.map((m, i) => `<label class="entity ${m.on ? "sel" : ""}">${chk(m.on, `data-x="on-mod" data-i="${i}"`)}<span><b>${i + 1}. ${esc(m.t)}</b> <span class="hint">· ${m.m} min</span><br><span class="hint">${esc(m.d)}</span></span></label>`).join("")}</div>
+        ${HANDOVERS.length ? `<div class="callout ok section"><b>Pre-loaded from a handover.</b> ${esc(HANDOVERS[0].from)}'s handover pack is included.</div>` : ""}
+        <div class="actions section"><button class="btn plain" data-x="on-back">Back</button><span style="flex:1"></span><span class="hint">${o.mods.filter(m => m.on).length} of ${o.mods.length} modules · about ${o.mods.filter(m => m.on).reduce((a, m) => a + m.m, 0)} min</span><button class="btn primary" data-x="on-assign">Assign program to ${esc(o.joiner)}</button></div>`
+      : `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>Program assigned to ${esc(o.joiner)}</h2><p class="small muted">It appears in their Training Center on day one and their manager is notified.</p><div class="callout ok" style="text-align:left"><b>How we'll measure it:</b> time until ${esc(o.joiner)} runs a first solo Selling Coach analysis on the account.</div><button class="btn plain" data-x="on-back">Review program again</button></div>`;
+  } else {
+    body = f.step === "form" ? `<div class="card"><div class="card-hd">${esc(f.leaver)} is moving to a new role</div><div class="pad stack">
+        <div class="grid3"><div class="field"><label>Leaving</label><input value="${esc(f.leaver)}" disabled></div><div class="field"><label for="off-r">Reason</label><select id="off-r" data-bind="tc.off.reason">${["Role change", "Leaving the company", "Parental leave"].map(r => `<option ${r === f.reason ? "selected" : ""}>${r}</option>`).join("")}</select></div><div class="field"><label for="off-s">Successor</label><input id="off-s" data-bind="tc.off.successor" value="${esc(f.successor)}"></div></div>
+        <div class="wiqhero"><span class="wiqhero__ico">${icon("db")}</span><span><b>Capture and hand over into the Knowledge Bank</b><br><span class="small muted">Consolidates what ${esc(f.leaver)} owns on the account: profiles, private notes, buyers, projects and open requests. You review it before anything transfers.</span></span></div>
+        <div class="actions"><button class="btn primary" data-x="off-build">Build the handover</button></div></div></div>`
+      : f.step === "building" ? `<div class="card pad stack"><b>Preparing ${esc(f.leaver)}'s handover</b>${stagesHTML([["Finding what they own and wrote", "Knowledge Bank"], ["Consolidating facts, notes and open actions", "Knowledge Bank"], ["Removing duplicates and out-of-date content", "Knowledge Bank"], [`Proposing a handover pack for ${f.successor}`, "Knowledge Bank"]], f.done)}</div>`
+      : f.step === "proposal" ? `<div class="callout info"><b>A handover you review before it transfers.</b> Untick anything that shouldn't carry over. The rest goes to ${esc(f.successor)} and pre-loads their onboarding.</div>
+        <div class="stack section">${f.items.map((m, i) => `<label class="entity ${m.on ? "sel" : ""}">${chk(m.on, `data-x="off-item" data-i="${i}"`)}<span><b>${esc(m.t)}</b><br><span class="hint">${esc(m.d)}</span></span></label>`).join("")}</div>
+        <div class="actions section"><button class="btn plain" data-x="off-back">Back</button><span style="flex:1"></span><button class="btn primary" data-x="off-go">Hand over and notify ${esc(f.successor)}</button></div>`
+      : `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>Handover complete</h2><p class="small muted" style="max-width:60ch">Profile ownership moved to ${esc(f.successor)}, a handover grant lets them read ${esc(f.leaver)}'s private notes, and they've been notified.</p><div class="callout ok" style="text-align:left"><b>Handover feeds onboarding.</b> ${esc(f.successor)}'s onboarding program is now pre-loaded with this pack.</div><button class="btn" data-x="tc-tab" data-v="on">Open the onboarding tab</button></div>`;
+  }
+  return head("Training Center", "Onboarding & handover", "Built on the Knowledge Bank: new joiners learn from the account's checked knowledge, and leavers' knowledge is captured back into it so nothing walks out the door.") + NOTE + tabs + body;
+};
+
+/* =====================================================================
+   Profile freshness · update proposed to the owner
+   ===================================================================== */
+function updateDrawer(id) {
+  const u = UPDATES.find(x => x.id === id); if (!u) return;
+  openDrawer(`<div class="spread"><span class="pill info">${icon("mail")}Email to the profile owner</span><button class="btn sm plain" data-act="close">Close</button></div>
+    <div class="mailhd small"><b>From:</b> AI Sales Assistant<br><b>To:</b> You, owner of ${esc(u.cust)}<br><b>Subject:</b> ${plural(u.items.length, "public update", "public updates")} found for ${esc(u.cust)}</div>
+    <h2>${esc(u.cust)} · ${plural(u.items.length, "checked update", "checked updates")}</h2><p class="small muted">Statements in the profile you own are now out of date. The replacements come from the customer's own published material and passed all five trust criteria.</p>
+    ${u.items.map(it => `<div class="diffbox"><div class="was"><b>Currently says:</b> “${esc(it.was)}”</div><div class="now"><b>Proposed:</b> “${esc(it.now)}”<br><span class="hint">${esc(it.src)}</span></div></div>`).join("")}
+    <div class="row"><button class="btn primary" data-x="apply-update" data-id="${u.id}">Approve both</button><button class="btn plain" data-x="open-profile" data-v="${esc(u.cust)}">Review and edit</button><button class="btn plain" data-act="close">Not now</button></div>
+    <p class="hint">Nothing else in the profile changes, and the previous version stays in the history. You get this because you own the profile.</p>`);
+}
+
+/* =====================================================================
+   Requests from KAMs: a missing customer, an edit to someone's profile
+   ===================================================================== */
+function requestCustModal(name) {
+  openModal(`<header><h2>Request a customer</h2></header><form><p class="small muted">The UK profile owner gets an email with a Work IQ draft ready, not a blank form. You're told when it's saved.</p>
+    <div class="grid2"><div class="field"><label for="rq-n">Customer name</label><input id="rq-n" name="n" required value="${esc(name || "")}" placeholder="e.g. Lakeside Foods"></div><div class="field"><label>Country</label><select disabled><option>United Kingdom</option></select></div></div>
+    <div class="field"><label for="rq-w">Why you need it</label><input id="rq-w" name="w" placeholder="e.g. Selling Coach run for a first meeting"></div>
+    <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Send request</button></div></form>`, fd => {
+      REQS.push({ kind: "Customer requested", title: fd.get("n"), to: "UK profile owner", status: "Waiting" }); closeOverlay(); render(); toast("Request sent to the UK profile owner. See My requests.");
+    });
+}
+function suggestEditModal(cu) {
+  const pr = profileOf(cu);
+  openModal(`<header><h2>Suggest an edit · ${esc(cu)}</h2></header><form><p class="small muted">${pr ? `${esc(pr.owner)} owns this profile and will get your suggestion with options to open it, have the change drafted, or dismiss.` : "This customer has no profile yet."}</p>
+    <div class="field"><label for="se-w">What's out of date or wrong?</label><textarea id="se-w" name="w" required placeholder="e.g. They now run 340 stores, not 320 (press release, Sep 2026)"></textarea></div>
+    <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Send to the owner</button></div></form>`, fd => {
+      REQS.push({ kind: "Edit suggested", title: `${cu}: ${fd.get("w")}`, to: pr ? pr.owner : "UK profile owner", status: "Waiting" }); closeOverlay(); render(); toast(`Sent to ${pr ? pr.owner : "the profile owner"}.`);
+    });
+}
+
+/* =====================================================================
+   Events for the integrated flows (data-x) and form bindings (data-bind)
+   ===================================================================== */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-x]");
+  if (!el) return;
+  const x = el.dataset.x, id = el.dataset.id, v = el.dataset.v;
+  const later = fn => setTimeout(fn, 0);   // let a checkbox settle before re-rendering
+  switch (x) {
+    case "toast": toast(el.dataset.msg); break;
+    case "coach-from-project": state.sc = scDefaults(proj(state.project)); go("coach"); break;
+    case "open-update": updateDrawer(id); break;
+    case "apply-update": { const u = UPDATES.find(y => y.id === id), pr = profileOf(u.cust);
+      u.items.forEach(it => { pr[it.field][it.i] = it.now; }); pr.version++; pr.reviewed = TODAY; pr.sources.push(...u.items.map(it => it.src + " · public"));
+      UPDATES = UPDATES.filter(y => y !== u); closeOverlay(); render(); toast(`${u.cust} profile updated to version ${pr.version}.`); break; }
+    case "open-profile": profileDrawer(v); break;
+    case "suggest-edit": suggestEditModal(v); break;
+    case "request-cust": requestCustModal(); break;
+    case "ppl-tab": state.pplTab = v; render(); break;
+    // project wizard
+    case "pn-buyer": later(() => { const n = state.pn; n.buyers = n.buyers.includes(id) ? n.buyers.filter(b => b !== id) : [...n.buyers, id]; render(); }); break;
+    case "pn-aud": state.pn.aud = v; render(); break;
+    case "pn-next": state.pn.step = 1; render(); $("#main").scrollTop = 0; break;
+    case "pn-back": state.pn.step = 0; render(); break;
+    case "pn-create": { const n = state.pn, bs = n.buyers.map(b => BUYERS.find(y => y.id === b));
+      const p = { id: "P-" + (PROJECTS.length + 1), name: n.name.trim() || `${n.cust} ${n.cat} review`, cat: n.cat, cust: n.cust, audience: n.aud, meeting: n.date.trim() || null, buyer: bs[0] ? `${bs[0].name} · ${bs[0].role.toLowerCase()}` : null, objective: n.objective.trim() || "No objective set yet.", decks: [], runs: [] };
+      PROJECTS.unshift(p); state.pn = null; state.project = p.id; go("project"); toast("Project created"); break; }
+    // Selling Coach
+    case "sc-deck": state.sc.deck = el.dataset.deck || null; render(); break;
+    case "sc-propose": { const c = state.sc, fs = selectFacts(c.cat, c.cust, "").ranked.map(y => y.f).slice(0, 3);
+      c.context = `${OBJECTIVES[c.obj]} with ${c.cust}. ${fs.map(f => f.text).join(" ")}`; render(); toast("Drafted from your recent meetings. Edit it as you like."); break; }
+    case "sc-pc-build": state.sc.pc = "loading"; state.sc.items = pcItems(state.sc); render(); animate(state.sc, 4, () => { state.sc.pc = "proposal"; }); break;
+    case "sc-pc-skip": state.sc.pc = "skipped"; render(); break;
+    case "sc-pc-use": state.sc.pc = "attached"; render(); break;
+    case "sc-pc-review": state.sc.pc = "proposal"; render(); break;
+    case "sc-item": later(() => { const it = state.sc.items[+el.dataset.i]; it.on = !it.on; render(); }); break;
+    case "sc-add": { const t = $("#sc-add").value.trim(); if (t) { state.sc.items.push({ t, s: "Added by you · this run only", on: true }); render(); } break; }
+    case "sc-new": state.sc = scDefaults(state.sc?.from ? proj(state.sc.from) : null); render(); break;
+    case "sc-run": { const c = state.sc, stages = [["Read the deck · 18 slides"], [`Gather Knowledge Bank facts for ${c.cust} · ${c.cat}`], ...(c.pc === "attached" ? [[`Add your personal context · ${c.items.filter(i => i.on).length} items`]] : []), ["Check the five selling steps"], ["Compare the deck's numbers with the bank"], ...(c.buyer ? [["Tailor feedback to the buyer"]] : [])];
+      c.run = { stages, html: null }; render(); $("#main").scrollTop = 0;
+      animate(c, stages.length, () => { const r = coachResult(c); c.run.html = r.html;
+        const run = { tool: "Selling Coach", date: TODAY, status: "Completed", note: `${c.deck} · ${r.grounded} of 5 steps backed by facts` };
+        if (c.from) proj(c.from).runs.unshift(run); else HISTORY.unshift(run);
+        FACTS.unshift({ id: "F-" + (2500 + FACTS.length), type: "insight", text: `The ${c.cust} deck “${c.deck}” has no fact behind ${plural(5 - r.grounded, "selling step", "selling steps")}.`, cat: c.cat, cust: c.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, origin: "your Selling Coach run", loc: "Selling Coach run", excerpt: `Written back from a completed Selling Coach run on ${TODAY}.`, dedup: 1, by: PEOPLE.kam.name });
+        markOutdated(c.cat, c.cust, "A tool run added a fact."); }, 600); break; }
+    // customers and buyers
+    case "cust-new": state.cn = cnDefaults(el.dataset.name, el.dataset.from); closeOverlay(); go("custnew"); break;
+    case "cn-go": state.cn.step = "entity"; render(); break;
+    case "cn-entity": state.cn.entity = +el.dataset.i; render(); break;
+    case "cn-read": state.cn.step = "reading"; render(); animate(state.cn, 4, () => { state.cn.step = "gate1"; }); break;
+    case "cn-step": state.cn.step = v; render(); $("#main").scrollTop = 0; break;
+    case "cn-posture": state.cn.posture = true; render(); break;
+    case "cn-doc": later(() => { state.cn.docs[+el.dataset.i] = !state.cn.docs[+el.dataset.i]; render(); toast("Proposal rebuilt with the documents you kept."); }); break;
+    case "cn-approve": state.cn.step = "verifying"; render(); $("#main").scrollTop = 0; animate(state.cn, 4, () => { state.cn.step = "gate2"; }); break;
+    case "cn-enrich": later(() => { state.cn.enrich[+el.dataset.i] = !state.cn.enrich[+el.dataset.i]; render(); }); break;
+    case "cn-enrich-all": state.cn.enrich = state.cn.enrich.map(() => v === "1"); render(); break;
+    case "cn-save": saveProfile(state.cn); state.cn.step = "saved"; render(); $("#main").scrollTop = 0; toast(`${state.cn.name} added to the Knowledge Bank`); break;
+    case "buyer-new": state.bn = bnDefaults(el.dataset.cust, el.dataset.from); closeOverlay(); go("buyernew"); break;
+    case "bn-go": state.bn.step = "reading"; render(); animate(state.bn, 5, () => { state.bn.step = "proposal"; }); break;
+    case "bn-disc": state.bn.disc = true; render(); break;
+    case "bn-src": later(() => { state.bn.src[+el.dataset.i] = !state.bn.src[+el.dataset.i]; render(); toast("Proposal rebuilt with the sources you kept."); }); break;
+    case "bn-push": state.bn.pushed = true; REQS.push({ kind: "Edit suggested", title: `${state.bn.cust}: growing own label company-wide (from a buyer conversation)`, to: profileOf(state.bn.cust)?.owner || "UK profile owner", status: "Waiting" }); render(); toast("Sent to the customer profile owner."); break;
+    case "bn-back": state.bn.step = "form"; render(); break;
+    case "bn-save": { const n = state.bn, b = { id: "B-" + (BUYERS.length + 1), name: n.name, role: n.role, cust: n.cust, cat: n.cat, disc: n.discText.replace(/^\[[^\]]*\]\s*/, "").split(".")[0], updated: "today", owner: PEOPLE.kam.name, goals: "Grow own label while protecting margin on premium lines.", style: n.discText.replace(/^\[[^\]]*\]\s*/, ""), friction: "Pushed back on premium shelf space last review." };
+      BUYERS.push(b); n.saved = b.id; n.step = "saved"; if (n.from === "projnew" && state.pn) state.pn.buyers.push(b.id); render(); toast(`${n.name} saved. Private to you.`); break; }
+    case "buyer-coach": { const b = BUYERS.find(y => y.id === id); state.sc = { ...scDefaults(PROJECTS.find(p => p.cust === b.cust) || null), cust: b.cust, cat: b.cat, buyer: b.id }; go("coach"); break; }
+    case "buyer-attach": { const b = BUYERS.find(y => y.id === id), p = PROJECTS.find(y => y.cust === b.cust); p.buyer = `${b.name} · ${b.role.toLowerCase()}`; render(); toast(`${b.name} attached to ${p.name}.`); break; }
+    // training
+    case "tc-tab": state.tc.tab = v; render(); break;
+    case "on-build": state.tc.on.step = "building"; state.tc.on.mods = modulesFor(state.tc.on.acct); render(); animate(state.tc.on, 4, () => { state.tc.on.step = "proposal"; }); break;
+    case "on-mod": later(() => { const m = state.tc.on.mods[+el.dataset.i]; m.on = !m.on; render(); }); break;
+    case "on-back": state.tc.on.step = state.tc.on.step === "done" ? "proposal" : "form"; render(); break;
+    case "on-assign": state.tc.on.step = "done"; render(); toast(`Program assigned to ${state.tc.on.joiner}`); break;
+    case "off-build": state.tc.off.step = "building"; state.tc.off.items = handoverFor(state.tc.off.leaver); render(); animate(state.tc.off, 4, () => { state.tc.off.step = "proposal"; }); break;
+    case "off-item": later(() => { const m = state.tc.off.items[+el.dataset.i]; m.on = !m.on; render(); }); break;
+    case "off-back": state.tc.off.step = "form"; render(); break;
+    case "off-go": { const f = state.tc.off; HANDOVERS.push({ from: f.leaver, to: f.successor, date: TODAY }); if (f.items[0].on) PROFILES.filter(p => p.owner === f.leaver).forEach(p => p.owner = f.successor);
+      f.step = "done"; render(); toast(`Handed over to ${f.successor}.`); break; }
+  }
+});
+document.addEventListener("input", e => { const b = e.target.closest("[data-bind]"); if (b && !b.matches("select")) setPath(b.dataset.bind, b.value); });
+document.addEventListener("change", e => {
+  const b = e.target.closest("[data-bind]"); if (!b || !b.matches("select")) return;
+  if (b.value === "__req") { b.value = state.sc.cust; requestCustModal(); return; }
+  if (b.value === "__new") { b.value = state.sc.buyer; state.bn = bnDefaults(state.sc.cust, "coach"); go("buyernew"); return; }
+  setPath(b.dataset.bind, b.dataset.bind === "sc.obj" ? +b.value : b.value);
+  if (b.dataset.bind === "sc.cust") state.sc.buyer = (BUYERS.find(y => y.cust === b.value && y.owner === PEOPLE.kam.name) || {}).id || "";
+  if (b.dataset.bind === "pn.cust") state.pn.buyers = [];
+  if (b.hasAttribute("data-rerender")) render();
 });
 
 render();
