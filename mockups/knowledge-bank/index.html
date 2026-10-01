@@ -434,6 +434,20 @@ i.mk { display: inline-block; width: 11px; height: 11px; vertical-align: -1px; m
 .runlink:hover, .runlink:focus-visible { background: var(--primary-light); }
 button.pill { cursor: pointer; }
 .drawer-result .result-hd, .drawer-result .card { box-shadow: none; }
+.moretoggle { border: 0; background: none; text-align: left; cursor: pointer; }
+.moretoggle:hover { color: var(--primary); }
+button.step { cursor: pointer; font: inherit; }
+button.step:disabled { cursor: not-allowed; opacity: .55; }
+.filerow.sel { border-color: var(--primary); background: var(--primary-light); }
+.ksec { scroll-margin-top: 12px; }
+.stalehint { margin: -2px 0 4px 14px; color: var(--alert-text); }
+.slide { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 14px; padding: 12px; border: 1px solid var(--light-gray); border-radius: 10px; background: var(--white); }
+.slide + .slide { margin-top: 8px; }
+.slide.fix { border-left: 4px solid var(--err-accent); } .slide.evidence { border-left: 4px solid var(--alert-accent); } .slide.ok { border-left: 4px solid var(--ok-accent); } .slide.gap, .slide.cut { border-left: 4px solid var(--gray); }
+.thumb { aspect-ratio: 16 / 9; max-width: 100%; border: 1px solid var(--light-gray); border-radius: 6px; background: linear-gradient(180deg, var(--primary-light), var(--white)); padding: 8px; display: grid; align-content: start; gap: 4px; font-size: 11px; }
+.thumb span { font: 700 11px var(--mont); color: var(--primary); }
+.thumb b { font-size: 11px; line-height: 1.3; }
+@media (max-width: 600px) { .slide { grid-template-columns: minmax(0, 1fr); } .thumb { max-width: 180px; } }
 .diffbox { border: 1px solid var(--light-gray); border-radius: 8px; overflow: hidden; font-size: 13px; }
 .diffbox div { padding: 10px 12px; }
 .diffbox .was { background: var(--err-bg); color: var(--err-text); border-bottom: 1px solid var(--light-gray); }
@@ -513,7 +527,7 @@ const REL_TIP = { certified: "Numbers read straight from certified market data. 
 const SENS_LABEL = { external: "For customers", internal: "Internal", restricted: "Restricted" };
 const STATUS_LABEL = { verified: "Checked", needs_review: "Waiting for review", outdated: "Out of date", replaced: "Replaced" };
 const CURATOR = { "Fabric Care": "Sam Okafor", "Hair Care": "Lena Fischer", "Oral Care": "Tom Reyes" };
-const PEOPLE = { kam: { name: "Camille Martin", init: "CM", role: "KAM · Fabric Care UK" }, curator: { name: "Sam Okafor", init: "SO", role: "Curator · Fabric Care" } };
+const PEOPLE = { kam: { name: "Camille Martin", init: "CM", role: "KAM · Fabric Care UK" }, curator: { name: "Sam Okafor", init: "SO", role: "Curator · Northgate, Harbour & Co" } };
 
 const ICON = {
   grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
@@ -642,7 +656,7 @@ function age(d) {
   return `<span title="Content date ${esc(d)}">${s}</span>`;
 }
 const expiresIn = f => f.expires ? daysBetween(TODAY, f.expires) : null;
-const curatorFor = f => CURATOR[f.cat] || "the account curator";
+const curatorFor = f => (f.cust && typeof DOMAIN_OWNER !== "undefined" ? (DOMAIN_OWNER[f.cust] || "Sam Okafor") : null) || CURATOR[f.cat] || "the account curator";
 
 function isLive(f) {
   const s = f.src && src(f.src);
@@ -733,30 +747,32 @@ const curatorMode = () => state.role === "curator";
 
 const myRequests = () => [...FACTS.filter(f => f.by === PEOPLE.kam.name && f.status === "needs_review"), ...FACTS.filter(f => f.clearReq || f.reported)];
 const NAV = [
-  { id: "start", label: "Home", icon: "home" },
-  { id: "projects", label: "My Projects", icon: "grid", count: () => PROJECTS.length, match: ["projects", "project", "projnew"] },
-  { id: "coach", label: "Selling Coach", icon: "coach" },
-  { id: "roleplay", label: "Role-Play Coach", icon: "mic" },
-  { id: "stewardship", label: "Stewardship Q&A", icon: "chat" },
-  { group: "Knowledge Bank" },
-  { id: "accounts", label: "Accounts", icon: "store", match: ["accounts", "account", "find"] },
+  { id: "start", label: () => curatorMode() ? "My domains" : "Home", icon: "home", match: ["start", "domain"] },
+  { id: "projects", label: "My Projects", icon: "grid", roles: ["kam"], count: () => PROJECTS.length, match: ["projects", "project", "projnew"] },
+  { id: "coach", label: "Selling Coach", icon: "coach", roles: ["kam"] },
+  { id: "queue", label: "Review queue", icon: "clock", roles: ["curator"], badge: () => REVIEW.length },
+  { group: "Knowledge" },
   { id: "people", label: "Customers & buyers", icon: "user", match: ["people", "custnew", "buyernew"] },
-  { id: "facts", label: "All facts", icon: "facts", count: () => liveFacts().length },
-  { id: "requests", label: "My requests", icon: "clock", kamOnly: true, count: () => new Set(myRequests()).size + SOURCES.filter(x => x.by && x.status !== "live").length + REQS.length },
-  { group: "Training Center" },
-  { id: "training", label: "Onboarding & handover", icon: "cap" },
-  { group: "Curator tools", curatorOnly: true },
-  { id: "briefings", label: "Briefings", icon: "book", count: () => BRIEFINGS.length },
-  { id: "sources", label: "Sources & review", icon: "folder", badge: () => REVIEW.length },
+  { id: "accounts", label: "Accounts", icon: "store", match: ["accounts", "account", "find"] },
+  { id: "sources", label: "Sources", icon: "folder", roles: ["curator"] },
+  { id: "requests", label: "My requests", icon: "clock", roles: ["kam"], count: () => new Set(myRequests()).size + SOURCES.filter(x => x.by && x.status !== "live").length + REQS.length },
+  { group: "More", more: true },
+  { id: "facts", label: "All facts", icon: "facts", more: true, count: () => liveFacts().length },
+  { id: "briefings", label: "Briefings", icon: "book", more: true, roles: ["curator"] },
+  { id: "training", label: "Onboarding & handover", icon: "cap", more: true },
+  { id: "roleplay", label: "Role-Play Coach", icon: "mic", more: true, roles: ["kam"] },
+  { id: "stewardship", label: "Stewardship Q&A", icon: "chat", more: true, roles: ["kam"] },
 ];
+const navLabel = n => typeof n.label === "function" ? n.label() : n.label;
 
 function renderShell() {
-  const items = NAV.filter(n => curatorMode() ? !n.kamOnly : !(n.curatorOnly || ["briefings", "sources"].includes(n.id)));
+  const inMore = NAV.some(n => n.more && n.id && (n.match || [n.id]).includes(state.view));
+  const items = NAV.filter(n => (!n.roles || n.roles.includes(state.role)) && (!n.more || n.group || state.moreOpen || inMore));
   $("#nav").classList.toggle("open", !!state.navOpen);
   const cur = NAV.find(n => (n.match || [n.id]).includes(state.view));
-  $("#nav").innerHTML = `<button class="navtoggle" data-navtoggle aria-expanded="${!!state.navOpen}" aria-controls="nav">${icon("grid")}<span>${cur ? cur.label : "Menu"}</span><span class="navtoggle__hint">${state.navOpen ? "Close" : "Menu"}</span></button>` + items.map(n => n.group
-    ? `<div class="group">${n.group}</div>`
-    : `<button class="navitem" data-view="${n.id}" aria-current="${(n.match || [n.id]).includes(state.view)}">${icon(n.icon)}${n.label}${n.badge ? (n.badge() ? `<span class="badge-n" title="Waiting in the review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
+  $("#nav").innerHTML = `<button class="navtoggle" data-navtoggle aria-expanded="${!!state.navOpen}" aria-controls="nav">${icon("grid")}<span>${cur ? navLabel(cur) : "Menu"}</span><span class="navtoggle__hint">${state.navOpen ? "Close" : "Menu"}</span></button>` + items.map(n => n.group
+    ? (n.more ? `<button class="group moretoggle" data-moretoggle aria-expanded="${!!(state.moreOpen || inMore)}">${n.group} ${state.moreOpen || inMore ? "▴" : "▾"}</button>` : `<div class="group">${n.group}</div>`)
+    : `<button class="navitem" data-view="${n.id}" aria-current="${(n.match || [n.id]).includes(state.view)}">${icon(n.icon)}${navLabel(n)}${n.badge ? (n.badge() ? `<span class="badge-n" title="Waiting in the review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
   $("#roleswitch").innerHTML = ["kam", "curator"].map(r => `<button data-role="${r}" aria-pressed="${state.role === r}" title="${esc(PEOPLE[r].name + " · " + PEOPLE[r].role)}">${r === "kam" ? "KAM" : "Curator"}</button>`).join("");
   const me = PEOPLE[state.role];
   $("#avatar").textContent = me.init; $("#avatar").title = `${me.name} · ${me.role}`;
@@ -1397,6 +1413,7 @@ function factDrawer(id) {
       ${u.k === "internal" && f.sens === "internal" && !curatorMode() ? (f.clearReq ? `<span class="pill info">${icon("clock")}Clearance requested</span>` : `<button class="btn sm plain" data-act="ask-clear" data-id="${f.id}">Ask to use it with customers</button>`) : ""}
       ${isLive(f) && !curatorMode() ? (f.reported ? `<span class="pill warn">Reported</span>` : `<button class="btn sm plain" data-act="report" data-id="${f.id}">Report a problem</button>`) : ""}
     </div>
+    ${curatorMode() && isLive(f) ? `<details><summary>Edit the statement</summary><div class="stack"><textarea id="fe-text" rows="3">${esc(f.text)}</textarea><div><button class="btn sm primary" data-x="fact-edit-save" data-id="${f.id}">Save</button></div><span class="hint">Saving updates the content date to today and marks briefings that use it for refresh.</span></div></details>` : ""}
     <details><summary>Details for curators</summary><dl class="kv">
       <dt>Labels</dt><dd><span class="gov"><span>Trust <b>${REL_LABEL[f.rel]}</b></span><span>Audience <b>${SENS_LABEL[f.sens]}</b></span><span>Visible to <b>${f.owner ? "only " + esc(f.owner) : "the team"}</b></span></span></dd>
       <dt>Account</dt><dd>${esc(scopeLabel(f.cat, f.cust))} · UK<div class="facet">${facetKey(f.cat, f.cust)}</div></dd>
@@ -1521,13 +1538,14 @@ function newProjectModal() {
    Events
    ===================================================================== */
 document.addEventListener("click", e => {
+  if (e.target.closest("[data-moretoggle]")) { state.moreOpen = !state.moreOpen; renderShell(); return; }
   if (e.target.closest("[data-navtoggle]")) { state.navOpen = !state.navOpen; renderShell(); $(".navtoggle").focus(); return; }
   const nav = e.target.closest("[data-view]");
   if (nav) { closeOverlay(); state.navOpen = false; go(nav.dataset.view); return; }
   const role = e.target.closest("[data-role]");
   if (role) { state.role = role.dataset.role; closeOverlay();
-    if (state.role === "kam" && ["briefings", "sources"].includes(state.view)) state.view = "accounts";
-    if (state.role === "curator" && state.view === "requests") state.view = "sources";
+    if (state.role === "kam" && ["briefings", "sources", "queue"].includes(state.view)) state.view = "start";
+    if (state.role === "curator" && ["requests", "projects", "project", "projnew", "coach", "roleplay", "stewardship"].includes(state.view)) state.view = "start";
     render(); toast(`Viewing as ${PEOPLE[state.role].name} · ${PEOPLE[state.role].role}`); return; }
   const ft = e.target.closest("[data-ftype]");
   if (ft) { state.f.type = ft.dataset.ftype; render(); return; }
@@ -1693,7 +1711,7 @@ RENDER.start = () => {
     ["chat", "Stewardship Q&A", "Ask questions about sales stewardship and competition-law guidance.", ["Always-on assistant", "Global and local guidance", "Compliance guidance", "Policy clarification"], "Ask questions", `data-view="stewardship"`],
   ];
   const hist = [...HISTORY, ...PROJECTS.flatMap(x => x.runs.map(r => ({ ...r, proj: x.name, pid: x.id })))].slice(0, 6);
-  const upd = UPDATES.filter(u => profileOf(u.cust)?.owner === PEOPLE.kam.name);
+  const upd = UPDATES.filter(u => profileOf(u.cust)?.owner === PEOPLE[state.role].name);
   return `${p ? `<div class="homescope">${icon("grid")}<span>Active project: <b>${esc(p.name)}</b>. Every tool below uses its customer and facts.</span><button class="btn plain sm" data-view="projects">Switch project</button></div>` : ""}
     <div class="welcome"><h1>${icon("spark")}Welcome to AI Sales Assistant</h1><p>Hello ${PEOPLE[state.role].name.split(" ")[0]}! Choose a tool, or open a project to keep everything for one customer in one place.</p>
       <div class="row quick"><button class="btn sm" data-act="new-project">${icon("grid")}New project</button><button class="btn sm" data-x="cust-new" data-name="">${icon("store")}Create a customer</button><button class="btn sm" data-x="buyer-new" data-name="">${icon("user")}Create a buyer</button></div></div>
@@ -1845,10 +1863,10 @@ RENDER.people = () => {
   const tabs = `<div class="tabs" role="tablist"><button role="tab" data-x="ppl-tab" data-v="customers" aria-selected="${tab === "customers"}">Customers (${CUSTOMERS.length})</button><button role="tab" data-x="ppl-tab" data-v="buyers" aria-selected="${tab === "buyers"}">Your buyers (${curatorMode() ? 0 : myBuyers.length})</button></div>`;
   const custs = CUSTOMERS.map(cu => { const pr = profileOf(cu);
     return pr ? `<div class="custcard"><div class="top"><span class="bldg">${icon("store")}</span><span><b>${esc(cu)}</b><div class="hint">UK · ${pr.channels.join(" · ")}</div></span><span class="pill neutral" style="margin-left:auto">Version ${pr.version}</span></div>
-      <div class="bot stack"><span class="small">${esc(pr.objectives[0])}</span><div class="row">${CATEGORIES.map(cat => { const r = readiness(cat, cu); return r.n ? `<button class="pill ${r.cls}" data-act="open-account" data-cat="${cat}" data-cust="${esc(cu)}" title="Open the ${esc(cu)} · ${cat} account">${cat}: ${r.label}</button>` : ""; }).join("")}</div><span class="hint">Owner: ${esc(pr.owner)}${pr.owner === PEOPLE.kam.name ? " (you)" : ""} · reviewed ${pr.reviewed} · ${plural(pr.sources.length, "source", "sources")}</span>
-      <div class="row"><button class="btn sm" data-x="open-profile" data-v="${esc(cu)}">Open profile</button><button class="btn sm plain" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all facts</button>${pr.owner !== PEOPLE.kam.name ? `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>` : ""}</div></div></div>`
+      <div class="bot stack"><span class="small">${esc(pr.objectives[0])}</span><div class="row">${CATEGORIES.map(cat => { const r = readiness(cat, cu); return r.n ? `<button class="pill ${r.cls}" data-act="open-account" data-cat="${cat}" data-cust="${esc(cu)}" title="Open the ${esc(cu)} · ${cat} account">${cat}: ${r.label}</button>` : ""; }).join("")}</div><span class="hint">Owner: ${esc(pr.owner)}${pr.owner === PEOPLE[state.role].name ? " (you)" : ""} · reviewed ${pr.reviewed} · ${plural(pr.sources.length, "source", "sources")}</span>
+      <div class="row"><button class="btn sm primary" data-x="open-domain" data-v="${esc(cu)}">Customer knowledge</button><button class="btn sm" data-x="open-profile" data-v="${esc(cu)}">Open profile</button><button class="btn sm plain" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all facts</button>${pr.owner !== PEOPLE[state.role].name ? `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>` : ""}</div></div></div>`
     : `<div class="custcard missing"><div class="top"><span class="bldg">${icon("store")}</span><span><b>${esc(cu)}</b><div class="hint">UK · no profile yet</div></span></div>
-      <div class="bot stack"><span class="small muted">Nobody has created a customer profile yet. Personal context can draft one from documents you already have.</span><div class="row"><button class="btn sm primary" data-x="cust-new" data-name="${esc(cu)}">${icon("spark")}Create with personal context</button></div></div></div>`; }).join("");
+      <div class="bot stack"><span class="small muted">Nobody has created a customer profile yet. Personal context can draft one from documents you already have.</span><div class="row"><button class="btn sm primary" data-x="cust-new" data-name="${esc(cu)}">${icon("spark")}Create with personal context</button><button class="btn sm plain" data-x="open-domain" data-v="${esc(cu)}">Customer knowledge</button></div></div></div>`; }).join("");
   const buyers = curatorMode() ? `<div class="callout info">Buyer profiles are private to the KAM who creates them. Switch to “KAM” to see Camille's buyers.</div>`
     : myBuyers.map(b => `<div class="buyercard"><div class="buyercard__hd"><span class="bldg">${icon("user")}</span><span><b>${esc(b.name)}</b><div class="hint">${esc(b.role)} · ${esc(b.cust)} · ${esc(b.cat)}</div></span><span class="pill warn" style="margin-left:auto">Private to you</span></div>
       <div class="buyercard__bd stack"><span class="small"><b>Style (DISC):</b> ${esc(b.disc)}</span><span class="small"><b>Goals:</b> ${esc(b.goals)}</span><span class="small"><b>Watch out for:</b> ${esc(b.friction)}</span><span class="hint">Updated ${b.updated}</span>
@@ -1943,7 +1961,7 @@ RENDER.custnew = () => {
     <div class="card section"><div class="card-hd">Sources kept with this profile</div><div class="pad stack small">${[...cnDocs(n).filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public · ${e[2]}`)].map(s => `<span>• ${esc(s)}</span>`).join("")}</div></div>
     ${n.posture ? "" : `<div class="callout bad section"><b>Can't save yet.</b> The strategic approach proposed at gate 1 hasn't been confirmed. <button class="btn sm" data-x="cn-posture">Confirm it now</button></div>`}
     <div class="actions section"><button class="btn plain" data-x="cn-step" data-v="gate2">Back to enrichments</button><span style="flex:1"></span><button class="btn primary" data-x="cn-save" ${n.posture ? "" : "disabled"}>Save to the Knowledge Bank</button></div>`; }
-  if (n.step === "saved") body = `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>${esc(n.name)} added to the Knowledge Bank</h2><p class="small muted" style="max-width:60ch">Available to everyone in the company, with its sources attached. You're recorded as the owner, so edit suggestions and freshness updates come to you. ${n.added} customer facts were added to the bank and checked by you as the owner.</p>
+  if (n.step === "saved") body = `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>${esc(n.name)} added to the Knowledge Bank</h2><p class="small muted" style="max-width:60ch">Available to everyone in the company, with its sources attached. Its owner is the customer's curator, so edit suggestions and freshness updates go to them. ${n.added} customer facts were added to the bank and checked by you as the owner.</p>
     ${n.from ? `<div class="callout ok" style="text-align:left"><b>Already selected for you.</b> You came from ${{ coach: "Selling Coach", projnew: "a new project", project: "your project" }[n.from]}, so ${esc(n.name)} is ${n.from === "project" ? "available to its tools" : "now selected there"}.</div>` : ""}
     <div class="row">${n.from ? `<button class="btn primary" data-view="${n.from}">Back to ${{ coach: "Selling Coach", projnew: "the new project", project: "the project" }[n.from]}</button>` : ""}<button class="btn" data-act="open-account" data-cat="" data-cust="${esc(n.name)}">See its facts</button><button class="btn plain" data-x="cust-new">Create another customer</button></div></div>`;
   return top + body;
@@ -1952,7 +1970,7 @@ function saveProfile(n) {
   const add = cnEnrich(n).filter((e, i) => n.enrich[i]);
   const objectives = [...n.objectives.split("\n").filter(Boolean), ...add.filter(e => e[3] === "Objectives").map(e => e[0])];
   const info = [...n.info.split("\n").filter(Boolean), ...add.filter(e => e[3] === "Information").map(e => e[0])];
-  PROFILES.push({ cust: n.name, owner: PEOPLE.kam.name, reviewed: TODAY, version: 1, channels: ["Supermarket", "Convenience"], objectives, info, posture: n.postureText.replace(/^\[[^\]]*\]\s*/, ""),
+  PROFILES.push({ cust: n.name, owner: (typeof domainOwner === "function" ? domainOwner(n.name) : PEOPLE.kam.name), reviewed: TODAY, version: 1, channels: ["Supermarket", "Convenience"], objectives, info, posture: n.postureText.replace(/^\[[^\]]*\]\s*/, ""),
     sources: [...cnDocs(n).filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public`)] });
   if (!CUSTOMERS.includes(n.name)) CUSTOMERS.push(n.name);
   const lines = [...objectives, ...info];
@@ -2131,7 +2149,7 @@ function buyerEditDrawer(id) {
 function customerCard(cust, cat) {
   const pr = profileOf(cust), mine = BUYERS.filter(b => b.cust === cust && b.owner === PEOPLE.kam.name);
   return `<div class="card"><div class="card-hd">About ${esc(cust)}${pr ? `<span class="pill neutral">Profile v${pr.version}</span>` : ""}</div><div class="pad stack">
-    ${pr ? `<span class="small">${esc(pr.objectives[0])}</span><span class="hint">Owner: ${esc(pr.owner)} · reviewed ${pr.reviewed}</span><div><button class="btn sm" data-x="open-profile" data-v="${esc(cust)}">Open customer profile</button></div>`
+    ${pr ? `<span class="small">${esc(pr.objectives[0])}</span><span class="hint">Owner: ${esc(pr.owner)} · reviewed ${pr.reviewed}</span><div class="row"><button class="btn sm" data-x="open-domain" data-v="${esc(cust)}">All ${esc(cust)} knowledge</button><button class="btn sm plain" data-x="open-profile" data-v="${esc(cust)}">Profile</button></div>`
       : `<span class="small muted">No customer profile yet.</span><div><button class="btn sm primary" data-x="cust-new" data-name="${esc(cust)}">Create with personal context</button></div>`}
     ${curatorMode() ? "" : `<div class="label" style="margin-top:6px">Your buyers here</div>${mine.length ? mine.map(b => `<button class="btn ghost small" data-x="buyer-edit" data-id="${b.id}">${icon("user")}${esc(b.name)} · ${esc(b.role)}</button>`).join("") : `<span class="hint">None yet.</span>`}
     <div><button class="btn sm plain" data-x="buyer-new" data-cust="${esc(cust)}" data-name="">${icon("plus")}Create a buyer</button></div>`}</div></div>`;
@@ -2247,6 +2265,320 @@ document.addEventListener("change", e => {
   if (b.dataset.bind === "pn.cust") state.pn.buyers = [];
   if (b.hasAttribute("data-rerender")) render();
 });
+
+/* =====================================================================
+   Two jobs, two workspaces.
+   Curator: owns a customer's knowledge ("My domains"), organised by type.
+   Salesperson: deck → feedback → story → after the meeting, in a project.
+   Gaps the salesperson hits become the curator's demand backlog.
+   ===================================================================== */
+const KTYPES = [
+  { k: "strategy", label: "Strategy & priorities", days: 365, every: "every 12 months", hint: "What the customer is trying to achieve and how it judges suppliers. The customer profile lives here.", ex: "Own label is a 2027 priority across household." },
+  { k: "performance", label: "Performance & market", days: 56, every: "every 8 weeks", hint: "Official sales, share and growth numbers for this customer.", ex: "Fabric Care value sales grew 4.2% vs. a year ago." },
+  { k: "shopper", label: "Shopper", days: 365, every: "every 12 months", hint: "How shoppers behave at this customer.", ex: "Shoppers switch to own label below 20% promotion depth." },
+  { k: "plans", label: "Category plans & commitments", days: 180, every: "every 6 months", hint: "Joint plans, targets and what both sides agreed.", ex: "Capsules end-cap in weeks 38–41." },
+  { k: "people", label: "People & buyers", days: 180, every: "every 6 months", hint: "Who decides and how to work with them. KAMs' buyer profiles stay private to them.", ex: "The category buyer decides on a quantified case." },
+  { k: "history", label: "History & events", days: null, every: "kept as a record", hint: "What happened: meetings, reviews, launches and their outcomes.", ex: "Range review confirmed for 14 Nov 2026." },
+  { k: "competition", label: "Competition", days: 90, every: "every 3 months", hint: "What competitors are doing at this customer.", ex: "A competitor ran 3-for-2 on capsules in August." },
+];
+const KT = k => KTYPES.find(t => t.k === k);
+const DOMAIN_OWNER = { "Northgate": "Sam Okafor", "Brightmart": "Lena Fischer", "Harbour & Co": "Sam Okafor" };
+const domainOwner = c => DOMAIN_OWNER[c] || "Sam Okafor";
+const me = () => PEOPLE[state.role].name;
+const ownsDomain = c => curatorMode() && domainOwner(c) === me();
+
+/* Knowledge type of a fact: explicit when set, otherwise derived. */
+function ktypeOf(f) {
+  if (f.ktype) return f.ktype;
+  if (f.type === "event") return "history";
+  if (f.type === "quote") return "people";
+  if (f.type === "recommendation") return "plans";
+  if (f.type === "metric") return f.rel === "certified" ? "performance" : "plans";
+  return f.cat ? "shopper" : "strategy";
+}
+Object.entries({ "F-1061": "plans", "F-1052": "people", "F-1080": "strategy" }).forEach(([id, k]) => { const f = fact(id); if (f) f.ktype = k; });
+FACTS.push({ id: "F-1090", type: "insight", ktype: "competition", text: "A competitor ran 3-for-2 on laundry capsules at Northgate in August.", cat: "Fabric Care", cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "20 Aug 2026", src: "S-04", loc: "Store visit notes", excerpt: "Store visits, 18–20 Aug: competitor 3-for-2 on capsules in most large stores.", dedup: 1 });
+FACTS.push({ id: "F-1091", type: "insight", ktype: "people", text: "Northgate's category buyer reports to a new trading director since July.", cat: null, cust: "Northgate", rel: "stated", sens: "internal", owner: null, status: "verified", asOf: "02 Jul 2026", src: "S-04", loc: "Customer profile", excerpt: "Org change, July: category buyers now report to the new trading director.", dedup: 1 });
+PROFILES.forEach(p => { p.owner = domainOwner(p.cust); });
+
+function isStale(f) { const t = KT(ktypeOf(f)); if (!t || !t.days || !isLive(f)) return false; const d = daysBetween(f.asOf, TODAY); return d !== null && d > t.days; }
+
+let DEMAND = [
+  { id: "D-1", cust: "Northgate", cat: "Fabric Care", k: "history", text: "An agreed next step after the range review (date and owner)", n: 3, last: "29 Sep 2026", from: "Selling Coach feedback" },
+  { id: "D-2", cust: "Northgate", cat: "Fabric Care", k: "competition", text: "What competitors are promoting in laundry this quarter", n: 2, last: "26 Sep 2026", from: "Assistant questions" },
+  { id: "D-3", cust: "Harbour & Co", cat: "Oral Care", k: "performance", text: "Current Oral Care sales and share at Harbour & Co", n: 5, last: "30 Sep 2026", from: "Selling Coach feedback" },
+  { id: "D-4", cust: "Harbour & Co", cat: "Oral Care", k: "strategy", text: "What Harbour & Co wants from suppliers in 2027", n: 2, last: "24 Sep 2026", from: "Story writing" },
+  { id: "D-5", cust: "Brightmart", cat: "Hair Care", k: "shopper", text: "Why premium hair care is losing share at Brightmart", n: 4, last: "28 Sep 2026", from: "Assistant questions" },
+];
+function addDemand(cust, cat, k, text, from) {
+  const d = DEMAND.find(x => x.cust === cust && x.k === k);
+  if (d) { d.n++; d.last = TODAY; } else DEMAND.push({ id: "D-" + (DEMAND.length + 10), cust, cat, k, text, n: 1, last: TODAY, from });
+}
+
+function domainStats(c) {
+  const fs = FACTS.filter(f => f.cust === c && !f.owner), live = fs.filter(isLive);
+  const has = k => live.some(f => ktypeOf(f) === k) || (k === "strategy" && !!profileOf(c));
+  return { live, covered: KTYPES.filter(t => has(t.k)).length, has,
+    stale: live.filter(isStale).length + fs.filter(f => f.status === "outdated").length,
+    waiting: live.filter(f => f.status === "needs_review").length,
+    asked: DEMAND.filter(d => d.cust === c).reduce((a, d) => a + d.n, 0),
+    cats: [...new Set(live.map(f => f.cat).filter(Boolean))] };
+}
+
+/* =====================================================================
+   Curator home: My domains
+   ===================================================================== */
+function curatorHome() {
+  const mine = CUSTOMERS.filter(c => domainOwner(c) === me()), others = CUSTOMERS.filter(c => domainOwner(c) !== me());
+  const upd = UPDATES.filter(u => profileOf(u.cust)?.owner === me());
+  const queue = REVIEW.length;
+  return head("Curator", `Hello ${me().split(" ")[0]}`, "You own these customers' knowledge. Keep each one complete and current, and fill what sales asked for.",
+    `<button class="btn" data-view="queue">${icon("clock")}Review queue (${queue})</button>`) + NOTE +
+    (upd.length ? `<div class="callout info inbox"><span>${icon("mail")}</span><span><b>${plural(upd[0].items.length, "public update", "public updates")} found for ${esc(upd[0].cust)}.</b> They come from the customer's own published material and passed the trust check.</span><button class="btn sm primary" data-x="open-update" data-id="${upd[0].id}">Review</button></div>` : "") +
+    `<h2 class="section-title">My domains</h2><div class="ppl-grid">${mine.map(c => { const st = domainStats(c), pct = Math.round(st.covered / KTYPES.length * 100);
+      return `<button class="projcard" data-x="open-domain" data-v="${esc(c)}">
+        <span class="spread"><span class="nm">${esc(c)}</span><span class="pill neutral">${st.cats.join(" · ") || "No category yet"}</span></span>
+        <span class="covbar"><span style="width:${pct}%;background:${pct >= 80 ? "var(--ok-accent)" : pct >= 50 ? "var(--alert-accent)" : "var(--err-accent)"}"></span></span>
+        <span class="small muted">${st.covered} of ${KTYPES.length} knowledge types covered · ${plural(st.live.length, "usable fact", "usable facts")}</span>
+        <span class="row">${st.stale ? `<span class="pill warn">${st.stale} need refresh</span>` : `<span class="pill ok">All current</span>`}${st.waiting ? `<span class="pill info">${st.waiting} waiting for you</span>` : ""}${st.asked ? `<span class="pill bad">Asked ${st.asked}× by sales</span>` : ""}</span>
+      </button>`; }).join("")}</div>
+    ${others.length ? `<h2 class="section-title section">Other domains</h2><div class="stack">${others.map(c => `<div class="frow"><span class="t">${esc(c)}</span><span class="row"><button class="btn sm plain" data-x="open-domain" data-v="${esc(c)}">View</button></span><span class="m"><span>Owned by ${esc(domainOwner(c))}</span></span></div>`).join("")}</div>` : ""}`;
+}
+
+/* =====================================================================
+   Domain page: one customer's knowledge, by type
+   ===================================================================== */
+RENDER.domain = () => {
+  const c = state.domain, st = domainStats(c), own = ownsDomain(c), pr = profileOf(c);
+  const dem = DEMAND.filter(d => d.cust === c).sort((a, b) => b.n - a.n);
+  const waiting = st.live.filter(f => f.status === "needs_review");
+  const buyersHeld = BUYERS.filter(b => b.cust === c).length;
+  const sec = t => {
+    const fs = FACTS.filter(f => f.cust === c && !f.owner && ktypeOf(f) === t.k && (isLive(f) || f.status === "outdated"));
+    const stale = fs.filter(f => isStale(f) || f.status === "outdated").length;
+    return `<section class="card ksec" id="k-${t.k}"><div class="card-hd"><span>${t.label} <span class="aside">· ${plural(fs.length, "fact", "facts")} · refresh ${t.every}</span></span>
+      <span class="row">${stale ? `<span class="pill warn">${stale} need refresh</span>` : fs.length ? `<span class="pill ok">Current</span>` : `<span class="pill neutral">Empty</span>`}
+      <button class="btn sm ${own ? "primary" : "plain"}" data-x="k-add" data-v="${esc(c)}" data-k="${t.k}">${icon("plus")}${own ? "Add" : "Suggest"}</button></span></div>
+      <div class="pad stack"><span class="hint">${t.hint}</span>
+      ${t.k === "strategy" && pr ? `<div class="profilebox"><h4>Customer profile · version ${pr.version}</h4><ul>${pr.objectives.map(o => `<li>${esc(o)}</li>`).join("")}</ul><div class="row" style="margin-top:8px"><button class="btn sm" data-x="open-profile" data-v="${esc(c)}">Open profile</button>${own ? `<button class="btn sm plain" data-x="prof-edit" data-v="${esc(c)}">Edit</button>` : ""}</div></div>` : ""}
+      ${t.k === "strategy" && !pr ? `<div class="callout neutral">No customer profile yet. <button class="btn ghost small" data-x="cust-new" data-name="${esc(c)}">Create one with personal context</button></div>` : ""}
+      ${fs.map(f => factRow(f) + (isStale(f) ? `<span class="hint stalehint">Older than the ${t.every.replace("every ", "")} rule for this type.${own ? ` <button class="btn ghost small" data-x="k-refresh" data-id="${f.id}">Mark as still true</button>` : ""}</span>` : "")).join("")}
+      ${!fs.length ? `<div class="empty-state" style="text-align:left;padding:12px">Nothing yet. Example: “${esc(t.ex)}”</div>` : ""}
+      ${t.k === "people" ? `<span class="hint">${plural(buyersHeld, "private buyer profile is", "private buyer profiles are")} held by KAMs for ${esc(c)}. Only their owners can see them.</span>` : ""}
+      </div></section>`;
+  };
+  return `<div class="crumb"><button data-view="start">${curatorMode() ? "My domains" : "Home"}</button><span>›</span><span>${esc(c)}</span></div>
+    <div class="pagehead"><div><h1>${esc(c)} · customer knowledge</h1><p class="sub">Owner: <b>${esc(domainOwner(c))}</b> (curator)${own ? " · you" : ""}. Categories: ${st.cats.join(", ") || "none yet"}.</p></div>
+      <div class="actions">${own ? `<button class="btn" data-act="add-source">${icon("folder")}Import a document</button><button class="btn primary" data-x="k-add" data-v="${esc(c)}" data-k="">${icon("plus")}Add knowledge</button>` : `<button class="btn primary" data-x="k-add" data-v="${esc(c)}" data-k="">${icon("plus")}Suggest knowledge</button>`}</div></div>${NOTE}
+    ${own ? "" : `<div class="callout info" style="margin-bottom:14px">${curatorMode() ? `Owned by ${esc(domainOwner(c))}. You can read it and suggest knowledge.` : `This is what the company knows about ${esc(c)}. Anything you suggest goes to ${esc(domainOwner(c))} (curator) for review.`}</div>`}
+    <section class="summary" aria-label="Domain health">
+      <div><div class="k">Knowledge types covered</div><div class="num">${st.covered}/${KTYPES.length}</div><div class="sub">${KTYPES.filter(t => !st.has(t.k)).map(t => t.label).join(", ") || "All covered"}</div></div>
+      <div><div class="k">Usable facts</div><div class="num">${st.live.length}</div><div class="sub">across ${plural(st.cats.length, "category", "categories")}</div></div>
+      <div><div class="k">Need refresh</div><div class="num">${st.stale}</div><div class="sub">past their type's freshness rule</div></div>
+      <div><div class="k">Asked by sales</div><div class="num">${st.asked}</div><div class="sub">times knowledge was missing</div></div>
+    </section>
+    <div class="acct section"><div class="stack" style="gap:14px">${KTYPES.map(sec).join("")}</div>
+      <aside class="side">
+        <div class="card"><div class="card-hd">What sales needed <span class="aside">ranked by demand</span></div>
+          ${dem.length ? `<div class="plist">${dem.map(d => `<div style="display:grid;gap:6px;align-items:start"><span><b>${esc(d.text)}</b></span><span class="hint">${KT(d.k).label} · asked ${d.n}× · last ${d.last} · from ${esc(d.from)}</span>
+            <span class="row">${own ? `<button class="btn sm primary" data-x="k-add" data-v="${esc(c)}" data-k="${d.k}" data-d="${d.id}">Add this knowledge</button><button class="btn sm plain" data-x="d-dismiss" data-id="${d.id}">Dismiss</button>` : `<span class="pill bad">Waiting on ${esc(domainOwner(c))}</span>`}</span></div>`).join("")}</div>`
+          : `<div class="pad hint">Nothing missing right now. Gaps found by Selling Coach and stories appear here.</div>`}</div>
+        <div class="card"><div class="card-hd">Waiting for review <span class="aside">${waiting.length}</span></div>
+          ${waiting.length ? `<div class="plist">${waiting.map(f => `<div><button class="btn ghost small" data-act="open-fact" data-id="${f.id}">${esc(f.text)}</button></div>`).join("")}</div>` : `<div class="pad hint">Nothing waiting.</div>`}</div>
+        <div class="card"><div class="card-hd">Jump to</div><div class="pad row">${KTYPES.map(t => `<a class="chip" href="#k-${t.k}" data-x="k-jump" data-k="${t.k}">${t.label}</a>`).join("")}</div></div>
+      </aside></div>`;
+};
+
+/* Add knowledge: the curator writes directly; anyone else suggests. */
+function addKnowledgeModal(c, k, demandId) {
+  const own = ownsDomain(c), d = DEMAND.find(x => x.id === demandId);
+  const srcs = SOURCES.filter(s => s.status === "live" && (!s.cust || s.cust === c));
+  openModal(`<header><h2>${own ? "Add knowledge" : "Suggest knowledge"} · ${esc(c)}</h2></header><form>
+    ${d ? `<div class="callout info">Answers a request from sales: <b>${esc(d.text)}</b> (asked ${d.n}×).</div>` : ""}
+    <div class="grid2"><div class="field"><label for="ka-k">Knowledge type</label><select id="ka-k" name="k">${KTYPES.map(t => `<option value="${t.k}" ${t.k === (k || "strategy") ? "selected" : ""}>${t.label}</option>`).join("")}</select></div>
+      <div class="field"><label for="ka-cat">Category</label><select id="ka-cat" name="cat"><option value="">All categories</option>${CATEGORIES.map(x => `<option ${d && d.cat === x ? "selected" : ""}>${x}</option>`).join("")}</select></div></div>
+    <div class="field"><label for="ka-t">Statement</label><textarea id="ka-t" name="t" required placeholder="${esc(KT(k || "strategy").ex)}"></textarea><span class="hint">One statement. Write it so a salesperson can use it as is.</span></div>
+    <div class="grid2"><div class="field"><label for="ka-src">Where it comes from</label><select id="ka-src" name="src"><option value="">${own ? "My expertise as curator" : "I know it myself"}</option>${srcs.map(s => `<option value="${s.id}">${esc(s.name)}</option>`).join("")}</select></div>
+      <div class="field"><label for="ka-d">When is it true?</label><input id="ka-d" name="d" value="${TODAY}"></div></div>
+    <div class="field"><label for="ka-s">Can it go in front of the customer?</label><select id="ka-s" name="s"><option value="internal">No, internal only</option><option value="external">Yes, customer-ready</option><option value="restricted">No, restricted</option></select></div>
+    <div class="callout ${own ? "ok" : "info"}">${own ? "You own this domain, so it's published as checked straight away." : `It goes to ${esc(domainOwner(c))} (curator) for review before tools can use it.`}</div>
+    <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">${own ? "Publish" : "Send for review"}</button></div></form>`, fd => {
+      const s = fd.get("src") ? src(fd.get("src")) : null, kk = fd.get("k");
+      FACTS.unshift({ id: "F-" + (4000 + FACTS.length), type: kk === "performance" ? "metric" : kk === "history" ? "event" : kk === "plans" ? "recommendation" : "insight", ktype: kk, text: fd.get("t").trim(),
+        cat: fd.get("cat") || null, cust: c, rel: s ? s.rel : own ? "reviewed" : "stated", sens: fd.get("s"), owner: null, status: own ? "verified" : "needs_review", asOf: fd.get("d") || TODAY,
+        src: s ? s.id : null, loc: own ? `Written by ${me()} (curator)` : `Suggested by ${me()}`, excerpt: own ? "Written by the domain curator." : "Suggested by a salesperson.", dedup: 1, by: me() });
+      if (d && own) DEMAND = DEMAND.filter(x => x !== d);
+      markOutdated(fd.get("cat") || null, c, "New knowledge was added.");
+      closeOverlay(); render(); toast(own ? `Published to ${KT(kk).label}.${d ? " The request from sales is closed." : ""}` : `Sent to ${domainOwner(c)} for review.`);
+    });
+}
+
+/* =====================================================================
+   Sales flow inside a project: deck → feedback → story → after the meeting
+   ===================================================================== */
+const FLOW_STEPS = ["Deck", "Feedback", "Story", "After the meeting"];
+function flowOf(p) { return p.flow || (p.flow = { step: 0, deck: p.decks[0] || null, minutes: 30, pc: false, slides: null, story: null, variant: "", outcome: null, done: 0 }); }
+const buyerOf = p => p.buyer ? BUYERS.find(b => p.buyer.startsWith(b.name + " ·")) : null;
+function genSlides(p) {
+  const r = selectFacts(p.cat, p.cust, ""), fs = preferQuotable(r.ranked.map(x => x.f), p), b = buyerOf(p);
+  const metric = fs.find(f => f.type === "metric"), shopper = fs.find(f => ktypeOf(f) === "shopper"), rec = fs.find(f => f.type === "recommendation"), ev = fs.find(f => f.type === "event");
+  const strat = FACTS.find(f => !f.cat && f.cust === p.cust && isLive(f) && ktypeOf(f) === "strategy");
+  const gap = (k, text) => ({ k, text });
+  return [
+    { n: 1, title: "Title and agenda", status: "ok", note: "Clear agenda. Add the meeting objective as a subtitle." },
+    { n: 2, title: `${p.cust} today`, step: 0, status: metric ? "evidence" : "gap", note: metric ? "Says “strong growth” with no figure. Use the official number:" : "No official number for this account in the bank.", fact: metric, gap: metric ? null : gap("performance", `Current ${p.cat} sales and share at ${p.cust}`) },
+    { n: 3, title: "Market context", step: 0, status: "ok", note: "Good: the market size has a source." },
+    { n: 4, title: "Share position", step: 0, status: p.cust === "Northgate" ? "fix" : "ok", note: p.cust === "Northgate" ? "Says 19.4%. The official figure is 18.6%:" : "Matches the bank.", fact: p.cust === "Northgate" ? fact("F-1022") : null },
+    { n: 5, title: "Shopper insight", step: 1, status: shopper ? "evidence" : "gap", note: shopper ? "The claim has no source. Back it with:" : "No shopper insight in the bank for this account.", fact: shopper, gap: shopper ? null : gap("shopper", `How shoppers behave in ${p.cat} at ${p.cust}`) },
+    { n: 6, title: "Our idea", step: 1, status: "ok", note: "Clear idea in one sentence." },
+    { n: 7, title: "How it works", step: 2, status: rec ? "evidence" : "gap", note: rec ? "The mechanism is vague. Use the agreed plan:" : "No plan in the bank showing how it works.", fact: rec, gap: rec ? null : gap("plans", `The agreed ${p.cat} plan with ${p.cust}`) },
+    { n: 8, title: "Benefits for the customer", step: 3, status: strat ? "evidence" : "gap", note: strat ? "Tie the benefit to what the customer wants:" : "No customer priority to link the benefit to.", fact: strat, gap: strat ? null : gap("strategy", `What ${p.cust} wants from suppliers`) },
+    { n: 9, title: "Appendix: 6 data tables", status: "cut", note: b ? `${b.name} prefers short decks. Move these to the appendix or cut them.` : "Too dense for the time available. Move to the appendix." },
+    { n: 10, title: "Next steps", step: 4, status: ev ? "evidence" : "gap", note: ev ? "No date or owner. Use:" : "No agreed next step in the bank. Ask the buyer for a date.", fact: ev, gap: ev ? null : gap("history", `An agreed next step with ${p.cust} (date and owner)`) },
+  ];
+}
+function genStory(p) {
+  const S = p.flow.slides, by = n => S.find(s => s.n === n), b = buyerOf(p);
+  const shopper = by(5).fact, rec = by(7).fact, strat = by(8).fact, ev = by(10).fact, metric = by(4).fact && by(4).status === "fix" ? by(4).fact : by(2).fact;
+  return { steps: [
+    { step: "Summarise the situation", head: metric ? metric.text : `${p.cust} ${p.cat}: where we stand`, notes: "Open with the number, then the market context in one sentence. Stop and check the buyer agrees.", fact: metric, from: "Slides 2–4" },
+    { step: "State the idea", head: rec ? (OPP_TITLE[rec.id] || "Grow the category together") : "Grow the category together", notes: shopper ? `Frame the idea around the shopper: ${shopper.text.charAt(0).toLowerCase() + shopper.text.slice(1)}` : "State the idea in one sentence.", fact: shopper, from: "Slides 5–6" },
+    { step: "Explain how it works", head: rec ? rec.text : "How it works", notes: "Walk through the mechanism step by step: timing, space, promotion depth.", fact: rec, from: "Slide 7" },
+    { step: "Reinforce key benefits", head: strat ? `It supports your priority: ${strat.text.charAt(0).toLowerCase() + strat.text.slice(1)}` : "What's in it for the customer", notes: "Quantify the upside in their terms, not ours.", fact: strat, from: "Slide 8" },
+    { step: "Suggest an easy next step", head: ev ? `Agree the details before: ${ev.text.charAt(0).toLowerCase() + ev.text.slice(1)}` : "Agree a date for the next step", notes: "End on one concrete, low-effort ask with a date and an owner.", fact: ev, from: "Slide 10" },
+  ], objections: [
+    b ? { q: `“${b.friction.replace(/\.$/, "")}. Why again?”`, a: shopper || metric } : { q: "“Why should we change what works?”", a: metric },
+    { q: "“Why is this a priority for us?”", a: strat || metric },
+  ] };
+}
+const lc = t => t.charAt(0).toLowerCase() + t.slice(1);
+function prepareHTML(p) {
+  const fl = flowOf(p); state.pf = fl;
+  const b = buyerOf(p), cite = citer(p);
+  const steps = `<div class="stepper">${FLOW_STEPS.map((s, i) => `<button class="step ${i < fl.step ? "done" : i === fl.step ? "active" : ""}" data-x="pf-go" data-i="${i}" ${i > maxStep(fl) ? "disabled" : ""}><span class="n">${i < fl.step ? "✓" : i + 1}</span>${s}</button>${i < 3 ? '<span class="step-sep"></span>' : ""}`).join("")}</div>`;
+  let body = "";
+  if (fl.step === 0) body = fl.running ? `<div class="card pad stack"><b>Reading ${esc(fl.deck)}</b>${stagesHTML([["Read the deck · 10 slides"], [`Gather what we know about ${p.cust} · ${p.cat}`], ...(fl.pc ? [["Add your personal context", "Personal context"]] : []), ["Check each slide against the facts"], ["Compare the deck's numbers with the bank"]], fl.done)}</div>`
+    : `<div class="card"><div class="card-hd">Your deck<span class="aside">PPTX or PDF</span></div><div class="pad stack">
+      ${p.decks.map(d => `<button class="filerow ${fl.deck === d ? "sel" : ""}" data-x="pf-deck" data-deck="${esc(d)}">${icon("file")}${esc(d)}${fl.deck === d ? `<span class="pill ok" style="margin-left:auto">Selected</span>` : ""}</button>`).join("")}
+      <button class="filerow" data-x="pf-deck" data-deck="${esc(p.cust)} meeting deck.pptx">${icon("plus")}Upload a deck</button></div></div>
+    <div class="card section"><div class="card-hd">The meeting<span class="aside">From the project</span></div><div class="pad stack">
+      <div class="grid3"><div class="field"><label>Objective</label><span class="small">${esc(p.objective)}</span></div><div class="field"><label>Buyer</label><span class="small">${b ? `${esc(b.name)} · ${esc(b.disc)}` : "None attached"}</span></div>
+      <div class="field"><label for="pf-min">Minutes available</label><input id="pf-min" type="number" min="5" data-bind="pf.minutes" value="${fl.minutes}"></div></div>
+      <label class="check">${chk(fl.pc, `data-x="pf-pc"`)} Use my personal context for this run <button type="button" class="btn ghost small" data-x="pc-help">What is this?</button></label></div></div>
+    <div class="actions section" style="justify-content:flex-end"><button class="btn primary" data-x="pf-feedback" ${fl.deck ? "" : "disabled"}>Get feedback →</button></div>`;
+  if (fl.step === 1) {
+    const S = fl.slides, cnt = s => S.filter(x => x.status === s).length;
+    const covered = [0, 1, 2, 3, 4].map(i => S.some(x => x.step === i && (x.status === "ok" || x.fact)));
+    body = `<div class="card pad result-hd"><div><span class="label">Deck score</span><div class="bigscore">${(5 * S.filter(x => x.status === "ok" || x.applied).length / S.length).toFixed(1)}<span>/5</span></div></div>
+      <div class="stack" style="gap:6px"><b>${plural(cnt("fix") + cnt("evidence"), "slide to fix", "slides to fix")} · ${plural(cnt("gap"), "gap", "gaps")} in the bank · ${cnt("cut")} to cut</b>
+      <div class="row">${["Situation", "Idea", "How it works", "Benefits", "Next step"].map((s, i) => `<span class="pill ${covered[i] ? "ok" : "warn"}">${s}</span>`).join("")}</div>
+      <span class="hint">${b ? `Tailored to ${esc(b.name)}. ` : ""}${fl.pc ? "Personal context used for this run only." : "No personal context used."}</span></div></div>
+      <div class="stack section">${S.map(s => { const q = s.fact && quotable(s.fact, p.audience);
+        return `<div class="slide ${s.status}"><div class="thumb"><span>${s.n}</span><b>${esc(s.title)}</b></div><div class="stack" style="gap:6px;min-width:0">
+          <span class="row">${{ ok: `<span class="pill ok">Strong</span>`, evidence: `<span class="pill warn">Needs evidence</span>`, fix: `<span class="pill bad">Number to fix</span>`, gap: `<span class="pill neutral">Missing in the bank</span>`, cut: `<span class="pill neutral">Cut or move</span>` }[s.status]}${s.applied ? `<span class="pill ok">${icon("check")}Applied</span>` : ""}</span>
+          <span class="small">${s.fact && !q && s.status === "fix" ? `Says 19.4%. The official figure is 18.6%, but it's internal only: take the number off this customer slide, or ask the curator to clear it.` : esc(s.note)}</span>
+          ${s.fact ? `<div class="excerpt">“${esc(s.fact.text)}” ${cite(s.fact)}${q ? "" : `<div class="hint">${esc(usage(s.fact).why)}</div>`}</div>
+            <div class="row"><button class="btn sm" data-x="pf-copy" data-n="${s.n}">Copy with source</button>${q ? `<button class="btn sm ${s.applied ? "plain" : "primary"}" data-x="pf-apply" data-n="${s.n}" ${s.applied ? "disabled" : ""}>${s.applied ? "Applied" : `Apply to slide ${s.n}`}</button>` : s.fact.clearReq ? `<span class="pill info">Clearance requested</span>` : s.fact.sens === "internal" ? `<button class="btn sm plain" data-act="ask-clear" data-id="${s.fact.id}">Ask to use it with customers</button>` : ""}</div>` : ""}
+          ${s.status === "gap" ? `<span class="hint">${icon("people")} Added to ${esc(domainOwner(p.cust))}'s list of what sales needs. You'll see it here once it's filled.</span>` : ""}
+          </div></div>`; }).join("")}</div>
+      <div class="actions section"><button class="btn plain" data-x="pf-go" data-i="0">Change deck</button><span style="flex:1"></span><button class="btn primary" data-x="pf-story">${icon("story")}Help me write my story →</button></div>`;
+  }
+  if (fl.step === 2) {
+    const st = fl.story, short = fl.variant === "shorter";
+    const internal = st.steps.filter(s => s.fact && !quotable(s.fact, p.audience));
+    body = `<div class="callout info"><b>Your story, built from your deck and what we know about ${esc(p.cust)}.</b> Every claim is cited. Where the bank has nothing, it says so instead of inventing.</div>
+      ${internal.length ? `<div class="callout warn section"><b>${internal.length} of ${st.steps.length} headlines rely on internal-only facts.</b> This meeting is customer-facing, so keep those points in your speaker notes, or ask ${esc(domainOwner(p.cust))} to clear them for customers. <button class="btn sm" data-x="pf-clear-all">Ask to clear all ${internal.length}</button></div>` : ""}
+      <div class="card section"><div class="card-hd">Storyline${fl.variant ? `<span class="pill info">Refined: ${esc(fl.variant)}</span>` : ""}</div><div class="table-wrap" style="border:0;border-radius:0"><table><thead><tr><th>Step</th><th>Headline</th><th>Speaker notes</th><th>From</th></tr></thead><tbody>
+      ${st.steps.map(s => `<tr><td style="color:var(--charcoal);font-weight:600;white-space:nowrap">${s.step}</td><td>${esc(s.head)} ${s.fact ? cite(s.fact) : `<span class="bgtag">no evidence</span>`}</td><td>${esc(short ? s.notes.split(".")[0] + "." : s.notes)}${fl.variant === "more on their priorities" && s.step === "Reinforce key benefits" ? " Spend most of your time here." : ""}</td><td class="hint">${s.from}</td></tr>`).join("")}</tbody></table></div></div>
+      ${b ? `<div class="card section"><div class="card-hd">For ${esc(b.name)} · ${esc(b.disc)}</div><div class="pad stack small"><span><b>Length:</b> about ${Math.max(4, Math.round(fl.minutes / 5))} slides for ${fl.minutes} minutes. Lead with the number.</span><span><b>How to engage:</b> ${esc(b.style)}</span></div></div>` : ""}
+      <div class="card section"><div class="card-hd">Likely objections and answers</div><div class="pad stack">${st.objections.map(o => `<div class="stack" style="gap:4px"><b class="small">${esc(o.q)}</b><span class="small">${o.a ? `${esc(o.a.text)} ${cite(o.a)}` : `<span class="bgtag">no evidence</span> Ask ${esc(domainOwner(p.cust))} for a fact to answer this.`}</span></div>`).join("")}</div></div>
+      <div class="card section"><div class="card-hd">Before and after</div><div class="table-wrap" style="border:0;border-radius:0"><table><thead><tr><th>Your deck said</th><th>Your story says</th></tr></thead><tbody>
+        ${fl.slides.filter(s => s.fact && s.status !== "ok").map(s => `<tr><td>Slide ${s.n}: ${esc(s.note.replace(/:$/, "."))}</td><td>${esc(s.fact.text)} ${cite(s.fact)}</td></tr>`).join("")}</tbody></table></div></div>
+      ${citeNote(p)}
+      <div class="row section"><span class="small muted">Refine:</span>${["shorter", "more on their priorities", "less internal detail"].map(v => `<button class="chip" data-x="pf-refine" data-v="${v}">${v[0].toUpperCase() + v.slice(1)}</button>`).join("")}</div>
+      <div class="actions section"><button class="btn plain" data-x="pf-go" data-i="1">Back to feedback</button><button class="btn" data-x="pf-copy-story">Copy story</button><span style="flex:1"></span><button class="btn primary" data-x="pf-approve">Approve story</button></div>`;
+  }
+  if (fl.step === 3) body = fl.outcome ? `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>Thanks. Sent to ${esc(domainOwner(p.cust))}</h2><p class="small muted" style="max-width:60ch">Your debrief became ${plural(fl.outcome.length, "new fact", "new facts")} in ${esc(p.cust)}'s “History & events” and “People & buyers”. The curator checks them, then the next run starts from here.</p>
+      <div class="stack" style="width:100%;text-align:left">${fl.outcome.map(id => factRow(fact(id))).join("")}</div></div>`
+    : `<div class="card"><div class="card-hd">How did the meeting go?</div><div class="pad stack">
+      <div class="field"><span class="flabel">Outcome</span><div class="seg">${["Agreed", "Partly agreed", "Not yet"].map(o => `<button type="button" data-x="pf-res" data-v="${o}" aria-pressed="${fl.res === o}">${o}</button>`).join("")}</div></div>
+      <div class="field"><label for="pf-agreed">What was agreed</label><textarea id="pf-agreed" rows="2" placeholder="e.g. Capsules end-cap in weeks 38–41, promo depth 25%"></textarea></div>
+      <div class="field"><label for="pf-fb">What the buyer said</label><textarea id="pf-fb" rows="2" placeholder="e.g. Wants the promotion calendar by 15 Oct"></textarea></div>
+      <div class="field"><label for="pf-next">Next meeting</label><input id="pf-next" placeholder="e.g. 05 Dec 2026"></div>
+      <div class="callout info">This becomes knowledge for ${esc(p.cust)} and goes to ${esc(domainOwner(p.cust))} (curator) for review.</div>
+      <div class="actions"><button class="btn primary" data-x="pf-debrief">Send debrief</button></div></div></div>`;
+  return steps + body;
+}
+const maxStep = fl => fl.outcome ? 3 : fl.approved ? 3 : fl.story ? 2 : fl.slides ? 1 : 0;
+
+/* Project page: Prepare (the flow) and Assistant (the chat) */
+const baseProject = RENDER.project, baseProjectAfter = AFTER.project;
+RENDER.project = () => {
+  const p = proj(state.project), html = baseProject(), tab = state.ptab || "prepare";
+  const tabs = `<div class="tabs" role="tablist"><button role="tab" data-x="ptab" data-v="prepare" aria-selected="${tab === "prepare"}">Prepare the meeting</button><button role="tab" data-x="ptab" data-v="assistant" aria-selected="${tab === "assistant"}">Assistant</button></div>`;
+  const withTabs = html.replace(NOTE, NOTE + tabs);
+  if (tab === "assistant") return withTabs;
+  const aside = (withTabs.match(/<aside class="side">[\s\S]*<\/aside>/) || [""])[0];
+  return withTabs.replace(/<div class="proj">[\s\S]*$/, `<div class="proj"><section>${prepareHTML(p)}</section>${aside}</div>`);
+};
+AFTER.project = () => { if ((state.ptab || "prepare") === "assistant") baseProjectAfter(); };
+
+/* Selling Coach page and chat also feed the demand backlog */
+const baseCoachResult = coachResult;
+coachResult = c => {
+  const r = baseCoachResult(c), map = ["performance", "shopper", "plans", "strategy", "history"];
+  const fs = selectFacts(c.cat, c.cust, "").ranked.map(x => x.f);
+  const has = [fs.some(f => f.type === "metric"), fs.some(f => f.type === "recommendation" || f.type === "insight"), fs.some(f => f.type === "recommendation"), fs.filter(f => f.type === "metric" || f.type === "insight").length > 1, fs.some(f => f.type === "event")];
+  has.forEach((h, i) => { if (!h) addDemand(c.cust, c.cat, map[i], ["Current sales and share", "A shopper insight", "The agreed plan", "A customer benefit to point to", "An agreed next step"][i] + ` for ${c.cust}`, "Selling Coach feedback"); });
+  return r;
+};
+
+/* Events */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-x]"); if (!el) return;
+  const x = el.dataset.x, v = el.dataset.v, p = proj(state.project), fl = p && p.flow;
+  switch (x) {
+    case "open-domain": closeOverlay(); state.domain = v; go("domain"); break;
+    case "k-add": addKnowledgeModal(v, el.dataset.k, el.dataset.d); break;
+    case "k-jump": e.preventDefault(); document.getElementById("k-" + el.dataset.k)?.scrollIntoView({ behavior: "smooth", block: "start" }); break;
+    case "k-refresh": { const f = fact(el.dataset.id); f.asOf = TODAY; render(); toast("Marked as still true today."); break; }
+    case "d-dismiss": DEMAND = DEMAND.filter(d => d.id !== el.dataset.id); render(); toast("Request dismissed."); break;
+    case "fact-edit-save": { const f = fact(el.dataset.id), t = $("#fe-text").value.trim(); if (t) { f.text = t; f.asOf = TODAY; markOutdated(f.cat, f.cust, "A fact was edited."); } render(); factDrawer(f.id); toast("Saved."); break; }
+    case "ptab": state.ptab = v; render(); break;
+    case "pf-go": { const i = +el.dataset.i; if (i <= maxStep(fl)) { fl.step = i; render(); } break; }
+    case "pf-deck": fl.deck = el.dataset.deck; if (!p.decks.includes(fl.deck)) p.decks.push(fl.deck); fl.slides = null; fl.story = null; render(); break;
+    case "pf-pc": setTimeout(() => { fl.pc = !fl.pc; render(); }, 0); break;
+    case "pf-feedback": fl.running = true; render(); animate(fl, fl.pc ? 5 : 4, () => {
+      fl.running = false; fl.slides = genSlides(p); fl.step = 1; fl.story = null; fl.approved = false;
+      fl.slides.filter(s => s.gap).forEach(s => addDemand(p.cust, p.cat, s.gap.k, s.gap.text, "Selling Coach feedback"));
+      const score = (5 * fl.slides.filter(s => s.status === "ok").length / fl.slides.length).toFixed(1);
+      p.runs.unshift({ id: "RUN-" + Date.now(), tool: "Selling Coach", date: TODAY, status: "Completed", note: `${fl.deck} · slide-by-slide feedback · ${score}/5`, title: fl.deck });
+    }, 550); break;
+    case "pf-copy": case "pf-apply": { const s = fl.slides.find(y => y.n === +el.dataset.n), f = s.fact, text = `${f.text} (Source: ${sourceName(f)}, ${f.asOf})`;
+      if (x === "pf-apply") { s.applied = true; render(); toast(`Applied to slide ${s.n}.`); }
+      else navigator.clipboard?.writeText(text).then(() => toast("Copied with its source."), () => toast(`Copy not available here. Text: ${text}`)); break; }
+    case "pf-story": fl.story = genStory(p); fl.step = 2; fl.variant = ""; fl.story.steps.filter(s => !s.fact).forEach(() => addDemand(p.cust, p.cat, "history", `An agreed next step with ${p.cust} (date and owner)`, "Story writing")); render(); $("#main").scrollTop = 0; break;
+    case "pf-clear-all": { const fs = fl.story.steps.map(s => s.fact).filter(f => f && !quotable(f, p.audience) && f.sens === "internal" && !f.clearReq);
+      fs.forEach(f => { f.clearReq = true; REVIEW.push({ id: "R-" + (REVIEW.length + 30), kind: "Customer clearance request", cls: "info", cat: f.cat || p.cat, title: f.text, body: `${PEOPLE.kam.name} wants to use this in a customer meeting (${p.name}).`, actions: [["Clear for customers", "primary"], ["Keep internal", ""]], fact: f.id, raised: "clear" }); });
+      renderShell(); toast(`${plural(fs.length, "request", "requests")} sent to ${domainOwner(p.cust)}.`); break; }
+    case "pf-refine": fl.variant = v; render(); toast(`Story refined: ${v}.`); break;
+    case "pf-copy-story": { const t = fl.story.steps.map(s => `${s.step}: ${s.head}${s.fact ? ` (Source: ${sourceName(s.fact)})` : ""}`).join("\n"); navigator.clipboard?.writeText(t).then(() => toast("Story copied."), () => toast("Copy not available here.")); break; }
+    case "pf-approve": fl.approved = true; fl.step = 3; p.runs.unshift({ id: "RUN-" + Date.now(), tool: "Storyline", date: TODAY, status: "Approved", note: `Story for ${fl.deck}`, title: `Story · ${fl.deck}`, html: `<div class="card pad stack">${fl.story.steps.map(s => `<div><b>${s.step}</b><br><span class="small">${esc(s.head)}</span></div>`).join("")}</div>` }); render(); toast("Story approved and saved to the project."); break;
+    case "pf-res": fl.res = v; render(); break;
+    case "pf-debrief": { const agreed = $("#pf-agreed").value.trim(), fb = $("#pf-fb").value.trim(), next = $("#pf-next").value.trim(), ids = [];
+      const add = (t, k, type) => { const id = "F-" + (5000 + FACTS.length); FACTS.unshift({ id, type, ktype: k, text: t, cat: p.cat, cust: p.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, origin: "a meeting debrief", loc: `Debrief · ${p.name}`, excerpt: `Debrief by ${PEOPLE.kam.name} after the meeting.`, dedup: 1, by: PEOPLE.kam.name }); ids.push(id); };
+      add(`${p.name}: ${(fl.res || "Outcome not set").toLowerCase()}${agreed ? `. Agreed: ${agreed}` : ""}.`, "history", "event");
+      if (fb) add(`Buyer feedback: ${fb}`, "people", "insight");
+      if (next) add(`Next meeting with ${p.cust} on ${next}.`, "history", "event");
+      DEMAND = DEMAND.filter(d => !(d.cust === p.cust && d.k === "history" && next));
+      fl.outcome = ids; markOutdated(p.cat, p.cust, "A meeting debrief arrived."); render(); toast(`Debrief sent to ${domainOwner(p.cust)}.`); break; }
+  }
+});
+
+/* Curator home replaces Home for curators; the review queue gets its own page */
+const baseStart = RENDER.start;
+RENDER.start = () => curatorMode() ? curatorHome() : baseStart();
+RENDER.queue = () => { state.srcTab = "review"; return RENDER.sources().replace("<h1>Sources & review</h1>", "<h1>Review queue</h1>"); };
 
 render();
 </script>
