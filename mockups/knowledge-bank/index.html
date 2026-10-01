@@ -123,6 +123,17 @@ details[open] > summary { margin-bottom: 10px; }
 .summary-card { border: 1px solid var(--border-primary-light); background: linear-gradient(180deg, #F7FAFF, var(--white)); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px; display: grid; gap: 10px; }
 .summary-card ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
 .group-hd { font: 600 13px var(--mont); margin: 18px 0 8px; display: flex; gap: 8px; align-items: center; }
+.createmenu { position: relative; }
+.createmenu > summary { list-style: none; }
+.createmenu > summary::-webkit-details-marker { display: none; }
+.createmenu > summary::before, .createmenu[open] > summary::before { content: none; display: none; }
+.createmenu[open] > summary { margin-bottom: 0; }
+.createmenu__list { position: absolute; right: 0; top: calc(100% + 6px); z-index: 15; width: 290px; background: var(--white); border: 1px solid var(--light-gray); border-radius: 10px; box-shadow: var(--shadow-lg); padding: 6px; display: grid; }
+.createmenu__list button { border: 0; background: none; text-align: left; padding: 9px 10px; border-radius: 7px; display: grid; gap: 1px; }
+.createmenu__list button:hover, .createmenu__list button:focus-visible { background: var(--primary-light); }
+.createmenu__list b { font-size: 13px; color: var(--charcoal); }
+.createmenu__list span { font-size: 11.5px; color: var(--steel); }
+.quick { justify-content: center; margin-top: 14px; }
 .roleswitch { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--steel); }
 
 /* Summary strip */
@@ -459,6 +470,14 @@ i.mk { display: inline-block; width: 11px; height: 11px; vertical-align: -1px; m
     <span class="appbar__name">AI Sales Assistant</span>
     <form class="gsearch" id="gsearch" role="search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="gq" type="search" placeholder="Search what we know, e.g. own label" aria-label="Search the Knowledge Bank"></form>
     <span class="appbar__spacer"></span>
+    <details class="createmenu" id="createmenu"><summary class="btn primary sm"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Create</summary>
+      <div class="createmenu__list" role="menu">
+        <button role="menuitem" data-act="new-project"><b>New project</b><span>One customer, one meeting, all tools</span></button>
+        <button role="menuitem" data-x="cust-new" data-name=""><b>Customer profile</b><span>Shared with everyone, drafted from personal context</span></button>
+        <button role="menuitem" data-x="buyer-new" data-name=""><b>Buyer profile</b><span>Private to you, used in coaching</span></button>
+        <button role="menuitem" data-act="add-fact"><b>Fact</b><span>Something you know about an account</span></button>
+        <button role="menuitem" data-act="add-source"><b>Document</b><span>A deck, study or Sales Book to import</span></button>
+      </div></details>
     <span class="roleswitch"><span>Viewing as</span><span class="seg" role="group" aria-label="Viewing as" id="roleswitch"></span></span>
     <span class="avatar" id="avatar" title="Camille Martin">CM</span>
   </header>
@@ -934,7 +953,7 @@ function seedChat(p) {
   if (p.chat) return;
   const s = selectFacts(p.cat, p.cust, "");
   const q = s.ranked.filter(x => quotable(x.f, p.audience)).length;
-  p.chat = [{ who: "bot", html: `<p>Hi Camille. This project covers <b>${esc(scopeLabel(p.cat, p.cust))}</b> for a <b>${AUD[p.audience].toLowerCase()}</b> audience. The Knowledge Bank has ${plural(s.inScope, "usable fact", "usable facts")} here${p.audience === "external" ? `, and ${plural(q, "is", "are")} cleared to use with the customer` : ""}.</p>
+  p.chat = [{ who: "bot", html: `<p>Hi Camille. This project covers <b>${esc(scopeLabel(p.cat, p.cust))}</b> for ${p.audience === "external" ? "a <b>customer-facing</b>" : "an <b>internal team</b>"} audience. The Knowledge Bank has ${plural(s.inScope, "usable fact", "usable facts")} here${p.audience === "external" ? `, and ${plural(q, "is", "are")} cleared to use with the customer` : ""}.</p>
     <p>Tell me what you need. I can review a deck with <b>Selling Coach</b>, build a storyline with the <b>Storyline Generator</b>, or answer from the Knowledge Bank.</p>`, chips: [`Review my ${p.cust} deck`, `Build a storyline for ${p.cust}`, `What do we know about ${p.cust}?`, "What context is missing?"] }];
 }
 RENDER.project = () => {
@@ -961,7 +980,7 @@ RENDER.project = () => {
         </div>
       </section>
       <aside class="side">
-        <div class="card"><div class="card-hd">Context <span class="small" style="font:600 12px var(--inter);color:${col}">${s} of 5 parts covered</span></div>
+        <div class="card"><div class="card-hd">Context <span class="small" style="font:600 12px var(--inter);color:${col === "var(--alert-accent)" ? "var(--alert-text)" : col}">${s} of 5 parts covered</span></div>
           <div class="plist">${ps.map(x => `<div><span>${x.name}${x.name === "Buyer" && x.text ? `<div class="hint">${esc(x.text)}</div>` : ""}</span>${x.n ? `<span class="pill ok">${x.name === "Buyer" ? "Attached" : plural(x.n, "fact", "facts")}</span>` : x.name === "Buyer" ? `<button class="btn ghost small" data-act="attach-buyer">Attach</button>` : `<span class="pill neutral">Missing</span>`}</div>`).join("")}</div>
           <div class="pad" style="padding-top:10px"><span class="hint">Worked out from Knowledge Bank facts. Private facts never count.</span></div></div>
         <div class="card"><div class="card-hd">Account ${st ? `<span class="pill ${B_PILL[st][0]}">Briefing: ${B_PILL[st][1].toLowerCase()}</span>` : ""}</div>
@@ -997,6 +1016,7 @@ function botReply(p, fn, delay = 550) {
 function lockOld(p) { p.chat.forEach(m => { if (m.chips) m.used = true; m.lock = true; }); }
 
 const INTENT = [
+  ["create", /\b(create|add|new|set up)\b.*\b(buyer|customer|retailer)\b/i],
   ["help", /^\s*(hi|hello|hey|help|\?|what can you do|bonjour)\b/i],
   ["coach", /(selling coach|deck|slides?|presentation|feedback|psf|review my)/i],
   ["story", /(storyline|story|opportunit|narrative|pitch)/i],
@@ -1008,7 +1028,7 @@ function userSays(p, text) {
   push(p, { who: "me", text });
   const hits = INTENT.filter(([, re]) => re.test(text)).map(([k]) => k);
   const intent = hits.includes("coach") && hits.includes("story") ? "which" : hits[0] || "kb";
-  ({ help: showHelp, coach: startCoach, story: startStory, gaps: contextGaps, which: askWhich, kb: t => kbAnswer(p, text) })[intent](p);
+  ({ create: t => createFromChat(p, text), help: showHelp, coach: startCoach, story: startStory, gaps: contextGaps, which: askWhich, kb: t => kbAnswer(p, text) })[intent](p);
 }
 
 /* Citations respect the audience: usable facts get a number, the rest are labelled. */
@@ -1032,8 +1052,15 @@ function whyBox(r, p) {
   </div></details>`;
 }
 
+function createFromChat(p, text) {
+  const buyer = /buyer/i.test(text);
+  botReply(p, m => { m.html = buyer
+    ? `<div class="tool-hd">${icon("user")}New buyer profile</div><p>I'll draft it from the emails, calls and meetings where the buyer talks. It stays private to you and can be attached to this project.</p><div class="row"><button class="btn sm primary" data-x="buyer-new" data-cust="${esc(p.cust)}" data-from="project">Create a buyer for ${esc(p.cust)}</button></div>`
+    : `<div class="tool-hd">${icon("store")}New customer profile</div><p>${profileOf(p.cust) ? `${esc(p.cust)} already has a profile. You can open it, or create a profile for another customer.` : `${esc(p.cust)} has no profile yet. I'll draft one from documents you already have, and you approve it in three steps.`}</p>
+       <div class="row">${profileOf(p.cust) ? `<button class="btn sm" data-x="open-profile" data-v="${esc(p.cust)}">Open the ${esc(p.cust)} profile</button><button class="btn sm primary" data-x="cust-new" data-name="" data-from="project">Create another customer</button>` : `<button class="btn sm primary" data-x="cust-new" data-name="${esc(p.cust)}" data-from="project">Create the ${esc(p.cust)} profile</button>`}</div>`; });
+}
 function showHelp(p) {
-  botReply(p, m => { m.html = `<p>Here's what I can do in this project:</p><ul><li><b>Review a deck</b> with Selling Coach: feedback on each selling step, backed by facts.</li><li><b>Build a storyline</b> with the Storyline Generator: opportunities, then a step-by-step story.</li><li><b>Answer a question</b> from the Knowledge Bank, with the source of every fact.</li></ul>`;
+  botReply(p, m => { m.html = `<p>Here's what I can do in this project:</p><ul><li><b>Review a deck</b> with Selling Coach: feedback on each selling step, backed by facts.</li><li><b>Build a storyline</b> with the Storyline Generator: opportunities, then a step-by-step story.</li><li><b>Answer a question</b> from the Knowledge Bank, with the source of every fact.</li><li><b>Create a customer or buyer profile</b>, drafted from your personal context.</li></ul>`;
     m.chips = [`Review my ${p.cust} deck`, `Build a storyline for ${p.cust}`, "What context is missing?"]; });
 }
 function askWhich(p) {
@@ -1589,7 +1616,7 @@ document.addEventListener("keydown", e => {
 /* =====================================================================
    Integrated from the customer-profile-builder mock-up (v9):
    Home, project wizard, Selling Coach page, customer and buyer profiles
-   (Work IQ, proposal-first), profile freshness, Training Center.
+   (personal context, proposal-first), profile freshness, Training Center.
    Retailers and people stay fictional.
    ===================================================================== */
 const OBJECTIVES = ["Customer Business Review (CBR)", "Category Growth & Market Share Strategy Meeting", "New Product Innovation (NPI) / Line Extension Presentation", "Joint Business Planning (JBP) Session", "Internal Innovation Deployment for Sales Teams", "Internal Account Review & Growth Plan", "Promotion Strategy Alignment", "Post-Promotional Performance Review", "Space & Assortment Optimization Review", "Seasonal & Event-Based Program Pitch", "Digital & E-commerce Strategy Session", "Key Brand Strategic Alignment Meeting", "Supply Chain & Logistics Optimization Meeting", "Sustainability Initiative Collaboration", "New Retailer Onboarding Presentation", "Store Operations & Field Execution Pitch", "Top to Top Meeting"];
@@ -1652,22 +1679,15 @@ RENDER.start = () => {
     ["mic", "Role-play Coach", "Practise customer meetings with voice, with real-time scoring and feedback.", ["Voice-based practice", "Meeting rehearsal", "Objection handling", "Uses your buyer profiles"], "Start practice", `data-view="roleplay"`],
     ["chat", "Stewardship Q&A", "Ask questions about sales stewardship and competition-law guidance.", ["Always-on assistant", "Global and local guidance", "Compliance guidance", "Policy clarification"], "Ask questions", `data-view="stewardship"`],
   ];
-  const news = [
-    ["user", "Create a customer with Work IQ", "Work IQ proposes a customer profile from documents you already have. You review, edit and approve.", ["Proposal first, no blank form", "Public sources pass a trust check", "Three approval gates"], "Create a customer", `data-x="cust-new"`],
-    ["spark", "Personal context in Selling Coach", "Work IQ proposes the context that matters for this meeting: your plans, strategies and notes.", ["A proposal you adjust", "Better feedback every run", "Used for the run only"], "Try it", `data-view="coach"`],
-    ["cap", "Onboarding and handover", "Train joiners from the Knowledge Bank, and capture a leaver's knowledge back into it.", ["Programs built from account facts", "One handover pack", "Handover feeds onboarding"], "Open", `data-view="training"`],
-    ["mail", "Profiles keep themselves current", "When public sources move, the profile owner gets a checked update to approve in one click.", ["Triggered by findings", "One-click approval", "The owner stays in control"], "See the update", UPDATES.length ? `data-x="open-update" data-id="${UPDATES[0].id}"` : `data-view="people"`],
-  ];
   const hist = [...HISTORY, ...PROJECTS.flatMap(x => x.runs.map(r => ({ ...r, proj: x.name, pid: x.id })))].slice(0, 6);
   const upd = UPDATES.filter(u => profileOf(u.cust)?.owner === PEOPLE.kam.name);
   return `${p ? `<div class="homescope">${icon("grid")}<span>Active project: <b>${esc(p.name)}</b>. Every tool below uses its customer and facts.</span><button class="btn plain sm" data-view="projects">Switch project</button></div>` : ""}
-    <div class="welcome"><h1>${icon("spark")}Welcome to AI Sales Assistant</h1><p>Hello ${PEOPLE[state.role].name.split(" ")[0]}! Choose a tool, or open a project to keep everything for one customer in one place.</p></div>
+    <div class="welcome"><h1>${icon("spark")}Welcome to AI Sales Assistant</h1><p>Hello ${PEOPLE[state.role].name.split(" ")[0]}! Choose a tool, or open a project to keep everything for one customer in one place.</p>
+      <div class="row quick"><button class="btn sm" data-act="new-project">${icon("grid")}New project</button><button class="btn sm" data-x="cust-new" data-name="">${icon("store")}Create a customer</button><button class="btn sm" data-x="buyer-new" data-name="">${icon("user")}Create a buyer</button></div></div>
     ${NOTE}
     ${upd.length ? `<div class="callout info inbox"><span>${icon("mail")}</span><span><b>${plural(upd[0].items.length, "public update", "public updates")} found for the ${esc(upd[0].cust)} profile you own.</b> Both come from the customer's own published material and passed the trust check.</span><button class="btn sm primary" data-x="open-update" data-id="${upd[0].id}">Review</button></div>` : ""}
     <div class="toolgrid">${tools.map(([ic, t, d, ls, cta, at]) => `<div class="toolcard"><div class="toolcard__head"><div class="toolcard__ico">${icon(ic)}</div><h3>${t}</h3><p>${d}</p></div>
       <div class="toolcard__body">${ls.map(l => `<div class="checkline">${icon("check")}${l}</div>`).join("")}<div class="toolcard__cta"><button class="btn primary" ${at}>${cta}</button></div></div></div>`).join("")}</div>
-    <div class="newband"><h2>${icon("spark")}New: powered by Work IQ and the Knowledge Bank</h2><span class="line"></span></div>
-    <div class="newgrid">${news.map(([ic, t, d, ls, cta, at]) => `<div class="newcard"><span class="pill info chip-new">New</span><div class="newcard__ico">${icon(ic)}</div><h3>${t}</h3><p>${d}</p><ul>${ls.map(l => `<li>${icon("check")}${l}</li>`).join("")}</ul><button class="btn primary" ${at}>${cta}</button></div>`).join("")}</div>
     <section class="histsec"><div class="spread"><h3 style="font-size:18px">History</h3><button class="btn ghost small" data-view="projects">View all projects</button></div>
       ${hist.length ? `<div class="table-wrap" style="margin-top:12px"><table class="stbl narrow"><thead><tr><th>Tool</th><th>Material or result</th><th>Project</th><th>Date</th><th>Status</th></tr></thead><tbody>${hist.map(h => `<tr ${h.pid ? `data-act="open-project" data-id="${h.pid}"` : ""}><td class="name">${h.tool}</td><td>${esc(h.note)}</td><td>${esc(h.proj || "No project")}</td><td>${h.date}</td><td><span class="pill ${h.status === "Running" ? "info" : "ok"}">${h.status}</span></td></tr>`).join("")}</tbody></table></div>` : `<div class="empty-state" style="margin-top:12px">No recent analyses. Upload your first presentation to get started.</div>`}
     </section>`;
@@ -1746,7 +1766,7 @@ RENDER.coach = () => {
   const sel = c.items ? c.items.filter(i => i.on).length : 0;
   const ready = c.deck && (c.pc === "attached" || c.pc === "skipped");
   return `<div class="crumb"><button data-view="start">Home</button><span>›</span><span>Selling Coach</span></div>
-    <div class="pagehead"><div><h1>Selling Coach</h1><p class="sub">Upload your presentation, set the meeting context and, if you want, let Work IQ add the personal context you already have. You review that context before it's used.</p></div></div>${NOTE}
+    <div class="pagehead"><div><h1>Selling Coach</h1><p class="sub">Upload your presentation, set the meeting context and, if you want, add the personal context you already have. You review that context before it's used.</p></div></div>${NOTE}
     ${p ? `<div class="homescope">${icon("grid")}<span>From project <b>${esc(p.name)}</b>: customer, category and buyer are filled in.</span></div>` : ""}
     ${stepper(["Material", "Meeting context", "Personal context"], !c.deck ? 0 : c.pc === "attached" || c.pc === "skipped" ? 3 : 2)}
     <div class="card"><div class="card-hd">Step 1 · Upload the sales material (PDF or PPTX)</div><div class="pad stack">
@@ -1763,13 +1783,13 @@ RENDER.coach = () => {
         <div class="field"><label for="sc-cat">Category</label><select id="sc-cat" data-bind="sc.cat">${CATEGORIES.map(x => `<option ${x === c.cat ? "selected" : ""}>${x}</option>`).join("")}</select></div>
         <div class="field"><label for="sc-buyer">Buyer</label><select id="sc-buyer" data-bind="sc.buyer" data-rerender><option value="">No buyer</option>${buyers.map(b => `<option value="${b.id}" ${b.id === c.buyer ? "selected" : ""}>${esc(b.name)} · ${esc(b.role)}</option>`).join("")}<option value="__new">Add a buyer profile…</option></select></div></div>
       <div class="field"><label for="sc-ctx">Important context</label><textarea id="sc-ctx" data-bind="sc.context" rows="3" placeholder="What must the coach know about this meeting?">${esc(c.context)}</textarea>
-        <div class="row"><button class="btn sm plain" data-x="sc-propose">${icon("spark")}Propose from my latest meetings</button><span class="hint">Work IQ drafts this from your recent meetings, notes and emails with ${esc(c.cust)}. You edit it.</span></div></div>
+        <div class="row"><button class="btn sm plain" data-x="sc-propose">${icon("spark")}Propose from my latest meetings</button><span class="hint">Drafted from your recent meetings, notes and emails with ${esc(c.cust)}. You edit it.</span></div></div>
     </div></div>
-    <div class="card" style="margin-top:14px"><div class="card-hd">Step 3 · Use my personal context (Work IQ)<span class="aside">Optional</span></div><div class="pad stack">
-      ${c.pc === "off" ? `<p class="small">On top of the fields above, Work IQ reads the plans, strategies, notes and emails you can access for ${esc(c.cust)} · ${esc(c.cat)} and proposes what matters for this meeting. You review it first. Nothing is stored.</p>
-          <div class="row"><button class="btn primary" data-x="sc-pc-build">${icon("spark")}Build my context with Work IQ</button><button class="btn plain" data-x="sc-pc-skip">Skip, run on the deck only</button></div>`
-      : c.pc === "loading" ? `<b>Work IQ is gathering your context for ${esc(c.cust)}</b>${stagesHTML([["Finding what you can access on this customer", "Work IQ"], ["Reading plans, strategies, notes and emails in place", "Work IQ"], ["Keeping only what's relevant to this meeting", "Work IQ"], ["Proposing your personal context", "Work IQ"]], c.done)}<p class="hint">Used for this run only and never written into the customer profile.</p>`
-      : c.pc === "proposal" ? `<div class="spread"><b>Work IQ's proposed context</b><span class="pill info">9 documents read</span></div><p class="small muted">A proposal you adjust, not a checklist you fill in. Untick anything you don't want, or add something Work IQ couldn't see.</p>
+    <div class="card" style="margin-top:14px"><div class="card-hd">Step 3 · Use my personal context<span class="aside">Optional</span></div><div class="pad stack">
+      ${c.pc === "off" ? `<p class="small">On top of the fields above, personal context reads the plans, strategies, notes and emails you can access for ${esc(c.cust)} · ${esc(c.cat)} and proposes what matters for this meeting. You review it first. Nothing is stored.</p>
+          <div class="row"><button class="btn primary" data-x="sc-pc-build">${icon("spark")}Build my personal context</button><button class="btn plain" data-x="sc-pc-skip">Skip, run on the deck only</button></div>`
+      : c.pc === "loading" ? `<b>Gathering your personal context for ${esc(c.cust)}</b>${stagesHTML([["Finding what you can access on this customer", "Personal context"], ["Reading plans, strategies, notes and emails in place", "Personal context"], ["Keeping only what's relevant to this meeting", "Personal context"], ["Proposing your personal context", "Personal context"]], c.done)}<p class="hint">Used for this run only and never written into the customer profile.</p>`
+      : c.pc === "proposal" ? `<div class="spread"><b>Proposed personal context</b><span class="pill info">9 documents read</span></div><p class="small muted">A proposal you adjust, not a checklist you fill in. Untick anything you don't want, or add something it couldn't see.</p>
           ${c.items.map((it, i) => `<label class="entity ${it.on ? "sel" : ""}">${chk(it.on, `data-x="sc-item" data-i="${i}"`)}<span>${esc(it.t)}<br><span class="hint">${esc(it.s)}</span></span></label>`).join("")}
           <div class="row"><input class="search" id="sc-add" placeholder="Add your own context for this run" style="flex:1"><button class="btn sm plain" data-x="sc-add">Add</button></div>
           <p class="hint">The context isn't stored. The result is saved to your History, which only you can see.</p>
@@ -1815,15 +1835,15 @@ RENDER.people = () => {
       <div class="bot stack"><span class="small">${esc(pr.objectives[0])}</span><span class="hint">Owner: ${esc(pr.owner)}${pr.owner === PEOPLE.kam.name ? " (you)" : ""} · reviewed ${pr.reviewed} · ${plural(pr.sources.length, "source", "sources")}</span>
       <div class="row"><button class="btn sm" data-x="open-profile" data-v="${esc(cu)}">Open profile</button><button class="btn sm plain" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all facts</button>${pr.owner !== PEOPLE.kam.name ? `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>` : ""}</div></div></div>`
     : `<div class="custcard missing"><div class="top"><span class="bldg">${icon("store")}</span><span><b>${esc(cu)}</b><div class="hint">UK · no profile yet</div></span></div>
-      <div class="bot stack"><span class="small muted">Nobody has created a customer profile yet. Work IQ can draft one from documents you already have.</span><div class="row"><button class="btn sm primary" data-x="cust-new" data-name="${esc(cu)}">${icon("spark")}Create with Work IQ</button></div></div></div>`; }).join("");
+      <div class="bot stack"><span class="small muted">Nobody has created a customer profile yet. Personal context can draft one from documents you already have.</span><div class="row"><button class="btn sm primary" data-x="cust-new" data-name="${esc(cu)}">${icon("spark")}Create with personal context</button></div></div></div>`; }).join("");
   const buyers = curatorMode() ? `<div class="callout info">Buyer profiles are private to the KAM who creates them. Switch to “KAM” to see Camille's buyers.</div>`
     : myBuyers.map(b => `<div class="buyercard"><div class="buyercard__hd"><span class="bldg">${icon("user")}</span><span><b>${esc(b.name)}</b><div class="hint">${esc(b.role)} · ${esc(b.cust)} · ${esc(b.cat)}</div></span><span class="pill warn" style="margin-left:auto">Private to you</span></div>
       <div class="buyercard__bd stack"><span class="small"><b>Style (DISC):</b> ${esc(b.disc)}</span><span class="small"><b>Goals:</b> ${esc(b.goals)}</span><span class="small"><b>Watch out for:</b> ${esc(b.friction)}</span><span class="hint">Updated ${b.updated}</span>
-      <div class="row"><button class="btn sm" data-x="buyer-coach" data-id="${b.id}">Use in Selling Coach</button>${PROJECTS.some(p => p.cust === b.cust) ? `<button class="btn sm plain" data-x="buyer-attach" data-id="${b.id}">Attach to ${esc(PROJECTS.find(p => p.cust === b.cust).name)}</button>` : ""}</div></div></div>`).join("") + `<button class="buyercard add" data-x="buyer-new">${icon("plus")}<b>Add a buyer</b><span class="hint">Work IQ proposes a profile from where the buyer talks</span></button>`;
+      <div class="row"><button class="btn sm" data-x="buyer-coach" data-id="${b.id}">Use in Selling Coach</button>${PROJECTS.some(p => p.cust === b.cust) ? `<button class="btn sm plain" data-x="buyer-attach" data-id="${b.id}">Attach to ${esc(PROJECTS.find(p => p.cust === b.cust).name)}</button>` : ""}</div></div></div>`).join("") + `<button class="buyercard add" data-x="buyer-new">${icon("plus")}<b>Add a buyer</b><span class="hint">Proposed from where the buyer talks</span></button>`;
   return head("Knowledge Bank", "Customers & buyers", "Customer profiles are shared across the company and built on checked facts. Buyer profiles are private to you and feed coaching and role-play.",
     `<button class="btn plain" data-x="buyer-new">${icon("plus")}Add buyer</button><button class="btn primary" data-x="cust-new">${icon("plus")}Add customer</button>`) + NOTE + tabs +
     (tab === "customers" ? `<div class="ppl-grid">${custs}</div>` : `<div class="ppl-grid">${buyers}</div>`) +
-    `<div class="ppl-grid section"><div class="card pad stack"><b>Can't find a customer?</b><span class="small muted">Ask the profile owner to add it. They get a Work IQ draft, not a blank form, and you're told when it's saved.</span><div><button class="btn sm" data-x="request-cust">Request a customer</button></div></div>
+    `<div class="ppl-grid section"><div class="card pad stack"><b>Can't find a customer?</b><span class="small muted">Ask the profile owner to add it. They get a draft built from personal context, not a blank form, and you're told when it's saved.</span><div><button class="btn sm" data-x="request-cust">Request a customer</button></div></div>
       <div class="card pad stack"><b>Spotted something out of date?</b><span class="small muted">Flag it to the profile owner in one click. They can have the change drafted for them.</span><div><button class="btn sm" data-x="suggest-edit" data-v="Brightmart">Suggest an edit</button></div></div></div>`;
 };
 function profileDrawer(cu) {
@@ -1838,15 +1858,18 @@ function profileDrawer(cu) {
 }
 
 /* =====================================================================
-   Create a customer profile · Work IQ, three approval gates
+   Create a customer profile · personal context, three approval gates
    ===================================================================== */
 function cnDefaults(name, from) {
-  return { step: "name", name: name || "Harbour & Co", from: from || null, entity: 0, done: 0, posture: false, docs: [true, true, true],
+  return { step: "name", name: name === undefined ? "Harbour & Co" : name, from: from || null, entity: 0, done: 0, posture: false, docs: [true, true, true],
     objectives: "Wants launches that bring new shoppers into the store, especially in health and beauty.\nOwn-label expansion in oral care is planned for 2027.\nTracks like-for-like growth, own-label share and on-shelf availability.",
     info: "Regional grocer with about 320 stores, mostly small supermarkets.\nStrong loyalty scheme with high member penetration.",
     postureText: "[PROPOSED FROM YOUR JBP — confirm or edit] New relationship with limited joint planning so far. Our priority: earn a first category-growth project around the whitening launch.",
     kpi: "", enrich: [true, true, true, false] };
 }
+const cnSub = (t, name) => t.replaceAll("Harbour & Co", name);
+const cnDocs = n => CN_DOCS.map(d => [cnSub(d[0], n.name), d[1], d[2]]);
+const cnEnrich = n => CN_ENRICH.map(e => [cnSub(e[0], n.name), cnSub(e[1], n.name), ...e.slice(2)]);
 const CN_DOCS = [["Harbour & Co Oral Care JBP 2026.pptx", "SharePoint · 10 Feb 2026", "High"], ["UK customer landscape.docx", "OneDrive · 28 Jan 2026", "High"], ["Harbour & Co store list 2026.xlsx", "SharePoint · 06 Feb 2026", "Medium"]];
 const CN_ENRICH = [
   ["Harbour & Co reported like-for-like growth of 3.4% in its 2026 half-year results.", "Harbour & Co half-year results", "18 Jul 2026", "Objectives", "Added as new", "add"],
@@ -1858,66 +1881,66 @@ RENDER.custnew = () => {
   const n = state.cn || (state.cn = cnDefaults());
   const gate = { name: 0, entity: 0, reading: 0, gate1: 1, verifying: 1, gate2: 2, gate3: 3, saved: 4 }[n.step];
   const top = `<div class="crumb"><button data-view="people">Customers & buyers</button><span>›</span><span>Create a customer profile</span></div>
-    <div class="pagehead"><div><h1>Create a customer profile</h1><p class="sub">Name the customer and Work IQ proposes a first profile from the material you already have. You review, edit and add. You never start from a blank form.</p></div><span class="pill info lg">${icon("spark")}Work IQ · proposal first</span></div>${NOTE}
-    ${stepper(["Customer and Work IQ", "Review proposal", "Review enrichments", "Final and save"], gate)}`;
+    <div class="pagehead"><div><h1>Create a customer profile</h1><p class="sub">Name the customer and personal context proposes a first profile from the material you already have. You review, edit and add. You never start from a blank form.</p></div><span class="pill info lg">${icon("spark")}Personal context · proposal first</span></div>${NOTE}
+    ${stepper(["Customer and personal context", "Review proposal", "Review enrichments", "Final and save"], gate)}`;
   let body = "";
-  if (n.step === "name") body = `<div class="card"><div class="card-hd">Step 1 · Which customer? Work IQ drafts the first version</div><div class="pad stack">
-      <div class="grid2"><div class="field"><label for="cn-name">Customer name</label><input id="cn-name" data-bind="cn.name" value="${esc(n.name)}"></div><div class="field"><label>Country</label><select disabled><option>United Kingdom</option></select></div></div>
-      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Let Work IQ build the first draft</b><br><span class="small muted">Work IQ reads the SharePoint, OneDrive and Teams material you can already access, in place. Nothing is uploaded or copied. You get a proposed profile to review, not a pile of files to sort.</span></span></div>
-      <details><summary>Have a “golden” document or notes to start from? (optional)</summary><div class="stack"><button class="filerow" data-x="toast" data-msg="In the live tool this opens a Work IQ file picker.">${icon("file")}Pick one document via Work IQ</button><textarea rows="2" placeholder="Or paste what you know"></textarea><span class="hint">Buyer-specific or internal-only content is separated out automatically before drafting. You'll see exactly what was removed.</span></div></details>
-      <div class="actions"><button class="btn plain" data-view="people">Cancel</button><button class="btn primary" data-x="cn-go">${icon("spark")}Build proposal with Work IQ</button></div></div></div>`;
+  if (n.step === "name") body = `<div class="card"><div class="card-hd">Step 1 · Which customer? Personal context drafts the first version</div><div class="pad stack">
+      <div class="grid2"><div class="field"><label for="cn-name">Customer name</label><input id="cn-name" data-bind="cn.name" value="${esc(n.name)}" placeholder="e.g. Harbour & Co"></div><div class="field"><label>Country</label><select disabled><option>United Kingdom</option></select></div></div>
+      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Build the first draft from your personal context</b><br><span class="small muted">Personal context reads the SharePoint, OneDrive and Teams material you can already access, in place. Nothing is uploaded or copied. You get a proposed profile to review, not a pile of files to sort.</span></span></div>
+      <details><summary>Have a “golden” document or notes to start from? (optional)</summary><div class="stack"><button class="filerow" data-x="toast" data-msg="In the live tool this opens a file picker.">${icon("file")}Pick one document</button><textarea rows="2" placeholder="Or paste what you know"></textarea><span class="hint">Buyer-specific or internal-only content is separated out automatically before drafting. You'll see exactly what was removed.</span></div></details>
+      <div class="actions"><button class="btn plain" data-view="people">Cancel</button><button class="btn primary" data-x="cn-go">${icon("spark")}Build proposal from personal context</button></div></div></div>`;
   if (n.step === "entity") body = `<div class="card"><div class="card-hd">Confirm which company, before anything is drafted</div><div class="pad stack">
       <div class="callout warn"><b>“${esc(n.name)}” matches more than one company.</b> Drafting against the wrong one wastes a run and produces a profile that looks right but is about the wrong business.</div>
       <div class="callout ok"><b>Duplicate check: no existing profile.</b> If one existed, you'd be offered to open it or suggest an edit instead.</div>
       ${[[`${n.name} Ltd`, "UK operating company · about 320 stores"], [`${n.name} Group plc`, "Listed parent company · 2 countries"], [`${n.name} Ireland`, "Separate company, separate buyers"]].map(([t, d], i) => `<label class="entity ${n.entity === i ? "sel" : ""}"><input type="radio" name="cn-ent" ${n.entity === i ? "checked" : ""} data-x="cn-entity" data-i="${i}"><span><b>${esc(t)}</b><br><span class="hint">${d}</span></span></label>`).join("")}
       <div class="actions"><button class="btn plain" data-x="cn-step" data-v="name">Back</button><button class="btn primary" data-x="cn-read">Confirm and build proposal</button></div></div></div>`;
-  if (n.step === "reading") body = `<div class="card pad stack"><b>Work IQ is reading your material on ${esc(n.name)}</b>${stagesHTML([["Finding documents you can access", "Work IQ"], ["Reading 14 documents in place", "Work IQ"], ["Separating customer, buyer and internal-only content", "Input separator"], ["Consolidating one proposed profile", "Work IQ"]], n.done)}<p class="hint">Nothing is stored yet. You review the proposal first.</p></div>`;
-  if (n.step === "gate1") body = `<div class="callout info"><b>Gate 1 of 3 · approve the proposal once.</b> Work IQ read 14 documents you already have and drafted the two fields below. Edit them here. When you approve, checking and public research run in the background and you won't be asked about these two fields again.</div>
+  if (n.step === "reading") body = `<div class="card pad stack"><b>Reading your material on ${esc(n.name)}</b>${stagesHTML([["Finding documents you can access", "Personal context"], ["Reading 14 documents in place", "Personal context"], ["Separating customer, buyer and internal-only content", "Input separator"], ["Consolidating one proposed profile", "Personal context"]], n.done)}<p class="hint">Nothing is stored yet. You review the proposal first.</p></div>`;
+  if (n.step === "gate1") body = `<div class="callout info"><b>Gate 1 of 3 · approve the proposal once.</b> Personal context read 14 documents you already have and drafted the two fields below. Edit them here. When you approve, checking and public research run in the background and you won't be asked about these two fields again.</div>
     <div class="grid2 section">
       <div class="field"><label for="cn-obj">Customer objectives and KPIs <span class="pill ok">High confidence</span></label><textarea id="cn-obj" rows="6" data-bind="cn.objectives">${esc(n.objectives)}</textarea></div>
       <div class="field"><label for="cn-info">Key customer information</label><textarea id="cn-info" rows="6" data-bind="cn.info">${esc(n.info)}</textarea><span class="hint">Your edits are treated as authoritative and won't be overwritten by public research.</span></div></div>
     <div class="card section"><div class="card-hd">Our strategic approach · proposed, needs your confirmation ${n.posture ? `<span class="pill ok">Confirmed</span>` : `<span class="pill warn">Not confirmed</span>`}</div><div class="pad stack">
-      <span class="small muted">A plan deck describes the relationship, so Work IQ drafted a starting point from it. It's a proposal, not a fact. Confirm or edit it now, so there's no blocker at the end.</span>
+      <span class="small muted">A plan deck describes the relationship, so a starting point was drafted from it. It's a proposal, not a fact. Confirm or edit it now, so there's no blocker at the end.</span>
       <textarea rows="3" data-bind="cn.postureText">${esc(n.postureText)}</textarea><div>${n.posture ? "" : `<button class="btn sm primary" data-x="cn-posture">Confirm approach</button>`}</div></div></div>
-    <div class="callout warn section"><b>2 gaps Work IQ couldn't fill from your material:</b> no recent public financials and no market-share figure. After you approve, it searches annual reports, filings, official press releases and recognised industry reports.</div>
-    <div class="grid2 section"><div class="card"><div class="card-hd">Documents Work IQ used</div><div class="pad stack">${CN_DOCS.map(([t, s, c], i) => `<label class="entity ${n.docs[i] ? "sel" : ""}">${chk(n.docs[i], `data-x="cn-doc" data-i="${i}"`)}<span>${t}<br><span class="hint">${s} · ${c} confidence</span></span></label>`).join("")}<span class="hint">Untick a document and the proposal rebuilds without it. File names are stored owner-only.</span></div></div>
-      <div class="card"><div class="card-hd">What Work IQ kept out of the profile</div><div class="pad sepgrid">
+    <div class="callout warn section"><b>2 gaps your material couldn't fill:</b> no recent public financials and no market-share figure. After you approve, it searches annual reports, filings, official press releases and recognised industry reports.</div>
+    <div class="grid2 section"><div class="card"><div class="card-hd">Documents used</div><div class="pad stack">${cnDocs(n).map(([t, s, c], i) => `<label class="entity ${n.docs[i] ? "sel" : ""}">${chk(n.docs[i], `data-x="cn-doc" data-i="${i}"`)}<span>${t}<br><span class="hint">${s} · ${c} confidence</span></span></label>`).join("")}<span class="hint">Untick a document and the proposal rebuilds without it. File names are stored owner-only.</span></div></div>
+      <div class="card"><div class="card-hd">What was kept out of the profile</div><div class="pad sepgrid">
         <div class="sepcol sep-ok"><b>Kept · 9 facts</b>Company-wide, non-confidential</div>
         <div class="sepcol sep-warn"><b>Buyer-level · 3</b>“Buyer prefers visual stories” and 2 more<button class="btn ghost small" data-x="buyer-new" data-cust="${esc(n.name)}" data-from="custnew">Move to a buyer profile</button></div>
         <div class="sepcol sep-err"><b>Internal only · 2</b>“FY27 target +12% net sales” and a margin bridge. Not stored</div>
         <div class="sepcol sep-warn"><b>Confidential · 2 flagged</b>Statements drawn only from labelled-confidential files are flagged for your review</div></div></div></div>
     <div class="card section"><div class="card-hd">Retailer-specific KPIs · your input makes this good<span class="aside">Optional</span></div><div class="pad"><textarea rows="2" data-bind="cn.kpi" placeholder="The metric they actually track, how they judge us, any deal-breakers">${esc(n.kpi)}</textarea></div></div>
-    <div class="actions section"><button class="btn plain" data-x="cn-step" data-v="name">Restart with different input</button><span style="flex:1"></span><span class="hint">Work IQ proposal · gate 1 of 3</span><button class="btn primary" data-x="cn-approve">Approve and find enrichments</button></div>`;
+    <div class="actions section"><button class="btn plain" data-x="cn-step" data-v="name">Restart with different input</button><span style="flex:1"></span><span class="hint">Proposal · gate 1 of 3</span><button class="btn primary" data-x="cn-approve">Approve and find enrichments</button></div>`;
   if (n.step === "verifying") body = `<div class="card pad stack"><b>Approved. Checking and researching in the background</b>${stagesHTML([["Locking your approved proposal", "Drafter"], ["Searching public sources to fill the 2 gaps", "Researcher"], ["Checking each source is attributable, dated and reputable", "Trust check"], ["Checking every statement against its source", "Verifier"]], n.done)}<p class="hint">You already approved the content, so you'll only see new findings next.</p></div>`;
   if (n.step === "gate2") { const words = 620 + n.enrich.filter(Boolean).length * 60;
     body = `<div class="callout info"><b>Gate 2 of 3 · proposed enrichments.</b> Each finding passed all five trust criteria. Nothing is added unless you tick it.</div>
     <div class="meterrow section"><span class="small">Word budget</span><div class="covbar" style="flex:1"><span style="width:${words / 10}%;background:var(--primary)"></span></div><b class="small">${words} of 1,000 words</b></div>
-    <div class="table-wrap section"><table><thead><tr><th></th><th>Finding</th><th>Source</th><th>Date</th><th>Goes to</th><th>Effect</th></tr></thead><tbody>${CN_ENRICH.map((e, i) => `<tr><td>${chk(n.enrich[i], `data-x="cn-enrich" data-i="${i}" aria-label="Include finding ${i + 1}"`)}</td><td style="color:var(--charcoal)">${esc(e[0])}</td><td>${esc(e[1])}</td><td>${e[2]}</td><td>${e[3]}</td><td><span class="mk ${e[5]}">${e[4]}</span></td></tr>`).join("")}</tbody></table></div>
+    <div class="table-wrap section"><table><thead><tr><th></th><th>Finding</th><th>Source</th><th>Date</th><th>Goes to</th><th>Effect</th></tr></thead><tbody>${cnEnrich(n).map((e, i) => `<tr><td>${chk(n.enrich[i], `data-x="cn-enrich" data-i="${i}" aria-label="Include finding ${i + 1}"`)}</td><td style="color:var(--charcoal)">${esc(e[0])}</td><td>${esc(e[1])}</td><td>${e[2]}</td><td>${e[3]}</td><td><span class="mk ${e[5]}">${e[4]}</span></td></tr>`).join("")}</tbody></table></div>
     <details class="section"><summary>3 sources were found but rejected by the trust check</summary><div class="stack small">
       <span>“${esc(n.name)} said to be up for sale” · rumour blog, undated · <span class="pill bad">Not reputable</span> <span class="pill bad">Not factual</span></span>
       <span>“Margins will collapse in 2027” · social post, author unknown · <span class="pill bad">Not attributable</span></span>
       <span>“Launches own-label toothpaste” · company newsroom, Jan 2024 · <span class="pill bad">Older than 18 months</span> <span class="pill warn">Category detail: belongs in a buyer profile</span></span></div></details>
     <div class="actions section"><button class="btn plain" data-x="cn-enrich-all" data-v="0">Reject all</button><button class="btn plain" data-x="cn-enrich-all" data-v="1">Approve all</button><span style="flex:1"></span><button class="btn primary" data-x="cn-step" data-v="gate3">Continue with ${plural(n.enrich.filter(Boolean).length, "finding", "findings")}</button></div>`; }
-  if (n.step === "gate3") { const add = CN_ENRICH.filter((e, i) => n.enrich[i]);
+  if (n.step === "gate3") { const add = cnEnrich(n).filter((e, i) => n.enrich[i]);
     body = `<div class="callout info"><b>Gate 3 of 3 · final profile.</b> Shows where each statement came from and what the merge step changed.</div>
     <div class="profilebox section"><h4>Customer objectives and KPIs</h4><ul>${n.objectives.split("\n").filter(Boolean).map(l => `<li>${esc(l)}</li>`).join("")}${add.filter(e => e[3] === "Objectives").map(e => `<li><span class="mk ${e[5]}">${esc(e[0])}</span></li>`).join("")}</ul>
       <h4 style="margin-top:14px">Key customer information</h4><ul>${n.info.split("\n").filter(Boolean).map(l => `<li>${esc(l)}</li>`).join("")}${add.filter(e => e[3] === "Information").map(e => `<li><span class="mk ${e[5]}">${esc(e[0])}</span></li>`).join("")}</ul>
       <h4 style="margin-top:14px">Our strategic approach</h4><p class="small">${esc(n.postureText.replace(/^\[[^\]]*\]\s*/, ""))}</p>
       <div class="legend"><span><i class="mk add"></i>Added as new</span><span><i class="mk rep"></i>Replaced a vague statement</span><span><i class="mk mrg"></i>Merged into an existing point</span></div></div>
-    <div class="card section"><div class="card-hd">Sources kept with this profile</div><div class="pad stack small">${[...CN_DOCS.filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public · ${e[2]}`)].map(s => `<span>• ${esc(s)}</span>`).join("")}</div></div>
+    <div class="card section"><div class="card-hd">Sources kept with this profile</div><div class="pad stack small">${[...cnDocs(n).filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public · ${e[2]}`)].map(s => `<span>• ${esc(s)}</span>`).join("")}</div></div>
     ${n.posture ? "" : `<div class="callout bad section"><b>Can't save yet.</b> The strategic approach proposed at gate 1 hasn't been confirmed. <button class="btn sm" data-x="cn-posture">Confirm it now</button></div>`}
     <div class="actions section"><button class="btn plain" data-x="cn-step" data-v="gate2">Back to enrichments</button><span style="flex:1"></span><button class="btn primary" data-x="cn-save" ${n.posture ? "" : "disabled"}>Save to the Knowledge Bank</button></div>`; }
   if (n.step === "saved") body = `<div class="card pad stack" style="text-align:center;justify-items:center"><span class="okmark">✓</span><h2>${esc(n.name)} added to the Knowledge Bank</h2><p class="small muted" style="max-width:60ch">Available to everyone in the company, with its sources attached. You're recorded as the owner, so edit suggestions and freshness updates come to you. ${n.added} customer facts were added to the bank and checked by you as the owner.</p>
-    ${n.from ? `<div class="callout ok" style="text-align:left"><b>Already selected for you.</b> You came from ${n.from === "coach" ? "Selling Coach" : "a new project"}, so ${esc(n.name)} is now selected there.</div>` : ""}
-    <div class="row">${n.from ? `<button class="btn primary" data-view="${n.from}">Back to ${n.from === "coach" ? "Selling Coach" : "the new project"}</button>` : ""}<button class="btn" data-act="open-account" data-cat="" data-cust="${esc(n.name)}">See its facts</button><button class="btn plain" data-x="cust-new">Create another customer</button></div></div>`;
+    ${n.from ? `<div class="callout ok" style="text-align:left"><b>Already selected for you.</b> You came from ${{ coach: "Selling Coach", projnew: "a new project", project: "your project" }[n.from]}, so ${esc(n.name)} is ${n.from === "project" ? "available to its tools" : "now selected there"}.</div>` : ""}
+    <div class="row">${n.from ? `<button class="btn primary" data-view="${n.from}">Back to ${{ coach: "Selling Coach", projnew: "the new project", project: "the project" }[n.from]}</button>` : ""}<button class="btn" data-act="open-account" data-cat="" data-cust="${esc(n.name)}">See its facts</button><button class="btn plain" data-x="cust-new">Create another customer</button></div></div>`;
   return top + body;
 };
 function saveProfile(n) {
-  const add = CN_ENRICH.filter((e, i) => n.enrich[i]);
+  const add = cnEnrich(n).filter((e, i) => n.enrich[i]);
   const objectives = [...n.objectives.split("\n").filter(Boolean), ...add.filter(e => e[3] === "Objectives").map(e => e[0])];
   const info = [...n.info.split("\n").filter(Boolean), ...add.filter(e => e[3] === "Information").map(e => e[0])];
   PROFILES.push({ cust: n.name, owner: PEOPLE.kam.name, reviewed: TODAY, version: 1, channels: ["Supermarket", "Convenience"], objectives, info, posture: n.postureText.replace(/^\[[^\]]*\]\s*/, ""),
-    sources: [...CN_DOCS.filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public`)] });
+    sources: [...cnDocs(n).filter((d, i) => n.docs[i]).map(d => `${d[0]} · owner-only`), ...add.map(e => `${e[1]} · public`)] });
   if (!CUSTOMERS.includes(n.name)) CUSTOMERS.push(n.name);
   const lines = [...objectives, ...info];
   lines.forEach((t, i) => FACTS.unshift({ id: "F-" + (3000 + FACTS.length), type: "insight", text: t, cat: null, cust: n.name, rel: i < objectives.length - 0 && add.some(e => e[0] === t) ? "reviewed" : "stated", sens: "internal", owner: null, status: "verified", asOf: TODAY, src: null, origin: "the customer profile", loc: `Customer profile · ${n.name}`, excerpt: "Approved by the profile owner through three gates.", dedup: 1, by: PEOPLE.kam.name }));
@@ -1929,13 +1952,13 @@ function saveProfile(n) {
 /* =====================================================================
    Create a buyer profile · private, from where the buyer talks
    ===================================================================== */
-function bnDefaults(cust, from) { return { step: "form", name: "Jordan Blake", cust: cust || "Brightmart", cat: "Hair Care", role: "Category buyer", known: "", from: from || null, done: 0, disc: false, discText: "[INFERRED — confirm or edit] Dominant · data-led. Prefers concise, evidence-first recommendations with a clear next step.", src: [true, true, true, true], pushed: false }; }
+function bnDefaults(cust, from, name) { return { step: "form", name: name ?? "", cust: cust || "Brightmart", cat: "Hair Care", role: "Category buyer", known: "", from: from || null, done: 0, disc: false, discText: "[INFERRED — confirm or edit] Dominant · data-led. Prefers concise, evidence-first recommendations with a clear next step.", src: [true, true, true, true], pushed: false }; }
 RENDER.buyernew = () => {
   const n = state.bn || (state.bn = bnDefaults());
   const top = `<div class="crumb"><button data-view="people">Customers & buyers</button><span>›</span><span>New buyer</span></div>
     <div class="pagehead"><div><h1>Create a buyer profile</h1><p class="sub">The private counterpart to the customer profile: this buyer's goals, style and friction points. Only you can see it.</p></div><span class="pill warn lg">Private to you</span></div>${NOTE}`;
   if (n.step === "form") return top + `<div class="card"><div class="card-hd">Which buyer, and for which customer?</div><div class="pad stack">
-      <div class="grid2"><div class="field"><label for="bn-name">Buyer name</label><input id="bn-name" data-bind="bn.name" value="${esc(n.name)}"></div><div class="field"><label for="bn-role">Role</label><input id="bn-role" data-bind="bn.role" value="${esc(n.role)}"></div></div>
+      <div class="grid2"><div class="field"><label for="bn-name">Buyer name</label><input id="bn-name" data-bind="bn.name" value="${esc(n.name)}" placeholder="e.g. Jordan Blake"></div><div class="field"><label for="bn-role">Role</label><input id="bn-role" data-bind="bn.role" value="${esc(n.role)}"></div></div>
       <div class="grid2"><div class="field"><label for="bn-cust">Customer</label><select id="bn-cust" data-bind="bn.cust">${CUSTOMERS.map(c => `<option ${c === n.cust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div><div class="field"><label for="bn-cat">Category</label><select id="bn-cat" data-bind="bn.cat">${CATEGORIES.map(c => `<option ${c === n.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
       <div class="field"><label for="bn-known">What do you already know about this buyer? (optional)</label><textarea id="bn-known" rows="2" data-bind="bn.known">${esc(n.known)}</textarea></div>
       <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Use personal context to propose the profile</b><br><span class="small muted">Reads the emails, calls and meetings where this buyer actually talks and proposes goals, a DISC read and friction points, each tied to its source. You confirm the inferred parts before saving.</span></span></div>
@@ -2031,7 +2054,7 @@ function updateDrawer(id) {
    Requests from KAMs: a missing customer, an edit to someone's profile
    ===================================================================== */
 function requestCustModal(name) {
-  openModal(`<header><h2>Request a customer</h2></header><form><p class="small muted">The UK profile owner gets an email with a Work IQ draft ready, not a blank form. You're told when it's saved.</p>
+  openModal(`<header><h2>Request a customer</h2></header><form><p class="small muted">The UK profile owner gets an email with a draft ready, not a blank form. You're told when it's saved.</p>
     <div class="grid2"><div class="field"><label for="rq-n">Customer name</label><input id="rq-n" name="n" required value="${esc(name || "")}" placeholder="e.g. Lakeside Foods"></div><div class="field"><label>Country</label><select disabled><option>United Kingdom</option></select></div></div>
     <div class="field"><label for="rq-w">Why you need it</label><input id="rq-w" name="w" placeholder="e.g. Selling Coach run for a first meeting"></div>
     <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Send request</button></div></form>`, fd => {
@@ -2050,6 +2073,10 @@ function suggestEditModal(cu) {
 /* =====================================================================
    Events for the integrated flows (data-x) and form bindings (data-bind)
    ===================================================================== */
+document.addEventListener("click", e => {
+  const menu = $("#createmenu");
+  if (menu?.open && (!menu.contains(e.target) || e.target.closest(".createmenu__list button"))) menu.open = false;
+}, true);
 document.addEventListener("click", e => {
   const el = e.target.closest("[data-x]");
   if (!el) return;
@@ -2094,7 +2121,10 @@ document.addEventListener("click", e => {
         markOutdated(c.cat, c.cust, "A tool run added a fact."); }, 600); break; }
     // customers and buyers
     case "cust-new": state.cn = cnDefaults(el.dataset.name, el.dataset.from); closeOverlay(); go("custnew"); break;
-    case "cn-go": state.cn.step = "entity"; render(); break;
+    case "cn-go": { const nm = state.cn.name.trim();
+      if (!nm) { toast("Enter the customer's name first."); $("#cn-name")?.focus(); break; }
+      if (profileOf(nm)) { toast(`${nm} already has a profile. Opening it instead.`); profileDrawer(nm); break; }
+      state.cn.name = nm; state.cn.step = "entity"; render(); break; }
     case "cn-entity": state.cn.entity = +el.dataset.i; render(); break;
     case "cn-read": state.cn.step = "reading"; render(); animate(state.cn, 4, () => { state.cn.step = "gate1"; }); break;
     case "cn-step": state.cn.step = v; render(); $("#main").scrollTop = 0; break;
@@ -2104,14 +2134,16 @@ document.addEventListener("click", e => {
     case "cn-enrich": later(() => { state.cn.enrich[+el.dataset.i] = !state.cn.enrich[+el.dataset.i]; render(); }); break;
     case "cn-enrich-all": state.cn.enrich = state.cn.enrich.map(() => v === "1"); render(); break;
     case "cn-save": saveProfile(state.cn); state.cn.step = "saved"; render(); $("#main").scrollTop = 0; toast(`${state.cn.name} added to the Knowledge Bank`); break;
-    case "buyer-new": state.bn = bnDefaults(el.dataset.cust, el.dataset.from); closeOverlay(); go("buyernew"); break;
-    case "bn-go": state.bn.step = "reading"; render(); animate(state.bn, 5, () => { state.bn.step = "proposal"; }); break;
+    case "buyer-new": state.bn = bnDefaults(el.dataset.cust, el.dataset.from, el.dataset.name); closeOverlay(); go("buyernew"); break;
+    case "bn-go": if (!state.bn.name.trim()) { toast("Enter the buyer's name first."); $("#bn-name")?.focus(); break; }
+      state.bn.step = "reading"; render(); animate(state.bn, 5, () => { state.bn.step = "proposal"; }); break;
     case "bn-disc": state.bn.disc = true; render(); break;
     case "bn-src": later(() => { state.bn.src[+el.dataset.i] = !state.bn.src[+el.dataset.i]; render(); toast("Proposal rebuilt with the sources you kept."); }); break;
     case "bn-push": state.bn.pushed = true; REQS.push({ kind: "Edit suggested", title: `${state.bn.cust}: growing own label company-wide (from a buyer conversation)`, to: profileOf(state.bn.cust)?.owner || "UK profile owner", status: "Waiting" }); render(); toast("Sent to the customer profile owner."); break;
     case "bn-back": state.bn.step = "form"; render(); break;
     case "bn-save": { const n = state.bn, b = { id: "B-" + (BUYERS.length + 1), name: n.name, role: n.role, cust: n.cust, cat: n.cat, disc: n.discText.replace(/^\[[^\]]*\]\s*/, "").split(".")[0], updated: "today", owner: PEOPLE.kam.name, goals: "Grow own label while protecting margin on premium lines.", style: n.discText.replace(/^\[[^\]]*\]\s*/, ""), friction: "Pushed back on premium shelf space last review." };
-      BUYERS.push(b); n.saved = b.id; n.step = "saved"; if (n.from === "projnew" && state.pn) state.pn.buyers.push(b.id); render(); toast(`${n.name} saved. Private to you.`); break; }
+      BUYERS.push(b); n.saved = b.id; n.step = "saved"; if (n.from === "projnew" && state.pn) state.pn.buyers.push(b.id);
+      if (n.from === "project") { const pj = proj(state.project); if (pj && pj.cust === b.cust) pj.buyer = `${b.name} · ${b.role.toLowerCase()}`; } render(); toast(`${n.name} saved. Private to you.`); break; }
     case "buyer-coach": { const b = BUYERS.find(y => y.id === id); state.sc = { ...scDefaults(PROJECTS.find(p => p.cust === b.cust) || null), cust: b.cust, cat: b.cat, buyer: b.id }; go("coach"); break; }
     case "buyer-attach": { const b = BUYERS.find(y => y.id === id), p = PROJECTS.find(y => y.cust === b.cust); p.buyer = `${b.name} · ${b.role.toLowerCase()}`; render(); toast(`${b.name} attached to ${p.name}.`); break; }
     // training
