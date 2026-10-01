@@ -430,6 +430,10 @@ i.mk { display: inline-block; width: 11px; height: 11px; vertical-align: -1px; m
 .meterrow { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--snow); border: 1px solid var(--light-gray); border-radius: 8px; }
 .okmark { width: 48px; height: 48px; border-radius: 99px; background: var(--ok-accent); color: var(--white); display: grid; place-items: center; font-size: 24px; font-weight: 700; }
 .pad > textarea, .stack > textarea, .stack textarea:not([class]) { width: 100%; border: 1px solid var(--border-default); border-radius: 8px; padding: 8px 10px; font-size: 13px; background: var(--white); }
+.runlink { cursor: pointer; border-radius: 6px; }
+.runlink:hover, .runlink:focus-visible { background: var(--primary-light); }
+button.pill { cursor: pointer; }
+.drawer-result .result-hd, .drawer-result .card { box-shadow: none; }
 .diffbox { border: 1px solid var(--light-gray); border-radius: 8px; overflow: hidden; font-size: 13px; }
 .diffbox div { padding: 10px 12px; }
 .diffbox .was { background: var(--err-bg); color: var(--err-text); border-bottom: 1px solid var(--light-gray); }
@@ -445,7 +449,12 @@ i.mk { display: inline-block; width: 11px; height: 11px; vertical-align: -1px; m
   .home, .proj, .acct { grid-template-columns: minmax(0, 1fr); }
   .summary, .intro-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
+.navtoggle { display: none; }
 @media (max-width: 820px) {
+  .navtoggle { display: flex; align-items: center; gap: 10px; width: 100%; border: 1px solid var(--border-default); background: var(--white); border-radius: 9px; padding: 9px 12px; font-weight: 600; color: var(--primary); }
+  .navtoggle__hint { margin-left: auto; font-size: 12px; color: var(--steel); font-weight: 500; }
+  .sidebar:not(.open) > :not(.navtoggle) { display: none; }
+  .sidebar.open .group { display: block; flex-basis: 100%; padding: 8px 4px 2px; }
   .gsearch { order: 5; max-width: none; flex-basis: 100%; }
   .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
   .sidebar { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--light-gray); padding: 8px 12px; }
@@ -743,7 +752,9 @@ const NAV = [
 
 function renderShell() {
   const items = NAV.filter(n => curatorMode() ? !n.kamOnly : !(n.curatorOnly || ["briefings", "sources"].includes(n.id)));
-  $("#nav").innerHTML = items.map(n => n.group
+  $("#nav").classList.toggle("open", !!state.navOpen);
+  const cur = NAV.find(n => (n.match || [n.id]).includes(state.view));
+  $("#nav").innerHTML = `<button class="navtoggle" data-navtoggle aria-expanded="${!!state.navOpen}" aria-controls="nav">${icon("grid")}<span>${cur ? cur.label : "Menu"}</span><span class="navtoggle__hint">${state.navOpen ? "Close" : "Menu"}</span></button>` + items.map(n => n.group
     ? `<div class="group">${n.group}</div>`
     : `<button class="navitem" data-view="${n.id}" aria-current="${(n.match || [n.id]).includes(state.view)}">${icon(n.icon)}${n.label}${n.badge ? (n.badge() ? `<span class="badge-n" title="Waiting in the review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
   $("#roleswitch").innerHTML = ["kam", "curator"].map(r => `<button data-role="${r}" aria-pressed="${state.role === r}" title="${esc(PEOPLE[r].name + " · " + PEOPLE[r].role)}">${r === "kam" ? "KAM" : "Curator"}</button>`).join("");
@@ -911,6 +922,7 @@ RENDER.account = () => {
         <div class="card"><div class="card-hd">What's missing <span class="aside">${ps.length - miss.length}/${ps.length} covered</span></div>
           <div class="plist">${ps.map(x => `<div><span>${x.name}<div class="hint">${esc(x.desc)}</div></span>${x.n ? `<span class="pill ok">${plural(x.n, "fact", "facts")}</span>` : `<span class="pill neutral">Missing</span>`}</div>`).join("")}</div>
           ${miss.length ? `<div class="pad row"><button class="btn sm" data-act="add-source">Add a document</button><button class="btn sm plain" data-act="add-fact">Add a fact</button></div>` : ""}</div>
+        ${cust ? customerCard(cust, cat) : ""}
         <div class="card"><div class="card-hd">Projects on this account</div>
           ${projs.length ? `<div class="plist">${projs.map(p => `<div><button class="btn ghost" data-act="open-project" data-id="${p.id}">${esc(p.name)}</button><span class="pill ${p.audience === "external" ? "info" : "solid"}">${AUD[p.audience]}</span></div>`).join("")}</div>` : `<div class="pad hint">No project uses this account yet.</div>`}</div>
         <div class="card pad"><details><summary>Documents behind these facts</summary>${[...new Set(live.map(f => f.src).filter(Boolean))].map(id => `<button class="btn ghost small" style="display:block" data-act="open-source" data-id="${id}">${esc(src(id).name)}</button>`).join("")}</details></div>
@@ -986,7 +998,7 @@ RENDER.project = () => {
         <div class="card"><div class="card-hd">Account ${st ? `<span class="pill ${B_PILL[st][0]}">Briefing: ${B_PILL[st][1].toLowerCase()}</span>` : ""}</div>
           <div class="pad row"><button class="btn sm" data-act="open-account" data-cat="${p.cat}" data-cust="${esc(p.cust)}">Open ${esc(scopeLabel(p.cat, p.cust))}</button></div></div>
         <div class="card"><div class="card-hd">Recent runs <span class="aside">${p.runs.length}</span></div>
-          ${p.runs.length ? `<div class="runs">${p.runs.slice(0, 5).map(r => `<div><span class="spread"><b style="font-weight:600">${r.tool}</b><span class="pill ${r.status === "Running" ? "info" : "ok"}">${r.status}</span></span><span class="muted">${esc(r.note)}</span><span class="hint">${r.date}</span></div>`).join("")}</div>` : `<div class="pad hint">No runs yet. Ask the assistant to launch a tool.</div>`}</div>
+          ${p.runs.length ? `<div class="runs">${p.runs.slice(0, 5).map(r => `<div${r.html ? ` class="runlink" data-x="open-run" data-id="${r.id}" tabindex="0" role="button" title="Open this result"` : ""}><span class="spread"><b style="font-weight:600">${r.tool}</b><span class="pill ${r.status === "Running" ? "info" : "ok"}">${r.status}</span></span><span class="muted">${esc(r.note)}</span><span class="hint">${r.date}</span></div>`).join("")}</div>` : `<div class="pad hint">No runs yet. Ask the assistant to launch a tool.</div>`}</div>
       </aside>
     </div>`;
 };
@@ -1509,8 +1521,9 @@ function newProjectModal() {
    Events
    ===================================================================== */
 document.addEventListener("click", e => {
+  if (e.target.closest("[data-navtoggle]")) { state.navOpen = !state.navOpen; renderShell(); $(".navtoggle").focus(); return; }
   const nav = e.target.closest("[data-view]");
-  if (nav) { closeOverlay(); go(nav.dataset.view); return; }
+  if (nav) { closeOverlay(); state.navOpen = false; go(nav.dataset.view); return; }
   const role = e.target.closest("[data-role]");
   if (role) { state.role = role.dataset.role; closeOverlay();
     if (state.role === "kam" && ["briefings", "sources"].includes(state.view)) state.view = "accounts";
@@ -1610,7 +1623,7 @@ document.addEventListener("keydown", e => {
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
       else if (!box.contains(document.activeElement)) { e.preventDefault(); first.focus(); } }
   }
-  if (e.key === "Enter" && e.target.matches("tr[data-act]")) e.target.click();
+  if (e.key === "Enter" && e.target.matches("tr[data-act], [data-x][tabindex]")) { e.preventDefault(); e.target.click(); }
 });
 
 /* =====================================================================
@@ -1632,7 +1645,7 @@ let PROFILES = [
     objectives: ["Grow premium beauty and hair aisles.", "Lift online basket size."], info: ["Mid-size grocer with a strong online business."],
     posture: "Collaborative and open to joint category projects.", sources: ["Brightmart investor update · public", "Brightmart Sales Book · owner-only"] },
 ];
-let BUYERS = [
+var BUYERS = [
   { id: "B-1", name: "Alex Morgan", role: "Category buyer", cust: "Northgate", cat: "Fabric Care", disc: "Dominant · data-led", updated: "11 days ago", owner: "Camille Martin",
     goals: "Grow own label in laundry while protecting margin on premium liquids. Judges suppliers on promotion return and on-shelf availability.", style: "Concise and evidence-first. Decides fast on a quantified case and dislikes long decks.", friction: "Pushed back on premium shelf space at the last review; agreed to revisit with data." },
   { id: "B-2", name: "Sam Patel", role: "Assistant buyer", cust: "Northgate", cat: "Fabric Care", disc: "Steady · relationship-led", updated: "2 months ago", owner: "Camille Martin",
@@ -1689,7 +1702,7 @@ RENDER.start = () => {
     <div class="toolgrid">${tools.map(([ic, t, d, ls, cta, at]) => `<div class="toolcard"><div class="toolcard__head"><div class="toolcard__ico">${icon(ic)}</div><h3>${t}</h3><p>${d}</p></div>
       <div class="toolcard__body">${ls.map(l => `<div class="checkline">${icon("check")}${l}</div>`).join("")}<div class="toolcard__cta"><button class="btn primary" ${at}>${cta}</button></div></div></div>`).join("")}</div>
     <section class="histsec"><div class="spread"><h3 style="font-size:18px">History</h3><button class="btn ghost small" data-view="projects">View all projects</button></div>
-      ${hist.length ? `<div class="table-wrap" style="margin-top:12px"><table class="stbl narrow"><thead><tr><th>Tool</th><th>Material or result</th><th>Project</th><th>Date</th><th>Status</th></tr></thead><tbody>${hist.map(h => `<tr ${h.pid ? `data-act="open-project" data-id="${h.pid}"` : ""}><td class="name">${h.tool}</td><td>${esc(h.note)}</td><td>${esc(h.proj || "No project")}</td><td>${h.date}</td><td><span class="pill ${h.status === "Running" ? "info" : "ok"}">${h.status}</span></td></tr>`).join("")}</tbody></table></div>` : `<div class="empty-state" style="margin-top:12px">No recent analyses. Upload your first presentation to get started.</div>`}
+      ${hist.length ? `<div class="table-wrap" style="margin-top:12px"><table class="stbl narrow"><thead><tr><th>Tool</th><th>Material or result</th><th>Project</th><th>Date</th><th>Status</th></tr></thead><tbody>${hist.map(h => `<tr ${h.html ? `data-x="open-run" data-id="${h.id}"` : h.pid ? `data-act="open-project" data-id="${h.pid}"` : ""} tabindex="0" title="${h.html ? "Open this result" : "Open the project"}"><td class="name">${h.tool}</td><td>${esc(h.note)}</td><td>${esc(h.proj || "No project")}</td><td>${h.date}</td><td><span class="pill ${h.status === "Running" ? "info" : "ok"}">${h.status}</span></td></tr>`).join("")}</tbody></table></div>` : `<div class="empty-state" style="margin-top:12px">No recent analyses. Upload your first presentation to get started.</div>`}
     </section>`;
 };
 
@@ -1785,7 +1798,7 @@ RENDER.coach = () => {
       <div class="field"><label for="sc-ctx">Important context</label><textarea id="sc-ctx" data-bind="sc.context" rows="3" placeholder="What must the coach know about this meeting?">${esc(c.context)}</textarea>
         <div class="row"><button class="btn sm plain" data-x="sc-propose">${icon("spark")}Propose from my latest meetings</button><span class="hint">Drafted from your recent meetings, notes and emails with ${esc(c.cust)}. You edit it.</span></div></div>
     </div></div>
-    <div class="card" style="margin-top:14px"><div class="card-hd">Step 3 · Use my personal context<span class="aside">Optional</span></div><div class="pad stack">
+    <div class="card" style="margin-top:14px"><div class="card-hd">Step 3 · Use my personal context<span class="row"><span class="aside">Optional</span><button class="btn ghost small" data-x="pc-help">What is this?</button></span></div><div class="pad stack">
       ${c.pc === "off" ? `<p class="small">On top of the fields above, personal context reads the plans, strategies, notes and emails you can access for ${esc(c.cust)} · ${esc(c.cat)} and proposes what matters for this meeting. You review it first. Nothing is stored.</p>
           <div class="row"><button class="btn primary" data-x="sc-pc-build">${icon("spark")}Build my personal context</button><button class="btn plain" data-x="sc-pc-skip">Skip, run on the deck only</button></div>`
       : c.pc === "loading" ? `<b>Gathering your personal context for ${esc(c.cust)}</b>${stagesHTML([["Finding what you can access on this customer", "Personal context"], ["Reading plans, strategies, notes and emails in place", "Personal context"], ["Keeping only what's relevant to this meeting", "Personal context"], ["Proposing your personal context", "Personal context"]], c.done)}<p class="hint">Used for this run only and never written into the customer profile.</p>`
@@ -1832,14 +1845,14 @@ RENDER.people = () => {
   const tabs = `<div class="tabs" role="tablist"><button role="tab" data-x="ppl-tab" data-v="customers" aria-selected="${tab === "customers"}">Customers (${CUSTOMERS.length})</button><button role="tab" data-x="ppl-tab" data-v="buyers" aria-selected="${tab === "buyers"}">Your buyers (${curatorMode() ? 0 : myBuyers.length})</button></div>`;
   const custs = CUSTOMERS.map(cu => { const pr = profileOf(cu);
     return pr ? `<div class="custcard"><div class="top"><span class="bldg">${icon("store")}</span><span><b>${esc(cu)}</b><div class="hint">UK · ${pr.channels.join(" · ")}</div></span><span class="pill neutral" style="margin-left:auto">Version ${pr.version}</span></div>
-      <div class="bot stack"><span class="small">${esc(pr.objectives[0])}</span><span class="hint">Owner: ${esc(pr.owner)}${pr.owner === PEOPLE.kam.name ? " (you)" : ""} · reviewed ${pr.reviewed} · ${plural(pr.sources.length, "source", "sources")}</span>
+      <div class="bot stack"><span class="small">${esc(pr.objectives[0])}</span><div class="row">${CATEGORIES.map(cat => { const r = readiness(cat, cu); return r.n ? `<button class="pill ${r.cls}" data-act="open-account" data-cat="${cat}" data-cust="${esc(cu)}" title="Open the ${esc(cu)} · ${cat} account">${cat}: ${r.label}</button>` : ""; }).join("")}</div><span class="hint">Owner: ${esc(pr.owner)}${pr.owner === PEOPLE.kam.name ? " (you)" : ""} · reviewed ${pr.reviewed} · ${plural(pr.sources.length, "source", "sources")}</span>
       <div class="row"><button class="btn sm" data-x="open-profile" data-v="${esc(cu)}">Open profile</button><button class="btn sm plain" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all facts</button>${pr.owner !== PEOPLE.kam.name ? `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>` : ""}</div></div></div>`
     : `<div class="custcard missing"><div class="top"><span class="bldg">${icon("store")}</span><span><b>${esc(cu)}</b><div class="hint">UK · no profile yet</div></span></div>
       <div class="bot stack"><span class="small muted">Nobody has created a customer profile yet. Personal context can draft one from documents you already have.</span><div class="row"><button class="btn sm primary" data-x="cust-new" data-name="${esc(cu)}">${icon("spark")}Create with personal context</button></div></div></div>`; }).join("");
   const buyers = curatorMode() ? `<div class="callout info">Buyer profiles are private to the KAM who creates them. Switch to “KAM” to see Camille's buyers.</div>`
     : myBuyers.map(b => `<div class="buyercard"><div class="buyercard__hd"><span class="bldg">${icon("user")}</span><span><b>${esc(b.name)}</b><div class="hint">${esc(b.role)} · ${esc(b.cust)} · ${esc(b.cat)}</div></span><span class="pill warn" style="margin-left:auto">Private to you</span></div>
       <div class="buyercard__bd stack"><span class="small"><b>Style (DISC):</b> ${esc(b.disc)}</span><span class="small"><b>Goals:</b> ${esc(b.goals)}</span><span class="small"><b>Watch out for:</b> ${esc(b.friction)}</span><span class="hint">Updated ${b.updated}</span>
-      <div class="row"><button class="btn sm" data-x="buyer-coach" data-id="${b.id}">Use in Selling Coach</button>${PROJECTS.some(p => p.cust === b.cust) ? `<button class="btn sm plain" data-x="buyer-attach" data-id="${b.id}">Attach to ${esc(PROJECTS.find(p => p.cust === b.cust).name)}</button>` : ""}</div></div></div>`).join("") + `<button class="buyercard add" data-x="buyer-new">${icon("plus")}<b>Add a buyer</b><span class="hint">Proposed from where the buyer talks</span></button>`;
+      <div class="row"><button class="btn sm" data-x="buyer-coach" data-id="${b.id}">Use in Selling Coach</button><button class="btn sm plain" data-x="buyer-edit" data-id="${b.id}">Edit</button>${PROJECTS.some(p => p.cust === b.cust) ? `<button class="btn sm plain" data-x="buyer-attach" data-id="${b.id}">Attach to ${esc(PROJECTS.find(p => p.cust === b.cust).name)}</button>` : ""}</div></div></div>`).join("") + `<button class="buyercard add" data-x="buyer-new">${icon("plus")}<b>Add a buyer</b><span class="hint">Proposed from where the buyer talks</span></button>`;
   return head("Knowledge Bank", "Customers & buyers", "Customer profiles are shared across the company and built on checked facts. Buyer profiles are private to you and feed coaching and role-play.",
     `<button class="btn plain" data-x="buyer-new">${icon("plus")}Add buyer</button><button class="btn primary" data-x="cust-new">${icon("plus")}Add customer</button>`) + NOTE + tabs +
     (tab === "customers" ? `<div class="ppl-grid">${custs}</div>` : `<div class="ppl-grid">${buyers}</div>`) +
@@ -1854,7 +1867,7 @@ function profileDrawer(cu) {
       <h4 style="margin-top:14px">Key customer information</h4><ul>${pr.info.map(o => `<li>${esc(o)}</li>`).join("")}</ul>
       <h4 style="margin-top:14px">Our strategic approach</h4><p class="small">${esc(pr.posture)}</p></div>
     <div class="stack"><div class="label">Sources</div>${pr.sources.map(s => `<span class="small">• ${esc(s)}</span>`).join("")}<span class="hint">Owner-only file names are hidden from other viewers; they see the facts and public sources.</span></div>
-    <div class="row"><button class="btn sm" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all ${esc(cu)} facts</button>${pr.owner !== PEOPLE.kam.name ? `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>` : ""}</div>`);
+    <div class="row">${pr.owner === PEOPLE[state.role].name ? `<button class="btn sm primary" data-x="prof-edit" data-v="${esc(cu)}">Edit profile</button>` : `<button class="btn sm plain" data-x="suggest-edit" data-v="${esc(cu)}">Suggest an edit</button>`}<button class="btn sm" data-act="open-account" data-cat="" data-cust="${esc(cu)}">See all ${esc(cu)} facts</button></div>`);
 }
 
 /* =====================================================================
@@ -1886,7 +1899,7 @@ RENDER.custnew = () => {
   let body = "";
   if (n.step === "name") body = `<div class="card"><div class="card-hd">Step 1 · Which customer? Personal context drafts the first version</div><div class="pad stack">
       <div class="grid2"><div class="field"><label for="cn-name">Customer name</label><input id="cn-name" data-bind="cn.name" value="${esc(n.name)}" placeholder="e.g. Harbour & Co"></div><div class="field"><label>Country</label><select disabled><option>United Kingdom</option></select></div></div>
-      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Build the first draft from your personal context</b><br><span class="small muted">Personal context reads the SharePoint, OneDrive and Teams material you can already access, in place. Nothing is uploaded or copied. You get a proposed profile to review, not a pile of files to sort.</span></span></div>
+      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Build the first draft from your personal context</b> <button class="btn ghost small" data-x="pc-help">What is personal context?</button><br><span class="small muted">Personal context reads the SharePoint, OneDrive and Teams material you can already access, in place. Nothing is uploaded or copied. You get a proposed profile to review, not a pile of files to sort.</span></span></div>
       <details><summary>Have a “golden” document or notes to start from? (optional)</summary><div class="stack"><button class="filerow" data-x="toast" data-msg="In the live tool this opens a file picker.">${icon("file")}Pick one document</button><textarea rows="2" placeholder="Or paste what you know"></textarea><span class="hint">Buyer-specific or internal-only content is separated out automatically before drafting. You'll see exactly what was removed.</span></div></details>
       <div class="actions"><button class="btn plain" data-view="people">Cancel</button><button class="btn primary" data-x="cn-go">${icon("spark")}Build proposal from personal context</button></div></div></div>`;
   if (n.step === "entity") body = `<div class="card"><div class="card-hd">Confirm which company, before anything is drafted</div><div class="pad stack">
@@ -1961,7 +1974,7 @@ RENDER.buyernew = () => {
       <div class="grid2"><div class="field"><label for="bn-name">Buyer name</label><input id="bn-name" data-bind="bn.name" value="${esc(n.name)}" placeholder="e.g. Jordan Blake"></div><div class="field"><label for="bn-role">Role</label><input id="bn-role" data-bind="bn.role" value="${esc(n.role)}"></div></div>
       <div class="grid2"><div class="field"><label for="bn-cust">Customer</label><select id="bn-cust" data-bind="bn.cust">${CUSTOMERS.map(c => `<option ${c === n.cust ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div><div class="field"><label for="bn-cat">Category</label><select id="bn-cat" data-bind="bn.cat">${CATEGORIES.map(c => `<option ${c === n.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
       <div class="field"><label for="bn-known">What do you already know about this buyer? (optional)</label><textarea id="bn-known" rows="2" data-bind="bn.known">${esc(n.known)}</textarea></div>
-      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Use personal context to propose the profile</b><br><span class="small muted">Reads the emails, calls and meetings where this buyer actually talks and proposes goals, a DISC read and friction points, each tied to its source. You confirm the inferred parts before saving.</span></span></div>
+      <div class="wiqhero"><span class="wiqhero__ico">${icon("spark")}</span><span><b>Use personal context to propose the profile</b> <button class="btn ghost small" data-x="pc-help">What is personal context?</button><br><span class="small muted">Reads the emails, calls and meetings where this buyer actually talks and proposes goals, a DISC read and friction points, each tied to its source. You confirm the inferred parts before saving.</span></span></div>
       <div class="actions"><button class="btn plain" data-view="people">Cancel</button><button class="btn primary" data-x="bn-go">${icon("spark")}Build proposal</button></div></div></div>`;
   if (n.step === "reading") return top + `<div class="card pad stack"><b>Drafting the buyer profile for ${esc(n.name)}</b>${stagesHTML([["Reading the emails, calls and meetings where this buyer talks", "Personal context"], ["Keeping buyer-level signals, removing personal or sensitive data", "Input separator"], ["Checking each signal has a recent source", "Trust check"], ["Separating direct quotes from inferred traits", "Verifier"], ["Proposing goals, DISC read and friction points", "Personal context"]], n.done)}</div>`;
   if (n.step === "proposal") { const srcs = [["Email thread · “Spring plan and own label” (buyer replied)", "Direct quote · Outlook · 2 Sep 2026"], ["Quarterly review minutes", "High · SharePoint · 12 Mar 2026"], ["Tone across emails and calls (basis for the DISC read)", "Inference · 3 sources"], ["Call notes · pre-review alignment", "High · Teams · 20 Aug 2026"]];
@@ -2071,6 +2084,60 @@ function suggestEditModal(cu) {
 }
 
 /* =====================================================================
+   Round 1: reopen results, edit profiles, link accounts and profiles,
+   explain personal context once
+   ===================================================================== */
+const allRuns = () => [...HISTORY, ...PROJECTS.flatMap(p => p.runs)];
+function runDrawer(id) {
+  const r = allRuns().find(x => x.id === id); if (!r) return;
+  openDrawer(`<div class="spread"><span class="pill ok">${r.tool} · ${r.date}</span><button class="btn sm plain" data-act="close">Close</button></div><h2>${esc(r.title || r.note)}</h2><div class="drawer-result">${r.html}</div>`);
+}
+function pcHelp() {
+  openDrawer(`<div class="spread"><span class="pill info">${icon("spark")}Personal context</span><button class="btn sm plain" data-act="close">Close</button></div>
+    <h2>What is personal context?</h2>
+    <p class="small">It reads material <b>you</b> can already open, in place, to propose content you then review. Nothing is used until you approve it.</p>
+    <div class="stack"><div class="label">What it reads</div><span class="small">• Emails and meetings with the customer or buyer<br>• Files on SharePoint, OneDrive and Teams you have access to<br>• Your own notes and past Selling Coach runs</span></div>
+    <div class="stack"><div class="label">What it keeps out</div><span class="small">• Personal or sensitive details: contact details, health, out-of-office<br>• Internal-only figures, such as targets and margins, from shared profiles<br>• Buyer-level detail from customer profiles (it goes to your private buyer profile instead)</span></div>
+    <div class="stack"><div class="label">Where results go</div>
+      <div class="table-wrap"><table><thead><tr><th>Used in</th><th>Stored?</th><th>Who sees it</th></tr></thead><tbody>
+        <tr><td>Selling Coach run</td><td>No, this run only</td><td>The result is in your History, only you</td></tr>
+        <tr><td>Buyer profile</td><td>Yes, after you save</td><td>Only you (and a successor after a handover)</td></tr>
+        <tr><td>Customer profile</td><td>Yes, after 3 approvals</td><td>Everyone in the company; file names stay owner-only</td></tr></tbody></table></div></div>
+    <div class="callout info">You can always skip it: every tool also runs on the deck and the Knowledge Bank alone.</div>`);
+}
+function profileEditDrawer(cu) {
+  const pr = profileOf(cu);
+  openDrawer(`<div class="spread"><span class="pill neutral">Editing · version ${pr.version}</span><button class="btn sm plain" data-act="close">Close</button></div>
+    <h2>Edit the ${esc(cu)} profile</h2><p class="small muted">One statement per line. Your edits are treated as authoritative and saved as a new version; the previous one stays in the history.</p>
+    <div class="field"><label for="pe-obj">Customer objectives and KPIs</label><textarea id="pe-obj" rows="5">${esc(pr.objectives.join("\n"))}</textarea></div>
+    <div class="field"><label for="pe-info">Key customer information</label><textarea id="pe-info" rows="4">${esc(pr.info.join("\n"))}</textarea></div>
+    <div class="field"><label for="pe-post">Our strategic approach</label><textarea id="pe-post" rows="3">${esc(pr.posture)}</textarea></div>
+    <div class="row"><button class="btn primary" data-x="prof-save" data-v="${esc(cu)}">Save as version ${pr.version + 1}</button><button class="btn plain" data-x="open-profile" data-v="${esc(cu)}">Cancel</button></div>`);
+}
+function buyerEditDrawer(id) {
+  const b = BUYERS.find(x => x.id === id);
+  openDrawer(`<div class="spread"><span class="pill warn">Private to you</span><button class="btn sm plain" data-act="close">Close</button></div>
+    <h2>Edit ${esc(b.name)}</h2><span class="hint">${esc(b.role)} · ${esc(b.cust)} · ${esc(b.cat)}</span>
+    <div class="grid2"><div class="field"><label for="be-role">Role</label><input id="be-role" value="${esc(b.role)}"></div><div class="field"><label for="be-disc">Style (DISC)</label><input id="be-disc" value="${esc(b.disc)}"></div></div>
+    <div class="field"><label for="be-goals">Goals and KPIs</label><textarea id="be-goals" rows="3">${esc(b.goals)}</textarea></div>
+    <div class="field"><label for="be-style">How to engage</label><textarea id="be-style" rows="2">${esc(b.style)}</textarea></div>
+    <div class="field"><label for="be-fric">Watch out for</label><textarea id="be-fric" rows="2">${esc(b.friction)}</textarea></div>
+    <div class="row"><button class="btn primary" data-x="buyer-save" data-id="${b.id}">Save changes</button></div>
+    <div class="stack" style="border-top:1px solid var(--light-gray);padding-top:14px"><div class="label">Delete</div>
+      <label class="check"><input type="checkbox" id="be-confirm"> I understand this deletes the profile and detaches it from projects.</label>
+      <div><button class="btn sm danger" id="be-del" data-x="buyer-delete" data-id="${b.id}" disabled>Delete buyer profile</button></div></div>`);
+  $("#be-confirm").addEventListener("change", e => { $("#be-del").disabled = !e.target.checked; });
+}
+function customerCard(cust, cat) {
+  const pr = profileOf(cust), mine = BUYERS.filter(b => b.cust === cust && b.owner === PEOPLE.kam.name);
+  return `<div class="card"><div class="card-hd">About ${esc(cust)}${pr ? `<span class="pill neutral">Profile v${pr.version}</span>` : ""}</div><div class="pad stack">
+    ${pr ? `<span class="small">${esc(pr.objectives[0])}</span><span class="hint">Owner: ${esc(pr.owner)} · reviewed ${pr.reviewed}</span><div><button class="btn sm" data-x="open-profile" data-v="${esc(cust)}">Open customer profile</button></div>`
+      : `<span class="small muted">No customer profile yet.</span><div><button class="btn sm primary" data-x="cust-new" data-name="${esc(cust)}">Create with personal context</button></div>`}
+    ${curatorMode() ? "" : `<div class="label" style="margin-top:6px">Your buyers here</div>${mine.length ? mine.map(b => `<button class="btn ghost small" data-x="buyer-edit" data-id="${b.id}">${icon("user")}${esc(b.name)} · ${esc(b.role)}</button>`).join("") : `<span class="hint">None yet.</span>`}
+    <div><button class="btn sm plain" data-x="buyer-new" data-cust="${esc(cust)}" data-name="">${icon("plus")}Create a buyer</button></div>`}</div></div>`;
+}
+
+/* =====================================================================
    Events for the integrated flows (data-x) and form bindings (data-bind)
    ===================================================================== */
 document.addEventListener("click", e => {
@@ -2084,6 +2151,17 @@ document.addEventListener("click", e => {
   const later = fn => setTimeout(fn, 0);   // let a checkbox settle before re-rendering
   switch (x) {
     case "toast": toast(el.dataset.msg); break;
+    case "open-run": runDrawer(id); break;
+    case "pc-help": pcHelp(); break;
+    case "prof-edit": profileEditDrawer(v); break;
+    case "prof-save": { const pr = profileOf(v), lines = sel => $(sel).value.split("\n").map(t => t.trim()).filter(Boolean);
+      pr.objectives = lines("#pe-obj"); pr.info = lines("#pe-info"); pr.posture = $("#pe-post").value.trim(); pr.version++; pr.reviewed = TODAY;
+      render(); profileDrawer(v); toast(`Saved as version ${pr.version}.`); break; }
+    case "buyer-edit": buyerEditDrawer(id); break;
+    case "buyer-save": { const b = BUYERS.find(y => y.id === id); b.role = $("#be-role").value.trim() || b.role; b.disc = $("#be-disc").value.trim() || b.disc;
+      b.goals = $("#be-goals").value.trim(); b.style = $("#be-style").value.trim(); b.friction = $("#be-fric").value.trim(); b.updated = "today"; closeOverlay(); render(); toast(`${b.name} updated.`); break; }
+    case "buyer-delete": { const b = BUYERS.find(y => y.id === id); BUYERS = BUYERS.filter(y => y !== b);
+      PROJECTS.forEach(pj => { if (pj.buyer && pj.buyer.startsWith(b.name + " ·")) pj.buyer = null; }); closeOverlay(); render(); toast(`${b.name} deleted.`); break; }
     case "coach-from-project": state.sc = scDefaults(proj(state.project)); go("coach"); break;
     case "open-update": updateDrawer(id); break;
     case "apply-update": { const u = UPDATES.find(y => y.id === id), pr = profileOf(u.cust);
@@ -2115,7 +2193,7 @@ document.addEventListener("click", e => {
     case "sc-run": { const c = state.sc, stages = [["Read the deck · 18 slides"], [`Gather Knowledge Bank facts for ${c.cust} · ${c.cat}`], ...(c.pc === "attached" ? [[`Add your personal context · ${c.items.filter(i => i.on).length} items`]] : []), ["Check the five selling steps"], ["Compare the deck's numbers with the bank"], ...(c.buyer ? [["Tailor feedback to the buyer"]] : [])];
       c.run = { stages, html: null }; render(); $("#main").scrollTop = 0;
       animate(c, stages.length, () => { const r = coachResult(c); c.run.html = r.html;
-        const run = { tool: "Selling Coach", date: TODAY, status: "Completed", note: `${c.deck} · ${r.grounded} of 5 steps backed by facts` };
+        const run = { id: "RUN-" + Date.now(), tool: "Selling Coach", date: TODAY, status: "Completed", note: `${c.deck} · ${r.grounded} of 5 steps backed by facts`, html: r.html, title: c.deck };
         if (c.from) proj(c.from).runs.unshift(run); else HISTORY.unshift(run);
         FACTS.unshift({ id: "F-" + (2500 + FACTS.length), type: "insight", text: `The ${c.cust} deck “${c.deck}” has no fact behind ${plural(5 - r.grounded, "selling step", "selling steps")}.`, cat: c.cat, cust: c.cust, rel: "stated", sens: "internal", owner: null, status: "needs_review", asOf: TODAY, src: null, origin: "your Selling Coach run", loc: "Selling Coach run", excerpt: `Written back from a completed Selling Coach run on ${TODAY}.`, dedup: 1, by: PEOPLE.kam.name });
         markOutdated(c.cat, c.cust, "A tool run added a fact."); }, 600); break; }
