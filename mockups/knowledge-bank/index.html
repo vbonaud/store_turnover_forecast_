@@ -116,6 +116,13 @@ details[open] > summary { margin-bottom: 10px; }
 .hint { font-size: 11.5px; color: var(--steel); }
 
 /* Role switch */
+.gsearch { flex: 1; max-width: 380px; display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--border-default); border-radius: 999px; padding: 6px 12px; }
+.gsearch svg.i { color: var(--steel); width: 16px; height: 16px; }
+.gsearch input { border: 0; outline: none; flex: 1; min-width: 0; font-size: 13px; background: transparent; }
+.gsearch:focus-within { border-color: var(--primary); box-shadow: 0 0 0 2px var(--border-primary-light); }
+.summary-card { border: 1px solid var(--border-primary-light); background: linear-gradient(180deg, #F7FAFF, var(--white)); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px; display: grid; gap: 10px; }
+.summary-card ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.group-hd { font: 600 13px var(--mont); margin: 18px 0 8px; display: flex; gap: 8px; align-items: center; }
 .roleswitch { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: var(--steel); }
 
 /* Summary strip */
@@ -334,6 +341,7 @@ pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; over
   .summary, .intro-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (max-width: 820px) {
+  .gsearch { order: 5; max-width: none; flex-basis: 100%; }
   .app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); }
   .sidebar { flex-direction: row; flex-wrap: wrap; border-right: 0; border-bottom: 1px solid var(--light-gray); padding: 8px 12px; }
   .sidebar .group, .navitem .count { display: none; }
@@ -355,6 +363,7 @@ pre.excerpt { font: 12px/1.5 var(--mono); white-space: pre-wrap; margin: 0; over
   <header class="appbar">
     <span class="appbar__mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/></svg></span>
     <span class="appbar__name">AI Sales Assistant</span>
+    <form class="gsearch" id="gsearch" role="search"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="gq" type="search" placeholder="Search what we know, e.g. own label" aria-label="Search the Knowledge Bank"></form>
     <span class="appbar__spacer"></span>
     <span class="roleswitch"><span>Viewing as</span><span class="seg" role="group" aria-label="Viewing as" id="roleswitch"></span></span>
     <span class="avatar" id="avatar" title="Camille Martin">CM</span>
@@ -595,22 +604,25 @@ const blankFilter = () => ({ q: "", cat: "", cust: "", type: "", use: "", hidden
 const state = {
   view: "project", role: "kam", project: "P-1", account: { cat: "Fabric Care", cust: "Northgate" },
   pq: "", pcust: "", f: blankFilter(), bf: { q: "", cat: "", cust: "" }, briefKey: "Fabric Care|Northgate", srcTab: "sources", todo: [],
-  intro: store.get("kb-intro-hidden") !== "1",
+  intro: store.get("kb-intro-hidden") !== "1", gq: "", lastFocus: null,
 };
 const curatorMode = () => state.role === "curator";
 
+const myRequests = () => [...FACTS.filter(f => f.by === PEOPLE.kam.name && f.status === "needs_review"), ...FACTS.filter(f => f.clearReq || f.reported)];
 const NAV = [
   { id: "projects", label: "My Projects", icon: "grid", count: () => PROJECTS.length, match: ["projects", "project"] },
   { group: "Knowledge Bank" },
-  { id: "accounts", label: "Accounts", icon: "store", match: ["accounts", "account"] },
-  { group: "Curator tools" },
+  { id: "accounts", label: "Accounts", icon: "store", match: ["accounts", "account", "find"] },
   { id: "facts", label: "All facts", icon: "facts", count: () => liveFacts().length },
+  { id: "requests", label: "My requests", icon: "clock", kamOnly: true, count: () => new Set(myRequests()).size + SOURCES.filter(x => x.by && x.status !== "live").length },
+  { group: "Curator tools", curatorOnly: true },
   { id: "briefings", label: "Briefings", icon: "book", count: () => BRIEFINGS.length },
   { id: "sources", label: "Sources & review", icon: "folder", badge: () => REVIEW.length },
 ];
 
 function renderShell() {
-  $("#nav").innerHTML = NAV.map(n => n.group
+  const items = NAV.filter(n => curatorMode() ? !n.kamOnly : !(n.curatorOnly || ["briefings", "sources"].includes(n.id)));
+  $("#nav").innerHTML = items.map(n => n.group
     ? `<div class="group">${n.group}</div>`
     : `<button class="navitem" data-view="${n.id}" aria-current="${(n.match || [n.id]).includes(state.view)}">${icon(n.icon)}${n.label}${n.badge ? (n.badge() ? `<span class="badge-n" title="Waiting in the review queue">${n.badge()}</span>` : "") : n.count ? `<span class="count">${n.count()}</span>` : ""}</button>`).join("");
   $("#roleswitch").innerHTML = ["kam", "curator"].map(r => `<button data-role="${r}" aria-pressed="${state.role === r}" title="${esc(PEOPLE[r].name + " · " + PEOPLE[r].role)}">${r === "kam" ? "KAM" : "Curator"}</button>`).join("");
@@ -631,12 +643,18 @@ const AFTER = {};
 /* =====================================================================
    Shared fact row (account page and chat context)
    ===================================================================== */
-function sourceName(f) { const s = f.src && src(f.src); return s ? s.name : f.origin || "Account memory"; }
+function sourceName(f) {
+  const s = f.src && src(f.src);
+  if (s) return s.name;
+  if (f.origin) return "From " + f.origin;
+  if (f.by) return f.by === PEOPLE.kam.name && !curatorMode() ? "Added by you" : `Added by ${f.by}`;
+  return "Account memory";
+}
 function factRow(f, ctx) {
   const scopeNote = ctx && !sameScope(f, ctx.cat, ctx.cust) ? (!f.cust ? `Applies to all ${f.cat} customers` : `Applies to all ${f.cust} categories`) : "";
   return `<button class="frow ${isLive(f) ? "" : "dim"}" data-act="open-fact" data-id="${f.id}">
     <span class="t">${esc(f.text)}</span><span class="row" style="justify-content:flex-end">${usePill(f)}</span>
-    <span class="m"><span>${esc(sourceName(f))}</span><span>${age(f.asOf)}</span>${f.dedup > 1 ? `<span>Confirmed by ${f.dedup} documents</span>` : ""}${scopeNote ? `<span>${scopeNote}</span>` : ""}${f.origin ? `<span class="pill info">From ${esc(f.origin)}</span>` : ""}${f.owner ? `<span class="pill warn">Only you can see this</span>` : ""}</span>
+    <span class="m"><span>${esc(sourceName(f))}</span><span>${age(f.asOf)}</span>${f.dedup > 1 ? `<span>Confirmed by ${f.dedup} documents</span>` : ""}${scopeNote ? `<span>${scopeNote}</span>` : ""}${f.origin ? `<span class="pill info">From ${esc(f.origin)}</span>` : ""}${f.owner ? `<span class="pill warn">Only you can see this</span>` : ""}${f.clearReq ? `<span class="pill info">Clearance requested</span>` : ""}${f.reported ? `<span class="pill warn">Reported</span>` : ""}</span>
   </button>`;
 }
 function factCard(f) {
@@ -677,7 +695,7 @@ RENDER.accounts = () => {
     ...REVIEW.slice(0, 4).map(r => ({ go: () => { state.srcTab = "review"; go("sources"); }, title: r.title, meta: `<span class="pill ${r.cls}">${r.kind}</span>` })),
     { go: () => { state.f = { ...blankFilter(), use: "review" }; go("facts"); }, title: `${plural(cnt("review"), "fact is", "facts are")} waiting for you to check`, meta: `<span class="pill warn">${icon("clock")}Not yet · needs review</span>` },
   ] : [
-    ...(mine.length ? [{ go: () => { state.f = { ...blankFilter(), use: "review" }; go("facts"); }, title: `${plural(mine.length, "fact you added is", "facts you added are")} waiting for a curator`, meta: `<span class="pill warn">${icon("clock")}Waiting on curator</span>` }] : []),
+    ...(mine.length ? [{ go: () => go("requests"), title: `${plural(mine.length, "fact you added is", "facts you added are")} waiting for a curator`, meta: `<span class="pill warn">${icon("clock")}Waiting on curator</span>` }] : []),
     ...PROJECTS.filter(p => readiness(p.cat, p.cust).k !== "ready").map(p => ({ go: () => openAccount(p.cat, p.cust), title: `Your project “${p.name}” has thin information on ${scopeLabel(p.cat, p.cust)}`, meta: `<span class="pill warn">Thin</span>` })),
     ...BRIEFINGS.filter(b => briefingState(b) === "outdated").map(b => ({ go: () => openAccount(b.cat, b.cust), title: `The briefing for ${scopeLabel(b.cat, b.cust)} needs a refresh`, meta: `<span class="pill warn">Needs refresh</span>` })),
   ];
@@ -705,6 +723,35 @@ RENDER.accounts = () => {
     </div>`;
 };
 
+/* ---- My requests: what happened to what the KAM added or asked for ---- */
+RENDER.requests = () => {
+  const added = FACTS.filter(f => f.by === PEOPLE.kam.name).sort((a, b) => (a.status === "needs_review" ? -1 : 1));
+  const asked = FACTS.filter(f => f.clearReq || f.reported || f.cleared || f.reportDone);
+  const reqRow = f => {
+    const st = f.clearReq ? ["info", "Waiting: use with customers?"] : f.reported ? ["warn", "Waiting: reported problem"] : f.cleared ? ["ok", "Cleared for customers"] : ["neutral", f.reportDone];
+    return `<button class="frow" data-act="open-fact" data-id="${f.id}"><span class="t">${esc(f.text)}</span><span class="row" style="justify-content:flex-end"><span class="pill ${st[0]}">${st[1]}</span></span>
+      <span class="m"><span>${esc(scopeLabel(f.cat, f.cust))}</span><span>With ${curatorFor(f)} (curator)</span></span></button>`;
+  };
+  return head("Knowledge Bank", "My requests", "Facts you added and things you asked curators to look at, with where each one stands.") + NOTE + `
+    ${SOURCES.some(x => x.by) ? `<h2 class="section-title">Documents you added</h2>${SOURCES.filter(x => x.by).map(x => `<button class="frow" data-act="open-source" data-id="${x.id}"><span class="t">${esc(x.name)}</span><span class="row" style="justify-content:flex-end"><span class="pill ${S_PILL[x.status][0]}">${x.status === "live" ? `${x.facts} facts found · waiting for a curator` : S_PILL[x.status][1]}</span></span><span class="m"><span>${esc(scopeLabel(x.cat, x.cust))}</span><span>Step ${Math.min(x.stage + 1, STAGES.length)} of ${STAGES.length}: ${STAGES[Math.min(x.stage, STAGES.length - 1)]}</span></span></button>`).join("")}<div class="section"></div>` : ""}
+    <h2 class="section-title">Facts you added</h2>
+    ${added.length ? added.map(f => factRow(f)).join("") : `<div class="empty-state">You haven't added a fact yet. <button class="btn ghost" data-act="add-fact">Add one</button></div>`}
+    <h2 class="section-title section">Your requests to curators</h2>
+    ${asked.length ? asked.map(reqRow).join("") : `<div class="empty-state">No open requests. From any fact you can ask to use it with customers or report a problem.</div>`}
+    <p class="hint section">Curators usually answer within 2 working days. You can send a reminder from the fact.</p>`;
+};
+
+/* ---- Search: across every account the KAM can see ---- */
+RENDER.find = () => {
+  const words = state.gq.toLowerCase().split(/\W+/).filter(w => w.length > 2);
+  const hits = words.length ? liveFacts().map(f => ({ f, n: words.filter(w => (f.text + " " + (f.cat || "") + " " + (f.cust || "")).toLowerCase().includes(w)).length })).filter(x => x.n).sort((a, b) => b.n - a.n).map(x => x.f) : [];
+  const groups = [...new Set(hits.map(f => bkey(f)))];
+  return head("Knowledge Bank", `Results for “${esc(state.gq)}”`, hits.length ? `${plural(hits.length, "fact", "facts")} across ${plural(groups.length, "account", "accounts")}. Out-of-date facts are not shown.` : "") + NOTE +
+    (hits.length ? groups.map(k => { const [cat, cust] = k.split("|"); const fs = hits.filter(f => bkey(f) === k);
+      return `<div class="group-hd">${esc(scopeLabel(cat || null, cust || null))}<button class="btn ghost small" data-act="open-account" data-cat="${esc(cat)}" data-cust="${esc(cust)}">Open account</button></div>${fs.map(f => factRow(f)).join("")}`; }).join("")
+    : `<div class="empty-state">Nothing matches “${esc(state.gq)}”. Try a customer, a category or a topic such as <button class="btn ghost" data-act="gsearch" data-q="own label">own label</button>, <button class="btn ghost" data-act="gsearch" data-q="promotion">promotion</button> or <button class="btn ghost" data-act="gsearch" data-q="premium">premium</button>.</div>`);
+};
+
 /* ---- Account page: organised by the questions a KAM asks ---- */
 RENDER.account = () => {
   const { cat, cust } = state.account;
@@ -718,10 +765,15 @@ RENDER.account = () => {
   const ps = pillars({ cat, cust }), miss = ps.filter(x => !x.n);
   const projs = PROJECTS.filter(p => p.cat === cat && (!cust || p.cust === cust));
   const cnt = k => live.filter(f => usage(f).k === k).length;
+  const lead = Q.map(([q, types]) => live.filter(f => types.includes(f.type)).sort((a, b) => order(a) - order(b))[0]).filter(Boolean);
+  const summary = lead.length ? `<section class="summary-card" aria-label="In short"><div class="spread"><b style="font:600 15px var(--mont)">In short</b>${bst !== "below" && bst !== "none" ? `<button class="btn sm" data-act="read-brief" data-key="${esc(bkey({ cat, cust }))}">Read the full briefing</button>` : ""}</div>
+      <ul>${lead.map(f => { const u = usage(f); return `<li>${esc(f.text)} <button class="bgtag" data-act="open-fact" data-id="${f.id}" title="${esc(u.why)}">${u.k === "customer" ? "use with customer" : u.short}</button></li>`; }).join("")}</ul>
+      <span class="hint">The most useful fact for each question below. Labels show whether you can use it with the customer.</span></section>` : "";
   return `<div class="crumb"><button data-view="accounts">Accounts</button><span>›</span><span>${esc(scopeLabel(cat, cust))}</span></div>
     <div class="pagehead"><div><h1>${esc(scopeLabel(cat, cust))}</h1><p class="sub">UK · ${plural(live.length, "usable fact", "usable facts")}: ${cnt("customer")} for customers, ${cnt("internal")} internal only, ${cnt("review")} waiting for review.</p></div>
-      <div class="actions"><span class="pill ${r.cls} lg" title="${esc(r.tip)}">${r.label}</span><button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button></div></div>
+      <div class="actions"><span class="pill ${r.cls} lg" title="${esc(r.tip)}">${r.label}</span><button class="btn" data-act="add-source">${icon("folder")}Add a document</button><button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button></div></div>
     ${NOTE}
+    ${summary}
     <div class="acct">
       <section>
         ${Q.map(([q, types]) => {
@@ -733,7 +785,7 @@ RENDER.account = () => {
       <aside class="side">
         <div class="card"><div class="card-hd">Briefing <span class="pill ${B_PILL[bst][0]}">${B_PILL[bst][1]}</span></div>
           <div class="pad stack"><p class="small muted">${bst === "below" ? "Needs at least 3 checked facts, including an official market number, before a summary can be written." : bst === "none" ? "There's enough information to write a summary." : `A short summary written from this account's facts, ${b.generated}.`}</p>
-            <div class="row">${bst === "none" ? `<button class="btn sm primary" data-act="generate" data-key="${esc(bkey({ cat, cust }))}">Write briefing</button>` : bst !== "below" ? `<button class="btn sm" data-act="open-brief" data-key="${esc(bkey({ cat, cust }))}">Read briefing</button>` : ""}</div></div></div>
+            <div class="row">${bst === "none" ? `<button class="btn sm primary" data-act="generate" data-key="${esc(bkey({ cat, cust }))}">Write briefing</button>` : bst !== "below" ? `<button class="btn sm" data-act="read-brief" data-key="${esc(bkey({ cat, cust }))}">Read briefing</button>` : ""}</div></div></div>
         <div class="card"><div class="card-hd">What's missing <span class="aside">${ps.length - miss.length}/${ps.length} covered</span></div>
           <div class="plist">${ps.map(x => `<div><span>${x.name}<div class="hint">${esc(x.desc)}</div></span>${x.n ? `<span class="pill ok">${plural(x.n, "fact", "facts")}</span>` : `<span class="pill neutral">Missing</span>`}</div>`).join("")}</div>
           ${miss.length ? `<div class="pad row"><button class="btn sm" data-act="add-source">Add a document</button><button class="btn sm plain" data-act="add-fact">Add a fact</button></div>` : ""}</div>
@@ -758,7 +810,7 @@ RENDER.projects = () => {
       <span class="projchips"><span class="projchip">UK</span><span class="projchip">${p.meeting ? "Meeting " + p.meeting : "No meeting set"}</span><span class="pill ${p.audience === "external" ? "info" : "solid"}">${AUD[p.audience]}</span></span>
       <span style="font-size:13px;color:var(--slate);min-height:40px">${esc(p.objective)}</span>
       <span class="covbar"><span style="width:${s * 20}%;background:${col}"></span></span>
-      <span class="spread small muted"><span>${lab} · <span class="dots" aria-hidden="true">${pillars(p).map(x => `<i class="${x.n ? "on" : ""}"></i>`).join("")}</span> ${s}/5</span><b style="color:${col}">${s * 20}%</b></span>
+      <span class="spread small muted"><span><span class="dots" aria-hidden="true">${pillars(p).map(x => `<i class="${x.n ? "on" : ""}"></i>`).join("")}</span> ${s} of 5 context parts covered</span><b style="color:${col === "var(--alert-accent)" ? "var(--alert-text)" : col}">${lab}</b></span>
       <span class="hint">${plural(p.runs.length, "run", "runs")}${p.runs[0] ? ` · last ${p.runs[0].date}` : ""}</span>
     </button>`;
   }).join("");
@@ -806,7 +858,7 @@ RENDER.project = () => {
         </div>
       </section>
       <aside class="side">
-        <div class="card"><div class="card-hd">Context <span class="small" style="font:600 12px var(--inter);color:${col}">${s}/5 · ${lab.toLowerCase()}</span></div>
+        <div class="card"><div class="card-hd">Context <span class="small" style="font:600 12px var(--inter);color:${col}">${s} of 5 parts covered</span></div>
           <div class="plist">${ps.map(x => `<div><span>${x.name}${x.name === "Buyer" && x.text ? `<div class="hint">${esc(x.text)}</div>` : ""}</span>${x.n ? `<span class="pill ok">${x.name === "Buyer" ? "Attached" : plural(x.n, "fact", "facts")}</span>` : x.name === "Buyer" ? `<button class="btn ghost small" data-act="attach-buyer">Attach</button>` : `<span class="pill neutral">Missing</span>`}</div>`).join("")}</div>
           <div class="pad" style="padding-top:10px"><span class="hint">Worked out from Knowledge Bank facts. Private facts never count.</span></div></div>
         <div class="card"><div class="card-hd">Account ${st ? `<span class="pill ${B_PILL[st][0]}">Briefing: ${B_PILL[st][1].toLowerCase()}</span>` : ""}</div>
@@ -842,6 +894,7 @@ function botReply(p, fn, delay = 550) {
 function lockOld(p) { p.chat.forEach(m => { if (m.chips) m.used = true; m.lock = true; }); }
 
 const INTENT = [
+  ["help", /^\s*(hi|hello|hey|help|\?|what can you do|bonjour)\b/i],
   ["coach", /(selling coach|deck|slides?|presentation|feedback|psf|review my)/i],
   ["story", /(storyline|story|opportunit|narrative|pitch)/i],
   ["gaps", /(missing|gaps?|coverage|what context)/i],
@@ -852,7 +905,7 @@ function userSays(p, text) {
   push(p, { who: "me", text });
   const hits = INTENT.filter(([, re]) => re.test(text)).map(([k]) => k);
   const intent = hits.includes("coach") && hits.includes("story") ? "which" : hits[0] || "kb";
-  ({ coach: startCoach, story: startStory, gaps: contextGaps, which: askWhich, kb: t => kbAnswer(p, text) })[intent](p);
+  ({ help: showHelp, coach: startCoach, story: startStory, gaps: contextGaps, which: askWhich, kb: t => kbAnswer(p, text) })[intent](p);
 }
 
 /* Citations respect the audience: usable facts get a number, the rest are labelled. */
@@ -876,6 +929,10 @@ function whyBox(r, p) {
   </div></details>`;
 }
 
+function showHelp(p) {
+  botReply(p, m => { m.html = `<p>Here's what I can do in this project:</p><ul><li><b>Review a deck</b> with Selling Coach: feedback on each selling step, backed by facts.</li><li><b>Build a storyline</b> with the Storyline Generator: opportunities, then a step-by-step story.</li><li><b>Answer a question</b> from the Knowledge Bank, with the source of every fact.</li></ul>`;
+    m.chips = [`Review my ${p.cust} deck`, `Build a storyline for ${p.cust}`, "What context is missing?"]; });
+}
 function askWhich(p) {
   botReply(p, m => { m.html = `<p>Which tool do you want?</p><div class="row"><button class="btn sm" data-act="launch" data-tool="coach">${icon("coach")}Selling Coach · review a deck</button><button class="btn sm" data-act="launch" data-tool="story">${icon("story")}Storyline Generator · build a story</button></div>`; });
 }
@@ -1010,7 +1067,7 @@ RENDER.facts = () => {
     .filter(f => !F.use || usage(f).k === F.use)
     .filter(f => !q || f.text.toLowerCase().includes(q));
   const opt = (arr, cur, all) => `<option value="">${all}</option>` + arr.map(([v, l]) => `<option value="${esc(v)}" ${v === cur ? "selected" : ""}>${esc(l)}</option>`).join("");
-  return head("Curator tools", "All facts", "Every fact in the bank, with whether it can be used and where it came from.", `<button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + `
+  return head("Knowledge Bank", "All facts", "Every fact across your accounts, with whether you can use it and where it came from.", `<button class="btn primary" data-act="add-fact">${icon("plus")}Add a fact</button>`) + NOTE + `
     <div class="filters">
       <input class="search" id="fq" type="search" placeholder="Search facts" value="${esc(F.q)}" aria-label="Search facts">
       <select class="select" data-filter="use" aria-label="Can I use it?">${opt(USE_KEYS, F.use, "Can I use it? Any")}</select>
@@ -1134,7 +1191,7 @@ function reviewQueue() {
   return `${locked ? `<div class="callout info" style="margin-bottom:12px"><b>Curators resolve these.</b> You can see what's pending and who it's assigned to. Switch to “Curator” at the top to try resolving them.</div>` : `<p class="small muted" style="margin-bottom:12px">Only the cases that need a person.</p>`}
   <div class="rq">${REVIEW.map(r => `<article class="rcard">
       <div class="spread"><span class="pill ${r.cls}">${r.kind}</span><span class="hint">Assigned to ${CURATOR[r.cat]} (curator)</span></div>
-      <h3>${esc(r.title)}</h3><p>${esc(r.body)}</p>
+      <h3>${esc(r.title)}</h3><p>${esc(r.body)}</p>${r.fact && r.raised ? `<div><button class="btn ghost small" data-act="open-fact" data-id="${r.fact}">Open the fact</button></div>` : ""}
       ${r.a ? `<div class="versus">${[r.a, r.b].map(x => `<div class="side-box"><span class="big">${x.big}</span><span>${esc(x.src)}</span><span class="hint">${esc(x.loc)} · ${REL_LABEL[x.rel]} · ${age(x.asOf)}</span></div>`).join("")}</div>` : ""}
       <div class="row">${r.actions.map(([l, c]) => `<button class="btn sm ${c || "plain"}" data-act="resolve" data-id="${r.id}" data-choice="${esc(l)}" ${locked ? "disabled" : ""}>${esc(l)}</button>`).join("")}</div>
     </article>`).join("")}</div>`;
@@ -1152,14 +1209,20 @@ function healthTab() {
 /* =====================================================================
    Drawer (fact detail, source impact) and modals
    ===================================================================== */
-function openDrawer(html) { $("#overlay").innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer" role="dialog" aria-modal="true">${html}</aside>`; $(".drawer button")?.focus(); }
+function openDrawer(html) { if (!$("#overlay").children.length) state.lastFocus = document.activeElement; $("#overlay").innerHTML = `<div class="scrim" data-act="close"></div><aside class="drawer" role="dialog" aria-modal="true">${html}</aside>`; $(".drawer button")?.focus(); }
 function openModal(html, onSubmit) {
+  if (!$("#overlay").children.length) state.lastFocus = document.activeElement;
   $("#overlay").innerHTML = `<div class="scrim"></div><div class="modal-wrap" data-act="close"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`;
   const form = $(".modal form");
   form.addEventListener("submit", e => { e.preventDefault(); onSubmit(new FormData(form)); });
   $(".modal input, .modal select, .modal textarea")?.focus();
 }
-function closeOverlay() { $("#overlay").innerHTML = ""; }
+function closeOverlay() {
+  if (!$("#overlay").children.length) return;
+  $("#overlay").innerHTML = "";
+  if (state.lastFocus && document.contains(state.lastFocus)) state.lastFocus.focus();
+  state.lastFocus = null;
+}
 
 function factDrawer(id) {
   const f = fact(id), s = f.src ? src(f.src) : null, u = usage(f);
@@ -1187,6 +1250,9 @@ function factDrawer(id) {
     <div class="row">
       ${f.status === "needs_review" && curatorMode() ? `<button class="btn sm primary" data-act="verify" data-id="${f.id}">Mark as checked</button><button class="btn sm danger" data-act="reject" data-id="${f.id}">Reject</button>` : ""}
       ${f.status === "needs_review" && !curatorMode() ? `<button class="btn sm" data-act="nudge" data-id="${f.id}">Remind ${cur}</button>` : ""}
+      ${u.k === "customer" || u.k === "internal" ? `<button class="btn sm ${u.k === "customer" ? "primary" : ""}" data-act="copy-fact" data-id="${f.id}">Copy for ${u.k === "customer" ? "a customer slide" : "an internal deck"}</button>` : ""}
+      ${u.k === "internal" && f.sens === "internal" && !curatorMode() ? (f.clearReq ? `<span class="pill info">${icon("clock")}Clearance requested</span>` : `<button class="btn sm plain" data-act="ask-clear" data-id="${f.id}">Ask to use it with customers</button>`) : ""}
+      ${isLive(f) && !curatorMode() ? (f.reported ? `<span class="pill warn">Reported</span>` : `<button class="btn sm plain" data-act="report" data-id="${f.id}">Report a problem</button>`) : ""}
     </div>
     <details><summary>Details for curators</summary><dl class="kv">
       <dt>Labels</dt><dd><span class="gov"><span>Trust <b>${REL_LABEL[f.rel]}</b></span><span>Audience <b>${SENS_LABEL[f.sens]}</b></span><span>Visible to <b>${f.owner ? "only " + esc(f.owner) : "the team"}</b></span></span></dd>
@@ -1277,14 +1343,16 @@ function addSourceModal() {
       <p class="hint">Official market numbers arrive automatically. You don't need to upload them.</p>
       <div class="foot"><button type="button" class="btn plain" data-act="close">Cancel</button><button class="btn primary" type="submit">Import</button></div>
     </form>`, fd => {
-      const s = { id: "S-" + (20 + SOURCES.length), name: fd.get("name"), kind: fd.get("kind"), cat: fd.get("cat"), cust: fd.get("cust") || null, status: "processing", sens: fd.get("sens"), rel: fd.get("kind") === "SharePoint Sales Book" ? "stated" : "reviewed", asOf: TODAY, conf: "medium", facts: 0, stage: 0 };
+      const s = { id: "S-" + (20 + SOURCES.length), by: curatorMode() ? null : PEOPLE.kam.name, name: fd.get("name"), kind: fd.get("kind"), cat: fd.get("cat"), cust: fd.get("cust") || null, status: "processing", sens: fd.get("sens"), rel: fd.get("kind") === "SharePoint Sales Book" ? "stated" : "reviewed", asOf: TODAY, conf: "medium", facts: 0, stage: 0 };
       const run = { status: "Running", source: s.name, started: TODAY + " 14:05", indexed: 0, failed: 0 };
       SOURCES.unshift(s); RUNS.unshift(run);
-      closeOverlay(); state.srcTab = "sources"; go("sources"); toast("Import started");
+      closeOverlay();
+      if (curatorMode()) { state.srcTab = "sources"; go("sources"); } else go("requests");
+      toast("Import started");
       const t = setInterval(() => {
         s.stage++;
         if (s.stage >= STAGES.length) { clearInterval(t); s.status = "live"; s.facts = 11; run.status = "Complete"; run.indexed = 11; markOutdated(s.cat, s.cust, "New facts arrived from a new document."); toast(`${s.name}: 11 facts found, waiting for a curator`); }
-        if (state.view === "sources" && !$("#overlay").children.length) render();
+        if (["sources", "requests"].includes(state.view) && !$("#overlay").children.length) render();
       }, 650);
     });
 }
@@ -1313,7 +1381,10 @@ document.addEventListener("click", e => {
   const nav = e.target.closest("[data-view]");
   if (nav) { closeOverlay(); go(nav.dataset.view); return; }
   const role = e.target.closest("[data-role]");
-  if (role) { state.role = role.dataset.role; closeOverlay(); render(); toast(`Viewing as ${PEOPLE[state.role].name} · ${PEOPLE[state.role].role}`); return; }
+  if (role) { state.role = role.dataset.role; closeOverlay();
+    if (state.role === "kam" && ["briefings", "sources"].includes(state.view)) state.view = "accounts";
+    if (state.role === "curator" && state.view === "requests") state.view = "sources";
+    render(); toast(`Viewing as ${PEOPLE[state.role].name} · ${PEOPLE[state.role].role}`); return; }
   const ft = e.target.closest("[data-ftype]");
   if (ft) { state.f.type = ft.dataset.ftype; render(); return; }
   const tab = e.target.closest("[data-tab]");
@@ -1337,8 +1408,25 @@ document.addEventListener("click", e => {
   if (a === "todo") state.todo[+el.dataset.k]?.go();
   if (a === "pick-brief") { state.briefKey = el.dataset.key; render(); }
   if (a === "open-brief") { const [cat, cust] = el.dataset.key.split("|"); state.bf = { q: "", cat, cust: cust || "" }; state.briefKey = el.dataset.key; go("briefings"); }
-  if (a === "regen") { const b = BRIEFINGS.find(x => bkey(x) === el.dataset.key); b.status = "current"; b.generated = TODAY; delete b.why; render(); toast("Briefing refreshed from the current facts"); }
+  if (a === "regen") { const b = BRIEFINGS.find(x => bkey(x) === el.dataset.key); const inDrawer = !!el.closest(".drawer"); b.status = "current"; b.generated = TODAY; delete b.why; render(); if (inDrawer) openDrawer(`<div class="spread"><span class="label">Briefing</span><button class="btn sm plain" data-act="close">Close</button></div>${briefingDoc(b)}`); toast("Briefing refreshed from the current facts"); }
   if (a === "generate") { const [cat, cust] = el.dataset.key.split("|"); BRIEFINGS.push({ cat, cust: cust || null, status: "current", generated: TODAY }); state.briefKey = el.dataset.key; render(); toast("Briefing written"); }
+  if (a === "read-brief") { const b = BRIEFINGS.find(x => bkey(x) === el.dataset.key); if (b) openDrawer(`<div class="spread"><span class="label">Briefing</span><button class="btn sm plain" data-act="close">Close</button></div>${briefingDoc(b)}`); }
+  if (a === "gsearch") { state.gq = el.dataset.q; $("#gq").value = state.gq; go("find"); }
+  if (a === "copy-fact") {
+    const f = fact(id), text = `${f.text} (Source: ${sourceName(f)}, ${f.asOf})`;
+    const done = () => toast(usage(f).k === "customer" ? "Copied with its source. Ready for a customer slide." : "Copied with its source. Internal decks only.");
+    if (navigator.clipboard?.writeText) navigator.clipboard.writeText(text).then(done, () => toast(`Copy not available here. Text: ${text}`)); else toast(`Copy not available here. Text: ${text}`);
+  }
+  if (a === "ask-clear") {
+    const f = fact(id); f.clearReq = true;
+    REVIEW.push({ id: "R-" + (REVIEW.length + 10), kind: "Customer clearance request", cls: "info", cat: f.cat || "Fabric Care", title: f.text, body: `${PEOPLE.kam.name} asks to use this fact with the customer. Check it holds nothing confidential, then clear it or keep it internal.`, actions: [["Clear for customers", "primary"], ["Keep internal", ""]], fact: f.id, raised: "clear" });
+    factDrawer(id); renderShell(); toast(`Request sent to ${curatorFor(f)}.`);
+  }
+  if (a === "report") {
+    const f = fact(id); f.reported = true;
+    REVIEW.push({ id: "R-" + (REVIEW.length + 10), kind: "Reported by a KAM", cls: "warn", cat: f.cat || "Fabric Care", title: f.text, body: `${PEOPLE.kam.name} thinks this fact may be wrong or out of date. Check the source, then keep it or mark it out of date.`, actions: [["Keep it", ""], ["Mark out of date", "danger"]], fact: f.id, raised: "report" });
+    factDrawer(id); renderShell(); toast(`Reported to ${curatorFor(f)}. Thanks.`);
+  }
   if (a === "nudge") { toast(`Reminder sent to ${curatorFor(fact(id))}.`); }
   if (a === "attach-buyer") { p.buyer = "Jordan Blake · category buyer"; render(); toast("Buyer attached"); }
   if (a === "say") userSays(p, el.dataset.text);
@@ -1366,11 +1454,14 @@ document.addEventListener("click", e => {
   }
   if (a === "resolve") {
     const r = REVIEW.find(x => x.id === id);
+    if (r.raised === "clear") { const f = fact(r.fact); f.clearReq = false; if (el.dataset.choice.startsWith("Clear")) { f.sens = "external"; f.cleared = true; markOutdated(f.cat, f.cust, "A fact was cleared for customers."); } else f.reportDone = "Kept internal by the curator"; }
+    if (r.raised === "report") { const f = fact(r.fact); f.reported = false; if (el.dataset.choice.startsWith("Mark")) { f.status = "outdated"; f.reportDone = "Marked out of date. Thanks"; markOutdated(f.cat, f.cust, "A fact was marked out of date."); } else f.reportDone = "Checked and kept by the curator"; }
     if (r.fact && el.dataset.choice.startsWith("Approve")) { const f = fact(r.fact); f.status = "verified"; f.sens = "external"; markOutdated(f.cat, f.cust, "A quote was approved."); }
     REVIEW = REVIEW.filter(x => x.id !== id);
     render(); toast(`${r.kind}: ${el.dataset.choice}`);
   }
 });
+$("#gsearch").addEventListener("submit", e => { e.preventDefault(); const q = $("#gq").value.trim(); if (!q) return; state.gq = q; closeOverlay(); go("find"); });
 document.addEventListener("change", e => {
   const f = e.target.closest("[data-filter]");
   if (f) { state.f[f.dataset.filter] = f.value; render(); return; }
@@ -1380,6 +1471,14 @@ document.addEventListener("change", e => {
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") closeOverlay();
+  const box = $(".drawer") || $(".modal");
+  if (e.key === "Tab" && box) {
+    const f = [...box.querySelectorAll("button:not(:disabled), input, select, textarea, summary, [tabindex]")].filter(x => x.offsetParent !== null);
+    if (f.length) { const first = f[0], last = f[f.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      else if (!box.contains(document.activeElement)) { e.preventDefault(); first.focus(); } }
+  }
   if (e.key === "Enter" && e.target.matches("tr[data-act]")) e.target.click();
 });
 
