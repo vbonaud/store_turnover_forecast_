@@ -132,6 +132,17 @@ tr:last-child td { border-bottom: 0; }
 .projcard { border: 1px solid var(--light-gray); border-radius: 14px; background: var(--white); box-shadow: var(--shadow); padding: 16px 17px; text-align: left; display: grid; gap: 9px; align-content: start; transition: transform .18s ease, box-shadow .18s ease; }
 .projcard:hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(20, 23, 27, .10); }
 .projcard .nm { font: 700 16px var(--mont); }
+.pcwrap { position: relative; display: grid; }
+.pcmenu { position: absolute; right: 10px; bottom: 10px; width: 32px; height: 28px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--slate); font-size: 18px; line-height: 1; }
+.pcmenu:hover, .pcmenu[aria-expanded="true"] { background: var(--surface); border-color: var(--light-gray); }
+.cardpop { position: absolute; right: 10px; bottom: 44px; z-index: 6; min-width: 190px; background: var(--white); border: 1px solid var(--light-gray); border-radius: 10px; box-shadow: 0 10px 28px rgba(20, 23, 27, .16); padding: 6px; display: grid; }
+.cardpop button { text-align: left; border: 0; background: none; padding: 9px 10px; border-radius: 7px; font-size: 13px; color: var(--charcoal); }
+.cardpop button:hover, .cardpop button:focus-visible { background: var(--surface); }
+.cardpop .danger, .linkdanger { color: var(--err-accent); }
+.cardpop hr { border: 0; border-top: 1px solid var(--light-gray); margin: 4px 0; }
+.btn.danger { background: var(--err-accent); border-color: var(--err-accent); color: var(--white); }
+.btn.danger:hover:not(:disabled) { background: #B31007; }
+.linkdanger { border: 0; background: none; font-weight: 600; font-size: 13px; padding: 0; }
 .projcard .goal { font-size: 13px; color: var(--slate); min-height: 40px; }
 .projcard.new { border: 1px dashed var(--border-primary-light); background: linear-gradient(180deg, #F7FAFF, var(--white)); place-items: center; text-align: center; color: var(--primary); min-height: 180px; }
 .projcard.new .plus { width: 44px; height: 44px; border-radius: 12px; background: var(--primary); color: var(--white); display: grid; place-items: center; }
@@ -384,7 +395,7 @@ function render() { renderNav(); $("#view").innerHTML = V[state.view](); AFTER[s
 // Numbered notes that explain the intended behaviour to the vendor building it
 const NOTES = {
   home: [[".appbar .newbtn", "“New project” is always one click away. The project is where all work starts."], ["#view .projgrid", "Projects are the main entry. Each card shows the customer, the next meeting and where its presentation stands."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], ["#view .callout", "The three tools are no longer separate apps on Home. They open from inside a project."]],
-  projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .projcard.new", "Create a project from the list too."]],
+  projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Project context: the single source that every tool and every piece of feedback reads."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
   meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#notes", "Notes after the meeting stay in the project and inform the next meeting."]],
   new: [["#view .stepper", "Four short steps. Only the name and customer are required."], ["#view .wizard .card", "On step 3, buyer profiles are picked from the customer's saved profiles and reused across projects."], ["#view .preview", "Live preview of what the project will hold."]],
@@ -404,7 +415,8 @@ function applyNotes() {
   });
   document.body.insertAdjacentHTML("beforeend", `<aside id="vnotes" aria-label="Notes for the vendor"><div class="spread"><h3>Notes for the vendor</h3><button class="btn ghost small" data-a="vnotes">Hide</button></div><ol>${shown.map((t, i) => `<li><span class="npin">${i + 1}</span><span>${esc(t)}</span></li>`).join("")}</ol></aside>`);
 }
-function go(view, extra = {}) { document.querySelectorAll(".dlg").forEach(x => x.remove()); Object.assign(state, extra, { view, navOpen: false }); render(); $("#main").scrollTop = 0; }
+function closeDialogs() { document.querySelectorAll(".dlg").forEach(x => x.remove()); }
+function go(view, extra = {}) { closeDialogs(); state.menu = null; Object.assign(state, extra, { view, navOpen: false }); render(); $("#main").scrollTop = 0; }
 const V = {}, AFTER = {};
 
 /* =====================================================================
@@ -412,14 +424,16 @@ const V = {}, AFTER = {};
    ===================================================================== */
 function projectCard(p) {
   const m = nextMeeting(p), [cls, lab] = deckState(m);
-  return `<button class="projcard" data-a="open" data-v="${p.id}">
+  const open = state.menu === p.id;
+  return `<div class="pcwrap"><button class="projcard" data-a="open" data-v="${p.id}">
     <span class="spread"><span class="nm">${esc(p.cust)}</span><span class="chip">${esc(p.cat)}</span></span>
     <b style="font-size:13.5px">${esc(p.name)}</b>
     <span class="goal">${esc(p.objective)}</span>
     <span class="row small">${icon("cal")}${m ? `${esc(m.title)} · ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "not scheduled"}` : "No upcoming meeting"}</span>
     <span class="spread"><span class="pill ${cls}">${lab}</span>${avatars(p.team)}</span>
     <span class="hint">Updated ${esc(p.updated)}</span>
-  </button>`;
+  </button><button class="pcmenu" data-a="cardmenu" data-v="${p.id}" aria-label="Actions for ${esc(p.name)}" aria-haspopup="menu" aria-expanded="${open}">⋯</button>
+  ${open ? `<div class="cardpop" role="menu"><button role="menuitem" data-a="editproj" data-v="${p.id}">Edit project</button><button role="menuitem" data-a="archive" data-v="${p.id}">${p.status === "Archived" ? "Restore to active" : "Archive project"}</button><hr><button role="menuitem" class="danger" data-a="delproj" data-v="${p.id}">Delete project</button></div>` : ""}</div>`;
 }
 const newCard = () => `<button class="projcard new" data-a="new"><span class="plus">${icon("plus")}</span><b style="font:700 15px var(--mont)">Create a project</b><span class="small muted">One customer, one goal. Your meetings, presentations and feedback in one place.</span></button>`;
 V.home = () => {
@@ -691,7 +705,8 @@ function projectForm(p) {
       <div style="text-align:right"><button type="button" class="btn sm" id="pf-addb">${icon("plus")}Add buyer</button></div></div></div>
     <div class="field"><span class="flabel">Team</span><div class="row">${Object.entries(TEAMMATES).map(([k, t]) => `<label class="chip" style="cursor:pointer;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" name="t" value="${k}" ${p.team.includes(k) ? "checked" : ""} ${k === "VB" ? "disabled" : ""}>${esc(t.name)}${k === "VB" ? " (owner)" : ""}</label>`).join("")}</div></div>
     <div class="field"><label for="pf-ctx">Important context</label><textarea id="pf-ctx" name="ctx" rows="3">${esc(p.context)}</textarea><span class="hint">Used by every tool and every piece of feedback in this project.</span></div>
-    <div class="field"><label for="pf-st">Status</label>${sel("st", ["Active", "Archived"], p.status)}</div>`, fd => {
+    <div class="field"><label for="pf-st">Status</label>${sel("st", ["Active", "Archived"], p.status)}</div>
+    <div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delproj" data-v="${p.id}">Delete this project…</button></div>`, fd => {
       const cust = fd.get("cust");
       Object.assign(p, { name: fd.get("name").trim() || p.name, cust, market: fd.get("market"), cat: fd.get("cat"), audience: fd.get("aud"), objective: fd.get("obj").trim() || p.objective, context: fd.get("ctx").trim(), status: fd.get("st"),
         buyers: fd.getAll("b").filter(id => buyer(id).cust === cust), team: ["VB", ...fd.getAll("t")] });
@@ -719,6 +734,19 @@ function shareForm(p) {
       render(); toast(add.length ? `${add.map(k => TEAMMATES[k].name).join(", ")} added to the project.` : `Invitation sent to ${e}.`);
     }, "Share");
 }
+function confirmDelete(p) {
+  const decks = p.meetings.reduce((n, m) => n + m.decks.length, 0);
+  const box = inlineForm(`Delete “${esc(p.name)}”?`, `<p class="small">This removes the project for everyone on it (${p.team.map(k => esc(TEAMMATES[k].name)).join(", ")}). It can't be undone.</p>
+    <ul class="small" style="margin:0;padding-left:18px;display:grid;gap:4px"><li>${plural(p.meetings.length, "meeting", "meetings")} and their notes</li><li>${plural(decks, "presentation version", "presentation versions")} and their feedback</li><li>${plural(p.files.length, "project document", "project documents")}</li></ul>
+    <p class="hint">Buyer profiles are kept: they belong to ${esc(p.cust)}, not to this project.</p>
+    ${p.status === "Active" ? `<div class="callout info">Finished with it? <button type="button" class="btn ghost small" data-a="archive" data-v="${p.id}" style="color:var(--primary);padding:0">Archive it instead</button> to keep it searchable.</div>` : ""}`, () => {
+      PROJECTS.splice(PROJECTS.indexOf(p), 1);
+      if (["project", "meeting"].includes(state.view) && state.pid === p.id) go("projects"); else render();
+      toast(`${p.name} deleted.`);
+    }, "Delete project");
+  box.querySelector("[type=submit]").classList.replace("primary", "danger");
+  box.querySelector("[data-cancel]").focus();
+}
 function launchTool(p, k) {
   const m = nextMeeting(p);
   if (k === "coach") {
@@ -741,7 +769,9 @@ function launchTool(p, k) {
    Events
    ===================================================================== */
 document.addEventListener("click", e => {
-  const el = e.target.closest("[data-a]"); if (!el || el.disabled) return;
+  const el = e.target.closest("[data-a]");
+  if (state.menu && (!el || el.dataset.a !== "cardmenu")) { state.menu = null; if (!el) { render(); return; } }
+  if (!el || el.disabled) return;
   const a = el.dataset.a, v = el.dataset.v, p = proj(state.pid), w = state.w;
   const m = p && p.meetings.find(x => x.id === (el.dataset.m || state.mid));
   switch (a) {
@@ -765,7 +795,10 @@ document.addEventListener("click", e => {
     case "w-meet": setTimeout(() => { w.withMeeting = !w.withMeeting; render(); }, 0); break;
     case "w-team": setTimeout(() => { w.team = w.team.includes(v) ? w.team.filter(x => x !== v) : [...w.team, v]; render(); }, 0); break;
     case "addbuyer": { const c = w.cust === "__other" ? w.custOther.trim() : w.cust; if (!c) { toast("Choose the customer first."); break; } buyerForm(c, b => { w.buyers.push(b.id); render(); }); break; }
-    case "editproj": projectForm(p); break;
+    case "editproj": projectForm(proj(v) || p); if (state.view !== "project") render(); break;
+    case "cardmenu": state.menu = state.menu === v ? null : v; render(); $(".cardpop button")?.focus(); break;
+    case "archive": { const q = proj(v); closeDialogs(); q.status = q.status === "Archived" ? "Active" : "Archived"; log(q, q.status === "Archived" ? "archived the project" : "restored the project"); render(); toast(q.status === "Archived" ? `${q.name} archived. Find it under Archived.` : `${q.name} is active again.`); break; }
+    case "delproj": closeDialogs(); render(); confirmDelete(proj(v)); break;
     case "tool": launchTool(p, v); break;
     case "w-back": w.step--; render(); break;
     case "w-next": { const err = $("#w-err"), cust = w.cust === "__other" ? w.custOther.trim() : w.cust;
@@ -795,7 +828,7 @@ document.addEventListener("change", e => {
     if (t.dataset.up === "file") { const p = proj(state.pid), ext = name.split(".").pop().toLowerCase(); p.files.unshift({ name, kind: /xls|csv/.test(ext) ? "xls" : /doc|pdf|txt/.test(ext) ? "doc" : "ppt", added: TODAY, by: "VB" }); log(p, `added ${name}`); render(); toast(`${name} added to the project.`); }
   }
 });
-document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches(".dropzone")) { e.preventDefault(); e.target.querySelector("input")?.click(); } });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && state.menu) { const v = state.menu; state.menu = null; render(); document.querySelector(`.pcmenu[data-v="${v}"]`)?.focus(); return; } if (e.key === "Enter" && e.target.matches(".dropzone")) { e.preventDefault(); e.target.querySelector("input")?.click(); } });
 function refreshPreview() { const pv = $(".preview"); if (!pv || state.view !== "new") return; const tmp = document.createElement("div"); tmp.innerHTML = V.new(); pv.replaceWith(tmp.querySelector(".preview")); }
 
 render();
