@@ -173,6 +173,26 @@ tr:last-child td { border-bottom: 0; }
 .bpick[hidden] { display: none; }
 .field label.bpick { font-weight: 400; font-size: 13px; color: var(--charcoal); }
 .launch { display: grid; gap: 10px; }
+[hidden] { display: none !important; }
+.gridauto { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.stepper-in { display: flex; align-items: center; border: 1px solid var(--border-default); border-radius: 8px; background: var(--white); overflow: hidden; }
+.stepper-in input { border: 0 !important; outline: 0; min-width: 0; flex: 1; }
+.stepper-in button { width: 34px; height: 36px; border: 0; border-left: 1px solid var(--light-gray); background: var(--white); color: var(--slate); font-size: 16px; }
+.stepper-in button:hover { background: var(--surface); }
+.field input.ro, .field textarea.ro { background: var(--surface); color: var(--steel); }
+.chip.ck { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; font-weight: 500; }
+.chip.ck:has(input:checked) { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+.chip.ck input { accent-color: var(--primary); }
+.objdesc { background: var(--snow); border: 1px solid var(--light-gray); border-radius: 8px; padding: 10px 12px; margin: 0; }
+.expander { border: 1px solid var(--light-gray); border-radius: 10px; background: var(--surface); }
+.exp-hd { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; font-weight: 600; font-size: 13px; color: var(--charcoal); background: none; border: 0; text-align: left; }
+.expander .pad { background: var(--white); border-top: 1px solid var(--light-gray); border-radius: 0 0 10px 10px; }
+.radios { display: inline-flex; gap: 14px; align-items: center; }
+.radios label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+.mctx-hd { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.sessrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; padding: 10px 0; border-bottom: 1px solid var(--light-gray); text-align: left; width: 100%; background: none; border-left: 0; border-right: 0; border-top: 0; }
+.sessrow:last-child { border-bottom: 0; }
+.sessrow:hover b { color: var(--primary); }
 .upcoming { display: grid; gap: 1px; background: var(--light-gray); border: 1px solid var(--light-gray); border-radius: var(--radius); overflow: hidden; }
 .upcoming button { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 14px; align-items: center; background: var(--white); border: 0; text-align: left; padding: 12px 14px; }
 .upcoming button:hover { background: var(--primary-light); }
@@ -298,6 +318,9 @@ const BUYERS = [
 const DISC = { D: "Direct, wants the bottom line", I: "Enthusiastic, likes the big picture", S: "Steady, values relationships", C: "Analytical, wants the data" };
 const buyer = id => BUYERS.find(b => b.id === id);
 const pbuyers = p => p.buyers.map(buyer).filter(Boolean);
+const clone = o => JSON.parse(JSON.stringify(o));
+const scText = sc => SHORTCUTS.filter(([k]) => sc[k].length).map(([k, l]) => `${l}: ${sc[k].join(", ")}`).join("\n");
+const scCount = sc => SHORTCUTS.reduce((n, [k]) => n + sc[k].length, 0);
 const bmeta = b => `${esc(b.cust)} · DISC-${b.disc} · updated ${esc(b.updated)}`;
 // Saved buyer profiles for one customer, as checkable cards
 function buyerPicker(cust, selected, attrs) {
@@ -342,6 +365,51 @@ PROJECTS[0].meetings[0].decks[0].result = { score: 3.1, date: "24 Sep 2026", ctx
 PROJECTS[0].meetings[1].decks[0].result = { score: 3.8, date: "06 Sep 2026", ctx: true };
 PROJECTS[1].meetings[0].decks[0].result = { score: 3.4, date: "22 Sep 2026", ctx: true };
 PROJECTS[3].meetings[0].decks[0].result = { score: 3.9, date: "09 Apr 2026", ctx: true };
+
+/* Meeting context: Selling Coach "Step 2", filled once per project and reused by every session in it */
+const USER_EMAIL = "victoire@example.com";
+const LANGS = ["English (EN)", "French (FR)", "German (DE)", "Spanish (ES)", "Italian (IT)"];
+const NOTATIONS = ["Not Applicable", "1,234.56 (UK, US)", "1 234,56 (France)", "1.234,56 (Germany, Italy, Spain)"];
+const JOB_TITLES = ["Category Buyer", "Assistant Buyer", "Head of Category", "Category Director", "Trade Marketing Manager", "E-commerce Category Buyer", "Supply Chain Manager"];
+const SHORTCUTS = [
+  ["decision", "Decision you want", ["List a new product", "Extra display or shelf space", "Agree the promotion plan", "Accept a price increase", "Commit to a joint plan"]],
+  ["concern", "Buyer's main concern", ["Margin", "Shopper traffic", "Stock-outs", "Category growth", "Sustainability targets"]],
+  ["objection", "Objections you expect", ["Too expensive", "No space on the shelf", "It will cannibalise sales", "Last promotion underperformed", "Not a priority this quarter"]],
+];
+const OBJ_DESC = [
+  "Review past business performance with the customer, pinpointing achievements and challenges across sales trends, market share and operational metrics. Then propose solutions and strategies for the opportunities and issues found, so the review leads to new actions for the next quarter or the long term, not just a report.",
+  "Show where the category can grow and how share is moving, then agree the levers (assortment, pricing, promotion, shelf) that grow the category for both parties.",
+  "Present a new product or line extension: the shopper need, the proof it will sell, what it adds to the category, and the listing and launch plan you want agreed.",
+  "Agree a joint plan for the coming period: shared objectives, the initiatives behind them, investments, and how progress will be tracked.",
+  "Brief the internal sales team on an innovation: what it is, why it wins, the key selling messages and how to deploy it with each customer.",
+  "Review an account internally: performance against plan, risks and opportunities, and the actions and resources needed to grow it.",
+  "Align the promotion plan with the customer: mechanics, timing, depth and the expected return for both sides.",
+  "Review how a promotion performed against its objectives, explain why, and agree what to repeat, change or stop.",
+  "Recommend the right assortment and shelf space, backed by shopper and sales data, and agree the changes for the range review.",
+  "Pitch a seasonal or event programme: the shopper moment, the activation plan and the commitment you need from the customer.",
+  "Agree how to grow the category online: content, search, retail media and availability, with clear targets.",
+  "Align on a key brand's strategy with the customer: positioning, priorities for the year and how you will support them together.",
+  "Improve availability and cost to serve: service levels, forecasting, ordering and logistics changes, with agreed owners.",
+  "Agree a joint sustainability initiative: the goal, what each side does, and how results will be measured and communicated.",
+  "Introduce your company and portfolio to a new customer and agree the first steps of the relationship.",
+  "Improve in-store execution: displays, shelf compliance and field actions, with a clear plan for the store teams.",
+  "Senior leaders align on the strategic partnership: shared ambition, the big bets and how the two companies will work together.",
+];
+const blankMC = cat => ({ v: 0, updated: "", obj: 0, minutes: 30, lang: "English (EN)", notation: "Not Applicable", cats: [cat], titles: [], context: "", sc: { decision: [], concern: [], objection: [] }, ai: true });
+const SEED_MC = {
+  P1: { v: 2, updated: "20 Sep 2026", obj: 8, minutes: 45, lang: "French (FR)", notation: "1 234,56 (France)", titles: ["Category Buyer", "Assistant Buyer"], sc: { decision: ["Agree the promotion plan", "Extra display or shelf space"], concern: ["Margin"], objection: ["Last promotion underperformed"] },
+    sessions: [{ date: "06 Sep 2026", mid: "M2", mt: "Q3 business review", deck: "Carrefour Q3 CBR.pptx", cv: 1, score: 3.8 }, { date: "24 Sep 2026", mid: "M1", mt: "Range review", deck: "Carrefour range review v1.pptx", cv: 2, score: 3.1 }] },
+  P2: { v: 1, updated: "15 Sep 2026", obj: 10, minutes: 30, notation: "1 234,56 (France)", titles: ["E-commerce Category Buyer"], sc: { decision: ["Commit to a joint plan"], concern: ["Category growth"], objection: ["Not a priority this quarter"] },
+    sessions: [{ date: "22 Sep 2026", mid: "M3", mt: "Activation plan review", deck: "Cdiscount autumn activation.pptx", cv: 1, score: 3.4 }] },
+  P3: { v: 1, updated: "18 Sep 2026", obj: 2, lang: "French (FR)", titles: ["Category Buyer"], sessions: [] },
+  P4: { v: 1, updated: "01 Apr 2026", obj: 6, minutes: 45, lang: "French (FR)", notation: "1 234,56 (France)", titles: ["Category Buyer"], sessions: [{ date: "09 Apr 2026", mid: "M5", mt: "Promotion alignment", deck: "Spring promotions.pptx", cv: 1, score: 3.9 }] },
+};
+PROJECTS.forEach(p => {
+  const { sessions, ...seed } = SEED_MC[p.id];
+  p.mc = { ...blankMC(p.cat), ...seed, sc: { ...blankMC().sc, ...(seed.sc || {}) }, context: p.context };
+  p.sessions = sessions; delete p.context;
+  p.meetings.forEach(m => m.decks.forEach(d => { if (d.result) d.result.cv = sessions.find(x => x.deck === d.name)?.cv || p.mc.v; }));
+});
 
 /* =====================================================================
    Helpers
@@ -414,9 +482,9 @@ function render() { renderNav(); $("#view").innerHTML = V[state.view](); AFTER[s
 const NOTES = {
   home: [["#view .toolgrid", "Home shows the three tools, as today. Starting one first asks which project it is for (or creates one), then runs inside that project."], ["#view .projgrid", "Your projects: each card shows the customer, the next meeting and where its presentation stands. ⋯ edits, archives or deletes."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], [".appbar .newbtn", "“New project” is always one click away."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
-  project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Project context: the single source that every tool and every piece of feedback reads."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
-  meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#notes", "Notes after the meeting stay in the project and inform the next meeting."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
-  new: [["#view .stepper", "Four short steps. Only the name and customer are required."], ["#view .wizard .card", "On step 3, buyer profiles are picked from the customer's saved profiles and reused across projects."], ["#view .preview", "Live preview of what the project will hold."]],
+  project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Meeting context summary: the single source that every tool and every piece of feedback reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Saving creates a new version."], ["#view .sessions", "Each Selling Coach session records the context version it used, so changes never rewrite past feedback."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
+  meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .mctx", "Step 2 is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#notes", "Notes after the meeting stay in the project and inform the next meeting."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
+  new: [["#view .stepper", "Five short steps. Only the name and customer are required."], ["#view .wizard .card", "Step 2 picks saved buyer profiles. Step 3 is Selling Coach's meeting context, filled once for the whole project and kept across sessions."], ["#view .preview", "Live preview of what the project will hold."]],
 };
 function applyNotes() {
   document.querySelectorAll(".npin:not(.static)").forEach(x => x.remove()); document.querySelectorAll(".noted").forEach(x => x.classList.remove("noted"));
@@ -487,8 +555,8 @@ AFTER.projects = () => { $("#q").addEventListener("input", e => { state.q = e.ta
    ===================================================================== */
 V.project = () => {
   const p = proj(state.pid);
-  const tabs = [["overview", "Overview"], ["meetings", `Meetings (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
-  const body = { overview: overviewTab, meetings: meetingsTab, files: filesTab, activity: activityTab }[state.tab](p);
+  const tabs = [["overview", "Overview"], ["context", "Meeting context" + (ctxDirty() ? " •" : "")], ["meetings", `Meetings (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
+  const body = { overview: overviewTab, context: contextTab, meetings: meetingsTab, files: filesTab, activity: activityTab }[state.tab](p);
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.market)}</span><span class="chip">${esc(p.cat)}</span><span class="pill ${p.audience === "Customer-facing" ? "info" : "solid"}">${esc(p.audience)}</span>${p.status === "Archived" ? `<span class="pill neutral">Archived</span>` : ""}</div></div>
@@ -497,17 +565,18 @@ V.project = () => {
     <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${state.tab === k}" tabindex="${state.tab === k ? 0 : -1}">${l}</button>`).join("")}</div>${body}`;
 };
 function contextCard(p) {
-  return `<div class="card"><div class="card-hd">Project context <button class="btn ghost small" data-a="editproj" style="color:var(--primary)">Edit</button></div><div class="pad stack">
-    <span class="hint">Set once. Used for every presentation you get feedback on in this project.</span>
-    <dl class="kv"><dt>Customer</dt><dd>${esc(p.cust)} · ${esc(p.market)}</dd><dt>Category</dt><dd>${esc(p.cat)}</dd><dt>Audience</dt><dd>${esc(p.audience)}</dd><dt>Objective</dt><dd>${esc(p.objective)}</dd>
+  const c = p.mc;
+  return `<div class="card"><div class="card-hd">Meeting context <button class="btn ghost small" data-a="tab" data-v="context" style="color:var(--primary)">Edit</button></div><div class="pad stack">
+    <span class="hint">Set once, kept for every session in this project · version ${c.v} · used by ${plural(p.sessions.length, "session", "sessions")}</span>
+    <dl class="kv"><dt>Customer</dt><dd>${esc(p.cust)} · ${esc(p.market)}</dd><dt>Categories</dt><dd>${c.cats.map(esc).join(", ")}</dd><dt>Objective</dt><dd>${esc(OBJECTIVES[c.obj])}</dd><dt>Minutes</dt><dd>${c.minutes}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd>
       <dt>Buyers</dt><dd>${p.buyers.length ? pbuyers(p).map(b => `${esc(b.name)} <span class="hint">· ${esc(b.role)} · DISC-${b.disc}</span>`).join("<br>") : `<span class="muted">None added</span>`}</dd>
-      <dt>Important context</dt><dd>${p.context ? esc(p.context) : `<span class="muted">Nothing yet. Add what every analysis should know.</span>`}</dd></dl></div></div>`;
+      <dt>Important context</dt><dd>${c.context ? esc(c.context) : `<span class="muted">Nothing yet. Add what every analysis should know.</span>`}</dd></dl></div></div>`;
 }
 function overviewTab(p) {
   const m = nextMeeting(p), d = m && latestDeck(m);
   const checks = m ? [
     [!!m.date, "Set the meeting date", m.date ? `${m.date}` : "", "editmeeting"],
-    [p.buyers.length > 0 && !!p.context, "Complete the project context", p.context ? "Objective, buyers and important context" : "Add important context", "editproj"],
+    [p.buyers.length > 0 && !!p.mc.context, "Complete the meeting context", p.mc.context ? `Version ${p.mc.v}, kept for every session` : "Add the important context once for the whole project", "ctxtab"],
     [!!d, "Upload your presentation", d ? d.name : "", "meeting"],
     [!!(d && d.result), "Get Selling Coach feedback", d && d.result ? `${d.result.score.toFixed(1)} out of 5` : "", "meeting"],
     [!!(d && d.v > 1 && d.result) || !!(d && d.result && d.result.score >= 4), "Upload an improved version", d && d.v > 1 ? `Version ${d.v}` : "Aim for 4 out of 5", "meeting"],
@@ -536,7 +605,7 @@ function toolCards(ctx, act) {
 }
 function toolsRow(p) {
   const n = pbuyers(p).length;
-  const ctx = { coach: `Uses ${esc(p.cust)}, the meeting objective and your project context`, roleplay: n ? `Personas from ${plural(n, "buyer profile", "buyer profiles")} in this project` : "Add a buyer profile to practise with a persona", qa: `Answers set for ${esc(p.market)} and ${esc(p.cat)}` };
+  const ctx = { coach: `Starts from the project's meeting context (version ${p.mc.v}). No Step 2 to fill in.`, roleplay: n ? `Personas from ${plural(n, "buyer profile", "buyer profiles")} in this project` : "Add a buyer profile to practise with a persona", qa: `Answers set for ${esc(p.market)} and ${esc(p.cat)}` };
   return `<div class="section" style="margin:0 0 20px"><div class="spread" style="margin-bottom:12px"><h2 class="section-title">Tools for this project</h2><span class="hint">Each tool starts with this project's context.</span></div>${toolCards(k => ctx[k], "tool")}</div>`;
 }
 function pickProject(k) {
@@ -566,28 +635,29 @@ function activityTab(p) { return `<div class="card pad"><div class="timeline">${
    Meeting: presentation versions, feedback, notes
    ===================================================================== */
 function feedbackFor(p, m, d) {
-  const v = d.v, buyer = m.attendees[0], doc = p.files.find(f => f.ctx);
+  const v = d.v, buyer = m.attendees[0], doc = p.files.find(f => f.ctx), c = p.mc, ask = c.sc.decision[0], obj = c.sc.objection[0];
   const steps = [
     ["Summarise the situation", "good", `Clear opening: the ${p.cat} picture at ${p.cust} lands in two slides.`],
     ["State the idea", v >= 2 ? "good" : "improve", v >= 2 ? "The idea is now one sentence on slide 4." : "The idea only appears on slide 11. Bring it forward and say it in one sentence."],
     ["Explain how it works", "improve", "Show the mechanism step by step: timing, space and promotion depth."],
     ["Reinforce key benefits", v >= 2 ? "good" : "improve", `Put the benefit in ${p.cust}'s terms (shoppers, basket, growth), not in ours.${doc ? ` ${doc.name} has the numbers to prove it.` : ""}`],
-    ["Suggest an easy next step", v >= 2 ? "improve" : "missing", `${v >= 2 ? "The ask is there but has no date." : "No clear ask."} End with one low-effort step${buyer ? ` ${buyer} can agree to` : ""} and a date.`],
+    ["Suggest an easy next step", v >= 2 ? "improve" : "missing", `${v >= 2 ? "The ask is there but has no date." : "No clear ask."} ${ask ? `Your context says you want: “${ask}”. Ask for it in one sentence` : "End with one low-effort step"}${buyer ? ` ${buyer} can agree to` : ""}, with a date.`],
   ];
   const pts = { good: 1, improve: .6, missing: .2 };
-  const score = Math.min(5, steps.reduce((a, s) => a + pts[s[1]], 0) + (d.slides <= m.minutes / 2.5 ? .4 : 0) + (p.context ? .2 : 0));
+  const score = Math.min(5, steps.reduce((a, s) => a + pts[s[1]], 0) + (d.slides <= m.minutes / 2.5 ? .4 : 0) + (c.context ? .2 : 0));
   const slides = [
     [3, d.slides > 16 ? "Six charts on one slide. Keep the one that makes your point." : "Good: one chart, one message."],
     [Math.min(9, d.slides), "Dense table. Move it to the appendix."],
     [d.slides, v >= 2 ? "Next steps slide: add a date and an owner." : "Ends on a thank-you slide. End on the ask instead."],
   ];
-  return { score: Math.round(score * 10) / 10, steps, slides, timing: `${d.slides} slides for ${m.minutes} minutes is about ${(m.minutes / d.slides).toFixed(1)} minutes per slide. ${d.slides > m.minutes / 3 ? `Aim for ${Math.round(m.minutes / 4)} to ${Math.round(m.minutes / 3)} slides.` : "Good pace."}` };
+  if (obj) slides.splice(2, 0, [Math.min(12, d.slides - 1), `You expect “${obj}”. Answer it on this slide before the buyer raises it.`]);
+  return { score: Math.round(score * 10) / 10, steps, slides, timing: `${d.slides} slides for ${m.minutes} minutes is about ${(m.minutes / d.slides).toFixed(1)} minutes per slide. ${d.slides > m.minutes / 3 ? `Aim for ${Math.round(m.minutes / 4)} to ${Math.round(m.minutes / 3)} slides.` : "Good pace."}${c.lang !== "English (EN)" ? ` Feedback written in ${c.lang.split(" (")[0]}.` : ""}${c.ai ? " AI comments added to the slides." : ""}` };
 }
 V.meeting = () => {
   const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid), d = latestDeck(m), prev = m.decks.length > 1 ? m.decks[m.decks.length - 2] : null;
   const running = state.run && state.run.mid === m.id;
   const fb = d && d.result && d.result.fb;
-  const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Using your project context", "objective, buyers, notes"], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
+  const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Loading the project's meeting context", `version ${p.mc.v}, no Step 2 to fill in`], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
     <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">${esc(OBJECTIVES[m.obj])}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${icon("cal")} ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "Not scheduled"}</span><span class="chip">${m.minutes} minutes</span>${m.attendees.map(a => `<span class="chip">${icon("user")} ${esc(a)}</span>`).join("")}<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
@@ -597,15 +667,17 @@ V.meeting = () => {
         ${m.decks.slice().reverse().map(x => `<div class="filerow"><span class="fileico">${x.name.split(".").pop().toUpperCase().slice(0, 4)}</span><span><b style="font-weight:600">${esc(x.name)}</b>${x === d ? ` <span class="pill solid">Latest</span>` : ""}<br><span class="hint">Version ${x.v} · ${x.slides} slides · uploaded ${esc(x.uploaded)}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap">${x.result ? `<span class="pill ok">${x.result.score.toFixed(1)}/5</span>` : `<span class="pill info">No feedback yet</span>`}<button class="iconbtn" data-a="deldeck" data-m="${m.id}" data-v="${x.v}" aria-label="Remove ${esc(x.name)}" title="Remove this version">✕</button></span></div>`).join("")}
         <label class="dropzone" id="drop" tabindex="0">${icon("upload")}<b>${d ? "Upload a new version" : "Upload the presentation for this meeting"}</b><span class="hint">PPTX or PDF · drag and drop or click to browse</span><input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label>
       </div></div>
+      ${mctxSummary(p, m)}
       ${d ? `<div class="card"><div class="card-hd">Selling Coach feedback ${d.result ? `<span class="aside">on version ${d.v} · ${esc(d.result.date)}</span>` : ""}</div>
         ${running ? `<div class="pad stack"><b>Analysing ${esc(d.name)}</b><ul class="stagelist">${stages.map((s, k) => `<li class="${k < state.run.done ? "ok" : k === state.run.done ? "run" : ""}"><span class="ico">${k < state.run.done ? "✓" : ""}</span>${esc(s[0])}${s[1] ? ` <span class="hint">· ${esc(s[1])}</span>` : ""}</li>`).join("")}</ul></div>`
-        : !d.result ? `<div class="pad stack"><p class="small">Selling Coach will use this project's context, so you don't fill in the customer, objective or buyers again.</p>
-            <div class="usedctx"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.cat)}</span><span class="chip">${esc(OBJECTIVES[m.obj])}</span><span class="chip">${m.minutes} min</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.context ? `<span class="chip">Important context</span>` : ""}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "project document", "project documents")}</span>` : ""}</div>
+        : !d.result ? `<div class="pad stack"><p class="small">Selling Coach starts from the project's meeting context (Step 2 above), so you go straight to the analysis.</p>
+            <div class="usedctx"><span class="chip">Meeting context v${p.mc.v}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "project document", "project documents")}</span>` : ""}</div>
             <div><button class="btn primary" data-a="analyse" data-m="${m.id}">${icon("coach")}Get feedback on version ${d.v}</button></div></div>`
         : `<div class="result-hd"><div><span class="label">Overall</span><div class="bigscore">${d.result.score.toFixed(1)}<span>/5</span></div></div><div class="stack" style="gap:6px">
             ${prev && prev.result ? `<span><span class="delta">${d.result.score >= prev.result.score ? "+" : ""}${(d.result.score - prev.result.score).toFixed(1)} since version ${prev.v}</span></span>` : ""}
             <span class="small">${fb ? esc(fb.timing) : "Feedback from before this mock-up. Run it again to see the detail."}</span>
-            <div class="usedctx"><span class="hint">Used from the project:</span><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(OBJECTIVES[m.obj])}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "document", "documents")}</span>` : ""}</div></div></div>
+            ${d.result.cv && d.result.cv !== p.mc.v ? `<div class="callout info">This feedback used meeting context version ${d.result.cv}. The project now has version ${p.mc.v}: run again to use it.</div>` : ""}
+            <div class="usedctx"><span class="hint">Used from the project:</span><span class="chip">Meeting context v${d.result.cv || p.mc.v}</span><span class="chip">${esc(OBJECTIVES[m.obj])}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "document", "documents")}</span>` : ""}</div></div></div>
           ${fb ? `<div class="table-wrap" style="border-left:0;border-right:0;border-radius:0"><table><thead><tr><th>Selling step</th><th>Status</th><th>Feedback</th></tr></thead><tbody>${fb.steps.map(([s, st, t]) => `<tr><td style="color:var(--charcoal);font-weight:600">${s}</td><td><span class="pill ${{ good: "ok", improve: "warn", missing: "bad" }[st]}">${{ good: "Strong", improve: "Improve", missing: "Missing" }[st]}</span></td><td>${esc(t)}</td></tr>`).join("")}</tbody></table></div>
             <div class="pad stack"><div class="label">Slide by slide</div>${fb.slides.map(([n, t]) => `<div class="row small"><span class="chip">Slide ${n}</span>${esc(t)}</div>`).join("")}
             <div class="row" style="margin-top:6px"><label class="btn sm primary" style="cursor:pointer">${icon("upload")}Upload an improved version<input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label><button class="btn sm plain" data-a="analyse" data-m="${m.id}">Run again</button></div></div>`
@@ -614,7 +686,7 @@ V.meeting = () => {
       <div class="card"><div class="card-hd">${m.status === "Done" ? "Meeting notes" : "After the meeting"}</div><div class="pad stack">
         <div class="field"><label for="notes">${m.status === "Done" ? "What happened" : "Notes, outcome and next steps"}</label><textarea id="notes" rows="3" placeholder="e.g. Agreed the capsules end-cap for weeks 38–41. Buyer wants the calendar by 15 Oct.">${esc(m.notes)}</textarea></div>
         <div class="row"><button class="btn sm primary" data-a="savenotes" data-m="${m.id}">Save notes</button>${m.status !== "Done" ? `<button class="btn sm plain" data-a="markdone" data-m="${m.id}">Mark meeting as done</button>` : `<button class="btn sm plain" data-a="followup" data-m="${m.id}">${icon("plus")}Plan the follow-up meeting</button>`}</div></div></div>
-    </div><aside class="side">${contextCard(p)}
+    </div><aside class="side">${sessionsCard(p)}
       <div class="card"><div class="card-hd">Other meetings</div><div class="pad">${p.meetings.filter(x => x !== m).map(x => `<button class="btn ghost" data-a="meeting" data-m="${x.id}" style="display:block;color:var(--primary)">${esc(x.title)} <span class="hint">· ${x.date ? esc(x.date) : "no date"}</span></button>`).join("") || `<span class="hint">None</span>`}</div></div></aside></div>`;
 };
 AFTER.meeting = () => {
@@ -632,9 +704,9 @@ function addDeck(name) {
 }
 
 /* =====================================================================
-   Create a project (3 steps + review)
+   Create a project (4 steps + review)
    ===================================================================== */
-const blankW = () => ({ step: 0, name: "", cust: "", custOther: "", market: "France", cat: "Fabric Care", audience: "Customer-facing", objective: "", withMeeting: true, mTitle: "", mObj: 0, mDate: "", mMin: 30, deck: "", buyers: [], context: "" });
+const blankW = () => ({ step: 0, name: "", cust: "", custOther: "", market: "France", cat: "Fabric Care", audience: "Customer-facing", objective: "", withMeeting: true, mTitle: "", mObj: 0, mDate: "", mMin: 30, deck: "", buyers: [], mc: blankMC("Fabric Care") });
 V.new = () => {
   const w = state.w || (state.w = blankW());
   const cust = w.cust === "__other" ? w.custOther : w.cust;
@@ -644,8 +716,9 @@ V.new = () => {
     ${w.withMeeting && w.mTitle ? `<div class="row small">${icon("cal")}${esc(w.mTitle)}${w.mDate ? ` · ${esc(w.mDate)}` : ""}</div>` : ""}
     ${w.deck ? `<div class="row small">${icon("file")}${esc(w.deck)}</div>` : ""}
     ${w.buyers.length ? `<div class="row small">${icon("user")}${w.buyers.map(buyer).map(b => esc(b.name)).join(", ")}</div>` : ""}
-    <span class="hint">Everything here is reused by every meeting and presentation in the project.</span></aside>`;
-  const steps = ["Customer and goal", "First meeting", "Buyers and context", "Review"];
+    ${w.step >= 2 ? `<div class="small"><b>Meeting context</b><br>${esc(OBJECTIVES[w.mc.obj])} · ${w.mc.minutes} min · ${esc(w.mc.lang)}${w.mc.context ? `<br><span class="hint">${esc(w.mc.context.slice(0, 90))}${w.mc.context.length > 90 ? "…" : ""}</span>` : ""}</div>` : ""}
+    <span class="hint">Everything here is kept across every session in the project.</span></aside>`;
+  const steps = ["Customer and goal", "Buyers", "Meeting context", "First meeting", "Review"];
   let body = "";
   if (w.step === 0) body = `<div class="card"><div class="card-hd">Customer and goal</div><div class="pad stack">
     <div class="field"><label for="w-name">Project name</label><input id="w-name" data-w="name" value="${esc(w.name)}" placeholder="e.g. Carrefour range review"></div>
@@ -655,26 +728,30 @@ V.new = () => {
     ${w.cust === "__other" ? `<div class="field"><label for="w-other">Customer name</label><input id="w-other" data-w="custOther" value="${esc(w.custOther)}" placeholder="Type the customer's name"></div>` : ""}
     <div class="field"><label for="w-obj">What do you want to achieve?</label><input id="w-obj" data-w="objective" value="${esc(w.objective)}" placeholder="e.g. Align the Q4 value story before the range review"></div>
     <div class="field"><span class="flabel">Who will see the output?</span><div class="seg">${["Customer-facing", "Internal team"].map(a => `<button type="button" data-a="w-aud" data-v="${a}" aria-pressed="${w.audience === a}">${a}</button>`).join("")}</div></div></div></div>`;
-  if (w.step === 1) body = `<div class="card"><div class="card-hd">First meeting <label class="row small" style="font:400 12px var(--inter)"><input type="checkbox" data-a="w-meet" ${w.withMeeting ? "checked" : ""}> Add a meeting now</label></div><div class="pad stack">
+  if (w.step === 3) body = `<div class="card"><div class="card-hd">First meeting <label class="row small" style="font:400 12px var(--inter)"><input type="checkbox" data-a="w-meet" ${w.withMeeting ? "checked" : ""}> Add a meeting now</label></div><div class="pad stack">
     ${w.withMeeting ? `<div class="grid2"><div class="field"><label for="w-mt">Meeting name</label><input id="w-mt" data-w="mTitle" value="${esc(w.mTitle)}" placeholder="e.g. Range review"></div>
-      <div class="field"><label for="w-mo">Meeting objective</label><select id="w-mo" data-w="mObj">${OBJECTIVES.map((o, i) => `<option value="${i}" ${+w.mObj === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select></div></div>
+      <div class="field"><label for="w-mo">Meeting objective</label><select id="w-mo" data-w="mObj" aria-describedby="w-mo-h">${OBJECTIVES.map((o, i) => `<option value="${i}" ${+w.mObj === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select></div></div>
       <div class="grid2"><div class="field"><label for="w-md">Date</label><input id="w-md" type="date" data-w="mDate" value="${toISO(w.mDate)}"></div><div class="field"><label for="w-mm">Minutes available</label><input id="w-mm" type="number" min="5" data-w="mMin" value="${w.mMin}"></div></div>
+      <span class="hint" id="w-mo-h">Objective and minutes start from the meeting context you just set.</span>
       <label class="dropzone" tabindex="0">${icon("upload")}<b>${w.deck ? esc(w.deck) : "Upload the presentation (optional)"}</b><span class="hint">PPTX or PDF. You can also add it later inside the meeting.</span><input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="wdeck"></label>`
     : `<p class="small muted">You can add meetings later from the project.</p>`}</div></div>`;
-  if (w.step === 2) body = `<div class="card"><div class="card-hd">Attach buyer profiles <span class="aside">${w.buyers.length} selected</span></div><div class="pad stack">
+  if (w.step === 1) body = `<div class="card"><div class="card-hd">Attach buyer profiles <span class="aside">${w.buyers.length} selected</span></div><div class="pad stack">
       ${buyerPicker(cust, w.buyers, b => `data-pick="${b.id}"`)}
-      <div style="border-top:1px solid var(--light-gray);padding-top:12px;text-align:right"><button class="btn sm" data-a="addbuyer">${icon("plus")}Add buyer</button></div></div></div>
-    <div class="card" style="margin-top:14px"><div class="card-hd">Important context <span class="aside">Used in every analysis</span></div><div class="pad"><div class="field"><textarea data-w="context" rows="3" placeholder="e.g. The buyer wants fewer, bigger promotions. The range review decides Q1 shelf space." aria-label="Important context">${esc(w.context)}</textarea></div></div></div>`;
-  if (w.step === 3) body = `<div class="card"><div class="card-hd">Review</div><div class="pad stack">
+      <div style="border-top:1px solid var(--light-gray);padding-top:12px;text-align:right"><button class="btn sm" data-a="addbuyer">${icon("plus")}Add buyer</button></div></div></div>`;
+  if (w.step === 2) body = `<div class="card"><div class="card-hd">Step 2 · Tell us about the meeting context <span class="aside">Kept for every session</span></div><div class="pad stack">
+      <div class="callout info">Fill this in once for the whole project. Every Selling Coach session in it starts from here, so nobody fills in Step 2 again. You can change it later in the project's <b>Meeting context</b> tab.</div>
+      ${ctxForm(w.mc, cust, w.buyers.map(buyer).map(b => b.role))}</div></div>`;
+  if (w.step === 4) body = `<div class="card"><div class="card-hd">Review</div><div class="pad stack">
     <dl class="kv"><dt>Project</dt><dd>${esc(w.name)}</dd><dt>Customer</dt><dd>${esc(cust)} · ${esc(w.market)}</dd><dt>Category</dt><dd>${esc(w.cat)}</dd><dt>Audience</dt><dd>${esc(w.audience)}</dd><dt>Objective</dt><dd>${esc(w.objective || "Not set")}</dd>
       <dt>First meeting</dt><dd>${w.withMeeting && w.mTitle ? `${esc(w.mTitle)} · ${esc(OBJECTIVES[w.mObj])}${w.mDate ? ` · ${esc(w.mDate)}` : ""}${w.deck ? `<br>${icon("file")} ${esc(w.deck)}` : ""}` : "None yet"}</dd>
       <dt>Buyers</dt><dd>${w.buyers.map(buyer).map(b => `${esc(b.name)} · ${esc(b.role)} <span class="hint">· DISC-${b.disc}</span>`).join("<br>") || "None yet"}</dd>
-      <dt>Context</dt><dd>${esc(w.context || "None yet")}</dd></dl>
+      <dt>Meeting context</dt><dd>${esc(OBJECTIVES[w.mc.obj])} · ${w.mc.minutes} min · ${esc(w.mc.lang)} · ${esc(w.mc.notation)}<br>Categories: ${w.mc.cats.map(esc).join(", ")}${w.mc.titles.length ? `<br>Buyer titles: ${w.mc.titles.map(esc).join(", ")}` : ""}<br>AI comments in slides: ${w.mc.ai ? "Yes" : "No"}</dd>
+      <dt>Important context</dt><dd>${esc(w.mc.context || "None yet")}</dd>${scCount(w.mc.sc) ? `<dt>Shortcuts</dt><dd style="white-space:pre-line">${esc(scText(w.mc.sc))}</dd>` : ""}</dl>
     <div class="callout info">You can change all of this later from the project.</div></div></div>`;
   return head(`<button data-a="go" data-v="projects">My Projects</button><span>›</span><span>New project</span>`, "Create a project", "Set the context once. Every meeting, presentation and piece of feedback in the project will use it.") +
     `<div class="stepper">${steps.map((s, i) => `<div class="step ${i < w.step ? "done" : i === w.step ? "active" : ""}"><span class="n">${i < w.step ? "✓" : i + 1}</span>${s}</div>${i < steps.length - 1 ? '<span class="step-sep"></span>' : ""}`).join("")}</div>
     <div class="wizard"><div>${body}<p class="hint" id="w-err" style="color:var(--err-accent);margin-top:10px" hidden></p>
-      <div class="row" style="margin-top:16px;justify-content:space-between"><button class="btn plain" data-a="${w.step ? "w-back" : "go"}" data-v="projects">${w.step ? "Back" : "Cancel"}</button><button class="btn primary" data-a="${w.step === 3 ? "w-create" : "w-next"}">${w.step === 3 ? "Create project" : "Continue →"}</button></div></div>${preview}</div>`;
+      <div class="row" style="margin-top:16px;justify-content:space-between"><button class="btn plain" data-a="${w.step ? "w-back" : "go"}" data-v="projects">${w.step ? "Back" : "Cancel"}</button><button class="btn primary" data-a="${w.step === 4 ? "w-create" : "w-next"}">${w.step === 4 ? "Create project" : "Continue →"}</button></div></div>${preview}</div>`;
 };
 
 /* =====================================================================
@@ -702,14 +779,70 @@ function meetingForm(p, m, after) {
   inlineForm(m ? "Edit meeting" : after ? `Plan the follow-up to ${esc(after.title)}` : "New meeting", `
     ${after && after.notes ? `<div class="callout info"><b>From your notes:</b> ${esc(after.notes)}</div>` : ""}
     <div class="field"><label for="f-t">Meeting name</label><input id="f-t" name="t" required value="${esc(m ? m.title : after ? `Follow-up: ${after.title}` : "")}" placeholder="e.g. Follow-up on promotions"></div>
-    <div class="field"><label for="f-o">Meeting objective</label><select id="f-o" name="o">${OBJECTIVES.map((o, i) => `<option value="${i}" ${m && m.obj === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select></div>
-    <div class="grid2"><div class="field"><label for="f-d">Date</label><input id="f-d" name="d" type="date" value="${m ? toISO(m.date) : ""}"></div><div class="field"><label for="f-m">Minutes</label><input id="f-m" name="m" type="number" min="5" value="${m ? m.minutes : 30}"></div></div>
+    <div class="field"><label for="f-o">Meeting objective</label><select id="f-o" name="o">${OBJECTIVES.map((o, i) => `<option value="${i}" ${(m ? m.obj : p.mc.obj) === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select>${m ? "" : `<span class="hint">Objective and minutes start from the project's meeting context. Change them here for this meeting only.</span>`}</div>
+    <div class="grid2"><div class="field"><label for="f-d">Date</label><input id="f-d" name="d" type="date" value="${m ? toISO(m.date) : ""}"></div><div class="field"><label for="f-m">Minutes</label><input id="f-m" name="m" type="number" min="5" value="${m ? m.minutes : p.mc.minutes}"></div></div>
     <div class="field"><span class="flabel">Attendees</span>${pbuyers(p).length ? `<div class="row">${pbuyers(p).map(b => `<label class="chip" style="cursor:pointer;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" name="a" value="${esc(b.name)}" ${m ? (m.attendees.includes(b.name) ? "checked" : "") : "checked"}>${esc(b.name)} <span class="hint">· DISC-${b.disc}</span></label>`).join("")}</div>` : `<span class="hint">No buyer profiles in this project yet. Add them with “Edit project”.</span>`}<span class="hint">Buyers come from the project’s buyer profiles.</span></div>
     ${m ? `<div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delmeeting" data-m="${m.id}">Delete this meeting…</button></div>` : ""}`, fd => {
       const data = { title: fd.get("t").trim(), obj: +fd.get("o"), date: fromISO(fd.get("d")), minutes: +fd.get("m") || 30, attendees: fd.getAll("a") };
       if (m) { Object.assign(m, data); if (m.status === "Not scheduled" && m.date) m.status = "Preparing"; log(p, `updated ${m.title}`); toast("Meeting updated."); render(); }
       else { const nm = { id: "M" + Date.now(), ...data, status: data.date ? "Preparing" : "Not scheduled", decks: [], notes: "" }; p.meetings.push(nm); log(p, `added the meeting ${nm.title}`); go("meeting", { mid: nm.id }); toast("Meeting added. Upload its presentation when you're ready."); }
     });
+}
+function ctxForm(c, cust, roles) {
+  const titles = [...new Set([...roles, ...c.titles, ...JOB_TITLES])];
+  const ck = (key, val, on) => `<label class="chip ck"><input type="checkbox" data-c="${key}" value="${esc(val)}" ${on ? "checked" : ""}>${esc(val)}</label>`;
+  return `<div class="ctxform stack">
+    <div class="field"><label for="c-obj">Meeting objective <span class="hint">(default for every meeting in the project)</span></label><select id="c-obj" data-c="obj">${OBJECTIVES.map((o, i) => `<option value="${i}" ${c.obj === i ? "selected" : ""}>${i + 1}. ${esc(o)}</option>`).join("")}</select></div>
+    <p class="small objdesc"><b>Description:</b> ${esc(OBJ_DESC[c.obj])}</p>
+    <div class="gridauto">
+      <div class="field"><label for="c-min">Available minutes</label><div class="stepper-in"><input id="c-min" type="number" min="5" step="5" data-c="minutes" value="${c.minutes}"><button type="button" data-a="c-min" data-v="-5" aria-label="5 minutes less">−</button><button type="button" data-a="c-min" data-v="5" aria-label="5 minutes more">+</button></div></div>
+      <div class="field"><label for="c-lang">Analysis language</label><select id="c-lang" data-c="lang">${LANGS.map(l => `<option ${l === c.lang ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+      <div class="field"><label for="c-mail">Email recipient</label><input id="c-mail" class="ro" value="${USER_EMAIL}" readonly></div>
+      <div class="field"><label for="c-num">Number notation</label><select id="c-num" data-c="notation">${NOTATIONS.map(l => `<option ${l === c.notation ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+    </div>
+    <div class="grid2"><div class="field"><label for="c-cust">Customer</label><input id="c-cust" class="ro" value="${esc(cust || "Choose the customer in step 1")}" readonly><span class="hint">Set by the project.</span></div>
+      <div class="field"><span class="flabel">Categories</span><div class="row">${CATEGORIES.map(k => ck("cats", k, c.cats.includes(k))).join("")}</div></div></div>
+    <div class="field"><span class="flabel">Buyers' job titles</span><div class="row">${titles.map(t => ck("titles", t, c.titles.includes(t))).join("")}</div><span class="hint">Ticked from the buyer profiles in the project. Add others if needed.</span></div>
+    <div class="grid2"><div class="field"><label for="c-ctx">Important context</label><textarea id="c-ctx" data-c="context" rows="5" placeholder="What decision do you want the buyer to make?&#10;What is the one thing you want the buyer to remember after you leave the room?&#10;What are the top objections you expect to face?&#10;What is the decision-making power of the person you are talking to?">${esc(c.context)}</textarea></div>
+      <div class="field"><label for="c-sc">Shortcuts from dropdown selections</label><textarea id="c-sc" class="ro" rows="5" readonly placeholder="Select options from the shortcuts below to auto populate this field.">${esc(scText(c.sc))}</textarea></div></div>
+    <div class="expander"><button type="button" class="exp-hd" data-a="c-sc" aria-expanded="${!!state.scOpen}">Need some help? Try the meeting context shortcuts! (Optional) <span aria-hidden="true">${state.scOpen ? "▴" : "▾"}</span></button>
+      ${state.scOpen ? `<div class="pad stack">${SHORTCUTS.map(([k, l, opts]) => `<div class="stack" style="gap:6px"><span class="flabel">${l}</span><div class="row">${opts.map(o => ck("sc." + k, o, c.sc[k].includes(o))).join("")}</div></div>`).join("")}</div>` : ""}</div>
+    <div class="row small"><span class="flabel">Activate AI comments in the slides</span><span class="radios" role="radiogroup" aria-label="Activate AI comments in the slides"><label><input type="radio" name="c-ai" data-c="ai" value="1" ${c.ai ? "checked" : ""}>Yes</label><label><input type="radio" name="c-ai" data-c="ai" value="0" ${c.ai ? "" : "checked"}>No</label></span></div>
+  </div>`;
+}
+const ctxTarget = () => state.view === "new" ? state.w && state.w.mc : state.cdraft;
+function ctxDirty() { const p = proj(state.pid); return !!(state.cdraft && p && state.cdraftPid === p.id && JSON.stringify(state.cdraft) !== JSON.stringify(p.mc)); }
+function ctxChanged() {
+  if (state.view === "new") { refreshPreview(); return; }
+  const d = ctxDirty(), pill = $("#ctx-dirty"), tab = $('[role="tab"][data-v="context"]');
+  if (pill) pill.hidden = !d;
+  if (tab) tab.textContent = "Meeting context" + (d ? " •" : "");
+}
+function sessionsCard(p) {
+  const ss = [...p.sessions].reverse();
+  return `<div class="card sessions"><div class="card-hd">Selling Coach sessions <span class="aside">${ss.length}</span></div><div class="pad">
+    <span class="hint" style="display:block;margin-bottom:6px">Every session in this project started from the meeting context. Nobody filled in Step 2 again.</span>
+    ${ss.length ? ss.map(x => `<button class="sessrow" data-a="meeting" data-m="${x.mid}"><span><b>${esc(x.mt)}</b><br><span class="hint">${esc(x.date)} · ${esc(x.deck)}</span></span><span class="stack" style="gap:4px;justify-items:end"><span class="pill ok">${x.score.toFixed(1)}/5</span><span class="pill ${x.cv === p.mc.v ? "info" : "neutral"}">Context v${x.cv}</span></span></button>`).join("")
+      : `<div class="empty">No session yet. Upload a presentation in a meeting and get feedback: it will use this context.</div>`}</div></div>`;
+}
+function contextTab(p) {
+  if (!state.cdraft || state.cdraftPid !== p.id) { state.cdraft = clone(p.mc); state.cdraftPid = p.id; }
+  return `<div class="ws"><div class="card"><div class="card-hd mctx-hd"><span>Meeting context <span class="hint" style="font-weight:400">· Selling Coach “Step 2”, set once for this project</span></span><span class="row" style="gap:6px"><span class="pill warn" id="ctx-dirty" ${ctxDirty() ? "" : "hidden"}>Unsaved changes</span><span class="pill ok">Version ${p.mc.v} · saved ${esc(p.mc.updated)}</span></span></div>
+    <div class="pad stack"><div class="callout info">Fill this in once. Every Selling Coach session in this project starts from it, so it is kept across sessions and never typed again. When you save a change, new sessions use the new version and past sessions keep the version they used.</div>
+      ${ctxForm(state.cdraft, p.cust, pbuyers(p).map(b => b.role))}
+      <div class="row" style="justify-content:flex-end;border-top:1px solid var(--light-gray);padding-top:14px"><button class="btn plain" data-a="ctx-discard">Discard changes</button><button class="btn primary" data-a="ctx-save">Save meeting context</button></div></div></div>
+    <aside class="side">${sessionsCard(p)}</aside></div>`;
+}
+function mctxSummary(p, m) {
+  const c = p.mc, open = !!state.mcOpen;
+  const rows = `<dl class="kv"><dt>Objective</dt><dd>${esc(OBJECTIVES[m.obj])}${m.obj !== c.obj ? ` <span class="pill neutral">this meeting only</span>` : ""}<br><span class="hint">${esc(OBJ_DESC[m.obj])}</span></dd>
+    <dt>Minutes</dt><dd>${m.minutes}${m.minutes !== c.minutes ? ` <span class="pill neutral">this meeting only</span>` : ""}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd><dt>Email</dt><dd>${USER_EMAIL}</dd><dt>Number notation</dt><dd>${esc(c.notation)}</dd>
+    <dt>Customer</dt><dd>${esc(p.cust)}</dd><dt>Categories</dt><dd>${c.cats.map(esc).join(", ") || "None"}</dd><dt>Buyers' job titles</dt><dd>${c.titles.map(esc).join(", ") || "None"}</dd>
+    <dt>Important context</dt><dd>${esc(c.context) || `<span class="muted">None yet</span>`}</dd><dt>Shortcuts</dt><dd style="white-space:pre-line">${esc(scText(c.sc)) || `<span class="muted">None</span>`}</dd><dt>AI comments in slides</dt><dd>${c.ai ? "Yes" : "No"}</dd></dl>`;
+  return `<div class="card mctx"><div class="card-hd mctx-hd"><span>Step 2 · Meeting context <span class="pill ok" style="margin-left:6px">Kept from the project · v${c.v}</span></span><button class="btn ghost small" data-a="mc-toggle" aria-expanded="${open}" style="color:var(--primary)">${open ? "Hide" : "Show all"}</button></div>
+    <div class="pad stack"><div class="usedctx"><span class="chip">${esc(OBJECTIVES[m.obj])}</span><span class="chip">${m.minutes} min</span><span class="chip">${esc(c.lang)}</span><span class="chip">${c.cats.map(esc).join(", ")}</span>${c.titles.length ? `<span class="chip">${plural(c.titles.length, "buyer title", "buyer titles")}</span>` : ""}${c.context ? `<span class="chip">Important context</span>` : ""}${scCount(c.sc) ? `<span class="chip">${plural(scCount(c.sc), "shortcut", "shortcuts")}</span>` : ""}</div>
+      ${open ? rows : ""}
+      <div class="row"><button class="btn sm plain" data-a="tab" data-v="context">Change for the whole project</button><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Change objective or minutes for this meeting</button></div></div></div>`;
 }
 function buyerForm(cust, onAdd) {
   inlineForm(`New buyer profile · ${esc(cust)}`, `
@@ -730,11 +863,11 @@ function projectForm(p) {
     <div class="field"><span class="flabel">Buyer profiles</span><div class="stack" style="gap:8px">${BUYERS.map(b => `<label class="bpick" data-cust="${esc(b.cust)}" ${b.cust === p.cust ? "" : "hidden"}><input type="checkbox" name="b" value="${b.id}" ${p.buyers.includes(b.id) ? "checked" : ""}><span><b>${esc(b.name)} · ${esc(b.role)}</b><br><span class="hint">${bmeta(b)}</span></span></label>`).join("")}
       <span class="hint" id="pf-none" ${BUYERS.some(b => b.cust === p.cust) ? "hidden" : ""}>No saved buyer profiles for this customer yet.</span>
       <div style="text-align:right"><button type="button" class="btn sm" id="pf-addb">${icon("plus")}Add buyer</button></div></div></div>
-    <div class="field"><label for="pf-ctx">Important context</label><textarea id="pf-ctx" name="ctx" rows="3">${esc(p.context)}</textarea><span class="hint">Used by every tool and every piece of feedback in this project.</span></div>
+    <p class="hint">Meeting objective, language, important context and shortcuts are in the <b>Meeting context</b> tab of the project.</p>
     <div class="field"><label for="pf-st">Status</label>${sel("st", ["Active", "Archived"], p.status)}</div>
     <div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delproj" data-v="${p.id}">Delete this project…</button></div>`, fd => {
       const cust = fd.get("cust");
-      Object.assign(p, { name: fd.get("name").trim() || p.name, cust, market: fd.get("market"), cat: fd.get("cat"), audience: fd.get("aud"), objective: fd.get("obj").trim() || p.objective, context: fd.get("ctx").trim(), status: fd.get("st"),
+      Object.assign(p, { name: fd.get("name").trim() || p.name, cust, market: fd.get("market"), cat: fd.get("cat"), audience: fd.get("aud"), objective: fd.get("obj").trim() || p.objective, status: fd.get("st"),
         buyers: fd.getAll("b").filter(id => buyer(id).cust === cust) });
       log(p, "edited the project"); render(); toast("Project updated. Every tool will use the new context.");
     }, "Save changes");
@@ -784,7 +917,7 @@ function launchTool(p, k) {
   }
   const [, , title] = TOOLDEFS.find(t => t[0] === k), bs = pbuyers(p);
   const rows = k === "roleplay"
-    ? `<dt>Customer</dt><dd>${esc(p.cust)} · ${esc(p.market)}</dd><dt>Meeting</dt><dd>${m ? `${esc(m.title)} · ${esc(OBJECTIVES[m.obj])}` : "None yet"}</dd><dt>Personas</dt><dd>${bs.map(b => `${esc(b.name)} · DISC-${b.disc} <span class="hint">· ${DISC[b.disc]}</span>`).join("<br>") || "No buyer profile yet"}</dd><dt>Presentation</dt><dd>${m && latestDeck(m) ? esc(latestDeck(m).name) : "None yet"}</dd><dt>Context</dt><dd>${esc(p.context || "None yet")}</dd>`
+    ? `<dt>Customer</dt><dd>${esc(p.cust)} · ${esc(p.market)}</dd><dt>Meeting</dt><dd>${m ? `${esc(m.title)} · ${esc(OBJECTIVES[m.obj])}` : "None yet"}</dd><dt>Personas</dt><dd>${bs.map(b => `${esc(b.name)} · DISC-${b.disc} <span class="hint">· ${DISC[b.disc]}</span>`).join("<br>") || "No buyer profile yet"}</dd><dt>Presentation</dt><dd>${m && latestDeck(m) ? esc(latestDeck(m).name) : "None yet"}</dd><dt>Context</dt><dd>${esc(p.mc.context || "None yet")}</dd><dt>Objections</dt><dd>${p.mc.sc.objection.map(esc).join(", ") || "None set"}</dd>`
     : `<dt>Market</dt><dd>${esc(p.market)}</dd><dt>Category</dt><dd>${esc(p.cat)}</dd><dt>Customer</dt><dd>${esc(p.cust)}</dd><dt>Topic</dt><dd>${m ? esc(OBJECTIVES[m.obj]) : "General"}</dd>`;
   inlineForm(title, `<div class="launch"><p class="small">In the live tool, ${title} opens already set up with this project. Nothing to fill in again:</p><dl class="kv">${rows}</dl>
     <div class="callout info">${title} itself is not part of this mock-up.</div></div>`, null);
@@ -814,7 +947,7 @@ document.addEventListener("click", e => {
     case "savenotes": m.notes = $("#notes").value.trim(); log(p, `added notes to ${m.title}`); render(); toast("Notes saved to the meeting."); break;
     case "markdone": m.notes = $("#notes").value.trim(); m.status = "Done"; log(p, `marked ${m.title} as done`); render(); toast("Meeting marked as done. Plan the follow-up when you're ready."); break;
     case "analyse": { const d = latestDeck(m); state.run = { mid: m.id, done: 0 }; render();
-      const t = setInterval(() => { state.run.done++; if (state.run.done >= 5) { clearInterval(t); const fb = feedbackFor(p, m, d); d.result = { score: fb.score, date: TODAY, fb }; state.run = null; log(p, `got Selling Coach feedback on ${d.name}: ${fb.score.toFixed(1)} out of 5`); toast("Feedback ready."); } if (state.view === "meeting") render(); }, 550); break; }
+      const t = setInterval(() => { state.run.done++; if (state.run.done >= 5) { clearInterval(t); const fb = feedbackFor(p, m, d); d.result = { score: fb.score, date: TODAY, fb, cv: p.mc.v }; p.sessions.push({ date: TODAY, mid: m.id, mt: m.title, deck: d.name, cv: p.mc.v, score: fb.score }); state.run = null; log(p, `got Selling Coach feedback on ${d.name}: ${fb.score.toFixed(1)} out of 5`); toast("Feedback ready."); } if (state.view === "meeting") render(); }, 550); break; }
     // wizard
     case "w-aud": w.audience = v; render(); break;
     case "w-meet": setTimeout(() => { w.withMeeting = !w.withMeeting; render(); }, 0); break;
@@ -828,28 +961,52 @@ document.addEventListener("click", e => {
     case "followup": meetingForm(p, null, m); break;
     case "delproj": closeDialogs(); render(); confirmDelete(proj(v)); break;
     case "tool": launchTool(p, v); break;
+    case "ctxtab": go("project", { pid: p.id, tab: "context" }); break;
+    case "c-min": { const c = ctxTarget(); c.minutes = Math.max(5, c.minutes + +v); $("#c-min").value = c.minutes; ctxChanged(); break; }
+    case "c-sc": state.scOpen = !state.scOpen; render(); $('[data-a="c-sc"]').focus(); break;
+    case "mc-toggle": state.mcOpen = !state.mcOpen; render(); $('[data-a="mc-toggle"]').focus(); break;
+    case "ctx-discard": state.cdraft = clone(p.mc); render(); toast("Changes discarded."); break;
+    case "ctx-save": { if (!ctxDirty()) { toast("No changes to save."); break; }
+      const c = clone(state.cdraft); c.context = c.context.trim(); p.mc = { ...c, v: p.mc.v + 1, updated: TODAY }; state.cdraft = clone(p.mc);
+      log(p, `updated the meeting context (version ${p.mc.v})`); render(); toast(`Meeting context saved as version ${p.mc.v}. Every new session in this project will use it.`); break; }
     case "hometool": state.navOpen = false; renderNav(); pickProject(v); break;
     case "pickproj": { const q = proj(v); go("project", { pid: v, tab: "overview" }); launchTool(q, el.dataset.k); break; }
     case "newfor": state.w = blankW(); state.pendingTool = v; go("new"); break;
     case "w-back": w.step--; render(); break;
     case "w-next": { const err = $("#w-err"), cust = w.cust === "__other" ? w.custOther.trim() : w.cust;
       if (w.step === 0 && (!w.name.trim() || !cust)) { err.hidden = false; err.textContent = !w.name.trim() ? "Give the project a name." : "Choose the customer."; return; }
+      if (w.step === 0 && w.mc.cats.length <= 1) w.mc.cats = [w.cat];
+      if (w.step === 1 && !w.mc.titlesSet) { w.mc.titles = [...new Set(w.buyers.map(buyer).map(b => b.role))]; }
+      if (w.step === 2) { w.mc.titlesSet = true; w.mObj = w.mc.obj; w.mMin = w.mc.minutes; }
       w.step++; render(); $("#main").scrollTop = 0; break; }
     case "w-create": { const cust = w.cust === "__other" ? w.custOther.trim() : w.cust;
       if (w.cust === "__other" && !CUSTOMERS.includes(cust)) CUSTOMERS.push(cust);
       const np = { id: "P" + Date.now(), name: w.name.trim(), cust, market: w.market, cat: w.cat, audience: w.audience, status: "Active", objective: w.objective.trim() || "No objective set yet.", updated: TODAY,
-        buyers: [...w.buyers], context: w.context.trim(), meetings: [], files: [], activity: [[TODAY, "VB", "created the project"]] };
+        buyers: [...w.buyers], mc: (({ titlesSet, ...c }) => ({ ...clone(c), context: c.context.trim(), v: 1, updated: TODAY }))(w.mc), sessions: [], meetings: [], files: [], activity: [[TODAY, "VB", "created the project"]] };
       if (w.withMeeting && w.mTitle.trim()) np.meetings.push({ id: "M" + Date.now(), title: w.mTitle.trim(), date: w.mDate.trim(), obj: +w.mObj, minutes: +w.mMin || 30, attendees: pbuyers(np).map(b => b.name), status: w.mDate.trim() ? "Preparing" : "Not scheduled", decks: w.deck ? [{ v: 1, name: w.deck, uploaded: TODAY, by: "VB", slides: 16, result: null }] : [], notes: "" });
       PROJECTS.unshift(np); state.w = null; go("project", { pid: np.id, tab: "overview" }); toast("Project created. This is now your workspace for " + cust + "."); if (state.pendingTool) { const k = state.pendingTool; state.pendingTool = null; launchTool(np, k); } break; }
   }
 });
 document.addEventListener("input", e => {
   const t = e.target;
-  if (t.dataset.w && !t.matches("select")) { state.w[t.dataset.w] = t.type === "number" ? +t.value : t.type === "date" ? fromISO(t.value) : t.value; if (["name", "objective", "mTitle", "mDate", "custOther", "context"].includes(t.dataset.w)) refreshPreview(); }
+  if (t.dataset.w && !t.matches("select")) { state.w[t.dataset.w] = t.type === "number" ? +t.value : t.type === "date" ? fromISO(t.value) : t.value; if (["name", "objective", "mTitle", "mDate", "custOther"].includes(t.dataset.w)) refreshPreview(); }
+  if (t.dataset.c && (t.matches("textarea") || t.type === "number")) { const c = ctxTarget(); if (!c) return; if (t.dataset.c === "minutes") c.minutes = Math.max(5, +t.value || 5); else c[t.dataset.c] = t.value; ctxChanged(); }
 });
 document.addEventListener("change", e => {
   const t = e.target;
   if (t.dataset.w && t.matches("select")) { if (t.dataset.w === "cust") state.w.buyers = []; state.w[t.dataset.w] = t.dataset.w === "mObj" ? +t.value : t.value; if (t.hasAttribute("data-rr")) render(); else refreshPreview(); }
+  if (t.dataset.c && !t.matches("textarea") && t.type !== "number") {
+    const c = ctxTarget(), k = t.dataset.c; if (!c) return;
+    if (k === "cats" || k === "titles" || k.startsWith("sc.")) {
+      const arr = k.startsWith("sc.") ? c.sc[k.slice(3)] : c[k], i = arr.indexOf(t.value);
+      if (t.checked && i < 0) arr.push(t.value); if (!t.checked && i >= 0) arr.splice(i, 1);
+      if (k === "titles" && state.view === "new") c.titlesSet = true;
+      if (k.startsWith("sc.")) $("#c-sc").value = scText(c.sc);
+    } else if (k === "ai") c.ai = t.value === "1";
+    else if (k === "obj") { c.obj = +t.value; $(".objdesc").innerHTML = `<b>Description:</b> ${esc(OBJ_DESC[c.obj])}`; }
+    else c[k] = t.value;
+    ctxChanged();
+  }
   if (t.dataset.filectx !== undefined) { const p = proj(state.pid), f = p.files[+t.dataset.filectx]; f.ctx = t.checked; log(p, `${f.ctx ? "will use" : "stopped using"} ${f.name} in feedback`); toast(f.ctx ? `${f.name} will be used in feedback.` : `${f.name} is no longer used in feedback.`); }
   if (t.dataset.pick && state.w) { const id = t.dataset.pick; state.w.buyers = t.checked ? [...state.w.buyers, id] : state.w.buyers.filter(x => x !== id); render(); }
   if (t.dataset.up && t.files && t.files[0]) {
