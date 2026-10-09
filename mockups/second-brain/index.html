@@ -196,6 +196,12 @@ tr:last-child td { border-bottom: 0; }
 .src3.de { border-color: var(--de-border); background: var(--de-bg); color: #0A3F45; } .src3.de b { color: var(--de); }
 .src3.kb { border-color: var(--border-primary-light); background: var(--primary-light); color: #0D2F6B; } .src3.kb b { color: var(--primary); }
 .src3.pc { border-color: var(--pc-border); background: var(--pc-bg); color: #3A2470; } .src3.pc b { color: var(--pc); }
+.setup { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; border: 1px solid var(--border-primary-light); background: var(--primary-light); border-radius: 12px; padding: 10px 14px; font-size: 13px; }
+.setup b { font-weight: 600; }
+.hometools .feats, .hometools .toolcard__ctx { display: none; }
+.hometools .toolcard__head { padding: 12px 14px; }
+button.src3 { text-align: left; cursor: pointer; font: inherit; }
+button.src3:hover { box-shadow: var(--shadow); }
 .soongrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
 .soon { border: 1px dashed var(--border-default); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; background: var(--snow); align-content: start; }
 .soon b { font: 700 15px var(--mont); }
@@ -460,8 +466,8 @@ const clone = o => JSON.parse(JSON.stringify(o));
 const kbOf = c => KB[c] || { market: "", updated: "", owner: "Customer team", monitored: false, summary: "Knowledge is being built for this customer.", cats: {}, changes: [], facts: [] };
 const catOf = (mk, c) => (CATKB[mk] || {})[c] || null;
 // The three sources, always shown the same way
-const SRC = { de: ["coach", "Decision Engine", "calculated"], kb: ["building", "Knowledge bank", "cited"], pc: ["lock", "Personal context", "only you"] };
-const tag = k => `<span class="srctag ${k}">${icon(SRC[k][0])}${SRC[k][1]} · ${SRC[k][2]}</span>`;
+const SRC = { de: ["coach", "Numbers"], kb: ["building", "Company knowledge"], pc: ["lock", "Only you"] };
+const tag = k => `<span class="srctag ${k}">${icon(SRC[k][0])}${SRC[k][1]}</span>`;
 const srcMini = k => `<span class="srcmini ${k}">${icon(SRC[k][0])}${SRC[k][1]}</span>`;
 const qhd = (title, sub, tags) => `<div class="qhd"><div><h2 class="section-title">${title}</h2>${sub ? `<p class="hint">${sub}</p>` : ""}</div><span class="row" style="gap:6px">${tags || ""}</span></div>`;
 const pcCount = f => state.wiq ? PC.filter(x => state.src[x.k] && f(x)).length : 0;
@@ -829,24 +835,18 @@ function log(p, text) { p.activity.unshift([TODAY, "VB", text]); p.updated = TOD
 /* =====================================================================
    State & shell
    ===================================================================== */
-const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", gs: { buyers: false, pinned: false }, gsHide: false, notify: {}, cp: [], follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
+const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", ctab: "numbers", gtab: "numbers", gs: { buyers: false, pinned: false }, gsHide: false, notify: {}, cp: [], follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
 const NAV = [
   { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
+  { id: "kb", label: "Customers", icon: "store", match: ["kb", "category", "customer", "buyer"] },
   { id: "projects", label: "My Projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
-  { id: "kb", label: "Explore", icon: "store", match: ["kb", "category", "customer", "buyer"] },
-  { id: "sources", label: "Knowledge bank", icon: "building", match: ["sources", "source"] },
-  { id: "de", label: "Decision Engine", icon: "coach", match: ["de"] },
-  { id: "personal", label: "Personal context", icon: "lock", match: ["personal"] },
-  { id: "copilot", label: "In Copilot", icon: "chat", match: ["copilot"] },
+  { id: "about", label: "Data & settings", icon: "building", match: ["about", "sources", "source", "de", "personal", "copilot"] },
 ];
-const TOOLS = [["coach", "Selling Coach", "coach"], ["mic", "Role-play Coach", "roleplay"], ["chat", "Stewardship Coach", "qa"]];
 function renderNav() {
   const cur = NAV.find(n => n.match.includes(state.view));
   $("#nav").classList.toggle("open", state.navOpen);
   $("#nav").innerHTML = `<button class="navtoggle" data-a="navtoggle" aria-expanded="${state.navOpen}">${icon("grid")}<span>${cur ? cur.label : "Menu"}</span><span style="margin-left:auto;font-size:12px;color:var(--steel);font-weight:500">${state.navOpen ? "Close" : "Menu"}</span></button>` +
-    NAV.map(n => `<button class="navitem" data-a="go" data-v="${n.id}" aria-current="${n.match.includes(state.view)}">${icon(n.icon)}${n.label}${n.id === "projects" ? `<span class="count">${PROJECTS.filter(p => p.status === "Active").length}</span>` : ""}</button>`).join("") +
-    `<div class="navsep"></div><div class="navnote">Tools · run inside a project</div>` +
-    TOOLS.map(([ic, l, k]) => `<button class="navitem" data-a="hometool" data-v="${k}" title="Choose a project, then run ${l} inside it">${icon(ic)}${l}</button>`).join("");
+    NAV.map(n => `<button class="navitem" data-a="go" data-v="${n.id}" aria-current="${n.match.includes(state.view)}">${icon(n.icon)}${n.label}${n.id === "projects" ? `<span class="count">${PROJECTS.filter(p => p.status === "Active").length}</span>` : ""}</button>`).join("");
 }
 function head(crumb, title, sub, actions = "") { return `<div class="crumb">${crumb}</div><div class="pagehead"><div><h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ""}</div>${actions ? `<div class="actions">${actions}</div>` : ""}</div>${NOTE}`; }
 function render() { renderNav(); $("#view").innerHTML = V[state.view](); AFTER[state.view]?.(); applyNotes(); }
@@ -857,12 +857,13 @@ const NOTES = {
   kb: [["#view .seg", "Explore by market, then category, then customer. Each page mixes the numbers and the knowledge, each clearly tagged."], ["#view .catcard", "Category cards: our share from the Decision Engine, fact count from the knowledge bank."]],
   de: [["#view .explain", "The three sources explained in one line each. Same tags and colours everywhere in the app."], ["#view .two .dcard", "Fixed metric definitions shared with the dashboards. The assistant asks the Decision Engine; it never calculates numbers itself."], ["#view .section:last-child .dcard", "Alerts: rules on the numbers that feed “What changed”."]],
   category: [["#view .perf .tiles", "Later (beyond the PoC): sell-out across the customers we track, with the biggest grower."], ["#view .minis", "By customer: click to open that customer in the same category."], ["#view .two .kcard", "What is changing and what wins in the category: company knowledge no single inbox holds."], ["#view .section:last-child .custgrid", "Customers for this category, with our share at each."]],
-  customer: [["#view .glance", "At a glance: the 10-second version, one line per source, before the detail."], ["#view .actions [data-a=follow]", "Follow a customer or category to get its changes on Home."], ["#view .perf .qhd", "Pages are organised by the user's question, not by system: How are we doing? What changed? What do we know?"], ["#perfchart", "Decision Engine numbers, same model as the BNL Electro dashboard. Integration is beyond the knowledge bank PoC."], ["#view .two .card", "What changed mixes Decision Engine alerts and knowledge bank news; each row says which."], ["#view .cite", "PoC: every knowledge bank fact cites its document and location."], ["#view .pcline", "Personal context only counts mentions and hands over to Copilot."]],
+  customer: [["#view .tabs", "A summary first, then tabs, instead of one long page."], ["#view .glance", "At a glance: the 10-second version, one line per source, before the detail."], ["#view .actions [data-a=follow]", "Follow a customer or category to get its changes on Home."], ["#view .perf .qhd", "Pages are organised by the user's question, not by system: How are we doing? What changed? What do we know?"], ["#perfchart", "Decision Engine numbers, same model as the BNL Electro dashboard. Integration is beyond the knowledge bank PoC."], ["#view .two .card", "What changed mixes Decision Engine alerts and knowledge bank news; each row says which."], ["#view .cite", "PoC: every knowledge bank fact cites its document and location."], ["#view .pcline", "Personal context only counts mentions and hands over to Copilot."]],
   buyer: [["#view .kcard", "What the whole company knows about this buyer."], ["#view .pcline", "No emails or meeting notes here: Copilot already summarises them."]],
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
   ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
   copilot: [["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Open question for the vendor: the website as the product, or as the back office behind the Copilot skill (A2A/MCP)."]],
-  home: [["#view .gsteps", "Get started, from the welcome email: pick customers, set up buyers, try it, pin it. Fixes the launch-day blockers users hit."], ["#view .moment", "Key moments: big decks happen 1 to 2 times a year, so the home page prepares those moments rather than chasing weekly use."], ["#view .soongrid", "Skills marketplace: live skills plus what is coming (DLA 360, Amazon EU, PSKU Assistant)."], ["#view .askbox", "One question box for numbers, knowledge and your own work."], ["#view .explain", "Shown until the user clicks “Got it”: the three sources in plain words."], ["#view .two", "Your business from the Decision Engine, next to what changed."], ["#view .toolgrid", "Home shows the three tools, as today. Starting one first asks which project it is for (or creates one), then runs inside that project."], ["#view .projgrid", "Your projects: each card shows the customer, the next meeting and where its presentation stands. ⋯ edits, archives or deletes."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], [".appbar .newbtn", "“New project” is always one click away."]],
+  home: [["#view .askbox", "Home is four things: ask, the coaches, what's coming up and what changed. Everything else is one click away."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .toolgrid", "The coaches stay front and centre, as on today's home page."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
+  about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Meeting context summary: the single source that every tool and every piece of feedback reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Saving creates a new version."], ["#view .sessions", "Each Selling Coach session records the context version it used, so changes never rewrite past feedback."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
   meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Step 2 is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
@@ -924,30 +925,22 @@ function impactStats() {
 }
 V.home = () => {
   const active = PROJECTS.filter(p => p.status === "Active");
-  const pairs = [...new Map(active.map(p => [`${p.cust}|${p.cat}`, p])).values()];
   const fc = state.follow.filter(k => k.startsWith("cust:")).map(k => k.slice(5)), fk = state.follow.filter(k => k.startsWith("cat:")).map(k => k.slice(4).split("|"));
   const all = sortChanges([...fk.flatMap(([mk, c]) => (catOf(mk, c)?.changes || []).map(x => ({ ...x, where: `${c} · ${mk}` }))), ...fc.flatMap(c => kbOf(c).changes.map(x => ({ ...x, where: c })))]);
-  const watch = sortChanges([...all.filter(x => x.de).slice(0, 3), ...all.filter(x => !x.de).slice(0, 2)]);
-  const gs = getStarted(), gsDone = gs.filter(x => x[2]).length, imp = impactStats();
+  const watch = sortChanges([...all.filter(x => x.de).slice(0, 2), ...all.filter(x => !x.de).slice(0, 2)]);
+  const gs = getStarted(), gsDone = gs.filter(x => x[2]).length;
   const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
-  const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 5);
+  const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 4);
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! The numbers, what the company knows, and your own work, in one place. Also in Copilot.</p></div>${NOTE}
-    ${askBox("", "Ask about a market, category, customer or buyer…")}${suggest(SUGGEST, "")}
-    ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="card"><div class="card-hd">Get started <span class="row" style="gap:8px"><span class="aside">${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gshide" style="color:var(--primary)">Hide</button></span></div><div class="pad stack">
-      <div class="gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}</div>
-      <div class="spread small"><span class="hint">Tip: don't chase a score, chase a better presentation.</span><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div></div>`}
-    ${state.hideExplain ? "" : `<div class="section"><div class="spread" style="margin-bottom:10px"><span class="label">Three sources, one answer</span><button class="btn ghost small" data-a="hideexplain" style="color:var(--primary)">Got it</button></div>${explainer(false)}</div>`}
-    <div class="two section"><div>${qhd("Key moments", "Negotiation season runs November to February. Prepare the big ones early", "")}<div class="card"><div class="pad">${moments.map(x => `<div class="moment">${dbox(x.date)}<span><b style="font-weight:600">${esc(x.title)}</b> · ${esc(x.cust)}<br><span class="hint">${when(x.date)}${x.note ? ` · ${esc(x.note)}` : ""}</span>${x.kind === "Big moment" ? ` <span class="pill warn">Big moment</span>` : x.kind === "Deadline" ? ` <span class="pill neutral">Deadline</span>` : ""}</span>${actBtn(x)}</div>`).join("")}</div></div></div>
-      <div>${qhd("Your impact", "Measured on quality, not on how often you open the app", "")}<div class="card"><div class="pad stack"><div class="tiles"><div class="tile"><span class="tl">Presentations coached</span><span class="tv">${imp.coached}</span><span class="td">this year</span></div><div class="tile"><span class="tl">Average gain</span><span class="tv">${imp.improved ? "+" + imp.avg.toFixed(1) : "–"}</span><span class="td">points, on ${plural(imp.improved, "improved deck", "improved decks")}</span></div></div>
-        ${imp.best ? `<p class="small">Best: <b>${esc(imp.best.mt)}</b>, from ${imp.best.from.toFixed(1)} to ${imp.best.to.toFixed(1)}. A stronger deck can turn two customer meetings into one.</p>` : ""}</div></div></div></div>
-    <div class="two section"><div>${qhd(`Your business · ${esc(PERIODS[state.per])}`, "Sales vs year ago for the customers in your projects", tag("de"))}<div class="card dcard"><div class="pad">${pairs.map(p => { const T = totP(series(p.cust, p.cat)); return `<button class="numrow" data-a="cust" data-v="${esc(p.cust)}" data-k="${esc(p.cat)}" style="width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left"><span><b style="font-weight:600">${esc(p.cust)}</b><br><span class="hint">${esc(p.cat)}</span></span><span><span class="nv">${eur(T.s)}</span><br><span class="td"><b class="${dirC(T.g)}">${arrow(pctS(T.g))} ${pctS(T.g)}</b></span></span></button>`; }).join("")}</div></div></div>
-      <div>${qhd("What changed", `For the ${plural(state.follow.length, "customer and category", "customers and categories")} you follow`, `<button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button>`)}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">${state.follow.length ? "Nothing new for what you follow." : "Follow customers and categories to see what changes here."}</div>`}</div></div></div></div>
-    <div class="section">${qhd("Skills", "Live skills run inside a project and in Copilot. More are on the way", "")}${toolCards(() => "Runs inside a project and in Copilot", "hometool")}
-      <div class="soongrid">${SOON.map(([t, d, when2]) => `<div class="soon"><span class="row" style="gap:6px"><b>${t}</b><span class="pill neutral">Coming · ${when2}</span></span><span class="small">${d}</span><div><button class="btn sm plain" data-a="notify" data-v="${esc(t)}" aria-pressed="${!!state.notify[t]}">${state.notify[t] ? "✓ We'll tell you" : "Notify me"}</button></div></div>`).join("")}</div></div>
-    <div class="section"><div class="spread"><h2 class="section-title">Your projects</h2><div class="row"><button class="btn sm plain" data-a="go" data-v="projects">View all projects</button><button class="btn sm primary" data-a="new">${icon("plus")}New project</button></div></div>
-    <div class="projgrid" style="margin-top:12px">${active.slice(0, 3).map(projectCard).join("")}${newCard()}</div></div>`;
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Ask anything about your customers, or pick a coach.</p></div>${NOTE}
+    ${askBox("", "Ask about a customer, category or buyer…")}${suggest(SUGGEST.slice(0, 2), "")}
+    ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="setup"><span><b>Finish setting up</b> · ${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gsopen" style="color:var(--primary)">${state.gsOpen ? "Hide steps" : "Show steps"}</button><button class="btn ghost small" data-a="gshide" style="color:var(--steel);margin-left:auto">Not now</button></div>
+      ${state.gsOpen ? `<div class="card" style="margin-top:8px"><div class="pad gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}<div class="row"><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div>` : ""}</div>`}
+    <div class="section hometools">${toolCards(() => "", "hometool")}<p class="hint" style="margin-top:10px">Coming soon: ${SOON.map(x => x[0]).join(" · ")}</p></div>
+    <div class="two section"><div>${qhd("Coming up", "Prepare the big moments early", "")}<div class="card"><div class="pad">${moments.map(x => `<div class="moment">${dbox(x.date)}<span><b style="font-weight:600">${esc(x.title)}</b> · ${esc(x.cust)}<br><span class="hint">${when(x.date)}</span>${x.kind === "Big moment" ? ` <span class="pill warn">Big moment</span>` : ""}</span>${actBtn(x)}</div>`).join("")}</div></div></div>
+      <div>${qhd("What changed", "For the customers and categories you follow", `<button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button>`)}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">${state.follow.length ? "Nothing new for what you follow." : "Follow customers and categories to see what changes here."}</div>`}</div></div></div></div>`;
 };
+
 
 
 
@@ -1009,15 +1002,15 @@ function perfPanel(custs, cat, opts = {}) {
   }
   return `<div class="section perf">${qhd("How are we doing?", esc(opts.title || cat), tag("de"))}<div class="spread" style="margin-bottom:12px"><div class="seg" role="group" aria-label="Period">${Object.entries(PERIODS).map(([k, l]) => `<button data-a="per" data-v="${k}" aria-pressed="${state.per === k}">${l}</button>`).join("")}</div><button class="btn sm plain" data-a="xls">${icon("download")}Download as Excel</button></div>
     <div class="tiles">${tile("Sales (POS value)", eur(T.s), `<b class="${dirC(T.g)}">${arrow(pctS(T.g))} ${pctS(T.g)}</b> vs year ago`)}${tile("Growth vs year ago", `${T.d >= 0 ? "+" : ""}${eur(T.d)}`, esc(perLabel()))}${tile(`Last week · ${PW[LASTW]}`, eur(W.last), `<b class="${dirC(W.g)}">${arrow(pctS(W.g))} ${pctS(W.g)}</b> vs previous week`)}${byCust ? tile("Biggest grower", esc([...byCust].sort((a, b) => b.d - a.d)[0].n), `<b class="${dirC(1)}">+${eur([...byCust].sort((a, b) => b.d - a.d)[0].d)}</b> vs year ago`) : tile(mixKey === "brand" ? "Lead brand" : "Lead segment", esc(mix[0].n), `${Math.round(100 * mix[0].s / T.s)}% of sales`)}</div>
-    ${extra.length ? `<div style="margin-top:12px">${tiles(extra)}</div>` : ""}
     <div class="card dcard section"><div class="card-hd">Weekly sales vs year ago <span class="legend"><span class="lg"><i class="sw"></i>This year</span><span class="lg"><i class="sw ya"></i>Year ago</span><button class="btn ghost small" data-a="perftbl" style="color:var(--primary)">${state.tbl ? "Show chart" : "Show as table"}</button></span></div>
       <div class="pad">${state.tbl ? tbl : `<div class="chartbox" id="perfchart" role="img" aria-label="Weekly sales this year and a year ago, ${esc(perLabel())}"></div>`}</div></div>
-    <div class="three section"><div class="card dcard"><div class="card-hd">Drivers and drainers <span class="aside">vs year ago</span></div><div class="pad">${drv.map(dd).join("") || `<div class="dd"><span>No growing products</span></div>`}${drn.map(dd).join("") || `<div class="dd"><span>No declining products</span></div>`}</div></div>
+    <div class="section"><button class="btn sm plain" data-a="pdet" aria-expanded="${!!state.pdet}">${state.pdet ? "Less detail" : "More detail: stock, drivers, mix"}</button></div>
+    ${state.pdet ? `${extra.length ? `<div class="section">${tiles(extra)}</div>` : ""}<div class="three section"><div class="card dcard"><div class="card-hd">Drivers and drainers <span class="aside">vs year ago</span></div><div class="pad">${drv.map(dd).join("") || `<div class="dd"><span>No growing products</span></div>`}${drn.map(dd).join("") || `<div class="dd"><span>No declining products</span></div>`}</div></div>
       <div class="card dcard"><div class="card-hd">${mixKey === "brand" ? "Brand mix" : "Segment mix"}</div><div class="pad"><div class="mixbar" role="img" aria-label="${mixRows.map(x => `${x.n} ${Math.round(100 * x.s / T.s)}%`).join(", ")}">${mixRows.map((x, i) => `<span style="width:${100 * x.s / T.s}%;background:${cols[i]}">${100 * x.s / T.s >= 14 ? Math.round(100 * x.s / T.s) + "%" : ""}</span>`).join("")}</div>
         <div class="mixlist">${mixRows.map((x, i) => `<div><i style="background:${cols[i]}"></i><span>${esc(x.n)}</span><b>${Math.round(100 * x.s / T.s)}%</b><span class="td"><b class="${dirC(x.g)}">${isFinite(x.g) ? pctS(x.g) : ""}</b></span></div>`).join("")}</div></div></div>
       ${byCust ? `<div class="card dcard"><div class="card-hd">By customer</div><div class="pad minis">${byCust.map(x => `<button class="mini" data-a="cust" data-v="${esc(x.n)}" data-k="${esc(cat)}"><small class="hint">${esc(x.n)}</small><b>${eur(x.s)}</b><span class="td"><b class="${dirC(x.g)}">${pctS(x.g)}</b></span></button>`).join("")}</div></div>`
-        : `<div class="card dcard"><div class="card-hd">Top products</div><div class="pad">${prods.slice(0, 5).map(x => `<div class="dd"><span title="${esc(x.n)}">${esc(x.n)}</span><span><b>${eur(x.s)}</b> <span class="td"><b class="${dirC(x.g)}">${pctS(x.g)}</b></span></span></div>`).join("")}</div></div>`}</div>
-    <p class="hint">${srcMini("de")} Calculated from POS sell-out data with fixed definitions, never generated by AI. Data up to ${PW[LASTW]}. Sample numbers in this mock-up. <button class="btn ghost small" data-a="go" data-v="de" style="color:var(--de);padding:0">How the numbers are calculated</button></p></div>`;
+        : `<div class="card dcard"><div class="card-hd">Top products</div><div class="pad">${prods.slice(0, 5).map(x => `<div class="dd"><span title="${esc(x.n)}">${esc(x.n)}</span><span><b>${eur(x.s)}</b> <span class="td"><b class="${dirC(x.g)}">${pctS(x.g)}</b></span></span></div>`).join("")}</div></div>`}</div>` : ""}
+    <p class="hint">${srcMini("de")} Calculated, never generated · data up to ${PW[LASTW]} · sample numbers. <button class="btn ghost small" data-a="go" data-v="de" style="color:var(--de);padding:0">How it's calculated</button></p></div>`;
 }
 function drawPerf() {
   const el = $("#perfchart"); if (!el || !state.perfRows) return;
@@ -1055,7 +1048,7 @@ V.sources = () => {
   const F = state.sf, q = (state.sq || "").toLowerCase();
   const list = SOURCES.filter(d => (!F.mkt || !d.f.mkt || d.f.mkt === F.mkt) && (!F.cat || !d.f.cat || d.f.cat === F.cat) && (!F.type || d.type === F.type) && (!q || d.name.toLowerCase().includes(q)));
   const sel = (k, l, opts) => `<div class="field"><label for="sf-${k}">${l}</label><select id="sf-${k}" data-sf="${k}"><option value="">All</option>${opts.map(o => `<option ${F[k] === o ? "selected" : ""}>${esc(o)}</option>`).join("")}</select></div>`;
-  return head("What the company knows", "Knowledge bank", "The documents behind every fact. Governed uploads are trusted: their facts are ready to use once processed.", `<button class="btn primary" data-a="upload">${icon("upload")}Add domain knowledge</button>`) + `
+  return head(`<button data-a="go" data-v="about">Data & settings</button>`, "Knowledge bank", "The documents behind every fact. Governed uploads are trusted: their facts are ready to use once processed.", `<button class="btn primary" data-a="upload">${icon("upload")}Add domain knowledge</button>`) + `
     <div class="facetbar">${sel("mkt", "Market", KB_MARKETS)}${sel("cat", "Category", KB_CATS)}${sel("type", "Document type", DOC_TYPES)}<div class="field"><label for="sq">Search</label><input id="sq" class="search" type="search" value="${esc(state.sq || "")}" placeholder="File name"></div></div>
     <p class="hint" style="margin:6px 0 12px">${plural(list.length, "document", "documents")} · a document with no market or category applies to all of them</p>
     ${list.length ? list.map(d => `<button class="srcrow ${d.active ? "" : "off"}" data-a="src" data-v="${d.id}"><span class="fileico ${["docx", "pdf", "txt", "md"].includes(d.ext) ? "doc" : ["xlsx", "csv", "xls"].includes(d.ext) ? "xls" : ""}">${esc(d.ext.toUpperCase().slice(0, 4))}</span>
@@ -1108,14 +1101,13 @@ function processDoc(d) {
 
 // One explainer for the three sources: what each answers, and how far to trust it
 const explainer = compact => `<div class="explain">
-  <div class="src3 de">${tag("de")}<b>The numbers</b><span class="q">How much? Growing or not? Versus last year?</span>${compact ? "" : `<span class="small">Sales, share, availability and alerts, calculated from data with fixed definitions. Never generated by AI.</span>`}</div>
-  <div class="src3 kb">${tag("kb")}<b>What the company knows</b><span class="q">Why? What works? What does the buyer want?</span>${compact ? "" : `<span class="small">Facts from governed documents: strategies, plans, profiles. Every fact links to its document.</span>`}</div>
-  <div class="src3 pc">${tag("pc")}<b>Your own work</b><span class="q">Did I discuss this? Where?</span>${compact ? "" : `<span class="small">Counts where your emails, chats and meetings mention it, and opens Copilot. Nothing is stored.</span>`}</div></div>`;
+  <div class="src3 de">${tag("de")}<b>Decision Engine</b><span class="q">How much? Growing or not? Versus last year?</span>${compact ? "" : `<span class="small">Sales, share, availability and alerts, calculated from data with fixed definitions. Never generated by AI.</span>`}</div>
+  <div class="src3 kb">${tag("kb")}<b>Knowledge bank</b><span class="q">Why? What works? What does the buyer want?</span>${compact ? "" : `<span class="small">Facts from governed documents: strategies, plans, profiles. Every fact links to its document.</span>`}</div>
+  <div class="src3 pc">${tag("pc")}<b>Personal context</b><span class="q">Did I discuss this? Where?</span>${compact ? "" : `<span class="small">Counts where your emails, chats and meetings mention it, and opens Copilot. Nothing is stored.</span>`}</div></div>`;
 V.kb = () => {
   const mk = state.mkt;
-  return head("Your markets", "Explore", "Numbers and knowledge for every market, category and customer.") + `
-    <div class="spread" style="margin-bottom:14px">${mktSeg()}<span class="row" style="gap:6px">${tag("de")}${tag("kb")}</span></div>
-    ${askBox("", `Ask about ${mk}…`)}
+  return head("Pick a category, then a customer", "Customers", "Numbers and company knowledge for every market, category and customer.") + `
+    <div class="spread" style="margin-bottom:14px">${mktSeg()}</div>
     <div class="section"><h2 class="section-title" style="margin-bottom:12px">Categories in ${esc(mk)}</h2>
       <div class="custgrid">${KB_CATS.map(c => { const k = catOf(mk, c), sh = k && shareOf(k.numbers), w = k ? k.changes.filter(x => x.sev === "warn").length : 0;
         return `<button class="custcard catcard" data-a="cat" data-v="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(c)}</b>
@@ -1134,47 +1126,51 @@ function glance(rows) {
 }
 const chipSel = (x, on, a) => `<button class="chip ck" data-a="${a}" data-v="${esc(x)}" aria-pressed="${on}" style="${on ? "background:var(--primary-light);border-color:var(--primary);color:var(--primary)" : ""}">${esc(x)}</button>`;
 const sortChanges = list => [...list].sort((a, b) => pd(`${b.date} 2026`) - pd(`${a.date} 2026`));
+const tabsBar = (key, list) => `<div class="tabs" role="tablist">${list.map(([k, l]) => `<button role="tab" data-a="${key}" data-v="${k}" aria-selected="${state[key] === k}" tabindex="${state[key] === k ? 0 : -1}">${l}</button>`).join("")}</div>`;
 V.category = () => {
   const mk = state.mkt, c = state.cat, k = catOf(mk, c);
   const custs = [...new Set(KB_CUSTS[mk].filter(x => kbOf(x).cats[c]))];
   const changes = sortChanges([...(k ? k.changes : []), ...custs.flatMap(x => kbOf(x).changes.filter(y => y.cat === c).map(y => ({ ...y, where: x })))]);
-  return `<div class="crumb"><button data-a="go" data-v="kb">Explore</button><span>›</span><button data-a="go" data-v="kb">${esc(mk)}</button><span>›</span><span>${esc(c)}</span></div>
-    <div class="pagehead"><div><h1>${esc(c)} · ${esc(mk)}</h1><p class="sub">How the category is doing, what is changing and what wins.</p></div><div class="actions">${followBtn(`cat:${mk}|${c}`)}</div></div>${NOTE}
+  const t = state.gtab;
+  const body = t === "changes" ? `<div class="card"><div class="pad">${changes.length ? changes.map(x => changeRow(x, x.where)).join("") : `<div class="empty">Nothing new to report.</div>`}</div></div>`
+    : t === "wins" ? `<div class="card kcard"><div class="pad">${k && k.facts.length ? k.facts.map(factRow).join("") : `<div class="empty">The category team is building this page.</div>`}</div></div>${k ? `<p class="hint" style="margin-top:8px">Kept up to date by ${esc(k.owner)}</p>` : ""}`
+    : t === "custs" ? (custs.length ? `<div class="custgrid">${custs.map(x => { const sh = shareOf(custCat(x, c)), w = kbOf(x).changes.filter(y => y.sev === "warn" && y.cat === c).length;
+        return `<button class="custcard" data-a="cust" data-v="${esc(x)}" data-k="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(x)}</b>${sh ? `<span class="small">${esc(sh[0])} <b>${esc(sh[1])}</b> <span class="td"><b class="${sh[4]}">${arrow(sh[2])} ${esc(sh[2])}</b></span></span>` : ""}${w ? `<span class="row"><span class="pill warn">${plural(w, "change", "changes")} to watch</span></span>` : ""}</button>`; }).join("")}</div>` : `<div class="empty">No customer for ${esc(c)} in ${esc(mk)} yet.</div>`)
+    : (custs.length ? perfPanel(custs, c, { title: `${c} with the customers we track in ${mk}`, extra: k ? k.numbers : [] }) : (state.perfRows = null, tiles(k && k.numbers, `No numbers for ${c} in ${mk} yet.`)));
+  return `<div class="crumb"><button data-a="go" data-v="kb">Customers</button><span>›</span><button data-a="go" data-v="kb">${esc(mk)}</button><span>›</span><span>${esc(c)}</span></div>
+    <div class="pagehead"><div><h1>${esc(c)} · ${esc(mk)}</h1></div><div class="actions">${followBtn(`cat:${mk}|${c}`)}</div></div>${NOTE}
+    <div class="row" style="margin-bottom:14px">${KB_CATS.map(x => chipSel(x, x === c, "cat")).join("")}</div>
     ${(() => { const sh = k && shareOf(k.numbers), cs = k && k.numbers.find(n => /category sales/i.test(n[0])), ch = changes[0], win = k && k.facts.find(f => /wins/i.test(f.topic));
       return k ? glance([sh || cs ? ["de", "The numbers", [cs, sh].filter(Boolean).map(n => `${esc(n[0])} <b>${esc(n[1])}</b> <span class="td"><b class="${n[4]}">${arrow(n[2])} ${esc(n[2])}</b></span>`).join(" · ")] : null,
         ch ? [ch.de ? "de" : "kb", "Latest change", `${esc(ch.text)} <span class="hint">${esc(ch.date)}</span>`] : null,
         win ? ["kb", "What wins", `${esc(win.text)} ${citeBtn(win.doc, win.loc)}`] : null]) : ""; })()}
-    <div class="row" style="margin-bottom:14px">${KB_CATS.map(x => chipSel(x, x === c, "cat")).join("")}</div>
-    ${askBox("", `Ask about ${c} in ${mk}…`)}
-    ${custs.length ? perfPanel(custs, c, { title: `${c} with the customers we track in ${mk}`, extra: k ? k.numbers : [] }) : (state.perfRows = null, `<div class="section">${qhd("How are we doing?", "", tag("de"))}${tiles(k && k.numbers, `No numbers for ${c} in ${mk} yet.`)}</div>`)}
-    <div class="two section"><div>${qhd("What is changing", "Alerts from the numbers and news from documents", "")}<div class="card"><div class="pad">${changes.length ? changes.map(x => changeRow(x, x.where)).join("") : `<div class="empty">Nothing new to report.</div>`}</div></div></div>
-      <div>${qhd(`What wins in ${esc(c)}`, k ? `Kept up to date by ${esc(k.owner)}` : "", tag("kb"))}<div class="card kcard"><div class="pad">${k && k.facts.length ? k.facts.map(factRow).join("") : `<div class="empty">The category team is building this page.</div>`}</div></div></div></div>
-    <div class="section"><h2 class="section-title" style="margin-bottom:12px">Customers for ${esc(c)} in ${esc(mk)}</h2>
-      ${custs.length ? `<div class="custgrid">${custs.map(x => { const sh = shareOf(custCat(x, c)), w = kbOf(x).changes.filter(y => y.sev === "warn" && y.cat === c).length;
-        return `<button class="custcard" data-a="cust" data-v="${esc(x)}" data-k="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(x)}</b>${sh ? `<span class="small">${esc(sh[0])} <b>${esc(sh[1])}</b> <span class="td"><b class="${sh[4]}">${arrow(sh[2])} ${esc(sh[2])}</b></span></span>` : ""}${w ? `<span class="row"><span class="pill warn">${plural(w, "change", "changes")} to watch</span></span>` : ""}</button>`; }).join("")}</div>` : `<div class="empty">No customer for ${esc(c)} in ${esc(mk)} yet.</div>`}</div>`;
+    ${tabsBar("gtab", [["numbers", "Numbers"], ["changes", `What is changing (${changes.length})`], ["wins", `What wins (${k ? k.facts.length : 0})`], ["custs", `Customers (${custs.length})`]])}
+    <div class="section" style="margin-top:14px">${body}</div>
+    <div class="section">${askBox("", `Ask about ${c} in ${mk}…`)}</div>`;
 };
 V.customer = () => {
   const c = state.cust, k = kbOf(c), cats = Object.keys(k.cats), cat = cats.includes(state.cat) ? state.cat : cats[0], mk = k.market || state.mkt;
   const buyers = BUYERS.filter(b => b.cust === c), changes = sortChanges(k.changes.filter(x => !x.cat || x.cat === cat)), projs = PROJECTS.filter(p => p.cust === c && p.status === "Active");
-  return `<div class="crumb"><button data-a="go" data-v="kb">Explore</button><span>›</span><button data-a="go" data-v="kb">${esc(mk)}</button>${cat ? `<span>›</span><button data-a="cat" data-v="${esc(cat)}">${esc(cat)}</button>` : ""}<span>›</span><span>${esc(c)}</span></div>
+  const t = state.ctab;
+  const body = t === "changes" ? `<div class="card"><div class="pad">${changes.length ? changes.map(x => changeRow(x)).join("") : `<div class="empty">Nothing new to report.</div>`}</div></div>`
+    : t === "know" ? `<div class="card kcard"><div class="pad">${k.facts.length ? k.facts.map(factRow).join("") : `<div class="empty">The customer team is building this page.</div>`}</div></div>${k.owner ? `<p class="hint" style="margin-top:8px">Kept up to date by ${esc(k.owner)}</p>` : ""}`
+    : t === "buyers" ? `${buyers.length ? `<div class="bgrid">${buyers.map(b => `<button class="bcard" data-a="buyer" data-v="${b.id}"><b>${esc(b.name)}</b><span class="hint">${esc(b.role)} · DISC-${b.disc}</span><span class="small">${esc(BKB[b.id]?.decides || "")}</span></button>`).join("")}</div>` : `<div class="empty">No buyer profile yet.</div>`}<div class="section">${pcLine(pcCount(x => x.cust === c), c)}</div>`
+    : (cat ? perfPanel([c], cat, { title: `${c} · ${cat}`, extra: k.cats[cat] }) : (state.perfRows = null, `<div class="empty">No numbers for ${esc(c)} yet.</div>`));
+  return `<div class="crumb"><button data-a="go" data-v="kb">Customers</button><span>›</span><button data-a="go" data-v="kb">${esc(mk)}</button>${cat ? `<span>›</span><button data-a="cat" data-v="${esc(cat)}">${esc(cat)}</button>` : ""}<span>›</span><span>${esc(c)}</span></div>
     <div class="pagehead"><div><h1>${esc(c)}</h1><p class="sub">${esc(k.summary)}</p></div>
-      <div class="actions">${followBtn(`cust:${c}`)}${projs.length ? `<button class="btn sm plain" data-a="open" data-v="${projs[0].id}">Open my project</button>` : ""}${CUSTOMERS.includes(c) ? `<button class="btn sm primary" data-a="newcust" data-v="${esc(c)}">${icon("plus")}New project</button>` : ""}</div></div>${NOTE}
-    ${cats.length ? `<div class="row" style="margin-bottom:14px"><span class="small muted">Category</span>${cats.map(x => chipSel(x, x === cat, "custcat")).join("")}</div>` : ""}
-    ${askBox(c, `Ask about ${c}…`)}${suggest(c === "Carrefour" ? ["Why is our share dropping at Carrefour?", "What convinces Carrefour?", "What should I know before meeting Juliette Morel?"] : [`What convinces ${c}?`, `What changed at ${c}?`], c)}
+      <div class="actions">${followBtn(`cust:${c}`)}${projs.length ? `<button class="btn sm plain" data-a="open" data-v="${projs[0].id}">Open my project</button>` : CUSTOMERS.includes(c) ? `<button class="btn sm primary" data-a="newcust" data-v="${esc(c)}">${icon("plus")}New project</button>` : ""}</div></div>${NOTE}
+    ${cats.length > 1 ? `<div class="row" style="margin-bottom:14px"><span class="small muted">Category</span>${cats.map(x => chipSel(x, x === cat, "custcat")).join("")}</div>` : ""}
     ${(() => { const T = cat ? totP(series(c, cat)) : null, sh = shareOf(k.cats[cat]), ch = changes[0], conv = k.facts.find(f => /convince/i.test(f.topic)) || k.facts[0];
       return glance([T ? ["de", `Sales · ${esc(PERIODS[state.per])}`, `<b>${eur(T.s)}</b> <span class="td"><b class="${dirC(T.g)}">${arrow(pctS(T.g))} ${pctS(T.g)}</b> vs year ago</span>${sh ? ` · ${esc(sh[0])} <b>${esc(sh[1])}</b> <span class="td"><b class="${sh[4]}">${arrow(sh[2])} ${esc(sh[2])}</b></span>` : ""}`] : null,
         ch ? [ch.de ? "de" : "kb", "Latest change", `${esc(ch.text)} <span class="hint">${esc(ch.date)}</span>`] : null,
         conv ? ["kb", conv.topic, `${esc(conv.text)} ${citeBtn(conv.doc, conv.loc)}`] : null]); })()}
-    ${cat ? perfPanel([c], cat, { title: `${c} · ${cat}`, extra: k.cats[cat] }) : (state.perfRows = null, "")}
-    <div class="two section"><div>${qhd("What changed", "Alerts from the numbers and news from documents", "")}<div class="card"><div class="pad">${changes.length ? changes.map(x => changeRow(x)).join("") : `<div class="empty">Nothing new to report.</div>`}</div></div></div>
-      <div>${qhd("What we know", k.owner ? `Kept up to date by ${esc(k.owner)}` : "", tag("kb"))}<div class="card kcard"><div class="pad">${k.facts.length ? k.facts.map(factRow).join("") : `<div class="empty">The customer team is building this page.</div>`}</div></div></div></div>
-    <div class="section">${qhd("Buyers", "What the company knows about each buyer", tag("kb"))}
-      ${buyers.length ? `<div class="bgrid">${buyers.map(b => `<button class="bcard" data-a="buyer" data-v="${b.id}"><b>${esc(b.name)}</b><span class="hint">${esc(b.role)} · DISC-${b.disc}</span><span class="small">${esc(BKB[b.id]?.decides || "")}</span><span class="row" style="gap:6px">${(BKB[b.id]?.cats || []).map(x => `<span class="chip">${esc(x)}</span>`).join("")}</span></button>`).join("")}</div>` : `<div class="empty">No buyer profile yet.</div>`}</div>
-    <div class="section">${pcLine(pcCount(x => x.cust === c), c)}</div>`;
+    ${tabsBar("ctab", [["numbers", "Numbers"], ["changes", `What changed (${changes.length})`], ["know", `What we know (${k.facts.length})`], ["buyers", `Buyers (${buyers.length})`]])}
+    <div class="section" style="margin-top:14px">${body}</div>
+    <div class="section">${askBox(c, `Ask about ${c}…`)}${suggest(c === "Carrefour" ? ["Why is our share dropping at Carrefour?", "What should I know before meeting Juliette Morel?"] : [`What convinces ${c}?`], c)}</div>`;
 };
 V.buyer = () => {
   const b = buyer(state.bid), kb = BKB[b.id] || { cats: [], decides: "", priorities: [], tip: "" };
-  return `<div class="crumb"><button data-a="go" data-v="kb">Explore</button><span>›</span><button data-a="cust" data-v="${esc(b.cust)}">${esc(b.cust)}</button><span>›</span><span>${esc(b.name)}</span></div>
+  return `<div class="crumb"><button data-a="go" data-v="kb">Customers</button><span>›</span><button data-a="cust" data-v="${esc(b.cust)}">${esc(b.cust)}</button><span>›</span><span>${esc(b.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(b.name)}</h1><p class="sub">${esc(b.role)} at ${esc(b.cust)}</p></div></div>${NOTE}
     ${askBox(b.cust, `Ask about ${b.name}…`)}${suggest([`What should I know before meeting ${b.name}?`, `What convinces ${b.cust}?`], b.cust)}
     <div class="ws section"><div>${qhd("What the company knows", "", tag("kb"))}<div class="card kcard"><div class="pad stack">
@@ -1182,7 +1178,7 @@ V.buyer = () => {
         <span class="hint">${kb.doc ? citeBtn(kb.doc, kb.loc) : ""} · updated ${esc(b.updated)}</span></div></div></div>
       <aside class="side">${pcLine(pcCount(x => x.bid === b.id), b.name)}</aside></div>`;
 };
-V.personal = () => head("Your settings", "Personal context", "Your own emails, chats, calendar and documents. Only you see them.") + `
+V.personal = () => head(`<button data-a="go" data-v="about">Data & settings</button>`, "Personal context", "Your own emails, chats, calendar and documents. Only you see them.") + `
   <div class="two"><div class="card pcard"><div class="card-hd">Use my personal context ${tag("pc")}</div><div class="pad stack">
       <div class="spread"><span><b>${state.wiq ? "On" : "Off"}</b><br><span class="hint">${state.wiq ? "Signed in as victoire@example.com" : "Nothing personal is looked at."}</span></span><button class="btn sm ${state.wiq ? "plain" : "primary"}" data-a="wiq">${state.wiq ? "Turn off" : "Turn on"}</button></div>
       ${state.wiq ? Object.entries(PSRC).map(([k, [ic, lab]]) => `<label class="toggle"><span class="row" style="gap:10px"><span class="pico">${icon(ic)}</span><b style="font-weight:600">${lab}</b></span><input type="checkbox" data-src="${k}" ${state.src[k] ? "checked" : ""} aria-label="Use ${lab}"></label>`).join("") : ""}</div></div>
@@ -1191,6 +1187,13 @@ V.personal = () => head("Your settings", "Personal context", "Your own emails, c
       <p class="small"><b>Nothing is copied or stored here.</b> To read or summarise those emails, meetings and notes, use Copilot: it already does that.</p>
       <p class="small">What this app adds: <b>the numbers</b> from the Decision Engine and <b>what the company knows</b> from the knowledge bank.</p></div></div></div>
   <div class="section">${explainer(false)}</div>`;
+// ---- Data & settings: where answers come from (product names live here)
+V.about = () => head("Where answers come from", "Data & settings", "Three sources, each with one job. You'll see their tags next to every number and fact.") + `
+  <div class="explain">
+    <button class="src3 de" data-a="go" data-v="de">${tag("de")}<b>Decision Engine</b><span class="q">How much? Growing? Versus last year?</span><span class="small">Sales, share, stock and alerts, calculated with fixed definitions. Never generated by AI.</span><span class="hint">How the numbers are calculated →</span></button>
+    <button class="src3 kb" data-a="go" data-v="sources">${tag("kb")}<b>Knowledge bank</b><span class="q">Why? What works? What does the buyer want?</span><span class="small">Facts from governed documents. Every fact links to its document.</span><span class="hint">See the documents, add domain knowledge →</span></button>
+    <button class="src3 pc" data-a="go" data-v="personal">${tag("pc")}<b>Personal context</b><span class="q">Did I discuss this? Where?</span><span class="small">Counts where your emails, chats and meetings mention it, and opens Copilot. Nothing is stored.</span><span class="hint">Choose what it may use →</span></button></div>
+  <div class="section"><button class="btn plain" data-a="go" data-v="copilot">${icon("chat")}See the assistant in Copilot</button></div>`;
 // ---- In Copilot: the assistant as a Copilot skill (A2A/MCP), same sources and tags
 const CP_CHIPS = ["Why is our share dropping at Carrefour?", "Review my deck for the range review", "Check my slides for legal risk"];
 function cpTurn(q) {
@@ -1210,7 +1213,7 @@ function cpBot(t) {
 }
 V.copilot = () => {
   const turns = state.cp.length ? state.cp : [{ me: "@AI Sales Assistant why is our share dropping at Carrefour?", ...cpTurn("Why is our share dropping at Carrefour?") }];
-  return head("Where salespeople already work", "In Copilot", "The same assistant as a Copilot skill: same three sources, same tags, nothing to upload. The website stays for the deeper work.") + `
+  return head(`<button data-a="go" data-v="about">Data & settings</button>`, "In Copilot", "The same assistant as a Copilot skill: same three sources, same tags, nothing to upload. The website stays for the deeper work.") + `
     <div class="cpwrap"><div class="cpframe" aria-label="Copilot preview"><div class="cphd"><span class="pico" style="background:#E8EBF2;color:var(--slate)">${icon("chat")}</span>Copilot <span class="pill neutral" style="margin-left:auto">Preview of the skill</span></div>
       <div class="cplog" id="cplog">${turns.map(t => `<div class="bub me">${esc(t.me)}${t.kind === "coach" ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : t.kind === "stew" ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : ""}</div>${cpBot(t)}`).join("")}</div>
       <form class="cpbox"><input name="q" aria-label="Message Copilot" placeholder="@AI Sales Assistant …"><button class="btn primary sm" type="submit">Send</button></form></div>
@@ -1225,7 +1228,7 @@ V.de = () => {
   const METRICS = [["Sell-in vs sell-out", "What we shipped to the customer compared with what shoppers bought: shows stock building up or running out", "Weekly"], ["Stock cover", "How many weeks of sales the customer's stock can cover. Below 2 weeks before a big event is an order risk", "Daily"], ["Sales (POS value)", "Value of our products sold to shoppers at the till", "Weekly"], ["vs year ago", "Same weeks one year earlier", "Weekly"], ["Week-on-week", "Last week compared with the week before", "Weekly"], ["Our share", "Our sales divided by all sales in the category, at a customer or in a market", "Weekly"], ["Shelf availability", "Share of stores where the product is on the shelf", "Daily"], ["Sales on promotion", "Share of sales sold on promotion", "Weekly"], ["Category sales", "All sales in the category in a market, all brands", "Monthly"], ["Search visibility", "Share of our products in the top 10 online search results", "Weekly"]];
   const alerts = [...Object.entries(KB).flatMap(([c, k]) => k.changes.filter(x => x.de).map(x => ({ ...x, where: c }))), ...Object.entries(CATKB).flatMap(([mk, cs]) => Object.entries(cs).flatMap(([cat, k]) => k.changes.filter(x => x.de).map(x => ({ ...x, where: `${cat} · ${mk}` }))))];
   const cov = KB_MARKETS.map(mk => [mk, KB_CATS.map(c => KB_CUSTS[mk].some(x => kbOf(x).cats[c]))]);
-  return head("The numbers", "Decision Engine", "Every number in the assistant comes from here: calculated from data with fixed definitions, never generated by AI.") + `
+  return head(`<button data-a="go" data-v="about">Data & settings</button>`, "Decision Engine", "Every number in the assistant comes from here: calculated from data with fixed definitions, never generated by AI.") + `
     <div class="row" style="margin-bottom:16px">${tag("de")}<span class="hint">Data up to ${PW[LASTW]} · refreshed 09 Oct 2026, 06:00</span></div>
     ${explainer(true)}
     <div class="two section"><div>${qhd("What it measures", "Same definitions everywhere: dashboards, assistant, Selling Coach", "")}<div class="card dcard"><div class="pad">${METRICS.map(([n, d, f]) => `<div class="numrow"><span><b style="font-weight:600">${n}</b><br><span class="hint">${d}</span></span><span class="hint">${f}</span></div>`).join("")}</div></div></div>
@@ -1319,13 +1322,12 @@ V.ask = () => {
   const bar = `<div class="facetbar">${fsel("mkt", "Market", KB_MARKETS)}${fsel("cust", "Customer", [...new Set((F.mkt ? KB_CUSTS[F.mkt] : Object.values(KB_CUSTS).flat()))])}${fsel("cat", "Category", KB_CATS)}${fsel("type", "Document type", DOC_TYPES)}${Object.values(F).some(Boolean) ? `<button class="btn sm plain" data-a="afclear">Clear filters</button>` : ""}</div>`;
   const built = [r.de.length ? `${srcMini("de")}<span class="hint">${plural(r.de.length, "number", "numbers")}</span>` : "", r.kb.length ? `${srcMini("kb")}<span class="hint">${plural(r.kb.length, "fact", "facts")}</span>` : "", r.what && state.wiq && r.pc ? `${srcMini("pc")}<span class="hint">${plural(r.pc, "mention", "mentions")}</span>` : ""].filter(Boolean);
   return head(`<button data-a="go" data-v="home">Home</button><span>›</span><span>Ask</span>`, "Ask", "") + `
-    ${askBox(r.fCust, "Ask a follow-up…")}${bar}
+    ${askBox(r.fCust, "Ask a follow-up…")}<div class="row" style="margin:8px 0 0"><button class="btn sm plain" data-a="aftoggle" aria-expanded="${!!state.afOpen}">${icon("search")}Filters${Object.values(F).filter(Boolean).length ? ` (${Object.values(F).filter(Boolean).length})` : ""}</button></div>${state.afOpen ? bar : ""}
     <div class="card answer section"><div class="card-hd">${esc(state.ask)}</div><div class="pad stack"><p>${esc(r.summary)}</p>
       ${r.points.length ? `<span class="label">Key points</span><ol class="points">${r.points.map((p, i) => `<li><span class="pn ${p.src}">${p.src === "de" ? "N" : "F"}${r.points.filter((q, j) => j <= i && q.src === p.src).length}</span><span>${esc(p.text)}<br>${p.src === "de" ? `${srcMini("de")} <span class="hint">calculated · data up to ${PW[LASTW]}</span>` : `${srcMini("kb")} ${citeBtn(p.it.doc, p.it.loc)}`}</span></li>`).join("")}</ol>` : ""}
-      ${built.length ? `<div class="builtfrom"><span class="hint">Built from</span>${built.join(`<span class="hint">·</span>`)}</div>` : ""}
       ${r.points.length ? `<div class="fbk"><span class="hint">Was this useful?</span><button class="btn sm plain" data-a="fb" data-v="up" aria-pressed="${state.fb[state.ask] === "up"}">👍 Yes</button><button class="btn sm plain" data-a="fb" data-v="down" aria-pressed="${state.fb[state.ask] === "down"}">👎 No</button><button class="btn ghost small" data-a="fb" data-v="wrong" style="color:var(--primary)">Report a wrong fact</button></div>` : ""}</div></div>
-    <div class="two section"><div>${qhd("All numbers used", "Calculated, never generated", tag("de"))}<div class="card dcard"><div class="pad">${r.de.length ? r.de.map(num).join("") : `<div class="empty">No number matches this question.</div>`}</div></div></div>
-      <div>${qhd("All facts used", "Each fact links to its document", tag("kb"))}<div class="card kcard"><div class="pad">${r.kb.length ? r.kb.map(row).join("") : `<div class="empty">${Object.values(F).some(Boolean) ? "No facts match these filters." : "No fact in the knowledge bank matches this question."}</div>`}</div></div></div></div>
+    ${r.de.length + r.kb.length ? (state.allsrc ? `<div class="two section"><div>${qhd("All numbers used", "Calculated, never generated", tag("de"))}<div class="card dcard"><div class="pad">${r.de.length ? r.de.map(num).join("") : `<div class="empty">No number matches this question.</div>`}</div></div></div>
+      <div>${qhd("All facts used", "Each fact links to its document", tag("kb"))}<div class="card kcard"><div class="pad">${r.kb.length ? r.kb.map(row).join("") : `<div class="empty">${Object.values(F).some(Boolean) ? "No facts match these filters." : "No fact in the knowledge bank matches this question."}</div>`}</div></div></div></div>` : `<div class="section"><button class="btn sm plain" data-a="allsrc">Show all sources (${r.de.length + r.kb.length})</button></div>`) : ""}
     ${r.what ? `<div class="section">${pcLine(r.pc, r.what)}</div>` : ""}
     <div class="row section">${r.fCust ? `<button class="btn sm plain" data-a="cust" data-v="${esc(r.fCust)}">Open ${esc(r.fCust)}</button>` : ""}${r.fCat ? `<button class="btn sm plain" data-a="cat" data-v="${esc(r.fCat)}">Open ${esc(r.fCat)}</button>` : ""}</div>
     ${suggest(SUGGEST.filter(x => x !== state.ask), "")}`;
@@ -1341,7 +1343,7 @@ V.projects = () => {
   return head("Customer workspace hub", "My Projects", "A project is your workspace for one customer and one goal. Set the context once; every meeting and presentation inside it uses it.", `<button class="btn primary" data-a="new">${icon("plus")}New project</button>`) + `
     <div class="row" style="margin-bottom:14px"><input class="search" id="q" type="search" placeholder="Search projects or customers" value="${esc(state.q)}" style="max-width:300px" aria-label="Search projects">
       <div class="seg" role="group" aria-label="Status">${["Active", "Archived"].map(s => `<button data-a="filter" data-v="${s}" aria-pressed="${state.filter === s}">${s} (${PROJECTS.filter(p => p.status === s).length})</button>`).join("")}</div></div>
-    <div class="row small muted" style="margin-bottom:14px"><span class="chip">${plural(act.length, "active project", "active projects")}</span><span class="chip">${plural(act.reduce((n, p) => n + p.meetings.filter(m => m.status !== "Done").length, 0), "upcoming meeting", "upcoming meetings")}</span><span class="chip">${plural(new Set(act.map(p => p.cust)).size, "customer", "customers")}</span></div>
+    <div class="row small muted" style="margin-bottom:14px"><span class="chip">${plural(act.length, "active project", "active projects")}</span><span class="chip">${plural(act.reduce((n, p) => n + p.meetings.filter(m => m.status !== "Done").length, 0), "upcoming meeting", "upcoming meetings")}</span><span class="chip">${plural(new Set(act.map(p => p.cust)).size, "customer", "customers")}</span>${(() => { const im = impactStats(); return `<span class="chip">${plural(im.coached, "presentation coached", "presentations coached")} this year</span>${im.improved ? `<span class="chip">Average gain +${im.avg.toFixed(1)} points</span>` : ""}`; })()}</div>
     <div class="projgrid">${list.map(projectCard).join("")}${state.filter === "Active" ? newCard() : ""}</div>
     ${!list.length ? `<div class="empty" style="margin-top:12px">No ${state.filter.toLowerCase()} project matches “${esc(state.q)}”.</div>` : ""}`;
 };
@@ -1780,7 +1782,7 @@ document.addEventListener("click", e => {
     case "followup": meetingForm(p, null, m); break;
     case "delproj": closeDialogs(); render(); confirmDelete(proj(v)); break;
     case "tool": launchTool(p, v); break;
-    case "cust": go("customer", { cust: v, cat: el.dataset.k || state.cat, mkt: kbOf(v).market || state.mkt }); break;
+    case "cust": state.ctab = "numbers"; go("customer", { cust: v, cat: el.dataset.k || state.cat, mkt: kbOf(v).market || state.mkt }); break;
     case "custcat": state.cat = v; render(); break;
     case "per": state.per = v; render(); break;
     case "perftbl": state.tbl = !state.tbl; render(); break;
@@ -1800,6 +1802,12 @@ document.addEventListener("click", e => {
     case "afclear": state.af = {}; render(); break;
     case "hideexplain": state.hideExplain = true; render(); break;
     case "gshide": state.gsHide = true; render(); break;
+    case "gsopen": state.gsOpen = !state.gsOpen; render(); break;
+    case "ctab": state.ctab = v; render(); break;
+    case "gtab": state.gtab = v; render(); break;
+    case "pdet": state.pdet = !state.pdet; render(); break;
+    case "aftoggle": state.afOpen = !state.afOpen; render(); break;
+    case "allsrc": state.allsrc = true; render(); break;
     case "install": state.gs.pinned = true; render(); toast("In the live tool this installs the assistant as a desktop app you can pin to your taskbar."); break;
     case "notify": state.notify[v] = !state.notify[v]; render(); toast(state.notify[v] ? `We'll tell you when ${v} is ready for you.` : `No more updates about ${v}.`); break;
     case "xls": toast(`In the live tool this downloads sales by customer, category and product for ${PERIODS[state.per]} as an Excel file, already sorted.`); break;
@@ -1814,11 +1822,11 @@ document.addEventListener("click", e => {
     case "follow": { const on = isF(v); state.follow = on ? state.follow.filter(x => x !== v) : [...state.follow, v]; render(); toast(on ? "Unfollowed. It no longer appears in What changed on Home." : "Following. Its changes now appear on Home."); break; }
     case "fb": if (v === "wrong") { toast("Use the source link next to the fact: the knowledge bank team corrects facts by fixing or replacing the document."); break; }
       state.fb[state.ask] = v; render(); toast(v === "up" ? "Thanks. Useful answers help tune what the assistant shows first." : "Thanks. Unhelpful answers are reviewed by the knowledge bank team."); break;
-    case "cat": go("category", { cat: v, mkt: el.dataset.k || state.mkt }); break;
+    case "cat": state.gtab = "numbers"; go("category", { cat: v, mkt: el.dataset.k || state.mkt }); break;
     case "mkt": state.mkt = v; render(); break;
     case "copilot": toast(`In the live tool this opens Copilot to summarise what your emails, chats and meetings say about ${v}.`); break;
     case "buyer": state.gs.buyers = true; go("buyer", { bid: v }); break;
-    case "ask": go("ask", { ask: v, askCust: el.dataset.k || "" }); break;
+    case "ask": state.allsrc = false; go("ask", { ask: v, askCust: el.dataset.k || "" }); break;
     case "newcust": state.w = blankW(); state.w.cust = v; state.pendingTool = null; go("new"); break;
     case "wiq": state.wiq = !state.wiq; render(); toast(state.wiq ? "Personal context on. Only counts of related items are shown, nothing is stored." : "Personal context off. Nothing personal is looked at."); break;
     case "ctxtab": go("project", { pid: p.id, tab: "context" }); break;
@@ -1886,7 +1894,7 @@ document.addEventListener("change", e => {
   }
 });
 document.addEventListener("keydown", e => {
-  if (e.target.matches('[role="tab"]') && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { const t = [...document.querySelectorAll('[role="tab"]')], i = t.indexOf(e.target), n = t[(i + (e.key === "ArrowRight" ? 1 : -1) + t.length) % t.length]; state.tab = n.dataset.v; render(); $(`[role="tab"][data-v="${state.tab}"]`).focus(); return; } if (e.key === "Escape" && state.menu) { const v = state.menu; state.menu = null; render(); document.querySelector(`.pcmenu[data-v="${v}"]`)?.focus(); return; } if (e.key === "Enter" && e.target.matches(".dropzone")) { e.preventDefault(); e.target.querySelector("input")?.click(); } });
+  if (e.target.matches('[role="tab"]') && (e.key === "ArrowRight" || e.key === "ArrowLeft")) { const t = [...document.querySelectorAll('[role="tab"]')], i = t.indexOf(e.target), n = t[(i + (e.key === "ArrowRight" ? 1 : -1) + t.length) % t.length]; if (n.dataset.a === "tab") state.tab = n.dataset.v; else state[n.dataset.a] = n.dataset.v; render(); $(`[role="tab"][data-a="${n.dataset.a}"][data-v="${n.dataset.v}"]`).focus(); return; } if (e.key === "Escape" && state.menu) { const v = state.menu; state.menu = null; render(); document.querySelector(`.pcmenu[data-v="${v}"]`)?.focus(); return; } if (e.key === "Enter" && e.target.matches(".dropzone")) { e.preventDefault(); e.target.querySelector("input")?.click(); } });
 function refreshPreview() { const pv = $(".preview"); if (!pv || state.view !== "new") return; const tmp = document.createElement("div"); tmp.innerHTML = V.new(); pv.replaceWith(tmp.querySelector(".preview")); }
 
 render();
