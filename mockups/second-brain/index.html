@@ -1,4 +1,4 @@
-<title>Project Workspace</title>
+<title>Sales Second Brain</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap">
 <style>
@@ -177,6 +177,50 @@ tr:last-child td { border-bottom: 0; }
 .field label.bpick { font-weight: 400; font-size: 13px; color: var(--charcoal); }
 .launch { display: grid; gap: 10px; }
 [hidden] { display: none !important; }
+:root { --pc: #5B3FA0; --pc-bg: #F4EFFC; --pc-border: #D6C8F2; }
+.srctag { display: inline-flex; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; border-radius: 99px; padding: 2px 9px; border: 1px solid; white-space: nowrap; }
+.srctag .i { width: 13px; height: 13px; }
+.srctag.kb { color: var(--primary); background: var(--primary-light); border-color: var(--border-primary-light); }
+.srctag.pc { color: var(--pc); background: var(--pc-bg); border-color: var(--pc-border); }
+.card.pcard { border-color: var(--pc-border); }
+.card.pcard > .card-hd { background: var(--pc-bg); color: var(--pc); }
+.card.kcard > .card-hd { background: var(--primary-light); color: var(--primary); }
+.askbox { display: flex; gap: 8px; background: var(--white); border: 1px solid var(--border-primary-light); border-radius: 14px; padding: 6px 6px 6px 14px; box-shadow: var(--shadow); align-items: center; }
+.askbox .i { color: var(--primary); flex: none; }
+.askbox input { flex: 1; min-width: 0; border: 0; outline: 0; font-size: 14px; padding: 8px 0; background: none; }
+.askbox:focus-within { outline: 2px solid var(--border-primary-light); }
+.suggest { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.suggest button { border: 1px solid var(--light-gray); background: var(--white); border-radius: 99px; padding: 6px 12px; font-size: 12.5px; color: var(--slate); }
+.suggest button:hover { border-color: var(--primary); color: var(--primary); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.tile { border: 1px solid var(--light-gray); border-radius: 12px; background: var(--white); padding: 14px 16px; display: grid; gap: 4px; }
+.tile .tl { font-size: 12.5px; color: var(--slate); }
+.tile .tv { font: 600 24px var(--inter); color: var(--charcoal); }
+.tile .td { font-size: 12px; color: var(--steel); }
+.tile .td b { font-weight: 700; }
+.td .up-good, .td .down-good { color: #0A7A3B; } .td .up-bad, .td .down-bad { color: var(--err-accent); } .td .flat { color: var(--slate); }
+.chg { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 11px 0; border-bottom: 1px solid var(--light-gray); }
+.chg:last-child { border-bottom: 0; }
+.sev { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 700 12px var(--inter); }
+.sev.warn { background: var(--warn-bg, #FFF6E5); color: #8A5A00; } .sev.ok { background: var(--ok-bg); color: var(--ok-text); } .sev.info { background: var(--primary-light); color: var(--primary); }
+.fact { padding: 11px 0; border-bottom: 1px solid var(--light-gray); display: grid; gap: 3px; }
+.fact:last-child { border-bottom: 0; }
+.pitem { display: grid; grid-template-columns: 30px minmax(0, 1fr); gap: 10px; padding: 11px 0; border-bottom: 1px solid var(--pc-border); }
+.pitem:last-child { border-bottom: 0; }
+.pico { width: 30px; height: 30px; border-radius: 8px; background: var(--pc-bg); color: var(--pc); display: grid; place-items: center; }
+.pico .i { width: 16px; height: 16px; }
+.custgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.custcard { border: 1px solid var(--light-gray); border-radius: 14px; background: var(--white); box-shadow: var(--shadow); padding: 16px 17px; text-align: left; display: grid; gap: 8px; }
+.custcard:hover { border-color: var(--border-primary-light); }
+.bcard { border: 1px solid var(--light-gray); border-radius: 12px; padding: 13px 15px; text-align: left; background: var(--white); display: grid; gap: 6px; width: 100%; }
+.bcard:hover { border-color: var(--border-primary-light); }
+.bgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.toggle { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--light-gray); }
+.toggle input { width: 18px; height: 18px; accent-color: var(--pc); }
+.answer { border-left: 4px solid var(--primary); }
+.card-hd { flex-wrap: wrap; row-gap: 4px; }
 .gridauto { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
 .stepper-in { display: flex; align-items: center; border: 1px solid var(--border-default); border-radius: 8px; background: var(--white); overflow: hidden; }
 .stepper-in input { border: 0 !important; outline: 0; min-width: 0; flex: 1; }
@@ -322,6 +366,12 @@ const DISC = { D: "Direct, wants the bottom line", I: "Enthusiastic, likes the b
 const buyer = id => BUYERS.find(b => b.id === id);
 const pbuyers = p => p.buyers.map(buyer).filter(Boolean);
 const clone = o => JSON.parse(JSON.stringify(o));
+const kbOf = c => KB[c] || { updated: "", owner: "Customer team", monitored: false, summary: "Knowledge is being built for this customer.", numbers: [], changes: [], facts: [] };
+const tag = k => k === "kb" ? `<span class="srctag kb">${icon("building")}Company knowledge</span>` : `<span class="srctag pc">${icon("lock")}Personal context · only you</span>`;
+const pcOn = () => state.wiq && Object.values(state.src).some(Boolean);
+const myPC = f => state.wiq ? PC.filter(x => state.src[x.k] && f(x)) : [];
+const sevIco = { warn: "!", ok: "✓", info: "i" }, sevLab = { warn: "Watch", ok: "Good news", info: "Good to know" };
+const arrow = d => d.startsWith("+") ? "↑" : d.startsWith("−") ? "↓" : "→";
 const scText = sc => SHORTCUTS.filter(([k]) => sc[k].length).map(([k, l]) => `${l}: ${sc[k].join(", ")}`).join("\n");
 const scCount = sc => SHORTCUTS.reduce((n, [k]) => n + sc[k].length, 0);
 const bmeta = b => `${esc(b.cust)} · DISC-${b.disc} · updated ${esc(b.updated)}`;
@@ -368,6 +418,69 @@ PROJECTS[0].meetings[0].decks[0].result = { score: 3.1, date: "24 Sep 2026", ctx
 PROJECTS[0].meetings[1].decks[0].result = { score: 3.8, date: "06 Sep 2026", ctx: true };
 PROJECTS[1].meetings[0].decks[0].result = { score: 3.4, date: "22 Sep 2026", ctx: true };
 PROJECTS[3].meetings[0].decks[0].result = { score: 3.9, date: "09 Apr 2026", ctx: true };
+
+/* =====================================================================
+   Knowledge bank: what everyone in sales should know about each customer.
+   Common company knowledge, monitored and kept up to date. Shared with all.
+   ===================================================================== */
+const KB = {
+  Carrefour: { updated: "08 Oct 2026", owner: "Customer team France", monitored: true,
+    summary: "France's largest grocer. Its 2026 plan: fewer, bigger promotions, more private label, and shelf space taken back from slow lines in hypermarkets.",
+    numbers: [["Sales with us · last 12 weeks", "€48.2M", "+3.1%", "vs same weeks last year", "up-good"], ["Our share in Fabric Care", "31.4%", "−0.8 pt", "vs 4 weeks ago", "down-bad"], ["Shelf availability", "94.2%", "−1.5 pt", "vs last month", "down-bad"], ["Sales on promotion", "38%", "−4 pt", "vs last year, in line with their plan", "flat"]],
+    changes: [{ date: "07 Oct", sev: "warn", text: "Our Fabric Care share dropped 0.8 pt in 4 weeks, mostly capsules in hypermarkets.", src: "Market data, weekly" },
+      { date: "03 Oct", sev: "warn", text: "Out-of-stocks are up in Hauts-de-France hypermarkets: availability at 91%.", src: "Store data, daily" },
+      { date: "30 Sep", sev: "info", text: "A competitor announced a −40% capsule promotion for weeks 44 and 45.", src: "Field team report" },
+      { date: "25 Sep", sev: "ok", text: "Carrefour confirmed the range review date: 14 November.", src: "Customer team France" }],
+    facts: [{ topic: "Their strategy", text: "The 2026 plan aims for private label at 40% of sales and shallower promotions.", src: "Carrefour annual report", date: "Mar 2026" },
+      { topic: "How they decide", text: "Range reviews set Q1 shelf space. Proposals must arrive three weeks before the review.", src: "Customer team France", date: "Sep 2026" },
+      { topic: "What convinces them", text: "Data on new shoppers convinces Carrefour more than our own sales growth.", src: "Lessons from 12 meetings", date: "Aug 2026" },
+      { topic: "Terms", text: "The annual negotiation closes on 1 March. No price change is accepted after 15 January.", src: "Commercial policy France", date: "Jan 2026" },
+      { topic: "Stores", text: "250 hypermarkets, 1,000 supermarkets and 4,500 convenience stores. Hypermarkets make 60% of our sales with them.", src: "Customer team France", date: "Jul 2026" }] },
+  Cdiscount: { updated: "06 Oct 2026", owner: "E-commerce team France", monitored: true,
+    summary: "France's largest online-only retailer. Grows through marketplace and retail media, and plans big around Black Friday.",
+    numbers: [["Online sales with us · last 12 weeks", "€6.4M", "+9.8%", "vs same weeks last year", "up-good"], ["Our share of Home Care online", "22.1%", "0.0 pt", "vs 4 weeks ago", "flat"], ["Product pages rated complete", "81%", "+6 pt", "vs last quarter", "up-good"], ["Search visibility, top 10", "47%", "−5 pt", "vs last month", "down-bad"]],
+    changes: [{ date: "05 Oct", sev: "warn", text: "We dropped out of the top 10 search results for 'lessive' on 3 of our 5 products.", src: "Retail media monitoring" },
+      { date: "28 Sep", sev: "info", text: "Cdiscount opened Black Friday retail media bookings. Deadline 20 October.", src: "Customer team" }],
+    facts: [{ topic: "How they decide", text: "Black Friday plans are locked mid-October. Sponsored search is booked in weekly slots.", src: "E-commerce team France", date: "Sep 2026" },
+      { topic: "What convinces them", text: "Cdiscount reacts to traffic and conversion forecasts, not to shelf arguments.", src: "Lessons from 5 meetings", date: "Jun 2026" }] },
+  Auchan: { updated: "02 Oct 2026", owner: "Customer team France", monitored: true,
+    summary: "Major French grocer rebuilding its hypermarkets. Open to new brands that bring shoppers back to the aisle.",
+    numbers: [["Sales with us · last 12 weeks", "€21.7M", "−1.2%", "vs same weeks last year", "down-bad"], ["Our share in Hair Care", "18.6%", "+0.4 pt", "vs 4 weeks ago", "up-good"], ["Shelf availability", "96.1%", "+0.3 pt", "vs last month", "up-good"]],
+    changes: [{ date: "01 Oct", sev: "info", text: "Auchan announced a hair care aisle redesign in 120 hypermarkets for spring.", src: "Trade press" }],
+    facts: [{ topic: "Their strategy", text: "Auchan wants to win back families in hypermarkets with clearer aisles and fewer duplicates.", src: "Auchan strategy update", date: "May 2026" },
+      { topic: "What convinces them", text: "Pilots in 10 stores with a clear go/no-go rule get approved faster.", src: "Lessons from 4 meetings", date: "Apr 2026" }] },
+  "E.Leclerc": { updated: "29 Sep 2026", owner: "Customer team France", monitored: true, summary: "Price leader with independent store owners: national deals, local decisions.",
+    numbers: [["Sales with us · last 12 weeks", "€39.5M", "+1.4%", "vs same weeks last year", "up-good"]], changes: [], facts: [{ topic: "How they decide", text: "Store owners decide locally once the national deal is signed. Plan field support early.", src: "Customer team France", date: "Feb 2026" }] },
+  "Intermarché": { updated: "15 Sep 2026", owner: "Customer team France", monitored: false, summary: "Store-owner network strong in towns and rural areas. Knowledge is being built.", numbers: [], changes: [], facts: [] },
+  Monoprix: { updated: "10 Sep 2026", owner: "Customer team France", monitored: false, summary: "City-centre stores with a premium shopper. Knowledge is being built.", numbers: [], changes: [], facts: [] },
+};
+// What the company knows about each buyer (shared)
+const BKB = {
+  B1: { decides: "Shelf space and promotions for Home and Fabric Care", priorities: ["Margin per metre of shelf", "Fewer, bigger promotions", "Proof of new shoppers"], tip: "Lead with the number, then the ask. She rarely reads appendices.",
+    history: [["12 Sep 2026", "Q3 business review", "Agreed a deeper capsule promotion test in October."], ["15 Apr 2026", "Promotion alignment", "Spring promotion plan agreed."]] },
+  B2: { decides: "Prepares range reviews and checks the numbers for Juliette", priorities: ["Clean, comparable data", "On-time files"], tip: "Send her the data pack two days early: she briefs Juliette.", history: [["12 Sep 2026", "Q3 business review", "Asked for store-level availability data."]] },
+  B3: { decides: "Signs off the category strategy and annual terms", priorities: ["Category growth", "Private label share"], tip: "Only meets for strategic topics. Go through Juliette first.", history: [] },
+  B4: { decides: "Online assortment, product pages and sponsored search for Home Care", priorities: ["Traffic", "Conversion rate", "Black Friday"], tip: "Bring a traffic forecast. He decides fast in the meeting.", history: [["22 Sep 2026", "Activation plan review", "Open to a sponsored search test."]] },
+  B5: { decides: "Retail media and on-site campaigns", priorities: ["Campaign return", "Booking deadlines"], tip: "Book early: slots sell out before Black Friday.", history: [] },
+  B6: { decides: "Hair care range and new listings", priorities: ["Bringing families back", "Clear aisles", "Fast pilots"], tip: "Propose a 10-store pilot with a clear success rule.", history: [] },
+  B7: { decides: "Supports the hair care range review", priorities: ["Data accuracy"], tip: "Check figures with him before the meeting.", history: [] },
+  B8: { decides: "National hair and body care deal", priorities: ["Lowest shelf price", "Store owner support"], tip: "Show how the deal helps store owners sell, not just the price.", history: [] },
+  B9: { decides: "Personal care listings", priorities: ["Local relevance"], tip: "Not much known yet.", history: [] },
+};
+/* Personal context: from your own Microsoft 365 (Outlook, Teams, Word) through WorkIQ.
+   Only you see it. It never goes into the knowledge bank unless you choose to share it. */
+const PSRC = { mail: ["mail", "Outlook email"], cal: ["cal", "Outlook calendar"], teams: ["chat", "Teams"], docs: ["file", "Word and OneDrive"] };
+const PC = [
+  { id: "pc1", bid: "B1", cust: "Carrefour", k: "mail", date: "06 Oct", text: "Juliette asked for the Q4 promotion calendar before 15 October and said margin will be her first question." },
+  { id: "pc2", bid: "B1", cust: "Carrefour", k: "teams", date: "02 Oct", text: "Your manager suggested offering an extra end-cap in exchange for deeper capsule promotions." },
+  { id: "pc3", bid: "B1", cust: "Carrefour", k: "cal", date: "14 Nov", text: "Range review with Juliette Morel in your calendar: 45 minutes, Carrefour head office, Massy." },
+  { id: "pc4", bid: null, cust: "Carrefour", k: "docs", date: "29 Sep", text: "Your draft “Carrefour Q4 proposal.docx”, last edited 29 September." },
+  { id: "pc5", bid: "B2", cust: "Carrefour", k: "mail", date: "26 Sep", text: "Camille sent the store list for the capsule test and asked for weekly availability reports." },
+  { id: "pc6", bid: "B4", cust: "Cdiscount", k: "mail", date: "04 Oct", text: "Thomas asked for a Black Friday traffic forecast and a budget range for sponsored search." },
+  { id: "pc7", bid: "B4", cust: "Cdiscount", k: "cal", date: "22 Oct", text: "Activation plan review with Thomas Garnier in your calendar: 30 minutes, video call." },
+  { id: "pc8", bid: "B6", cust: "Auchan", k: "teams", date: "30 Sep", text: "Field colleague: Nadia liked the new hair care range at the trade show but worries about space." },
+  { id: "pc9", bid: null, cust: "Cdiscount", k: "docs", date: "18 Sep", text: "Your notes “Cdiscount retail media ideas.docx”, last edited 18 September." },
+];
 
 /* Meeting context: Selling Coach "Step 2", filled once per project and reused by every session in it */
 const USER_EMAIL = "victoire@example.com";
@@ -432,6 +545,11 @@ const ICON = {
   cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
   spark: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+  building: '<path d="M4 21V5l8-3 8 3v16"/><path d="M9 21v-4h6v4M8 8h2M14 8h2M8 12h2M14 12h2"/>',
+  lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+  search: '<circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/>',
+  mail: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>',
+  store: '<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9h16v2a3 3 0 0 1-5.3 2A3 3 0 0 1 12 14a3 3 0 0 1-2.7-1A3 3 0 0 1 4 11z"/><path d="M5 14v6h14v-6"/>',
   ok: '<circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 10"/>',
   share: '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/>',
 };
@@ -465,10 +583,12 @@ function log(p, text) { p.activity.unshift([TODAY, "VB", text]); p.updated = TOD
 /* =====================================================================
    State & shell
    ===================================================================== */
-const state = { view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
+const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
 const NAV = [
-  { id: "home", label: "Home", icon: "home", match: ["home"] },
+  { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
   { id: "projects", label: "My Projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
+  { id: "customers", label: "Customers", icon: "store", match: ["customers", "customer", "buyer"] },
+  { id: "personal", label: "Personal context", icon: "lock", match: ["personal"] },
 ];
 const TOOLS = [["coach", "Selling Coach", "coach"], ["mic", "Role-play Coach", "roleplay"], ["chat", "Stewardship Q&A", "qa"]];
 function renderNav() {
@@ -483,10 +603,15 @@ function head(crumb, title, sub, actions = "") { return `<div class="crumb">${cr
 function render() { renderNav(); $("#view").innerHTML = V[state.view](); AFTER[state.view]?.(); applyNotes(); }
 // Numbered notes that explain the intended behaviour to the vendor building it
 const NOTES = {
-  home: [["#view .toolgrid", "Home shows the three tools, as today. Starting one first asks which project it is for (or creates one), then runs inside that project."], ["#view .projgrid", "Your projects: each card shows the customer, the next meeting and where its presentation stands. ⋯ edits, archives or deletes."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], [".appbar .newbtn", "“New project” is always one click away."]],
+  customers: [["#view .askbox", "One question box for everything. Answers keep company knowledge and personal context apart."], ["#view .custgrid", "One page per customer, kept up to date by the customer teams. Users never see data types, just what they need to know."]],
+  customer: [["#view .tiles", "Key numbers, monitored. Each shows the change and the period it compares to."], ["#view .two .kcard", "What changed: monitored signals in plain words, each with its source and date."], ["#view .bgrid", "Buyers: the company's profile, plus a count of what you know from your own work."], ["#view .pcard", "Personal context from WorkIQ, in purple, marked “only you”. Never mixed into the company knowledge."]],
+  buyer: [["#view .kcard", "What the whole company knows about this buyer."], ["#view .pcard", "What only you know: emails, Teams, calendar, Word. “Share with the company…” proposes an item for review."]],
+  personal: [["#view .pcard", "Users choose which Microsoft 365 sources WorkIQ may use, and can disconnect at any time."]],
+  ask: [["#view .answer", "A short answer first, then the sources it used, split into company knowledge and personal context."]],
+  home: [["#view .askbox", "Ask your second brain anything, from any page."], ["#view .two", "What changed at your customers (company knowledge) next to what is waiting on you (personal context)."], ["#view .toolgrid", "Home shows the three tools, as today. Starting one first asks which project it is for (or creates one), then runs inside that project."], ["#view .projgrid", "Your projects: each card shows the customer, the next meeting and where its presentation stands. ⋯ edits, archives or deletes."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], [".appbar .newbtn", "“New project” is always one click away."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Meeting context summary: the single source that every tool and every piece of feedback reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Saving creates a new version."], ["#view .sessions", "Each Selling Coach session records the context version it used, so changes never rewrite past feedback."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
-  meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .mctx", "Step 2 is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#notes", "Notes after the meeting stay in the project and inform the next meeting."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
+  meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .brief", "Brief for this meeting: company knowledge and personal context side by side, before any upload."], ["#view .mctx", "Step 2 is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#notes", "Notes after the meeting stay in the project and inform the next meeting."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
   new: [["#view .stepper", "Five short steps. Only the name and customer are required."], ["#view .wizard .card", "Step 2 picks saved buyer profiles. Step 3 is Selling Coach's meeting context, filled once for the whole project and kept across sessions."], ["#view .preview", "Live preview of what the project will hold."]],
 };
 function applyNotes() {
@@ -526,16 +651,142 @@ function projectCard(p) {
 }
 const newCard = () => `<button class="projcard new" data-a="new"><span class="plus">${icon("plus")}</span><b style="font:700 15px var(--mont)">Create a project</b><span class="small muted">One customer, one goal. Your meetings, presentations and feedback in one place.</span></button>`;
 V.home = () => {
-  const active = PROJECTS.filter(p => p.status === "Active");
+  const active = PROJECTS.filter(p => p.status === "Active"), mine = [...new Set(active.map(p => p.cust))];
   const upcoming = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ p, m }))).sort((a, b) => pd(a.m.date) - pd(b.m.date)).slice(0, 4);
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Choose from our AI-powered tools designed to enhance your sales performance across your markets. Each tool runs inside a project, so it already knows your customer.</p></div>${NOTE}
-    ${toolCards(() => "Runs inside one of your projects", "hometool")}
+  const watch = mine.flatMap(c => kbOf(c).changes.filter(x => x.sev === "warn").map(x => ({ ...x, c }))).slice(0, 3);
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Your second brain: what the company knows about your customers, plus what you know from your own work.</p></div>${NOTE}
+    ${askBox("", "Ask anything about your customers, buyers or meetings…")}${suggest(SUGGEST, "")}
+    <div class="two section"><div class="card kcard"><div class="card-hd">What changed at your customers ${tag("kb")}</div><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.c)).join("") : `<div class="empty">Nothing to watch this week.</div>`}
+        <div class="row" style="margin-top:8px">${mine.map(c => `<button class="btn sm plain" data-a="cust" data-v="${esc(c)}">${esc(c)}</button>`).join("")}</div></div></div>
+      ${pcCard(myPC(() => true).slice(0, 3), "Waiting on you", "Nothing from your email or chats needs you.")}</div>
+    <div class="section"><h2 class="section-title" style="margin-bottom:12px">Tools</h2>${toolCards(() => "Runs inside a project, with its customer knowledge", "hometool")}</div>
     <div class="section"><div class="spread"><h2 class="section-title">Your projects</h2><div class="row"><button class="btn sm plain" data-a="go" data-v="projects">View all projects</button><button class="btn sm primary" data-a="new">${icon("plus")}New project</button></div></div>
     <div class="projgrid" style="margin-top:12px">${active.slice(0, 3).map(projectCard).join("")}${newCard()}</div></div>
     <div class="section"><h2 class="section-title" style="margin-bottom:12px">Coming up</h2>
       ${upcoming.length ? `<div class="upcoming">${upcoming.map(({ p, m }) => { const [cls, lab] = deckState(m); return `<button data-a="meeting" data-v="${p.id}" data-m="${m.id}">${dbox(m.date)}<span><b>${esc(m.title)}</b> · ${esc(p.cust)}<br><span class="hint">${esc(OBJECTIVES[m.obj])} · ${m.minutes} min · ${when(m.date)}</span></span><span class="pill ${cls}">${lab}</span></button>`; }).join("")}</div>` : `<div class="empty">No meetings scheduled.</div>`}</div>`;
 };
 
+
+
+/* =====================================================================
+   Second brain: ask, customers, buyers, personal context
+   ===================================================================== */
+const askBox = (cust, ph) => `<form class="askbox" data-askcust="${esc(cust || "")}" role="search">${icon("search")}<input name="q" aria-label="Ask your second brain" placeholder="${esc(ph || "Ask anything about your customers, buyers or meetings…")}"><button class="btn primary sm" type="submit">Ask</button></form>`;
+const SUGGEST = ["What should I know before meeting Juliette Morel?", "Why is our share dropping at Carrefour?", "What did Thomas Garnier ask me for?"];
+const suggest = (list, cust) => `<div class="suggest">${list.map(q => `<button data-a="ask" data-v="${esc(q)}" data-k="${esc(cust || "")}">${esc(q)}</button>`).join("")}</div>`;
+function tiles(nums) {
+  return nums.length ? `<div class="tiles">${nums.map(([l, v, d, per, dir]) => `<div class="tile"><span class="tl">${esc(l)}</span><span class="tv">${esc(v)}</span><span class="td"><b class="${dir}">${arrow(d)} ${esc(d)}</b> ${esc(per)}</span></div>`).join("")}</div>` : `<div class="empty">No key numbers monitored yet for this customer.</div>`;
+}
+const changeRow = (c, cust) => `<div class="chg"><span class="sev ${c.sev}" aria-hidden="true">${sevIco[c.sev]}</span><span><b style="font-weight:600">${esc(c.text)}</b><br><span class="hint">${sevLab[c.sev]} · ${esc(c.src)}${cust ? ` · ${esc(cust)}` : ""}</span></span><span class="hint">${esc(c.date)}</span></div>`;
+const factRow = f => `<div class="fact"><span class="label">${esc(f.topic)}</span><span>${esc(f.text)}</span><span class="hint">${esc(f.src)} · ${esc(f.date)}</span></div>`;
+const pItem = x => { const [ic, lab] = PSRC[x.k]; return `<div class="pitem"><span class="pico">${icon(ic)}</span><span><span>${esc(x.text)}</span><br><span class="hint">${lab} · ${esc(x.date)}</span>${x.shared ? ` <span class="pill neutral">Sent to the knowledge bank team</span>` : ` <button class="btn ghost small" data-a="sharepc" data-v="${x.id}" style="color:var(--pc);padding:0 4px">Share with the company…</button>`}</span></div>`; };
+function pcCard(items, title, empty) {
+  if (!state.wiq) return `<div class="card pcard"><div class="card-hd">${title} ${tag("pc")}</div><div class="pad stack"><p class="small">Connect WorkIQ to see what you already know from your emails, Teams chats, calendar and documents. Only you will see it.</p><div><button class="btn sm" data-a="go" data-v="personal" style="color:var(--pc);border-color:var(--pc-border)">${icon("lock")}Connect personal context</button></div></div></div>`;
+  return `<div class="card pcard"><div class="card-hd">${title} ${tag("pc")}</div><div class="pad">${items.length ? items.map(pItem).join("") : `<div class="empty">${empty}</div>`}
+    <p class="hint" style="margin-top:8px">From your Microsoft 365 through WorkIQ. Only you see this. <button class="btn ghost small" data-a="go" data-v="personal" style="color:var(--pc);padding:0">Manage</button></p></div></div>`;
+}
+V.customers = () => {
+  const mine = new Set(PROJECTS.filter(p => p.status === "Active").map(p => p.cust));
+  const list = [...CUSTOMERS].sort((a, b) => (mine.has(b) - mine.has(a)));
+  return head("Knowledge bank", "Customers", "What everyone in sales knows about each customer: key numbers, what changed, and what works. Kept up to date for you.") + `
+    ${askBox("", "Ask about any customer…")}
+    <div class="custgrid" style="margin-top:18px">${list.map(c => { const k = kbOf(c), n = k.changes.filter(x => x.sev === "warn").length;
+      return `<button class="custcard" data-a="cust" data-v="${esc(c)}"><span class="spread"><b style="font:700 16px var(--mont)">${esc(c)}</b>${mine.has(c) ? `<span class="pill info">Your customer</span>` : ""}</span>
+        <span class="small muted">${esc(k.summary)}</span>
+        <span class="row small">${k.monitored ? `<span class="pill ok">Monitored · updated ${esc(k.updated)}</span>` : `<span class="pill neutral">Being built</span>`}${n ? `<span class="pill warn">${plural(n, "change", "changes")} to watch</span>` : ""}</span></button>`; }).join("")}</div>`;
+};
+V.customer = () => {
+  const c = state.cust, k = kbOf(c), buyers = BUYERS.filter(b => b.cust === c), projs = PROJECTS.filter(p => p.cust === c && p.status === "Active");
+  return `<div class="crumb"><button data-a="go" data-v="customers">Customers</button><span>›</span><span>${esc(c)}</span></div>
+    <div class="pagehead"><div><h1>${esc(c)}</h1><p class="sub">${esc(k.summary)}</p>
+      <div class="row" style="margin-top:8px">${tag("kb")}${k.monitored ? `<span class="pill ok">Monitored · updated ${esc(k.updated)}</span>` : `<span class="pill neutral">Being built</span>`}<span class="hint">Kept up to date by ${esc(k.owner)}</span></div></div>
+      <div class="actions">${projs.length ? `<button class="btn sm plain" data-a="open" data-v="${projs[0].id}">Open my project</button>` : ""}<button class="btn sm primary" data-a="newcust" data-v="${esc(c)}">${icon("plus")}New project</button></div></div>${NOTE}
+    ${askBox(c, `Ask about ${c}…`)}${suggest([`Why is our share dropping at ${c}?`, `What convinces ${c}?`, `What changed at ${c} this month?`].slice(0, k.numbers.length ? 3 : 2), c)}
+    <div class="section"><h2 class="section-title" style="margin-bottom:12px">Key numbers</h2>${tiles(k.numbers)}</div>
+    <div class="two section"><div class="card kcard"><div class="card-hd">What changed ${tag("kb")}</div><div class="pad">${k.changes.length ? k.changes.map(x => changeRow(x)).join("") : `<div class="empty">Nothing new to report.</div>`}</div></div>
+      <div class="card kcard"><div class="card-hd">What everyone should know ${tag("kb")}</div><div class="pad">${k.facts.length ? k.facts.map(factRow).join("") : `<div class="empty">The knowledge bank team is building this page.</div>`}</div></div></div>
+    <div class="section"><div class="spread" style="margin-bottom:12px"><h2 class="section-title">Buyers</h2><span class="hint">Company knowledge, plus what you know from your own work</span></div>
+      ${buyers.length ? `<div class="bgrid">${buyers.map(b => { const n = myPC(x => x.bid === b.id).length;
+        return `<button class="bcard" data-a="buyer" data-v="${b.id}"><b>${esc(b.name)}</b><span class="hint">${esc(b.role)} · DISC-${b.disc}</span><span class="small">${esc(BKB[b.id]?.decides || "")}</span><span class="row" style="gap:6px">${tag("kb")}${n ? `<span class="srctag pc">${icon("lock")}${plural(n, "item", "items")} from your work</span>` : ""}</span></button>`; }).join("")}</div>` : `<div class="empty">No buyer profile yet.</div>`}</div>
+    <div class="section">${pcCard(myPC(x => x.cust === c && !x.bid), `Your own notes and documents on ${esc(c)}`, "Nothing from your own work about this customer yet.")}</div>`;
+};
+V.buyer = () => {
+  const b = buyer(state.bid), kb = BKB[b.id] || { decides: "", priorities: [], tip: "", history: [] };
+  return `<div class="crumb"><button data-a="go" data-v="customers">Customers</button><span>›</span><button data-a="cust" data-v="${esc(b.cust)}">${esc(b.cust)}</button><span>›</span><span>${esc(b.name)}</span></div>
+    <div class="pagehead"><div><h1>${esc(b.name)}</h1><p class="sub">${esc(b.role)} at ${esc(b.cust)}</p></div></div>${NOTE}
+    ${askBox(b.cust, `Ask about ${b.name}…`)}${suggest([`What should I know before meeting ${b.name}?`, `What did ${b.name} ask me for?`], b.cust)}
+    <div class="two section"><div class="card kcard"><div class="card-hd">What the company knows ${tag("kb")}</div><div class="pad stack">
+        <dl class="kv"><dt>Decides on</dt><dd>${esc(kb.decides)}</dd><dt>Cares about</dt><dd>${kb.priorities.map(esc).join("<br>")}</dd><dt>Style</dt><dd>DISC-${b.disc} · ${esc(DISC[b.disc])}</dd><dt>Tip</dt><dd>${esc(kb.tip)}</dd></dl>
+        <div><span class="label">Past meetings with the company</span>${kb.history.length ? kb.history.map(([d, t, o]) => `<div class="fact"><b style="font-weight:600">${esc(t)}</b><span>${esc(o)}</span><span class="hint">${esc(d)}</span></div>`).join("") : `<p class="hint">None recorded yet.</p>`}</div>
+        <span class="hint">Buyer profile updated ${esc(b.updated)}</span></div></div>
+      ${pcCard(myPC(x => x.bid === b.id), "What you know from your work", `Nothing about ${esc(b.name)} in your email, chats, calendar or documents yet.`)}</div>`;
+};
+V.personal = () => head("Your settings", "Personal context", "Connect WorkIQ to bring in what you already know from your own Microsoft 365. It sits next to the company knowledge, never inside it.") + `
+  <div class="two"><div class="card pcard"><div class="card-hd">WorkIQ connection ${tag("pc")}</div><div class="pad stack">
+      <div class="spread"><span><b>${state.wiq ? "Connected" : "Not connected"}</b><br><span class="hint">${state.wiq ? "Reading from victoire@example.com" : "Nothing is read until you connect."}</span></span><button class="btn sm ${state.wiq ? "plain" : "primary"}" data-a="wiq">${state.wiq ? "Disconnect" : "Connect WorkIQ"}</button></div>
+      ${state.wiq ? Object.entries(PSRC).map(([k, [ic, lab]]) => `<label class="toggle"><span class="row" style="gap:10px"><span class="pico">${icon(ic)}</span><span><b style="font-weight:600">${lab}</b><br><span class="hint">${myPC(x => x.k === k).length || PC.filter(x => x.k === k).length} items about your customers</span></span></span><input type="checkbox" data-src="${k}" ${state.src[k] ? "checked" : ""} aria-label="Use ${lab}"></label>`).join("") : ""}</div></div>
+    <div class="card"><div class="card-hd">How the two sources differ</div><div class="pad stack">
+      <div>${tag("kb")}<p class="small" style="margin-top:6px">Common knowledge for everyone in sales: customer numbers, what changed, what works, buyer profiles. Kept up to date by the customer teams.</p></div>
+      <div>${tag("pc")}<p class="small" style="margin-top:6px">What you know from your own emails, Teams chats, calendar and Word documents. Only you see it. Use “Share with the company…” on an item to propose it to the knowledge bank team: it stays personal until they publish it.</p></div></div></div></div>`;
+// ---- ask: a simple search across both sources, with curated answers for the suggested questions
+const STOP = new Set("the a an of to in on for and or is are was what why how do does did i my me we our at with about before last it this that be should know tell ask asked meeting".split(" "));
+const words = t => (t.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").match(/[a-z0-9]+/g) || []).filter(w => w.length > 2 && !STOP.has(w));
+function corpus() {
+  const out = [];
+  Object.entries(KB).forEach(([c, k]) => {
+    k.changes.forEach(x => out.push({ src: "kb", cust: c, title: "What changed", text: x.text, meta: `${x.src} · ${x.date}` }));
+    k.facts.forEach(x => out.push({ src: "kb", cust: c, title: x.topic, text: x.text, meta: `${x.src} · ${x.date}` }));
+    k.numbers.forEach(([l, v, d, per]) => out.push({ src: "kb", cust: c, title: "Key number", text: `${l}: ${v} (${d} ${per})`, meta: `Monitored · ${k.updated}` }));
+  });
+  BUYERS.forEach(b => { const k = BKB[b.id]; if (!k) return;
+    out.push({ src: "kb", cust: b.cust, bid: b.id, title: `${b.name} · buyer profile`, text: `Decides on ${k.decides.toLowerCase()}. Cares about ${k.priorities.join(", ").toLowerCase()}. ${k.tip}`, meta: `Buyer profile · ${b.updated}` });
+    k.history.forEach(([d, t, o]) => out.push({ src: "kb", cust: b.cust, bid: b.id, title: `${t} with ${b.name}`, text: o, meta: `Meeting record · ${d}` })); });
+  myPC(() => true).forEach(x => out.push({ src: "pc", cust: x.cust, bid: x.bid, title: PSRC[x.k][1], text: x.text, meta: x.date }));
+  return out;
+}
+const CURATED = {
+  "what should i know before meeting juliette morel": "Juliette decides on Home and Fabric Care shelf space and promotions. Lead with margin per metre and proof of new shoppers. Our Fabric Care share at Carrefour just dropped 0.8 pt, so expect the question. In her last email she asked for the Q4 promotion calendar before 15 October.",
+  "why is our share dropping at carrefour": "Our Fabric Care share fell 0.8 pt in 4 weeks, mostly capsules in hypermarkets. Two monitored signals explain most of it: out-of-stocks in Hauts-de-France hypermarkets, and a competitor's −40% capsule promotion planned for weeks 44 and 45.",
+  "what did thomas garnier ask me for": "Thomas asked you for a Black Friday traffic forecast and a budget range for sponsored search. Black Friday retail media bookings close on 20 October.",
+};
+// Topic words behind the suggested questions, so their sources match the answer
+const HINT = {
+  "what should i know before meeting juliette morel": ["margin", "calendar", "shoppers", "share"],
+  "why is our share dropping at carrefour": ["out", "stocks", "availability", "competitor", "capsule", "promotion"],
+  "what did thomas garnier ask me for": ["forecast", "budget", "black", "friday", "bookings"],
+};
+const CURATED_NOPC = {
+  "what should i know before meeting juliette morel": "Juliette decides on Home and Fabric Care shelf space and promotions. Lead with margin per metre and proof of new shoppers. Our Fabric Care share at Carrefour just dropped 0.8 pt, so expect the question. Connect your personal context to add what she told you directly.",
+  "what did thomas garnier ask me for": "Your personal context is not connected, so I can't see your exchanges with Thomas. From the company knowledge: he decides fast when you bring a traffic forecast, and Black Friday retail media bookings close on 20 October.",
+};
+function answer(q, cust) {
+  const qn = words(q), key = q.toLowerCase().replace(/[?.!]/g, "").trim();
+  const named = BUYERS.filter(b => words(b.name).some(w => qn.includes(w)));
+  const custs = CUSTOMERS.filter(c => qn.includes(words(c)[0])); const focus = custs[0] || (named[0] && named[0].cust) || cust;
+  // customer and buyer names only set the focus; topic words decide relevance
+  const ents = new Set([...CUSTOMERS.flatMap(words), ...BUYERS.flatMap(b => words(b.name))]);
+  const qt = [...qn.filter(w => !ents.has(w)), ...(HINT[key] || [])], broad = !qt.length;
+  const scored = corpus().map(it => { const tw = words(`${it.title} ${it.text}`), hit = qt.filter(w => tw.includes(w)).length, who = named.some(b => b.id === it.bid);
+    let sc = hit; if (named.length) sc += who ? 3 : (it.bid ? -2 : 0);
+    if (focus) sc += it.cust === focus ? 1 : -3; return { ...it, sc, rel: broad ? (who || (!named.length && it.cust === focus)) : (hit > 0 || who) }; }).filter(x => x.rel && x.sc > 0).sort((a, b) => b.sc - a.sc);
+  const kb = scored.filter(x => x.src === "kb").slice(0, 4), pc = scored.filter(x => x.src === "pc").slice(0, 3);
+  let summary = CURATED[key];
+  if (summary && !pcOn()) summary = CURATED_NOPC[key] || summary;
+  if (!summary) summary = kb.length || pc.length ? `Here is what your second brain found${focus ? ` about ${focus}` : ""}.` : "Nothing found yet. Try a customer or buyer name, or a topic like share, promotions or availability.";
+  return { summary, kb, pc, focus };
+}
+V.ask = () => {
+  const r = answer(state.ask, state.askCust);
+  const row = it => `<div class="fact"><span class="label">${esc(it.title)}${it.cust ? ` · ${esc(it.cust)}` : ""}</span><span>${esc(it.text)}</span><span class="hint">${esc(it.meta)}</span></div>`;
+  return head(`<button data-a="go" data-v="home">Home</button><span>›</span><span>Ask</span>`, "Ask your second brain", "") + `
+    ${askBox(r.focus, "Ask a follow-up…")}
+    <div class="card answer section"><div class="card-hd">${esc(state.ask)}</div><div class="pad stack"><p>${esc(r.summary)}</p>
+      <span class="hint">Answer built from the sources below. Company knowledge and your personal context stay separate.</span></div></div>
+    <div class="two section"><div class="card kcard"><div class="card-hd">From the knowledge bank ${tag("kb")}</div><div class="pad">${r.kb.length ? r.kb.map(row).join("") : `<div class="empty">Nothing in the company knowledge.</div>`}</div></div>
+      ${state.wiq ? `<div class="card pcard"><div class="card-hd">From your work ${tag("pc")}</div><div class="pad">${r.pc.length ? r.pc.map(row).join("") : `<div class="empty">Nothing in your email, chats, calendar or documents.</div>`}</div></div>` : pcCard([], "From your work", "")}</div>
+    ${r.focus ? `<div class="section"><button class="btn sm plain" data-a="cust" data-v="${esc(r.focus)}">Open ${esc(r.focus)} in the knowledge bank</button></div>` : ""}
+    ${suggest(SUGGEST.filter(x => x !== state.ask), "")}`;
+};
 
 /* =====================================================================
    My Projects
@@ -567,12 +818,27 @@ V.project = () => {
     ${NOTE}
     <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${state.tab === k}" tabindex="${state.tab === k ? 0 : -1}">${l}</button>`).join("")}</div>${body}`;
 };
+function knowCard(p) {
+  const k = kbOf(p.cust), top = k.changes[0];
+  return `<div class="card kcard"><div class="card-hd">Know ${esc(p.cust)} ${tag("kb")}</div><div class="pad stack">
+    ${k.numbers.slice(0, 2).map(([l, v, d, per, dir]) => `<div class="spread small"><span>${esc(l)}</span><span><b>${esc(v)}</b> <span class="td"><b class="${dir}">${arrow(d)} ${esc(d)}</b></span></span></div>`).join("")}
+    ${top ? changeRow(top) : ""}
+    <div class="row">${pbuyers(p).map(b => `<button class="btn sm plain" data-a="buyer" data-v="${b.id}">${esc(b.name)}</button>`).join("")}</div>
+    <button class="btn sm" data-a="cust" data-v="${esc(p.cust)}">Open ${esc(p.cust)} in the knowledge bank</button></div></div>`;
+}
+function briefCard(p, m) {
+  const k = kbOf(p.cust), att = BUYERS.filter(b => m.attendees.includes(b.name)), what = k.facts.find(f => /convince/i.test(f.topic));
+  const mine = myPC(x => x.cust === p.cust && (!x.bid || att.some(b => b.id === x.bid))).slice(0, 3);
+  return `<div class="card brief"><div class="card-hd">Brief for this meeting <span class="aside">Ready before you upload anything</span></div><div class="pad">
+    <div class="two"><div class="stack" style="gap:6px">${tag("kb")}${k.changes.slice(0, 2).map(x => changeRow(x)).join("")}${what ? factRow(what) : ""}${att.map(b => `<div class="fact"><span class="label">${esc(b.name)}</span><span>${esc(BKB[b.id]?.tip || "")}</span></div>`).join("")}</div>
+      <div class="stack" style="gap:6px">${tag("pc")}${state.wiq ? (mine.length ? mine.map(pItem).join("") : `<p class="hint">Nothing from your own work for this meeting.</p>`) : `<p class="small">Connect WorkIQ to add your emails, chats and documents. <button class="btn ghost small" data-a="go" data-v="personal" style="color:var(--pc);padding:0">Connect</button></p>`}</div></div></div></div>`;
+}
 function contextCard(p) {
   const c = p.mc;
   return `<div class="card"><div class="card-hd">Meeting context <button class="btn ghost small" data-a="tab" data-v="context" style="color:var(--primary)">Edit</button></div><div class="pad stack">
     <span class="hint">Set once, kept for every session in this project · version ${c.v} · used by ${plural(p.sessions.length, "session", "sessions")}</span>
     <dl class="kv"><dt>Customer</dt><dd>${esc(p.cust)} · ${esc(p.market)}</dd><dt>Categories</dt><dd>${c.cats.map(esc).join(", ")}</dd><dt>Objective</dt><dd>${esc(OBJECTIVES[c.obj])}</dd><dt>Minutes</dt><dd>${c.minutes}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd>
-      <dt>Buyers</dt><dd>${p.buyers.length ? pbuyers(p).map(b => `${esc(b.name)} <span class="hint">· ${esc(b.role)} · DISC-${b.disc}</span>`).join("<br>") : `<span class="muted">None added</span>`}</dd>
+      <dt>Buyers</dt><dd>${p.buyers.length ? pbuyers(p).map(b => `<button class="btn ghost small" data-a="buyer" data-v="${b.id}" style="color:var(--primary);padding:0">${esc(b.name)}</button> <span class="hint">· ${esc(b.role)} · DISC-${b.disc}</span>`).join("<br>") : `<span class="muted">None added</span>`}</dd>
       <dt>Important context</dt><dd>${c.context ? esc(c.context) : `<span class="muted">Nothing yet. Add what every analysis should know.</span>`}</dd></dl></div></div>`;
 }
 function overviewTab(p) {
@@ -593,7 +859,7 @@ function overviewTab(p) {
       <div class="checklist">${checks.map(([ok, t, sub, a]) => `<div><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span>${t}${sub ? `<br><span class="hint">${esc(sub)}</span>` : ""}</span>${a && !ok ? `<button class="btn sm plain" data-a="${a.startsWith("tool-") ? "tool" : a}" data-v="${a.startsWith("tool-") ? a.slice(5) : ""}" data-m="${m.id}">Do it</button>` : ok ? `<span class="pill ok">Done</span>` : `<span class="pill neutral">Later</span>`}</div>`).join("")}</div></div>`
     : `<div class="empty">No upcoming meeting. <button class="btn sm primary" data-a="newmeeting">${icon("plus")}Add a meeting</button></div>`}
     <div class="card"><div class="card-hd">Meetings <button class="btn ghost small" data-a="tab" data-v="meetings" style="color:var(--primary)">See all</button></div><div class="pad">${meetingList(p, 3)}</div></div>
-    </div><aside class="side">${contextCard(p)}
+    </div><aside class="side">${knowCard(p)}${contextCard(p)}
       <div class="card"><div class="card-hd">Recent activity</div><div class="pad"><div class="timeline">${p.activity.slice(0, 4).map(([d, who, t]) => `<div>${esc(t[0].toUpperCase() + t.slice(1))}<br><span class="hint">${esc(d)}</span></div>`).join("")}</div></div></div></aside></div>`;
 }
 const TOOLDEFS = [
@@ -653,6 +919,8 @@ function feedbackFor(p, m, d) {
     [Math.min(9, d.slides), "Dense table. Move it to the appendix."],
     [d.slides, v >= 2 ? "Next steps slide: add a date and an owner." : "Ends on a thank-you slide. End on the ask instead."],
   ];
+  const warn = kbOf(p.cust).changes.find(x => x.sev === "warn");
+  if (warn) slides.splice(1, 0, [Math.min(4, d.slides), `The knowledge bank shows: “${warn.text}” ${buyer ? buyer.split(" ")[0] : "The buyer"} will know it. Address it here.`]);
   if (obj) slides.splice(2, 0, [Math.min(12, d.slides - 1), `You expect “${obj}”. Answer it on this slide before the buyer raises it.`]);
   return { score: Math.round(score * 10) / 10, steps, slides, timing: `${d.slides} slides for ${m.minutes} minutes is about ${(m.minutes / d.slides).toFixed(1)} minutes per slide. ${d.slides > m.minutes / 3 ? `Aim for ${Math.round(m.minutes / 4)} to ${Math.round(m.minutes / 3)} slides.` : "Good pace."}${c.lang !== "English (EN)" ? ` Feedback written in ${c.lang.split(" (")[0]}.` : ""}${c.ai ? " AI comments added to the slides." : ""}` };
 }
@@ -660,7 +928,7 @@ V.meeting = () => {
   const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid), d = latestDeck(m), prev = m.decks.length > 1 ? m.decks[m.decks.length - 2] : null;
   const running = state.run && state.run.mid === m.id;
   const fb = d && d.result && d.result.fb;
-  const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Loading the project's meeting context", `version ${p.mc.v}, no Step 2 to fill in`], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
+  const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Loading the project's meeting context", `version ${p.mc.v}, no Step 2 to fill in`], ["Checking the knowledge bank and your personal context", `${p.cust} numbers, changes, buyer notes`], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
     <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">${esc(OBJECTIVES[m.obj])}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${icon("cal")} ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "Not scheduled"}</span><span class="chip">${m.minutes} minutes</span>${m.attendees.map(a => `<span class="chip">${icon("user")} ${esc(a)}</span>`).join("")}<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
@@ -670,11 +938,12 @@ V.meeting = () => {
         ${m.decks.slice().reverse().map(x => `<div class="filerow"><span class="fileico">${x.name.split(".").pop().toUpperCase().slice(0, 4)}</span><span><b style="font-weight:600">${esc(x.name)}</b>${x === d ? ` <span class="pill solid">Latest</span>` : ""}<br><span class="hint">Version ${x.v} · ${x.slides} slides · uploaded ${esc(x.uploaded)}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap">${x.result ? `<span class="pill ok">${x.result.score.toFixed(1)}/5</span>` : `<span class="pill info">No feedback yet</span>`}<button class="iconbtn" data-a="deldeck" data-m="${m.id}" data-v="${x.v}" aria-label="Remove ${esc(x.name)}" title="Remove this version">✕</button></span></div>`).join("")}
         <label class="dropzone" id="drop" tabindex="0">${icon("upload")}<b>${d ? "Upload a new version" : "Upload the presentation for this meeting"}</b><span class="hint">PPTX or PDF · drag and drop or click to browse</span><input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label>
       </div></div>
+      ${briefCard(p, m)}
       ${mctxSummary(p, m)}
       ${d ? `<div class="card"><div class="card-hd">Selling Coach feedback ${d.result ? `<span class="aside">on version ${d.v} · ${esc(d.result.date)}</span>` : ""}</div>
         ${running ? `<div class="pad stack"><b>Analysing ${esc(d.name)}</b><ul class="stagelist">${stages.map((s, k) => `<li class="${k < state.run.done ? "ok" : k === state.run.done ? "run" : ""}"><span class="ico">${k < state.run.done ? "✓" : ""}</span>${esc(s[0])}${s[1] ? ` <span class="hint">· ${esc(s[1])}</span>` : ""}</li>`).join("")}</ul></div>`
         : !d.result ? `<div class="pad stack"><p class="small">Selling Coach starts from the project's meeting context (Step 2 above), so you go straight to the analysis.</p>
-            <div class="usedctx"><span class="chip">Meeting context v${p.mc.v}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "project document", "project documents")}</span>` : ""}</div>
+            <div class="usedctx"><span class="chip">Meeting context v${p.mc.v}</span><span class="srctag kb">${icon("building")}${plural(kbOf(p.cust).facts.length + kbOf(p.cust).changes.length, "company fact", "company facts")}</span>${myPC(x => x.cust === p.cust).length ? `<span class="srctag pc">${icon("lock")}${plural(myPC(x => x.cust === p.cust).length, "personal item", "personal items")}</span>` : ""}${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "project document", "project documents")}</span>` : ""}</div>
             <div><button class="btn primary" data-a="analyse" data-m="${m.id}">${icon("coach")}Get feedback on version ${d.v}</button></div></div>`
         : `<div class="result-hd"><div><span class="label">Overall</span><div class="bigscore">${d.result.score.toFixed(1)}<span>/5</span></div></div><div class="stack" style="gap:6px">
             ${prev && prev.result ? `<span><span class="delta">${d.result.score >= prev.result.score ? "+" : ""}${(d.result.score - prev.result.score).toFixed(1)} since version ${prev.v}</span></span>` : ""}
@@ -950,7 +1219,7 @@ document.addEventListener("click", e => {
     case "savenotes": m.notes = $("#notes").value.trim(); log(p, `added notes to ${m.title}`); render(); toast("Notes saved to the meeting."); break;
     case "markdone": m.notes = $("#notes").value.trim(); m.status = "Done"; log(p, `marked ${m.title} as done`); render(); toast("Meeting marked as done. Plan the follow-up when you're ready."); break;
     case "analyse": { const d = latestDeck(m); state.run = { mid: m.id, done: 0 }; render();
-      const t = setInterval(() => { state.run.done++; if (state.run.done >= 5) { clearInterval(t); const fb = feedbackFor(p, m, d); d.result = { score: fb.score, date: TODAY, fb, cv: p.mc.v }; p.sessions.push({ date: TODAY, mid: m.id, mt: m.title, deck: d.name, cv: p.mc.v, score: fb.score }); state.run = null; log(p, `got Selling Coach feedback on ${d.name}: ${fb.score.toFixed(1)} out of 5`); toast("Feedback ready."); } if (state.view === "meeting") render(); }, 550); break; }
+      const t = setInterval(() => { state.run.done++; if (state.run.done >= 6) { clearInterval(t); const fb = feedbackFor(p, m, d); d.result = { score: fb.score, date: TODAY, fb, cv: p.mc.v }; p.sessions.push({ date: TODAY, mid: m.id, mt: m.title, deck: d.name, cv: p.mc.v, score: fb.score }); state.run = null; log(p, `got Selling Coach feedback on ${d.name}: ${fb.score.toFixed(1)} out of 5`); toast("Feedback ready."); } if (state.view === "meeting") render(); }, 550); break; }
     // wizard
     case "w-aud": w.audience = v; render(); break;
     case "w-meet": setTimeout(() => { w.withMeeting = !w.withMeeting; render(); }, 0); break;
@@ -964,6 +1233,12 @@ document.addEventListener("click", e => {
     case "followup": meetingForm(p, null, m); break;
     case "delproj": closeDialogs(); render(); confirmDelete(proj(v)); break;
     case "tool": launchTool(p, v); break;
+    case "cust": go("customer", { cust: v }); break;
+    case "buyer": go("buyer", { bid: v }); break;
+    case "ask": go("ask", { ask: v, askCust: el.dataset.k || "" }); break;
+    case "newcust": state.w = blankW(); state.w.cust = v; state.pendingTool = null; go("new"); break;
+    case "wiq": state.wiq = !state.wiq; render(); toast(state.wiq ? "WorkIQ connected. Your personal context appears next to the company knowledge." : "WorkIQ disconnected. Nothing personal is shown or used."); break;
+    case "sharepc": { const x = PC.find(y => y.id === v); inlineForm("Share with the company?", `<p class="small">This proposes the item below to ${esc(kbOf(x.cust).owner)}. It stays in your personal context until they review and publish it in the knowledge bank. Remove names or anything confidential first.</p><div class="field"><label for="sh-t">What the company would see</label><textarea id="sh-t" name="t" rows="3">${esc(x.text)}</textarea></div>`, fd => { x.shared = true; x.proposal = fd.get("t"); render(); toast("Sent for review. It stays personal until it's published."); }, "Send for review"); break; }
     case "ctxtab": go("project", { pid: p.id, tab: "context" }); break;
     case "c-min": { const c = ctxTarget(); c.minutes = Math.max(5, c.minutes + +v); $("#c-min").value = c.minutes; ctxChanged(); break; }
     case "c-sc": state.scOpen = !state.scOpen; render(); $('[data-a="c-sc"]').focus(); break;
@@ -990,6 +1265,11 @@ document.addEventListener("click", e => {
       PROJECTS.unshift(np); state.w = null; go("project", { pid: np.id, tab: "overview" }); toast("Project created. This is now your workspace for " + cust + "."); if (state.pendingTool) { const k = state.pendingTool; state.pendingTool = null; launchTool(np, k); } break; }
   }
 });
+document.addEventListener("submit", e => {
+  if (!e.target.matches(".askbox")) return; e.preventDefault();
+  const q = e.target.q.value.trim(); if (!q) { e.target.q.focus(); return; }
+  go("ask", { ask: q, askCust: e.target.dataset.askcust || "" });
+});
 document.addEventListener("input", e => {
   const t = e.target;
   if (t.dataset.w && !t.matches("select")) { state.w[t.dataset.w] = t.type === "number" ? +t.value : t.type === "date" ? fromISO(t.value) : t.value; if (["name", "objective", "mTitle", "mDate", "custOther"].includes(t.dataset.w)) refreshPreview(); }
@@ -1010,6 +1290,7 @@ document.addEventListener("change", e => {
     else c[k] = t.value;
     ctxChanged();
   }
+  if (t.dataset.src) { state.src[t.dataset.src] = t.checked; render(); toast(`${PSRC[t.dataset.src][1]} ${t.checked ? "is used again" : "is no longer used"}.`); }
   if (t.dataset.filectx !== undefined) { const p = proj(state.pid), f = p.files[+t.dataset.filectx]; f.ctx = t.checked; log(p, `${f.ctx ? "will use" : "stopped using"} ${f.name} in feedback`); toast(f.ctx ? `${f.name} will be used in feedback.` : `${f.name} is no longer used in feedback.`); }
   if (t.dataset.pick && state.w) { const id = t.dataset.pick; state.w.buyers = t.checked ? [...state.w.buyers, id] : state.w.buyers.filter(x => x !== id); render(); }
   if (t.dataset.up && t.files && t.files[0]) {
