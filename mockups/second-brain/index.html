@@ -196,6 +196,28 @@ tr:last-child td { border-bottom: 0; }
 .src3.de { border-color: var(--de-border); background: var(--de-bg); color: #0A3F45; } .src3.de b { color: var(--de); }
 .src3.kb { border-color: var(--border-primary-light); background: var(--primary-light); color: #0D2F6B; } .src3.kb b { color: var(--primary); }
 .src3.pc { border-color: var(--pc-border); background: var(--pc-bg); color: #3A2470; } .src3.pc b { color: var(--pc); }
+.soongrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 12px; }
+.soon { border: 1px dashed var(--border-default); border-radius: 12px; padding: 14px 16px; display: grid; gap: 6px; background: var(--snow); align-content: start; }
+.soon b { font: 700 15px var(--mont); }
+.gsteps { display: grid; gap: 8px; }
+.gstep { display: grid; grid-template-columns: 26px minmax(0, 1fr) auto; gap: 10px; align-items: center; }
+.gstep .tick { width: 22px; height: 22px; }
+.moment { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--light-gray); }
+.moment:last-child { border-bottom: 0; }
+.cpwrap { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .cpwrap { grid-template-columns: minmax(0, 1fr); } }
+.cpframe { border: 1px solid var(--border-default); border-radius: 16px; background: #F7F7F9; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 640px; }
+.cpframe .cphd { padding: 12px 16px; background: var(--white); border-bottom: 1px solid var(--light-gray); display: flex; align-items: center; gap: 10px; font-weight: 600; }
+.cplog { overflow: auto; padding: 16px; display: grid; gap: 12px; align-content: start; }
+.bub { max-width: 88%; border-radius: 14px; padding: 10px 13px; font-size: 13.5px; }
+.bub.me { justify-self: end; background: #E8EBF2; }
+.bub.bot { justify-self: start; background: var(--white); border: 1px solid var(--light-gray); display: grid; gap: 8px; width: 88%; }
+.bub .who { font: 700 11.5px var(--inter); color: var(--primary); display: flex; gap: 6px; align-items: center; }
+.att { display: inline-flex; gap: 6px; align-items: center; background: var(--white); border: 1px solid var(--light-gray); border-radius: 8px; padding: 4px 8px; font-size: 12px; margin-top: 6px; }
+.cpbox { display: flex; gap: 8px; padding: 10px 12px; background: var(--white); border-top: 1px solid var(--light-gray); }
+.cpbox input { flex: 1; min-width: 0; border: 1px solid var(--border-default); border-radius: 10px; padding: 9px 11px; }
+.appbar .cpbtn { border-color: var(--border-default); color: var(--slate); }
+@media (max-width: 820px) { .appbar .cpbtn span { display: none; } }
 .points { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
 .points li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; }
 .points .pn { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 700 11.5px var(--inter); }
@@ -399,6 +421,7 @@ button.chip { cursor: pointer; }
     <span class="appbar__mark" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/></svg></span>
     <span class="appbar__name">AI Sales Assistant</span>
     <span class="appbar__spacer"></span>
+    <button class="btn sm cpbtn" data-a="go" data-v="copilot" title="See the assistant as a Copilot skill"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/></svg><span>In Copilot</span></button>
     <button class="btn sm vbtn" data-a="vnotes" aria-pressed="false"><span class="npin static">i</span><span>Notes for the vendor</span></button>
     <button class="btn primary sm newbtn" data-a="new"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>New project</span></button>
     <span class="avatar" title="Victoire · Key Account Manager">VB</span>
@@ -580,7 +603,8 @@ const KB = {
     cats: { "Fabric Care": [["Our share in Fabric Care", "26.1%", "−1.0 pt", "vs 4 weeks ago", "down-bad"]] }, changes: [{ cat: "Fabric Care", date: "01 Oct", sev: "warn", text: "30% of laundry space moved to Albert Heijn's own label.", src: "Store checks" }], facts: [] },
   MediaMarkt: { market: "Netherlands", updated: "09 Oct 2026", owner: "Benelux Electro team", monitored: true, summary: "Largest electronics retailer in Belgium and the Netherlands. Key for power brushes and shavers.",
     cats: { "Oral Care": [["Our share in power brushes", "59.2%", "+1.0 pt", "vs 4 weeks ago", "up-good"]], "Grooming": [["Our share in shavers", "39.0%", "−0.6 pt", "vs 4 weeks ago", "down-bad"]] },
-    changes: [{ cat: "Grooming", date: "05 Oct", sev: "warn", text: "A competitor shaver took the front end-cap in 40 Dutch stores.", src: "Store checks" }],
+    changes: [{ cat: "Oral Care", date: "08 Oct", sev: "warn", text: "Oral-B iO Series 9: 1.2 weeks of stock left at MediaMarkt before Black Friday. Order risk.", src: "Store data, daily" },
+      { cat: "Grooming", date: "05 Oct", sev: "warn", text: "A competitor shaver took the front end-cap in 40 Dutch stores.", src: "Store checks" }],
     facts: [{ topic: "How they decide", text: "National listings are agreed for Belgium and the Netherlands together. In-store demo staff are booked per quarter.", src: "Benelux Electro team", date: "Aug 2026" }] },
   "Krëfel": { market: "Belgium", updated: "08 Oct 2026", owner: "Benelux Electro team", monitored: true, summary: "Belgian electronics chain with strong service and installation.",
     cats: { "Oral Care": [["Our share in power brushes", "63.1%", "+0.4 pt", "vs 4 weeks ago", "up-good"]], "Grooming": [["Our share in shavers", "35.8%", "−1.2 pt", "vs 4 weeks ago", "down-bad"]] }, changes: [], facts: [] },
@@ -644,7 +668,7 @@ function sourceFor(src, ctx) {
   const [tpl, type, scope] = m, name = tpl.replace("{cust}", ctx.cust || "").replace("{cat}", ctx.cat || "").replace("{mkt}", ctx.mkt || "").replace(/\s+/g, " ").trim();
   if (!SIDX[name]) {
     const ext = name.split(".").pop().toLowerCase();
-    SIDX[name] = { id: "S" + (SOURCES.length + 1), name, ext, type, v: 1, status: "ready", active: true, uploaded: ["12 Sep 2026", "26 Sep 2026", "03 Oct 2026", "08 Oct 2026"][hashStr(name) % 4], owner: src.includes("team") ? src : (ctx.cust ? kbOf(ctx.cust).owner : `${ctx.cat || "Market"} team ${ctx.mkt || ""}`.trim()),
+    SIDX[name] = { id: "S" + (SOURCES.length + 1), name, ext, type, v: 1, pub: /annual report|article|national statistics|strategy update|labelling rules/i.test(name), status: "ready", active: true, uploaded: ["12 Sep 2026", "26 Sep 2026", "03 Oct 2026", "08 Oct 2026"][hashStr(name) % 4], owner: src.includes("team") ? src : (ctx.cust ? kbOf(ctx.cust).owner : `${ctx.cat || "Market"} team ${ctx.mkt || ""}`.trim()),
       f: { region: "Europe", mkt: ctx.mkt || null, cust: /cust/.test(scope) ? ctx.cust || null : null, buyer: ctx.buyer || null, cat: /cat/.test(scope) ? ctx.cat || null : null, sub: null, brand: null, product: null }, facts: [], refs: [] };
     SOURCES.push(SIDX[name]);
   }
@@ -699,11 +723,11 @@ const OBJ_DESC = [
 const blankMC = cat => ({ v: 0, updated: "", obj: 0, minutes: 30, lang: "English (EN)", notation: "Not Applicable", cats: [cat], titles: [], context: "", sc: { decision: [], concern: [], objection: [] }, ai: true });
 const SEED_MC = {
   P1: { v: 2, updated: "20 Sep 2026", obj: 8, minutes: 45, lang: "French (FR)", notation: "1 234,56 (France)", titles: ["Category Buyer", "Assistant Buyer"], sc: { decision: ["Agree the promotion plan", "Extra display or shelf space"], concern: ["Margin"], objection: ["Last promotion underperformed"] },
-    sessions: [{ date: "06 Sep 2026", mid: "M2", mt: "Q3 business review", deck: "Carrefour Q3 CBR.pptx", cv: 1, score: 3.8 }, { date: "24 Sep 2026", mid: "M1", mt: "Range review", deck: "Carrefour range review v1.pptx", cv: 2, score: 3.1 }] },
+    sessions: [{ date: "01 Sep 2026", mid: "M2", mt: "Q3 business review", deck: "Carrefour Q3 CBR draft.pptx", cv: 1, score: 2.9 }, { date: "06 Sep 2026", mid: "M2", mt: "Q3 business review", deck: "Carrefour Q3 CBR.pptx", cv: 1, score: 3.8 }, { date: "24 Sep 2026", mid: "M1", mt: "Range review", deck: "Carrefour range review v1.pptx", cv: 2, score: 3.1 }] },
   P2: { v: 1, updated: "15 Sep 2026", obj: 10, minutes: 30, notation: "1 234,56 (France)", titles: ["E-commerce Category Buyer"], sc: { decision: ["Commit to a joint plan"], concern: ["Category growth"], objection: ["Not a priority this quarter"] },
     sessions: [{ date: "22 Sep 2026", mid: "M3", mt: "Activation plan review", deck: "Cdiscount autumn activation.pptx", cv: 1, score: 3.4 }] },
   P3: { v: 1, updated: "18 Sep 2026", obj: 2, lang: "French (FR)", titles: ["Category Buyer"], sessions: [] },
-  P4: { v: 1, updated: "01 Apr 2026", obj: 6, minutes: 45, lang: "French (FR)", notation: "1 234,56 (France)", titles: ["Category Buyer"], sessions: [{ date: "09 Apr 2026", mid: "M5", mt: "Promotion alignment", deck: "Spring promotions.pptx", cv: 1, score: 3.9 }] },
+  P4: { v: 1, updated: "01 Apr 2026", obj: 6, minutes: 45, lang: "French (FR)", notation: "1 234,56 (France)", titles: ["Category Buyer"], sessions: [{ date: "02 Apr 2026", mid: "M5", mt: "Promotion alignment", deck: "Spring promotions draft.pptx", cv: 1, score: 3.2 }, { date: "09 Apr 2026", mid: "M5", mt: "Promotion alignment", deck: "Spring promotions.pptx", cv: 1, score: 3.9 }] },
 };
 Object.entries(KB).forEach(([c, k]) => {
   k.changes.forEach(x => cite(x, k.changes, { cust: c, cat: x.cat, mkt: k.market }, "Finding"));
@@ -716,6 +740,8 @@ Object.entries(CATKB).forEach(([mk, cs]) => Object.entries(cs).forEach(([cat, k]
 BUYERS.forEach(b => { const k = BKB[b.id]; if (!k) return; const d = sourceFor(`${b.name} buyer profile`, { cust: b.cust, mkt: kbOf(b.cust).market });
   d.name = `${b.name} buyer profile.docx`; d.ext = "docx"; d.type = "Buyer profile"; d.f.cust = b.cust; d.f.buyer = b.name; d.f.cat = k.cats.length === 1 ? k.cats[0] : null;
   k.doc = d.id; k.loc = "section 1"; d.facts.push({ obj: { text: `${k.decides}. ${k.tip}`, loc: "section 1" }, kind: "Finding" }); });
+// EU-wide rules apply to every market in the region
+SOURCES.filter(d => /^EU /.test(d.name)).forEach(d => { d.f.mkt = null; });
 // a few documents still processing or rejected, to show status
 SOURCES.push({ id: "S900", name: "Carrefour JBP 2026-27.pptx", ext: "pptx", type: "Plan", v: 1, status: "processing", prog: 60, active: true, uploaded: "09 Oct 2026", owner: "Customer team France", f: { region: "Europe", mkt: "France", cust: "Carrefour", buyer: null, cat: null, sub: null, brand: null, product: null }, facts: [], refs: [] },
   { id: "S901", name: "Old price grid Belgium.xls", ext: "xls", type: "Reference deck", v: 1, status: "failed", reason: "Legacy XLS files aren't supported. Save it as XLSX and upload it again.", active: true, uploaded: "09 Oct 2026", owner: "Customer team Benelux", f: { region: "Europe", mkt: "Belgium", cust: null, buyer: null, cat: null, sub: null, brand: null, product: null }, facts: [], refs: [] },
@@ -803,7 +829,7 @@ function log(p, text) { p.activity.unshift([TODAY, "VB", text]); p.updated = TOD
 /* =====================================================================
    State & shell
    ===================================================================== */
-const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
+const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", gs: { buyers: false, pinned: false }, gsHide: false, notify: {}, cp: [], follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
 const NAV = [
   { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
   { id: "projects", label: "My Projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
@@ -811,8 +837,9 @@ const NAV = [
   { id: "sources", label: "Knowledge bank", icon: "building", match: ["sources", "source"] },
   { id: "de", label: "Decision Engine", icon: "coach", match: ["de"] },
   { id: "personal", label: "Personal context", icon: "lock", match: ["personal"] },
+  { id: "copilot", label: "In Copilot", icon: "chat", match: ["copilot"] },
 ];
-const TOOLS = [["coach", "Selling Coach", "coach"], ["mic", "Role-play Coach", "roleplay"], ["chat", "Stewardship Q&A", "qa"]];
+const TOOLS = [["coach", "Selling Coach", "coach"], ["mic", "Role-play Coach", "roleplay"], ["chat", "Stewardship Coach", "qa"]];
 function renderNav() {
   const cur = NAV.find(n => n.match.includes(state.view));
   $("#nav").classList.toggle("open", state.navOpen);
@@ -834,7 +861,8 @@ const NOTES = {
   buyer: [["#view .kcard", "What the whole company knows about this buyer."], ["#view .pcline", "No emails or meeting notes here: Copilot already summarises them."]],
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
   ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
-  home: [["#view .askbox", "One question box for numbers, knowledge and your own work."], ["#view .explain", "Shown until the user clicks “Got it”: the three sources in plain words."], ["#view .two", "Your business from the Decision Engine, next to what changed."], ["#view .toolgrid", "Home shows the three tools, as today. Starting one first asks which project it is for (or creates one), then runs inside that project."], ["#view .projgrid", "Your projects: each card shows the customer, the next meeting and where its presentation stands. ⋯ edits, archives or deletes."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], [".appbar .newbtn", "“New project” is always one click away."]],
+  copilot: [["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Open question for the vendor: the website as the product, or as the back office behind the Copilot skill (A2A/MCP)."]],
+  home: [["#view .gsteps", "Get started, from the welcome email: pick customers, set up buyers, try it, pin it. Fixes the launch-day blockers users hit."], ["#view .moment", "Key moments: big decks happen 1 to 2 times a year, so the home page prepares those moments rather than chasing weekly use."], ["#view .soongrid", "Skills marketplace: live skills plus what is coming (DLA 360, Amazon EU, PSKU Assistant)."], ["#view .askbox", "One question box for numbers, knowledge and your own work."], ["#view .explain", "Shown until the user clicks “Got it”: the three sources in plain words."], ["#view .two", "Your business from the Decision Engine, next to what changed."], ["#view .toolgrid", "Home shows the three tools, as today. Starting one first asks which project it is for (or creates one), then runs inside that project."], ["#view .projgrid", "Your projects: each card shows the customer, the next meeting and where its presentation stands. ⋯ edits, archives or deletes."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], [".appbar .newbtn", "“New project” is always one click away."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Meeting context summary: the single source that every tool and every piece of feedback reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Saving creates a new version."], ["#view .sessions", "Each Selling Coach session records the context version it used, so changes never rewrite past feedback."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
   meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Step 2 is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
@@ -876,25 +904,51 @@ function projectCard(p) {
   ${open ? `<div class="cardpop" role="menu"><button role="menuitem" data-a="editproj" data-v="${p.id}">Edit project</button><button role="menuitem" data-a="archive" data-v="${p.id}">${p.status === "Archived" ? "Restore to active" : "Archive project"}</button><hr><button role="menuitem" class="danger" data-a="delproj" data-v="${p.id}">Delete project</button></div>` : ""}</div>`;
 }
 const newCard = () => `<button class="projcard new" data-a="new"><span class="plus">${icon("plus")}</span><b style="font:700 15px var(--mont)">Create a project</b><span class="small muted">One customer, one goal. Your meetings, presentations and feedback in one place.</span></button>`;
+const SOON = [["DLA 360", "Distributor landscape assessment: who sells what, where, and where to grow.", "Pilot in 1 market"], ["Amazon EU", "The assistant set up for Amazon Europe teams, with the right customer profiles.", "OND ’26"], ["PSKU Assistant", "Find and defend your Power SKUs at each customer.", "OND ’26"]];
+const KEY_MOMENTS = [
+  { date: "20 Oct 2026", title: "Black Friday retail media bookings close", cust: "Cdiscount", kind: "Deadline", act: ["cust", "Cdiscount", "Open Cdiscount"] },
+  { date: "01 Dec 2026", title: "Yearly negotiation opens", cust: "Carrefour", kind: "Big moment", note: "Closes 1 March. No price change after 15 January.", act: ["pickproj", "P1", "Rehearse it", "roleplay"] },
+  { date: "15 Jan 2027", title: "Joint business plan", cust: "Auchan", kind: "Big moment", act: ["cust", "Auchan", "Open Auchan"] },
+];
+function getStarted() {
+  return [["Pick your customers", "So the assistant shows their numbers and knowledge", state.follow.some(k => k.startsWith("cust:")), `<button class="btn sm plain" data-a="go" data-v="kb">Pick customers</button>`],
+    ["Set up your buyers", "Tailors feedback for external meetings. Not needed for internal ones", state.gs.buyers, `<button class="btn sm plain" data-a="cust" data-v="Carrefour">See buyer profiles</button>`],
+    ["Try it on your next presentation", "Early draft, detailed feedback or finishing touches", PROJECTS.some(p => p.sessions.length), `<button class="btn sm plain" data-a="hometool" data-v="coach">Start coaching</button>`],
+    ["Pin it to your taskbar", "Open it in one click, like any desktop app", state.gs.pinned, `<button class="btn sm plain" data-a="install">Install as app</button>`]];
+}
+function impactStats() {
+  const by = new Map(); PROJECTS.forEach(p => p.sessions.forEach(x => by.set(p.id + x.mid, [...(by.get(p.id + x.mid) || []), x])));
+  const all = [...by.values()], better = all.filter(l => l.length > 1 && l[l.length - 1].score > l[0].score).map(l => ({ mt: l[0].mt, from: l[0].score, to: l[l.length - 1].score }));
+  const best = [...better].sort((a, b) => (b.to - b.from) - (a.to - a.from))[0];
+  return { coached: all.length, improved: better.length, avg: better.length ? better.reduce((n, x) => n + x.to - x.from, 0) / better.length : 0, best };
+}
 V.home = () => {
-  const active = PROJECTS.filter(p => p.status === "Active"), mine = [...new Set(active.map(p => p.cust))], cats = [...new Set(active.map(p => p.cat))];
+  const active = PROJECTS.filter(p => p.status === "Active");
   const pairs = [...new Map(active.map(p => [`${p.cust}|${p.cat}`, p])).values()];
-  const upcoming = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ p, m }))).sort((a, b) => pd(a.m.date) - pd(b.m.date)).slice(0, 4);
   const fc = state.follow.filter(k => k.startsWith("cust:")).map(k => k.slice(5)), fk = state.follow.filter(k => k.startsWith("cat:")).map(k => k.slice(4).split("|"));
-  const all = sortChanges([...fk.flatMap(([mk, c]) => (catOf(mk, c)?.changes || []).map(x => ({ ...x, where: `${c} · ${mk}` }))),
-    ...fc.flatMap(c => kbOf(c).changes.map(x => ({ ...x, where: c })))]);
-  const watch = sortChanges([...all.filter(x => x.de).slice(0, 3), ...all.filter(x => !x.de).slice(0, 2)]); // show both kinds: alerts and news
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! The numbers, what the company knows, and your own work, in one place.</p></div>${NOTE}
+  const all = sortChanges([...fk.flatMap(([mk, c]) => (catOf(mk, c)?.changes || []).map(x => ({ ...x, where: `${c} · ${mk}` }))), ...fc.flatMap(c => kbOf(c).changes.map(x => ({ ...x, where: c })))]);
+  const watch = sortChanges([...all.filter(x => x.de).slice(0, 3), ...all.filter(x => !x.de).slice(0, 2)]);
+  const gs = getStarted(), gsDone = gs.filter(x => x[2]).length, imp = impactStats();
+  const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
+  const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 5);
+  const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! The numbers, what the company knows, and your own work, in one place. Also in Copilot.</p></div>${NOTE}
     ${askBox("", "Ask about a market, category, customer or buyer…")}${suggest(SUGGEST, "")}
+    ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="card"><div class="card-hd">Get started <span class="row" style="gap:8px"><span class="aside">${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gshide" style="color:var(--primary)">Hide</button></span></div><div class="pad stack">
+      <div class="gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}</div>
+      <div class="spread small"><span class="hint">Tip: don't chase a score, chase a better presentation.</span><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div></div>`}
     ${state.hideExplain ? "" : `<div class="section"><div class="spread" style="margin-bottom:10px"><span class="label">Three sources, one answer</span><button class="btn ghost small" data-a="hideexplain" style="color:var(--primary)">Got it</button></div>${explainer(false)}</div>`}
+    <div class="two section"><div>${qhd("Key moments", "Negotiation season runs November to February. Prepare the big ones early", "")}<div class="card"><div class="pad">${moments.map(x => `<div class="moment">${dbox(x.date)}<span><b style="font-weight:600">${esc(x.title)}</b> · ${esc(x.cust)}<br><span class="hint">${when(x.date)}${x.note ? ` · ${esc(x.note)}` : ""}</span>${x.kind === "Big moment" ? ` <span class="pill warn">Big moment</span>` : x.kind === "Deadline" ? ` <span class="pill neutral">Deadline</span>` : ""}</span>${actBtn(x)}</div>`).join("")}</div></div></div>
+      <div>${qhd("Your impact", "Measured on quality, not on how often you open the app", "")}<div class="card"><div class="pad stack"><div class="tiles"><div class="tile"><span class="tl">Presentations coached</span><span class="tv">${imp.coached}</span><span class="td">this year</span></div><div class="tile"><span class="tl">Average gain</span><span class="tv">${imp.improved ? "+" + imp.avg.toFixed(1) : "–"}</span><span class="td">points, on ${plural(imp.improved, "improved deck", "improved decks")}</span></div></div>
+        ${imp.best ? `<p class="small">Best: <b>${esc(imp.best.mt)}</b>, from ${imp.best.from.toFixed(1)} to ${imp.best.to.toFixed(1)}. A stronger deck can turn two customer meetings into one.</p>` : ""}</div></div></div></div>
     <div class="two section"><div>${qhd(`Your business · ${esc(PERIODS[state.per])}`, "Sales vs year ago for the customers in your projects", tag("de"))}<div class="card dcard"><div class="pad">${pairs.map(p => { const T = totP(series(p.cust, p.cat)); return `<button class="numrow" data-a="cust" data-v="${esc(p.cust)}" data-k="${esc(p.cat)}" style="width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left"><span><b style="font-weight:600">${esc(p.cust)}</b><br><span class="hint">${esc(p.cat)}</span></span><span><span class="nv">${eur(T.s)}</span><br><span class="td"><b class="${dirC(T.g)}">${arrow(pctS(T.g))} ${pctS(T.g)}</b></span></span></button>`; }).join("")}</div></div></div>
       <div>${qhd("What changed", `For the ${plural(state.follow.length, "customer and category", "customers and categories")} you follow`, `<button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button>`)}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">${state.follow.length ? "Nothing new for what you follow." : "Follow customers and categories to see what changes here."}</div>`}</div></div></div></div>
-    <div class="section"><h2 class="section-title" style="margin-bottom:12px">Tools</h2>${toolCards(() => "Runs inside a project, with its numbers and knowledge", "hometool")}</div>
+    <div class="section">${qhd("Skills", "Live skills run inside a project and in Copilot. More are on the way", "")}${toolCards(() => "Runs inside a project and in Copilot", "hometool")}
+      <div class="soongrid">${SOON.map(([t, d, when2]) => `<div class="soon"><span class="row" style="gap:6px"><b>${t}</b><span class="pill neutral">Coming · ${when2}</span></span><span class="small">${d}</span><div><button class="btn sm plain" data-a="notify" data-v="${esc(t)}" aria-pressed="${!!state.notify[t]}">${state.notify[t] ? "✓ We'll tell you" : "Notify me"}</button></div></div>`).join("")}</div></div>
     <div class="section"><div class="spread"><h2 class="section-title">Your projects</h2><div class="row"><button class="btn sm plain" data-a="go" data-v="projects">View all projects</button><button class="btn sm primary" data-a="new">${icon("plus")}New project</button></div></div>
-    <div class="projgrid" style="margin-top:12px">${active.slice(0, 3).map(projectCard).join("")}${newCard()}</div></div>
-    <div class="section"><h2 class="section-title" style="margin-bottom:12px">Coming up</h2>
-      ${upcoming.length ? `<div class="upcoming">${upcoming.map(({ p, m }) => { const [cls, lab] = deckState(m); return `<button data-a="meeting" data-v="${p.id}" data-m="${m.id}">${dbox(m.date)}<span><b>${esc(m.title)}</b> · ${esc(p.cust)}<br><span class="hint">${esc(OBJECTIVES[m.obj])} · ${m.minutes} min · ${when(m.date)}</span></span><span class="pill ${cls}">${lab}</span></button>`; }).join("")}</div>` : `<div class="empty">No meetings scheduled.</div>`}</div>`;
+    <div class="projgrid" style="margin-top:12px">${active.slice(0, 3).map(projectCard).join("")}${newCard()}</div></div>`;
 };
+
 
 
 
@@ -909,9 +963,9 @@ const suggest = (list, cust) => `<div class="suggest">${list.map(q => `<button d
 function tiles(nums, empty) {
   return nums && nums.length ? `<div class="tiles">${nums.map(([l, v, d, per, dir]) => `<div class="tile"><span class="tl">${esc(l)}</span><span class="tv">${esc(v)}</span><span class="td"><b class="${dir}">${arrow(d)} ${esc(d)}</b> ${esc(per)}</span></div>`).join("")}</div>` : `<div class="empty">${empty || "No key numbers monitored yet."}</div>`;
 }
-const changeRow = (c, where) => `<div class="chg"><span class="sev ${c.sev}" aria-hidden="true">${sevIco[c.sev]}</span><span><b style="font-weight:600">${esc(c.text)}</b><br><span class="hint">${sevLab[c.sev]}${where ? ` · ${esc(where)}` : ""} · </span>${c.de ? `${srcMini("de")} <span class="hint">· alert: ${esc(c.de.toLowerCase())}</span>` : `${srcMini("kb")} ${citeBtn(c.doc, c.loc) || `<span class="hint">${esc(c.src)}</span>`}`}</span><span class="hint">${esc(c.date)}</span></div>`;
+const changeRow = (c, where) => `<div class="chg"><span class="sev ${c.sev}" aria-hidden="true">${sevIco[c.sev]}</span><span><b style="font-weight:600">${esc(c.text)}</b><br><span class="hint">${sevLab[c.sev]}${where ? ` · ${esc(where)}` : ""} · </span>${c.de ? `${srcMini("de")} <span class="hint">· alert: ${esc(c.de.toLowerCase())}</span>${/stock/i.test(c.text) ? ` <button class="btn ghost small" data-a="sharebuyer" data-v="${esc(c.text)}" style="color:var(--de);padding:0 0 0 4px">Share with buyer</button>` : ""}` : `${srcMini("kb")} ${citeBtn(c.doc, c.loc) || `<span class="hint">${esc(c.src)}</span>`}`}</span><span class="hint">${esc(c.date)}</span></div>`;
 const citeBtn = (doc, loc) => { const d = doc && docById(doc); return d ? `<button class="cite" data-a="src" data-v="${d.id}" title="Open the source">${icon("file")}${esc(d.name)} · ${esc(loc)}</button>` : ""; };
-const factRow = f => `<div class="fact"><span class="label">${esc(f.topic)}</span><span>${esc(f.text)}</span><span class="hint">${citeBtn(f.doc, f.loc) || esc(f.src)} · ${esc(f.date)}</span></div>`;
+const factRow = f => `<div class="fact"><span class="label">${esc(f.topic)}</span><span>${esc(f.text)}</span><span class="hint">${citeBtn(f.doc, f.loc) || esc(f.src)} · ${esc(f.date)}${f.doc && docById(f.doc)?.pub ? ` <span class="pill neutral" title="From a public source: safe to quote to customers, with the source">Public</span>` : ""}</span></div>`;
 const eur = n => { const a = Math.abs(n), sg = n < 0 ? "−" : ""; return sg + "€" + (a >= 1e6 ? (a / 1e6).toFixed(1) + "M" : a >= 1e3 ? Math.round(a / 1e3) + "K" : Math.round(a)); };
 const pctS = n => isFinite(n) ? `${n >= 0 ? "+" : "−"}${Math.abs(n).toFixed(1)}%` : "new";
 const dirC = n => !isFinite(n) || Math.abs(n) < .05 ? "flat" : n > 0 ? "up-good" : "down-bad";
@@ -948,7 +1002,12 @@ function perfPanel(custs, cat, opts = {}) {
   const tbl = state.tbl ? `<div class="table-wrap"><table><thead><tr><th>Week</th><th>This year</th><th>Year ago</th><th>vs YA</th></tr></thead><tbody>${weekP(rows).map(x => `<tr><td>${x.w}</td><td>${eur(x.s)}</td><td>${eur(x.y)}</td><td class="td"><b class="${dirC(100 * (x.s / x.y - 1))}">${pctS(100 * (x.s / x.y - 1))}</b></td></tr>`).join("")}</tbody></table></div>` : "";
   const byCust = custs.length > 1 ? groupP(rows, "cust") : null;
   const extra = (opts.extra || []).filter(n => !salesRow(n));
-  return `<div class="section perf">${qhd("How are we doing?", esc(opts.title || cat), tag("de"))}<div class="seg" role="group" aria-label="Period" style="margin-bottom:12px">${Object.entries(PERIODS).map(([k, l]) => `<button data-a="per" data-v="${k}" aria-pressed="${state.per === k}">${l}</button>`).join("")}</div>
+  if (custs.length === 1) { // stock signals: sell-in vs sell-out and stock cover
+    const k = `${custs[0]}|${cat}`, sio = (rnd(k, "sio") - .45) * 14, cover = k === "MediaMarkt|Oral Care" ? 1.2 : 1.6 + rnd(k, "cov") * 3.5;
+    extra.push(["Sell-in vs sell-out · 4 weeks", `${sio >= 0 ? "+" : "−"}${Math.abs(sio).toFixed(1)}%`, sio >= 0 ? "Stock building up" : "Stock running down", "shipped vs sold", Math.abs(sio) > 5 ? "down-bad" : "flat"],
+      ["Stock cover", `${cover.toFixed(1)} weeks`, cover < 2 ? "Order risk" : "Healthy", "at the customer", cover < 2 ? "down-bad" : "up-good"]);
+  }
+  return `<div class="section perf">${qhd("How are we doing?", esc(opts.title || cat), tag("de"))}<div class="spread" style="margin-bottom:12px"><div class="seg" role="group" aria-label="Period">${Object.entries(PERIODS).map(([k, l]) => `<button data-a="per" data-v="${k}" aria-pressed="${state.per === k}">${l}</button>`).join("")}</div><button class="btn sm plain" data-a="xls">${icon("download")}Download as Excel</button></div>
     <div class="tiles">${tile("Sales (POS value)", eur(T.s), `<b class="${dirC(T.g)}">${arrow(pctS(T.g))} ${pctS(T.g)}</b> vs year ago`)}${tile("Growth vs year ago", `${T.d >= 0 ? "+" : ""}${eur(T.d)}`, esc(perLabel()))}${tile(`Last week · ${PW[LASTW]}`, eur(W.last), `<b class="${dirC(W.g)}">${arrow(pctS(W.g))} ${pctS(W.g)}</b> vs previous week`)}${byCust ? tile("Biggest grower", esc([...byCust].sort((a, b) => b.d - a.d)[0].n), `<b class="${dirC(1)}">+${eur([...byCust].sort((a, b) => b.d - a.d)[0].d)}</b> vs year ago`) : tile(mixKey === "brand" ? "Lead brand" : "Lead segment", esc(mix[0].n), `${Math.round(100 * mix[0].s / T.s)}% of sales`)}</div>
     ${extra.length ? `<div style="margin-top:12px">${tiles(extra)}</div>` : ""}
     <div class="card dcard section"><div class="card-hd">Weekly sales vs year ago <span class="legend"><span class="lg"><i class="sw"></i>This year</span><span class="lg"><i class="sw ya"></i>Year ago</span><button class="btn ghost small" data-a="perftbl" style="color:var(--primary)">${state.tbl ? "Show chart" : "Show as table"}</button></span></div>
@@ -990,23 +1049,24 @@ window.addEventListener("resize", () => { clearTimeout(drawPerf._t); drawPerf._t
 const FACETS = [["region", "Region"], ["mkt", "Market"], ["cust", "Customer"], ["buyer", "Buyer"], ["cat", "Category"], ["sub", "Sub-category"], ["brand", "Brand"], ["product", "Product"]];
 const statusPill = d => d.status === "ready" ? (d.active ? `<span class="pill ok">Ready · ${plural(d.facts.length, "fact", "facts")}</span>` : `<span class="pill neutral">Removed from search</span>`)
   : d.status === "processing" ? `<span class="row" style="gap:6px"><span class="prog"><i style="width:${d.prog || 0}%"></i></span><span class="hint">${d.prog < 40 ? "Reading" : "Extracting facts"} ${d.prog || 0}%</span></span>` : `<span class="pill bad">Not processed</span>`;
+const scopeOf = d => d.f.cust ? "Customer" : d.f.mkt ? "Local · market" : d.f.region ? "Regional" : "Global";
 const facetChips = f => FACETS.filter(([k]) => f[k] && k !== "region").map(([k]) => `<span class="chip">${esc(f[k])}</span>`).join("");
 V.sources = () => {
   const F = state.sf, q = (state.sq || "").toLowerCase();
   const list = SOURCES.filter(d => (!F.mkt || !d.f.mkt || d.f.mkt === F.mkt) && (!F.cat || !d.f.cat || d.f.cat === F.cat) && (!F.type || d.type === F.type) && (!q || d.name.toLowerCase().includes(q)));
   const sel = (k, l, opts) => `<div class="field"><label for="sf-${k}">${l}</label><select id="sf-${k}" data-sf="${k}"><option value="">All</option>${opts.map(o => `<option ${F[k] === o ? "selected" : ""}>${esc(o)}</option>`).join("")}</select></div>`;
-  return head("What the company knows", "Knowledge bank", "The documents behind every fact. Governed uploads are trusted: their facts are ready to use once processed.", `<button class="btn primary" data-a="upload">${icon("upload")}Add documents</button>`) + `
+  return head("What the company knows", "Knowledge bank", "The documents behind every fact. Governed uploads are trusted: their facts are ready to use once processed.", `<button class="btn primary" data-a="upload">${icon("upload")}Add domain knowledge</button>`) + `
     <div class="facetbar">${sel("mkt", "Market", KB_MARKETS)}${sel("cat", "Category", KB_CATS)}${sel("type", "Document type", DOC_TYPES)}<div class="field"><label for="sq">Search</label><input id="sq" class="search" type="search" value="${esc(state.sq || "")}" placeholder="File name"></div></div>
     <p class="hint" style="margin:6px 0 12px">${plural(list.length, "document", "documents")} · a document with no market or category applies to all of them</p>
     ${list.length ? list.map(d => `<button class="srcrow ${d.active ? "" : "off"}" data-a="src" data-v="${d.id}"><span class="fileico ${["docx", "pdf", "txt", "md"].includes(d.ext) ? "doc" : ["xlsx", "csv", "xls"].includes(d.ext) ? "xls" : ""}">${esc(d.ext.toUpperCase().slice(0, 4))}</span>
-      <span style="min-width:0"><b style="font-weight:600">${esc(d.name)}</b><br><span class="hint">${esc(d.type)} · ${esc(d.owner)} · ${esc(d.uploaded)}${d.v > 1 ? ` · version ${d.v}` : ""}</span><span class="row" style="gap:6px;margin-top:4px">${facetChips(d.f)}</span></span>${statusPill(d)}</button>`).join("") : `<div class="empty">No document matches these filters.</div>`}`;
+      <span style="min-width:0"><b style="font-weight:600">${esc(d.name)}</b><br><span class="hint">${esc(d.type)} · ${esc(d.owner)} · ${esc(d.uploaded)}${d.v > 1 ? ` · version ${d.v}` : ""}</span><span class="row" style="gap:6px;margin-top:4px"><span class="pill info">${scopeOf(d)}</span>${d.pub ? `<span class="pill neutral">Public</span>` : ""}${facetChips(d.f)}</span></span>${statusPill(d)}</button>`).join("") : `<div class="empty">No document matches these filters.</div>`}`;
 };
 AFTER.sources = () => { const i = $("#sq"); if (i) i.addEventListener("input", e => { state.sq = e.target.value; const c = e.target.selectionStart; render(); const n = $("#sq"); n.focus(); n.setSelectionRange(c, c); }); };
 V.source = () => {
   const d = docById(state.sid);
   return `<div class="crumb"><button data-a="go" data-v="sources">Knowledge bank</button><span>›</span><span>${esc(d.name)}</span></div>
     <div class="pagehead"><div><h1 style="word-break:break-word">${esc(d.name)}</h1><p class="sub">${esc(d.type)} · uploaded ${esc(d.uploaded)} by ${esc(d.owner)}${d.v > 1 ? ` · version ${d.v}` : ""}</p>
-      <div class="row" style="margin-top:8px">${statusPill(d)}${d.status !== "failed" ? `<span class="pill info">Governed · trusted</span>` : ""}</div></div>
+      <div class="row" style="margin-top:8px">${statusPill(d)}${d.status !== "failed" ? `<span class="pill info">Governed · trusted</span>` : ""}<span class="pill neutral">Scope: ${scopeOf(d)}</span>${d.pub ? `<span class="pill neutral" title="Public information: safe to quote to customers, with the source">Public information</span>` : ""}</div></div>
       <div class="actions"><button class="btn sm plain" data-a="srcdl" data-v="${d.id}">${icon("download")}Download original</button><button class="btn sm plain" data-a="srcedit" data-v="${d.id}">Edit facets</button><button class="btn sm plain" data-a="srcrep" data-v="${d.id}">Replace</button>${d.status === "ready" ? `<button class="btn sm plain ${d.active ? "linkdanger-btn" : ""}" data-a="srcoff" data-v="${d.id}">${d.active ? "Remove from search" : "Put back in search"}</button>` : ""}</div></div>${NOTE}
     ${d.status === "failed" ? `<div class="callout" style="border-color:var(--err-accent);background:var(--err-bg);color:var(--err-text);margin-bottom:16px"><b>Why it wasn't processed:</b> ${esc(d.reason)}</div>` : ""}
     <div class="ws"><div class="card"><div class="card-hd">Facts taken from this document <span class="aside">${d.facts.length}</span></div><div class="pad">
@@ -1019,7 +1079,7 @@ V.source = () => {
 function facetFields(f, type) {
   const o = (k, l, opts, cur) => `<div class="field"><label for="ff-${k}">${l}</label><select id="ff-${k}" name="${k}" data-ff="${k}"><option value="">All</option>${opts.map(x => `<option ${x === cur ? "selected" : ""}>${esc(x)}</option>`).join("")}</select></div>`;
   const custs = f.mkt ? KB_CUSTS[f.mkt] : [...new Set(Object.values(KB_CUSTS).flat())], subs = f.cat ? Object.keys(LADDER[f.cat] || {}) : [], brands = f.cat ? [...new Set(productsOf(f.cat).filter(p => !f.sub || p.sub === f.sub).map(p => p.brand))] : [], prods = f.cat ? productsOf(f.cat).filter(p => (!f.sub || p.sub === f.sub) && (!f.brand || p.brand === f.brand)).map(p => p.name) : [];
-  return `<div class="grid2">${o("region", "Region", Object.keys(REGIONS), f.region)}${o("mkt", "Market", KB_MARKETS, f.mkt)}</div>
+  return `<div class="grid2">${o("region", "Region", Object.keys(REGIONS), f.region).replace(">All<", ">Global (all regions)<")}${o("mkt", "Market", KB_MARKETS, f.mkt)}</div>
     <div class="grid2">${o("cust", "Customer", custs, f.cust)}${o("buyer", "Buyer", BUYERS.filter(b => !f.cust || b.cust === f.cust).map(b => b.name), f.buyer)}</div>
     <div class="grid2">${o("cat", "Category", KB_CATS, f.cat)}${o("sub", "Sub-category", subs, f.sub)}</div>
     <div class="grid2">${o("brand", "Brand", brands, f.brand)}${o("product", "Product", prods, f.product)}</div>
@@ -1061,7 +1121,7 @@ V.kb = () => {
         return `<button class="custcard catcard" data-a="cat" data-v="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(c)}</b>
           ${sh ? `<span class="small">Our share <b>${esc(sh[1])}</b> <span class="td"><b class="${sh[4]}">${arrow(sh[2])} ${esc(sh[2])}</b> ${esc(sh[3])}</span></span><span>${srcMini("de")}</span>` : `<span class="small muted">No numbers for ${esc(mk)} yet.</span>`}
           <span class="row small">${k && k.facts.length ? `<span class="pill info">${plural(k.facts.length, "fact", "facts")} in the knowledge bank</span>` : `<span class="pill neutral">Knowledge being built</span>`}${w ? `<span class="pill warn">${plural(w, "change", "changes")} to watch</span>` : ""}</span></button>`; }).join("")}</div></div>
-    <div class="section"><h2 class="section-title" style="margin-bottom:12px">Customers in ${esc(mk)}</h2>
+    <div class="section"><div class="spread" style="margin-bottom:12px"><h2 class="section-title">Customers in ${esc(mk)}</h2><button class="btn sm plain" data-a="reqcust">Customer missing? Request it</button></div>
       <div class="custgrid">${KB_CUSTS[mk].map(c => { const k = kbOf(c), w = k.changes.filter(x => x.sev === "warn").length;
         return `<button class="custcard" data-a="cust" data-v="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(c)}</b><span class="small muted">${esc(k.summary)}</span>
           <span class="row small">${Object.keys(k.cats).map(x => `<span class="chip">${esc(x)}</span>`).join("")}${w ? `<span class="pill warn">${plural(w, "change", "changes")} to watch</span>` : ""}</span></button>`; }).join("")}</div></div>`;
@@ -1131,9 +1191,38 @@ V.personal = () => head("Your settings", "Personal context", "Your own emails, c
       <p class="small"><b>Nothing is copied or stored here.</b> To read or summarise those emails, meetings and notes, use Copilot: it already does that.</p>
       <p class="small">What this app adds: <b>the numbers</b> from the Decision Engine and <b>what the company knows</b> from the knowledge bank.</p></div></div></div>
   <div class="section">${explainer(false)}</div>`;
+// ---- In Copilot: the assistant as a Copilot skill (A2A/MCP), same sources and tags
+const CP_CHIPS = ["Why is our share dropping at Carrefour?", "Review my deck for the range review", "Check my slides for legal risk"];
+function cpTurn(q) {
+  if (/deck|presentation|review my|coach/i.test(q)) return { kind: "coach", q };
+  if (/legal|disclaimer|stewardship|claim|risk on/i.test(q)) return { kind: "stew", q };
+  return { kind: "answer", q };
+}
+function cpBot(t) {
+  const who = `<span class="who">${icon("spark")}AI Sales Assistant · skill</span>`;
+  if (t.kind === "coach") {
+    const p = proj("P1"), m = p.meetings.find(x => x.id === "M1"), d = latestDeck(m), fb = feedbackFor(p, m, d), left = fb.steps.filter(x => x[1] !== "good").slice(0, 3);
+    return `<div class="bub bot">${who}<span>Score for <b>${esc(d.name)}</b>: <b>${fb.score.toFixed(1)}/5</b>, using your Carrefour project's meeting context.</span><span class="label">What's left to reach 5/5</span>${left.map(([n, st, tx]) => `<span class="small">• <b>${esc(n)}</b>: ${esc(tx)}</span>`).join("")}<span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}<button class="btn sm plain" data-a="meeting" data-v="P1" data-m="M1">Open full feedback</button></span></div>`;
+  }
+  if (t.kind === "stew") return `<div class="bub bot">${who}<span>2 things to fix before this goes to a customer:</span><span class="small">• <b>Slide 6</b>: “cleans better than any other brand” is a comparative claim. Add the test reference and date.</span><span class="small">• <b>Slide 11</b>: the promotion price needs the legal price disclaimer for France.</span><span class="hint">Stewardship Coach · checked against the France rules</span></div>`;
+  const r = answer(t.q, "");
+  return `<div class="bub bot">${who}<span>${esc(r.summary)}</span>${r.points.length ? `<ol class="points">${r.points.map((p, i) => `<li><span class="pn ${p.src}">${p.src === "de" ? "N" : "F"}${r.points.filter((q, j) => j <= i && q.src === p.src).length}</span><span class="small">${esc(p.text)}<br>${p.src === "de" ? srcMini("de") : `${srcMini("kb")} ${citeBtn(p.it.doc, p.it.loc)}`}</span></li>`).join("")}</ol>` : ""}<span><button class="btn sm plain" data-a="ask" data-v="${esc(t.q)}">Open in AI Sales Assistant</button></span></div>`;
+}
+V.copilot = () => {
+  const turns = state.cp.length ? state.cp : [{ me: "@AI Sales Assistant why is our share dropping at Carrefour?", ...cpTurn("Why is our share dropping at Carrefour?") }];
+  return head("Where salespeople already work", "In Copilot", "The same assistant as a Copilot skill: same three sources, same tags, nothing to upload. The website stays for the deeper work.") + `
+    <div class="cpwrap"><div class="cpframe" aria-label="Copilot preview"><div class="cphd"><span class="pico" style="background:#E8EBF2;color:var(--slate)">${icon("chat")}</span>Copilot <span class="pill neutral" style="margin-left:auto">Preview of the skill</span></div>
+      <div class="cplog" id="cplog">${turns.map(t => `<div class="bub me">${esc(t.me)}${t.kind === "coach" ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : t.kind === "stew" ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : ""}</div>${cpBot(t)}`).join("")}</div>
+      <form class="cpbox"><input name="q" aria-label="Message Copilot" placeholder="@AI Sales Assistant …"><button class="btn primary sm" type="submit">Send</button></form></div>
+      <div class="stack" style="gap:16px"><div class="card"><div class="card-hd">Try it</div><div class="pad stack">${CP_CHIPS.map(q => `<button class="btn sm plain" data-a="cpchip" data-v="${esc(q)}" style="justify-content:flex-start;white-space:normal;text-align:left">${esc(q)}</button>`).join("")}<button class="btn ghost small" data-a="cpreset" style="color:var(--primary)">Start again</button></div></div>
+        <div class="card"><div class="card-hd">Why a Copilot skill</div><div class="pad stack small">
+          <p>Salespeople spend their day in Copilot. Opening another site to upload a deck is the main reason they skip coaching.</p>
+          <p><b>Decks come from OneDrive or SharePoint</b>: no download and upload.</p><p><b>Answers keep the three source tags</b>, so trust travels with them.</p><p><b>The website stays</b> for projects, the knowledge bank and the full feedback.</p></div></div></div></div>`;
+};
+AFTER.copilot = () => { const l = $("#cplog"); if (l) l.scrollTop = l.scrollHeight; };
 // ---- Decision Engine: the numbers, how they are calculated, and when they create an alert
 V.de = () => {
-  const METRICS = [["Sales (POS value)", "Value of our products sold to shoppers at the till", "Weekly"], ["vs year ago", "Same weeks one year earlier", "Weekly"], ["Week-on-week", "Last week compared with the week before", "Weekly"], ["Our share", "Our sales divided by all sales in the category, at a customer or in a market", "Weekly"], ["Shelf availability", "Share of stores where the product is on the shelf", "Daily"], ["Sales on promotion", "Share of sales sold on promotion", "Weekly"], ["Category sales", "All sales in the category in a market, all brands", "Monthly"], ["Search visibility", "Share of our products in the top 10 online search results", "Weekly"]];
+  const METRICS = [["Sell-in vs sell-out", "What we shipped to the customer compared with what shoppers bought: shows stock building up or running out", "Weekly"], ["Stock cover", "How many weeks of sales the customer's stock can cover. Below 2 weeks before a big event is an order risk", "Daily"], ["Sales (POS value)", "Value of our products sold to shoppers at the till", "Weekly"], ["vs year ago", "Same weeks one year earlier", "Weekly"], ["Week-on-week", "Last week compared with the week before", "Weekly"], ["Our share", "Our sales divided by all sales in the category, at a customer or in a market", "Weekly"], ["Shelf availability", "Share of stores where the product is on the shelf", "Daily"], ["Sales on promotion", "Share of sales sold on promotion", "Weekly"], ["Category sales", "All sales in the category in a market, all brands", "Monthly"], ["Search visibility", "Share of our products in the top 10 online search results", "Weekly"]];
   const alerts = [...Object.entries(KB).flatMap(([c, k]) => k.changes.filter(x => x.de).map(x => ({ ...x, where: c }))), ...Object.entries(CATKB).flatMap(([mk, cs]) => Object.entries(cs).flatMap(([cat, k]) => k.changes.filter(x => x.de).map(x => ({ ...x, where: `${cat} · ${mk}` }))))];
   const cov = KB_MARKETS.map(mk => [mk, KB_CATS.map(c => KB_CUSTS[mk].some(x => kbOf(x).cats[c]))]);
   return head("The numbers", "Decision Engine", "Every number in the assistant comes from here: calculated from data with fixed definitions, never generated by AI.") + `
@@ -1322,8 +1411,8 @@ function overviewTab(p) {
 }
 const TOOLDEFS = [
   ["coach", "coach", "Selling Coach", "Upload your presentation and get AI-powered feedback to improve your content based on the sales framework.", ["Upload your sales material", "AI feedback & scoring", "PSF sales framework", "Improvement recommendations"], "Start Coaching"],
-  ["roleplay", "mic", "Role-play Coach", "Role-play and practise your French customer meetings with voice interaction, receive real-time scoring and feedback.", ["Voice-based practice", "Meeting rehearsal", "Objection handling", "Real-time feedback"], "Start Practice"],
-  ["qa", "chat", "Stewardship Q&A", "Interact with our AI chatbot to get answers, support and guidance about Sales Stewardship and product guidance.", ["24/7 AI Stewardship & Antitrust assistant", "Global & local guidance", "Compliance guidance", "Policy clarification"], "Ask Questions"],
+  ["roleplay", "mic", "Role-play Coach", "Practise the meeting out loud with a voice agent that plays your buyer, then get scored feedback.", ["Voice-based practice", "Meeting rehearsal", "Objection handling", "Real-time feedback"], "Start Practice"],
+  ["qa", "chat", "Stewardship Coach", "Checks your slides for legal risk and missing disclaimers before they reach a customer.", ["Legal risk on slides", "Missing disclaimers", "Antitrust guidance", "Global and local rules"], "Check my slides"],
 ];
 function toolCards(ctx, act) {
   return `<div class="toolgrid">${TOOLDEFS.map(([k, ic, t, d, feats, cta]) => `<div class="toolcard live"><div class="toolcard__head"><div class="toolcard__ico">${icon(ic)}</div><h3>${t}</h3><p>${d}</p></div>
@@ -1409,7 +1498,9 @@ V.meeting = () => {
             ${d.result.cv && d.result.cv !== p.mc.v ? `<div class="callout info">This feedback used meeting context version ${d.result.cv}. The project now has version ${p.mc.v}: run again to use it.</div>` : ""}
             <div class="usedctx"><span class="hint">Used:</span><span class="chip">Meeting context v${d.result.cv || p.mc.v}</span>${srcMini("de")}${srcMini("kb")}<span class="chip">${esc(OBJECTIVES[m.obj])}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "document", "documents")}</span>` : ""}</div></div></div>
           ${fb ? `<div class="table-wrap" style="border-left:0;border-right:0;border-radius:0"><table><thead><tr><th>Selling step</th><th>Status</th><th>Feedback</th></tr></thead><tbody>${fb.steps.map(([s, st, t]) => `<tr><td style="color:var(--charcoal);font-weight:600">${s}</td><td><span class="pill ${{ good: "ok", improve: "warn", missing: "bad" }[st]}">${{ good: "Strong", improve: "Improve", missing: "Missing" }[st]}</span></td><td>${esc(t)}</td></tr>`).join("")}</tbody></table></div>
-            <div class="pad stack"><div class="label">Slide by slide</div>${fb.slides.map(([n, t]) => `<div class="row small"><span class="chip">Slide ${n}</span>${esc(t)}</div>`).join("")}
+            <div class="pad stack">${(() => { const left = fb.steps.filter(x => x[1] !== "good").map(([n, st, t]) => [n, st === "missing" ? .8 : .4, t]).sort((a, b) => b[1] - a[1]), hist = m.decks.filter(x => x.result).map(x => `v${x.v} ${x.result.score.toFixed(1)}`);
+              return `<div class="label">What's left to reach 5/5</div>${left.length ? left.map(([n, g, t]) => `<div class="dd"><span title="${esc(t)}"><b style="font-weight:600">${esc(n)}</b> · ${esc(t)}</span><b class="up-good">up to +${g.toFixed(1)}</b></div>`).join("") : `<p class="small">Nothing left on the selling steps. Polish the slides below.</p>`}
+                ${hist.length > 1 ? `<p class="hint">Score history: ${hist.join(" → ")}</p>` : ""}<p class="hint">Don't chase the score, chase a better presentation: fix the biggest gap first.</p>`; })()}<div class="label">Slide by slide</div>${fb.slides.map(([n, t]) => `<div class="row small"><span class="chip">Slide ${n}</span>${esc(t)}</div>`).join("")}
             <div class="row" style="margin-top:6px"><label class="btn sm primary" style="cursor:pointer">${icon("upload")}Upload an improved version<input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label><button class="btn sm plain" data-a="analyse" data-m="${m.id}">Run again</button></div></div>`
           : `<div class="pad"><button class="btn sm plain" data-a="analyse" data-m="${m.id}">Show detailed feedback</button></div>`}`}
       </div>` : ""}
@@ -1708,13 +1799,25 @@ document.addEventListener("click", e => {
       state.sf = {}; state.sq = ""; go("sources"); toast(`${plural(files.length, "file", "files")} added. Processing status shows on each one.`); }); break;
     case "afclear": state.af = {}; render(); break;
     case "hideexplain": state.hideExplain = true; render(); break;
+    case "gshide": state.gsHide = true; render(); break;
+    case "install": state.gs.pinned = true; render(); toast("In the live tool this installs the assistant as a desktop app you can pin to your taskbar."); break;
+    case "notify": state.notify[v] = !state.notify[v]; render(); toast(state.notify[v] ? `We'll tell you when ${v} is ready for you.` : `No more updates about ${v}.`); break;
+    case "xls": toast(`In the live tool this downloads sales by customer, category and product for ${PERIODS[state.per]} as an Excel file, already sorted.`); break;
+    case "sharebuyer": inlineForm("Share with the buyer", `<p class="small">A one-page, customer-safe view of the risk, ready to send. Numbers come from the Decision Engine, with no internal targets or margins.</p>
+      <div class="card dcard"><div class="pad stack"><b>${esc(v)}</b><div class="tiles"><div class="tile"><span class="tl">Stock cover</span><span class="tv">1.2 weeks</span><span class="td"><b class="down-bad">Order risk</b> before Black Friday</span></div><div class="tile"><span class="tl">Suggested order</span><span class="tv">2,400 units</span><span class="td">to reach 4 weeks of cover</span></div></div><span class="hint">${srcMini("de")} Calculated · data up to ${PW[LASTW]}</span></div></div>`, () => { toast("In the live tool this sends the one-pager or adds it to your next customer deck."); }, "Send to buyer"); break;
+    case "reqcust": inlineForm("Request a customer", `<p class="small">Not finding your customer? Your customer team lead sets it up, usually within a week.</p>
+      <div class="field"><label for="rq-n">Customer</label><input id="rq-n" name="n" required placeholder="e.g. Metro"></div>
+      <div class="field"><label for="rq-m">Market</label><select id="rq-m" name="m">${KB_MARKETS.map(x => `<option>${x}</option>`).join("")}</select></div>
+      <div class="field"><label for="rq-w">Why you need it (optional)</label><input id="rq-w" name="w" placeholder="e.g. I prepare the yearly negotiation with them"></div>`, fd => { toast(`Request sent for ${fd.get("n").trim()} (${fd.get("m")}). You'll get an email when it's set up.`); }, "Send request"); break;
+    case "cpchip": state.cp = [...(state.cp.length ? state.cp : [{ me: "@AI Sales Assistant why is our share dropping at Carrefour?", ...cpTurn("Why is our share dropping at Carrefour?") }]), { me: `@AI Sales Assistant ${v.charAt(0).toLowerCase() + v.slice(1)}`, ...cpTurn(v) }]; render(); break;
+    case "cpreset": state.cp = []; render(); break;
     case "follow": { const on = isF(v); state.follow = on ? state.follow.filter(x => x !== v) : [...state.follow, v]; render(); toast(on ? "Unfollowed. It no longer appears in What changed on Home." : "Following. Its changes now appear on Home."); break; }
     case "fb": if (v === "wrong") { toast("Use the source link next to the fact: the knowledge bank team corrects facts by fixing or replacing the document."); break; }
       state.fb[state.ask] = v; render(); toast(v === "up" ? "Thanks. Useful answers help tune what the assistant shows first." : "Thanks. Unhelpful answers are reviewed by the knowledge bank team."); break;
     case "cat": go("category", { cat: v, mkt: el.dataset.k || state.mkt }); break;
     case "mkt": state.mkt = v; render(); break;
     case "copilot": toast(`In the live tool this opens Copilot to summarise what your emails, chats and meetings say about ${v}.`); break;
-    case "buyer": go("buyer", { bid: v }); break;
+    case "buyer": state.gs.buyers = true; go("buyer", { bid: v }); break;
     case "ask": go("ask", { ask: v, askCust: el.dataset.k || "" }); break;
     case "newcust": state.w = blankW(); state.w.cust = v; state.pendingTool = null; go("new"); break;
     case "wiq": state.wiq = !state.wiq; render(); toast(state.wiq ? "Personal context on. Only counts of related items are shown, nothing is stored." : "Personal context off. Nothing personal is looked at."); break;
@@ -1745,6 +1848,7 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("submit", e => {
+  if (e.target.matches(".cpbox")) { e.preventDefault(); const q = e.target.q.value.trim(); if (!q) return; state.cp = [...(state.cp.length ? state.cp : [{ me: "@AI Sales Assistant why is our share dropping at Carrefour?", ...cpTurn("Why is our share dropping at Carrefour?") }]), { me: q.startsWith("@") ? q : `@AI Sales Assistant ${q}`, ...cpTurn(q.replace(/^@\S+( \S+){0,2} /, "")) }]; render(); return; }
   if (!e.target.matches(".askbox")) return; e.preventDefault();
   const q = e.target.q.value.trim(); if (!q) { e.target.q.focus(); return; }
   go("ask", { ask: q, askCust: e.target.dataset.askcust || "" });
