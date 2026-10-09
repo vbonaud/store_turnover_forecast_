@@ -196,6 +196,18 @@ tr:last-child td { border-bottom: 0; }
 .src3.de { border-color: var(--de-border); background: var(--de-bg); color: #0A3F45; } .src3.de b { color: var(--de); }
 .src3.kb { border-color: var(--border-primary-light); background: var(--primary-light); color: #0D2F6B; } .src3.kb b { color: var(--primary); }
 .src3.pc { border-color: var(--pc-border); background: var(--pc-bg); color: #3A2470; } .src3.pc b { color: var(--pc); }
+.points { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.points li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; }
+.points .pn { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font: 700 11.5px var(--inter); }
+.points .pn.de { background: var(--de-bg); color: var(--de); } .points .pn.kb { background: var(--primary-light); color: var(--primary); }
+.glance { display: grid; gap: 0; }
+.glance > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--light-gray); align-items: baseline; }
+.glance > div:last-child { border-bottom: 0; }
+@media (max-width: 600px) { .glance > div { grid-template-columns: minmax(0, 1fr); gap: 2px; } }
+.fbk { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; border-top: 1px solid var(--light-gray); padding-top: 10px; }
+.fbk button[aria-pressed="true"] { background: var(--primary-light); border-color: var(--primary); color: var(--primary); }
+.cov { display: grid; gap: 10px; }
+.cov > div { display: grid; gap: 6px; }
 .builtfrom { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .numrow { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; padding: 10px 0; border-bottom: 1px solid var(--light-gray); }
 .numrow:last-child { border-bottom: 0; }
@@ -791,7 +803,7 @@ function log(p, text) { p.activity.unshift([TODAY, "VB", text]); p.updated = TOD
 /* =====================================================================
    State & shell
    ===================================================================== */
-const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
+const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
 const NAV = [
   { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
   { id: "projects", label: "My Projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
@@ -818,10 +830,10 @@ const NOTES = {
   kb: [["#view .seg", "Explore by market, then category, then customer. Each page mixes the numbers and the knowledge, each clearly tagged."], ["#view .catcard", "Category cards: our share from the Decision Engine, fact count from the knowledge bank."]],
   de: [["#view .explain", "The three sources explained in one line each. Same tags and colours everywhere in the app."], ["#view .two .dcard", "Fixed metric definitions shared with the dashboards. The assistant asks the Decision Engine; it never calculates numbers itself."], ["#view .section:last-child .dcard", "Alerts: rules on the numbers that feed “What changed”."]],
   category: [["#view .perf .tiles", "Later (beyond the PoC): sell-out across the customers we track, with the biggest grower."], ["#view .minis", "By customer: click to open that customer in the same category."], ["#view .two .kcard", "What is changing and what wins in the category: company knowledge no single inbox holds."], ["#view .section:last-child .custgrid", "Customers for this category, with our share at each."]],
-  customer: [["#view .perf .qhd", "Pages are organised by the user's question, not by system: How are we doing? What changed? What do we know?"], ["#perfchart", "Decision Engine numbers, same model as the BNL Electro dashboard. Integration is beyond the knowledge bank PoC."], ["#view .two .card", "What changed mixes Decision Engine alerts and knowledge bank news; each row says which."], ["#view .cite", "PoC: every knowledge bank fact cites its document and location."], ["#view .pcline", "Personal context only counts mentions and hands over to Copilot."]],
+  customer: [["#view .glance", "At a glance: the 10-second version, one line per source, before the detail."], ["#view .actions [data-a=follow]", "Follow a customer or category to get its changes on Home."], ["#view .perf .qhd", "Pages are organised by the user's question, not by system: How are we doing? What changed? What do we know?"], ["#perfchart", "Decision Engine numbers, same model as the BNL Electro dashboard. Integration is beyond the knowledge bank PoC."], ["#view .two .card", "What changed mixes Decision Engine alerts and knowledge bank news; each row says which."], ["#view .cite", "PoC: every knowledge bank fact cites its document and location."], ["#view .pcline", "Personal context only counts mentions and hands over to Copilot."]],
   buyer: [["#view .kcard", "What the whole company knows about this buyer."], ["#view .pcline", "No emails or meeting notes here: Copilot already summarises them."]],
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
-  ask: [["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
+  ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
   home: [["#view .askbox", "One question box for numbers, knowledge and your own work."], ["#view .explain", "Shown until the user clicks “Got it”: the three sources in plain words."], ["#view .two", "Your business from the Decision Engine, next to what changed."], ["#view .toolgrid", "Home shows the three tools, as today. Starting one first asks which project it is for (or creates one), then runs inside that project."], ["#view .projgrid", "Your projects: each card shows the customer, the next meeting and where its presentation stands. ⋯ edits, archives or deletes."], ["#view .upcoming", "Coming up: meetings from every project, soonest first. One click opens the meeting."], [".appbar .newbtn", "“New project” is always one click away."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Meeting context summary: the single source that every tool and every piece of feedback reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Saving creates a new version."], ["#view .sessions", "Each Selling Coach session records the context version it used, so changes never rewrite past feedback."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
@@ -868,14 +880,15 @@ V.home = () => {
   const active = PROJECTS.filter(p => p.status === "Active"), mine = [...new Set(active.map(p => p.cust))], cats = [...new Set(active.map(p => p.cat))];
   const pairs = [...new Map(active.map(p => [`${p.cust}|${p.cat}`, p])).values()];
   const upcoming = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ p, m }))).sort((a, b) => pd(a.m.date) - pd(b.m.date)).slice(0, 4);
-  const all = sortChanges([...cats.flatMap(c => (catOf("France", c)?.changes || []).map(x => ({ ...x, where: `${c} · France` }))),
-    ...mine.flatMap(c => kbOf(c).changes.map(x => ({ ...x, where: c })))]);
+  const fc = state.follow.filter(k => k.startsWith("cust:")).map(k => k.slice(5)), fk = state.follow.filter(k => k.startsWith("cat:")).map(k => k.slice(4).split("|"));
+  const all = sortChanges([...fk.flatMap(([mk, c]) => (catOf(mk, c)?.changes || []).map(x => ({ ...x, where: `${c} · ${mk}` }))),
+    ...fc.flatMap(c => kbOf(c).changes.map(x => ({ ...x, where: c })))]);
   const watch = sortChanges([...all.filter(x => x.de).slice(0, 3), ...all.filter(x => !x.de).slice(0, 2)]); // show both kinds: alerts and news
   return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! The numbers, what the company knows, and your own work, in one place.</p></div>${NOTE}
     ${askBox("", "Ask about a market, category, customer or buyer…")}${suggest(SUGGEST, "")}
     ${state.hideExplain ? "" : `<div class="section"><div class="spread" style="margin-bottom:10px"><span class="label">Three sources, one answer</span><button class="btn ghost small" data-a="hideexplain" style="color:var(--primary)">Got it</button></div>${explainer(false)}</div>`}
     <div class="two section"><div>${qhd(`Your business · ${esc(PERIODS[state.per])}`, "Sales vs year ago for the customers in your projects", tag("de"))}<div class="card dcard"><div class="pad">${pairs.map(p => { const T = totP(series(p.cust, p.cat)); return `<button class="numrow" data-a="cust" data-v="${esc(p.cust)}" data-k="${esc(p.cat)}" style="width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left"><span><b style="font-weight:600">${esc(p.cust)}</b><br><span class="hint">${esc(p.cat)}</span></span><span><span class="nv">${eur(T.s)}</span><br><span class="td"><b class="${dirC(T.g)}">${arrow(pctS(T.g))} ${pctS(T.g)}</b></span></span></button>`; }).join("")}</div></div></div>
-      <div>${qhd("What changed", "In your categories and customers", "")}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">Nothing to watch this week.</div>`}</div></div></div></div>
+      <div>${qhd("What changed", `For the ${plural(state.follow.length, "customer and category", "customers and categories")} you follow`, `<button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button>`)}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">${state.follow.length ? "Nothing new for what you follow." : "Follow customers and categories to see what changes here."}</div>`}</div></div></div></div>
     <div class="section"><h2 class="section-title" style="margin-bottom:12px">Tools</h2>${toolCards(() => "Runs inside a project, with its numbers and knowledge", "hometool")}</div>
     <div class="section"><div class="spread"><h2 class="section-title">Your projects</h2><div class="row"><button class="btn sm plain" data-a="go" data-v="projects">View all projects</button><button class="btn sm primary" data-a="new">${icon("plus")}New project</button></div></div>
     <div class="projgrid" style="margin-top:12px">${active.slice(0, 3).map(projectCard).join("")}${newCard()}</div></div>
@@ -1053,6 +1066,12 @@ V.kb = () => {
         return `<button class="custcard" data-a="cust" data-v="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(c)}</b><span class="small muted">${esc(k.summary)}</span>
           <span class="row small">${Object.keys(k.cats).map(x => `<span class="chip">${esc(x)}</span>`).join("")}${w ? `<span class="pill warn">${plural(w, "change", "changes")} to watch</span>` : ""}</span></button>`; }).join("")}</div></div>`;
 };
+const isF = k => state.follow.includes(k);
+const followBtn = k => `<button class="btn sm ${isF(k) ? "plain" : ""}" data-a="follow" data-v="${esc(k)}" aria-pressed="${isF(k)}">${isF(k) ? "✓ Following" : "+ Follow"}</button>`;
+// At a glance: the 10-second version, one line per source
+function glance(rows) {
+  return `<div class="section"><div class="card"><div class="card-hd">At a glance <span class="aside">The 10-second version</span></div><div class="pad glance">${rows.filter(Boolean).map(([k, label, html]) => `<div><span>${srcMini(k)}<br><span class="hint">${label}</span></span><span>${html}</span></div>`).join("")}</div></div></div>`;
+}
 const chipSel = (x, on, a) => `<button class="chip ck" data-a="${a}" data-v="${esc(x)}" aria-pressed="${on}" style="${on ? "background:var(--primary-light);border-color:var(--primary);color:var(--primary)" : ""}">${esc(x)}</button>`;
 const sortChanges = list => [...list].sort((a, b) => pd(`${b.date} 2026`) - pd(`${a.date} 2026`));
 V.category = () => {
@@ -1060,7 +1079,11 @@ V.category = () => {
   const custs = [...new Set(KB_CUSTS[mk].filter(x => kbOf(x).cats[c]))];
   const changes = sortChanges([...(k ? k.changes : []), ...custs.flatMap(x => kbOf(x).changes.filter(y => y.cat === c).map(y => ({ ...y, where: x })))]);
   return `<div class="crumb"><button data-a="go" data-v="kb">Explore</button><span>›</span><button data-a="go" data-v="kb">${esc(mk)}</button><span>›</span><span>${esc(c)}</span></div>
-    <div class="pagehead"><div><h1>${esc(c)} · ${esc(mk)}</h1><p class="sub">How the category is doing, what is changing and what wins.</p></div></div>${NOTE}
+    <div class="pagehead"><div><h1>${esc(c)} · ${esc(mk)}</h1><p class="sub">How the category is doing, what is changing and what wins.</p></div><div class="actions">${followBtn(`cat:${mk}|${c}`)}</div></div>${NOTE}
+    ${(() => { const sh = k && shareOf(k.numbers), cs = k && k.numbers.find(n => /category sales/i.test(n[0])), ch = changes[0], win = k && k.facts.find(f => /wins/i.test(f.topic));
+      return k ? glance([sh || cs ? ["de", "The numbers", [cs, sh].filter(Boolean).map(n => `${esc(n[0])} <b>${esc(n[1])}</b> <span class="td"><b class="${n[4]}">${arrow(n[2])} ${esc(n[2])}</b></span>`).join(" · ")] : null,
+        ch ? [ch.de ? "de" : "kb", "Latest change", `${esc(ch.text)} <span class="hint">${esc(ch.date)}</span>`] : null,
+        win ? ["kb", "What wins", `${esc(win.text)} ${citeBtn(win.doc, win.loc)}`] : null]) : ""; })()}
     <div class="row" style="margin-bottom:14px">${KB_CATS.map(x => chipSel(x, x === c, "cat")).join("")}</div>
     ${askBox("", `Ask about ${c} in ${mk}…`)}
     ${custs.length ? perfPanel(custs, c, { title: `${c} with the customers we track in ${mk}`, extra: k ? k.numbers : [] }) : (state.perfRows = null, `<div class="section">${qhd("How are we doing?", "", tag("de"))}${tiles(k && k.numbers, `No numbers for ${c} in ${mk} yet.`)}</div>`)}
@@ -1075,9 +1098,13 @@ V.customer = () => {
   const buyers = BUYERS.filter(b => b.cust === c), changes = sortChanges(k.changes.filter(x => !x.cat || x.cat === cat)), projs = PROJECTS.filter(p => p.cust === c && p.status === "Active");
   return `<div class="crumb"><button data-a="go" data-v="kb">Explore</button><span>›</span><button data-a="go" data-v="kb">${esc(mk)}</button>${cat ? `<span>›</span><button data-a="cat" data-v="${esc(cat)}">${esc(cat)}</button>` : ""}<span>›</span><span>${esc(c)}</span></div>
     <div class="pagehead"><div><h1>${esc(c)}</h1><p class="sub">${esc(k.summary)}</p></div>
-      <div class="actions">${projs.length ? `<button class="btn sm plain" data-a="open" data-v="${projs[0].id}">Open my project</button>` : ""}${CUSTOMERS.includes(c) ? `<button class="btn sm primary" data-a="newcust" data-v="${esc(c)}">${icon("plus")}New project</button>` : ""}</div></div>${NOTE}
+      <div class="actions">${followBtn(`cust:${c}`)}${projs.length ? `<button class="btn sm plain" data-a="open" data-v="${projs[0].id}">Open my project</button>` : ""}${CUSTOMERS.includes(c) ? `<button class="btn sm primary" data-a="newcust" data-v="${esc(c)}">${icon("plus")}New project</button>` : ""}</div></div>${NOTE}
     ${cats.length ? `<div class="row" style="margin-bottom:14px"><span class="small muted">Category</span>${cats.map(x => chipSel(x, x === cat, "custcat")).join("")}</div>` : ""}
     ${askBox(c, `Ask about ${c}…`)}${suggest(c === "Carrefour" ? ["Why is our share dropping at Carrefour?", "What convinces Carrefour?", "What should I know before meeting Juliette Morel?"] : [`What convinces ${c}?`, `What changed at ${c}?`], c)}
+    ${(() => { const T = cat ? totP(series(c, cat)) : null, sh = shareOf(k.cats[cat]), ch = changes[0], conv = k.facts.find(f => /convince/i.test(f.topic)) || k.facts[0];
+      return glance([T ? ["de", `Sales · ${esc(PERIODS[state.per])}`, `<b>${eur(T.s)}</b> <span class="td"><b class="${dirC(T.g)}">${arrow(pctS(T.g))} ${pctS(T.g)}</b> vs year ago</span>${sh ? ` · ${esc(sh[0])} <b>${esc(sh[1])}</b> <span class="td"><b class="${sh[4]}">${arrow(sh[2])} ${esc(sh[2])}</b></span>` : ""}`] : null,
+        ch ? [ch.de ? "de" : "kb", "Latest change", `${esc(ch.text)} <span class="hint">${esc(ch.date)}</span>`] : null,
+        conv ? ["kb", conv.topic, `${esc(conv.text)} ${citeBtn(conv.doc, conv.loc)}`] : null]); })()}
     ${cat ? perfPanel([c], cat, { title: `${c} · ${cat}`, extra: k.cats[cat] }) : (state.perfRows = null, "")}
     <div class="two section"><div>${qhd("What changed", "Alerts from the numbers and news from documents", "")}<div class="card"><div class="pad">${changes.length ? changes.map(x => changeRow(x)).join("") : `<div class="empty">Nothing new to report.</div>`}</div></div></div>
       <div>${qhd("What we know", k.owner ? `Kept up to date by ${esc(k.owner)}` : "", tag("kb"))}<div class="card kcard"><div class="pad">${k.facts.length ? k.facts.map(factRow).join("") : `<div class="empty">The customer team is building this page.</div>`}</div></div></div></div>
@@ -1114,7 +1141,7 @@ V.de = () => {
     ${explainer(true)}
     <div class="two section"><div>${qhd("What it measures", "Same definitions everywhere: dashboards, assistant, Selling Coach", "")}<div class="card dcard"><div class="pad">${METRICS.map(([n, d, f]) => `<div class="numrow"><span><b style="font-weight:600">${n}</b><br><span class="hint">${d}</span></span><span class="hint">${f}</span></div>`).join("")}</div></div></div>
       <div class="stack" style="gap:18px"><div>${qhd("Periods", "", "")}<div class="card dcard"><div class="pad"><dl class="kv"><dt>CYTD</dt><dd>Calendar year to date</dd><dt>FYTD</dt><dd>Fiscal year to date, July to June</dd><dt>P12M · P6M · P3M</dt><dd>Last 52, 26 and 13 weeks</dd></dl></div></div></div>
-        <div>${qhd("Coverage", "Markets and categories with numbers today", "")}<div class="card dcard"><div class="pad table-wrap" style="border:0"><table><thead><tr><th></th>${KB_CATS.map(c => `<th>${esc(c)}</th>`).join("")}</tr></thead><tbody>${cov.map(([mk, row]) => `<tr><td><b>${mk}</b></td>${row.map(v => `<td>${v ? `<span aria-label="Yes">✓</span>` : `<span class="muted" aria-label="Not yet">·</span>`}</td>`).join("")}</tr>`).join("")}</tbody></table></div></div></div></div></div>
+        <div>${qhd("Coverage", "Markets and categories with numbers today", "")}<div class="card dcard"><div class="pad cov">${cov.map(([mk, row]) => `<div><b>${mk}</b><span class="row" style="gap:6px">${KB_CATS.map((c, i) => row[i] ? `<span class="chip">${esc(c)}</span>` : "").join("")}${row.some(v => !v) ? `<span class="hint">Not yet: ${KB_CATS.filter((c, i) => !row[i]).map(esc).join(", ")}</span>` : ""}</span></div>`).join("")}</div></div></div></div></div>
     <div class="section">${qhd("Alerts", "When a number moves enough, it appears in “What changed” for everyone who follows that customer or category", "")}<div class="card dcard"><div class="pad">${alerts.map(x => changeRow(x, x.where)).join("")}</div></div></div>`;
 };
 // ---- ask: searches the company knowledge; personal context only adds a pointer
@@ -1185,8 +1212,15 @@ function answer(q, cust) {
   const deTop = (!fCust && !fCat ? de.slice(0, 4) : fCust ? [...de.filter(x => x.cust).slice(0, 3), ...de.filter(x => !x.cust).slice(0, 1)] : de.filter(x => !x.cust).slice(0, 4)).sort((a, b) => b.sc - a.sc);
   const kbTop = [...docs.filter(x => x.cust).slice(0, 4), ...docs.filter(x => !x.cust).slice(0, 2)].sort((a, b) => b.sc - a.sc);
   const what = named[0] ? named[0].name : fCust || "";
-  const summary = (!filtered && CURATED[key]) || (!kbTop.length && !deTop.length && filtered ? "No facts match this question with these filters. Remove a filter to see more." : null) || (kb.length ? `Here is what the company knows${fCust ? ` about ${fCust}` : fCat ? ` about ${fCat}${fMkt ? ` in ${fMkt}` : ""}` : ""}.` : "Nothing found yet. Try a market, category, customer or buyer, or a topic like share, promotions or availability.");
-  return { summary, de: deTop, kb: kbTop, fCust, fCat, what, pc: what ? pcCount(x => named[0] ? x.bid === named[0].id : x.cust === fCust) : 0 };
+  // key points: the claims, each tied to one source item
+  const pick = [...deTop.slice(0, 2), ...kbTop.slice(0, 2)];
+  const where = it => it.cust ? `${it.cust}${it.cat ? ` · ${it.cat}` : ""}` : `${it.cat} · ${it.mkt}`;
+  const say = it => it.value ? `${it.title} ${it.cust ? `at ${it.cust}` : `in ${it.mkt}${it.title.includes(it.cat) ? "" : ` (${it.cat})`}`}: ${it.value}, ${it.meta}.` : it.text.replace(/\.?$/, ".");
+  const points = pick.map(it => ({ src: it.src === "de" ? "de" : "kb", text: say(it), it }));
+  const nd = points.filter(p => p.src === "de").length, nk = points.filter(p => p.src === "kb").length;
+  const composed = points.length ? `Here’s what I found${fCust ? ` about ${fCust}` : fCat ? ` about ${fCat}${fMkt ? ` in ${fMkt}` : ""}` : ""}: ${[nd ? plural(nd, "number", "numbers") : "", nk ? plural(nk, "fact", "facts") : ""].filter(Boolean).join(" and ")}, most relevant first.` : "";
+  const summary = (!filtered && CURATED[key]) || (filtered && composed) || (composed && !filtered ? composed : null) || (!kbTop.length && !deTop.length && filtered ? "No facts match this question with these filters. Remove a filter to see more." : null) || (kb.length ? `Here is what the company knows${fCust ? ` about ${fCust}` : fCat ? ` about ${fCat}${fMkt ? ` in ${fMkt}` : ""}` : ""}.` : "Nothing found yet. Try a market, category, customer or buyer, or a topic like share, promotions or availability.");
+  return { summary, points, de: deTop, kb: kbTop, fCust, fCat, what, pc: what ? pcCount(x => named[0] ? x.bid === named[0].id : x.cust === fCust) : 0 };
 }
 V.ask = () => {
   const r = answer(state.ask, state.askCust);
@@ -1198,9 +1232,11 @@ V.ask = () => {
   return head(`<button data-a="go" data-v="home">Home</button><span>›</span><span>Ask</span>`, "Ask", "") + `
     ${askBox(r.fCust, "Ask a follow-up…")}${bar}
     <div class="card answer section"><div class="card-hd">${esc(state.ask)}</div><div class="pad stack"><p>${esc(r.summary)}</p>
-      ${built.length ? `<div class="builtfrom"><span class="hint">Built from</span>${built.join(`<span class="hint">·</span>`)}</div>` : ""}</div></div>
-    <div class="two section"><div>${qhd("The numbers", "Calculated, never generated", tag("de"))}<div class="card dcard"><div class="pad">${r.de.length ? r.de.map(num).join("") : `<div class="empty">No number needed for this question.</div>`}</div></div></div>
-      <div>${qhd("What the company knows", "Each fact links to its document", tag("kb"))}<div class="card kcard"><div class="pad">${r.kb.length ? r.kb.map(row).join("") : `<div class="empty">${Object.values(F).some(Boolean) ? "No facts match these filters." : "Nothing in the knowledge bank yet."}</div>`}</div></div></div></div>
+      ${r.points.length ? `<span class="label">Key points</span><ol class="points">${r.points.map((p, i) => `<li><span class="pn ${p.src}">${p.src === "de" ? "N" : "F"}${r.points.filter((q, j) => j <= i && q.src === p.src).length}</span><span>${esc(p.text)}<br>${p.src === "de" ? `${srcMini("de")} <span class="hint">calculated · data up to ${PW[LASTW]}</span>` : `${srcMini("kb")} ${citeBtn(p.it.doc, p.it.loc)}`}</span></li>`).join("")}</ol>` : ""}
+      ${built.length ? `<div class="builtfrom"><span class="hint">Built from</span>${built.join(`<span class="hint">·</span>`)}</div>` : ""}
+      ${r.points.length ? `<div class="fbk"><span class="hint">Was this useful?</span><button class="btn sm plain" data-a="fb" data-v="up" aria-pressed="${state.fb[state.ask] === "up"}">👍 Yes</button><button class="btn sm plain" data-a="fb" data-v="down" aria-pressed="${state.fb[state.ask] === "down"}">👎 No</button><button class="btn ghost small" data-a="fb" data-v="wrong" style="color:var(--primary)">Report a wrong fact</button></div>` : ""}</div></div>
+    <div class="two section"><div>${qhd("All numbers used", "Calculated, never generated", tag("de"))}<div class="card dcard"><div class="pad">${r.de.length ? r.de.map(num).join("") : `<div class="empty">No number matches this question.</div>`}</div></div></div>
+      <div>${qhd("All facts used", "Each fact links to its document", tag("kb"))}<div class="card kcard"><div class="pad">${r.kb.length ? r.kb.map(row).join("") : `<div class="empty">${Object.values(F).some(Boolean) ? "No facts match these filters." : "No fact in the knowledge bank matches this question."}</div>`}</div></div></div></div>
     ${r.what ? `<div class="section">${pcLine(r.pc, r.what)}</div>` : ""}
     <div class="row section">${r.fCust ? `<button class="btn sm plain" data-a="cust" data-v="${esc(r.fCust)}">Open ${esc(r.fCust)}</button>` : ""}${r.fCat ? `<button class="btn sm plain" data-a="cat" data-v="${esc(r.fCat)}">Open ${esc(r.fCat)}</button>` : ""}</div>
     ${suggest(SUGGEST.filter(x => x !== state.ask), "")}`;
@@ -1672,6 +1708,9 @@ document.addEventListener("click", e => {
       state.sf = {}; state.sq = ""; go("sources"); toast(`${plural(files.length, "file", "files")} added. Processing status shows on each one.`); }); break;
     case "afclear": state.af = {}; render(); break;
     case "hideexplain": state.hideExplain = true; render(); break;
+    case "follow": { const on = isF(v); state.follow = on ? state.follow.filter(x => x !== v) : [...state.follow, v]; render(); toast(on ? "Unfollowed. It no longer appears in What changed on Home." : "Following. Its changes now appear on Home."); break; }
+    case "fb": if (v === "wrong") { toast("Use the source link next to the fact: the knowledge bank team corrects facts by fixing or replacing the document."); break; }
+      state.fb[state.ask] = v; render(); toast(v === "up" ? "Thanks. Useful answers help tune what the assistant shows first." : "Thanks. Unhelpful answers are reviewed by the knowledge bank team."); break;
     case "cat": go("category", { cat: v, mkt: el.dataset.k || state.mkt }); break;
     case "mkt": state.mkt = v; render(); break;
     case "copilot": toast(`In the live tool this opens Copilot to summarise what your emails, chats and meetings say about ${v}.`); break;
