@@ -196,6 +196,20 @@ tr:last-child td { border-bottom: 0; }
 .src3.de { border-color: var(--de-border); background: var(--de-bg); color: #0A3F45; } .src3.de b { color: var(--de); }
 .src3.kb { border-color: var(--border-primary-light); background: var(--primary-light); color: #0D2F6B; } .src3.kb b { color: var(--primary); }
 .src3.pc { border-color: var(--pc-border); background: var(--pc-bg); color: #3A2470; } .src3.pc b { color: var(--pc); }
+.skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.skills2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+@media (max-width: 900px) { .skills, .skills2 { grid-template-columns: minmax(0, 1fr); } }
+.skill { border: 1px solid var(--light-gray); border-radius: 14px; background: var(--white); box-shadow: var(--shadow); padding: 14px 16px; display: grid; gap: 6px; align-content: start; position: relative; }
+.skill .step { font: 700 11px var(--inter); letter-spacing: .04em; text-transform: uppercase; color: var(--primary); }
+.skill b { font: 700 16px var(--mont); }
+.skill .sico { width: 34px; height: 34px; border-radius: 9px; background: var(--primary-light); color: var(--primary); display: grid; place-items: center; }
+.skill.small { grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; box-shadow: none; }
+.skill .cpname { font-size: 11.5px; color: var(--steel); }
+.slides { display: grid; gap: 10px; counter-reset: sl; }
+.slide { border: 1px solid var(--light-gray); border-radius: 12px; background: var(--white); padding: 12px 14px; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; }
+.slide .sn { width: 30px; height: 30px; border-radius: 8px; background: var(--surface); display: grid; place-items: center; font: 700 13px var(--inter); color: var(--slate); }
+.slide .ev { display: flex; flex-wrap: wrap; gap: 6px 10px; margin-top: 6px; }
+.figs { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
 .setup { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; border: 1px solid var(--border-primary-light); background: var(--primary-light); border-radius: 12px; padding: 10px 14px; font-size: 13px; }
 .setup b { font-weight: 600; }
 .hometools .feats, .hometools .toolcard__ctx { display: none; }
@@ -796,6 +810,8 @@ const ICON = {
   cal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
   spark: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+  trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  pen: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
   download: '<path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 18v2h16v-2"/>',
   building: '<path d="M4 21V5l8-3 8 3v16"/><path d="M9 21v-4h6v4M8 8h2M14 8h2M8 12h2M14 12h2"/>',
   lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
@@ -862,7 +878,9 @@ const NOTES = {
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
   ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
   copilot: [["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Open question for the vendor: the website as the product, or as the back office behind the Copilot skill (A2A/MCP)."]],
-  home: [["#view .askbox", "Home is four things: ask, the coaches, what's coming up and what changed. Everything else is one click away."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .toolgrid", "The coaches stay front and centre, as on today's home page."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
+  home: [["#view .askbox", "Home is four things: ask, the coaches, what's coming up and what changed. Everything else is one click away."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .skills", "Skills in meeting order: Analyst gets the facts, Storyteller builds the deck, Selling Coach improves it. Each also works in Copilot by name."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
+  analyst: [["#view .seg", "Internal (power hour, team connect) or customer-safe: the customer version leaves out plans, targets and margins."], ["#view .figs", "Every figure comes from the Decision Engine, never generated."], ["#view .points", "Talking points say where each one comes from."]],
+  story: [["#view .slides", "A first draft in the selling format, built from the meeting context, the numbers and cited facts."], ["#view .row.section", "Create in PowerPoint adds the draft to the meeting, where the Selling Coach reviews it."]],
   about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Meeting context summary: the single source that every tool and every piece of feedback reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Saving creates a new version."], ["#view .sessions", "Each Selling Coach session records the context version it used, so changes never rewrite past feedback."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
@@ -932,11 +950,14 @@ V.home = () => {
   const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
   const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 4);
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Ask anything about your customers, or pick a coach.</p></div>${NOTE}
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Ask anything about your customers, or prepare your next meeting.</p></div>${NOTE}
     ${askBox("", "Ask about a customer, category or buyer…")}${suggest(SUGGEST.slice(0, 2), "")}
     ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="setup"><span><b>Finish setting up</b> · ${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gsopen" style="color:var(--primary)">${state.gsOpen ? "Hide steps" : "Show steps"}</button><button class="btn ghost small" data-a="gshide" style="color:var(--steel);margin-left:auto">Not now</button></div>
       ${state.gsOpen ? `<div class="card" style="margin-top:8px"><div class="pad gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}<div class="row"><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div>` : ""}</div>`}
-    <div class="section hometools">${toolCards(() => "", "hometool")}<p class="hint" style="margin-top:10px">Coming soon: ${SOON.map(x => x[0]).join(" · ")}</p></div>
+    <div class="section">${qhd("Prepare a meeting", "Each skill also works in Copilot: type @ and its name", `<button class="btn ghost small" data-a="go" data-v="copilot" style="color:var(--primary)">See it in Copilot</button>`)}
+      <div class="skills">${["analyst", "story", "coach"].map(k => skillCard(k)).join("")}</div>
+      <div class="skills2">${["roleplay", "qa"].map(k => skillCard(k, true)).join("")}</div>
+      <p class="hint" style="margin-top:10px">Coming soon: ${SOON.map(x => x[0]).join(" · ")}</p></div>
     <div class="two section"><div>${qhd("Coming up", "Prepare the big moments early", "")}<div class="card"><div class="pad">${moments.map(x => `<div class="moment">${dbox(x.date)}<span><b style="font-weight:600">${esc(x.title)}</b> · ${esc(x.cust)}<br><span class="hint">${when(x.date)}</span>${x.kind === "Big moment" ? ` <span class="pill warn">Big moment</span>` : ""}</span>${actBtn(x)}</div>`).join("")}</div></div></div>
       <div>${qhd("What changed", "For the customers and categories you follow", `<button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button>`)}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">${state.follow.length ? "Nothing new for what you follow." : "Follow customers and categories to see what changes here."}</div>`}</div></div></div></div>`;
 };
@@ -1187,6 +1208,55 @@ V.personal = () => head(`<button data-a="go" data-v="about">Data & settings</but
       <p class="small"><b>Nothing is copied or stored here.</b> To read or summarise those emails, meetings and notes, use Copilot: it already does that.</p>
       <p class="small">What this app adds: <b>the numbers</b> from the Decision Engine and <b>what the company knows</b> from the knowledge bank.</p></div></div></div>
   <div class="section">${explainer(false)}</div>`;
+// ---- Analyst: key figures for a power hour, a team connect or a customer meeting
+function analystData(p) {
+  const rows = series(p.cust, p.cat), T = totP(rows), W = wowP(rows), k = kbOf(p.cust), ck = catOf(p.market, p.cat);
+  const sh = shareOf(k.cats[p.cat]), cs = ck && ck.numbers.find(n => /category sales/i.test(n[0]));
+  const alert = sortChanges(k.changes.filter(x => x.de && (!x.cat || x.cat === p.cat)))[0], conv = k.facts.find(f => /convince/i.test(f.topic)) || k.facts[0];
+  const plan = T.y * 1.05, gap = 100 * (T.s / plan - 1);
+  return { T, W, sh, cs, alert, conv, gap };
+}
+V.analyst = () => {
+  const p = proj(state.pid), aud = state.anAud || "internal", a = analystData(p);
+  const fig = (l, v, sub, dir, internal) => `<div class="tile"><span class="tl">${l}${internal ? ` <span class="pill warn">Internal only</span>` : ""}</span><span class="tv">${v}</span><span class="td">${dir ? `<b class="${dir}">${sub}</b>` : sub}</span></div>`;
+  const figs = [fig(`Sales · ${esc(PERIODS[state.per])}`, eur(a.T.s), `${arrow(pctS(a.T.g))} ${pctS(a.T.g)} vs year ago`, dirC(a.T.g)),
+    fig(`Last week · ${PW[LASTW]}`, eur(a.W.last), `${arrow(pctS(a.W.g))} ${pctS(a.W.g)} vs previous week`, dirC(a.W.g)),
+    a.sh ? fig(esc(a.sh[0]), esc(a.sh[1]), `${arrow(a.sh[2])} ${esc(a.sh[2])} ${esc(a.sh[3])}`, a.sh[4]) : "",
+    a.cs ? fig(`${esc(p.cat)} market · ${esc(p.market)}`, esc(a.cs[1]), `${arrow(a.cs[2])} ${esc(a.cs[2])} ${esc(a.cs[3])}`, a.cs[4]) : "",
+    aud === "internal" ? fig("vs internal plan", pctS(a.gap), a.gap >= 0 ? "ahead of plan" : "behind plan", dirC(a.gap), true) : ""].join("");
+  const points = [["de", `Sales are ${pctS(a.T.g)} vs year ago at ${eur(a.T.s)} (${PERIODS[state.per]}).`],
+    a.alert ? ["de", `${aud === "internal" ? "Watch" : "Be ready to explain"}: ${a.alert.text}`] : null,
+    aud === "internal" ? ["de", `We are ${Math.abs(a.gap).toFixed(1)}% ${a.gap >= 0 ? "ahead of" : "behind"} the internal plan.`] : null,
+    a.conv ? ["kb", `${aud === "internal" ? `What works with ${p.cust}` : "For you, not for the slide"}: ${a.conv.text}`, a.conv] : null].filter(Boolean);
+  return head(`<button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>Analyst</span>`, `Key figures · ${esc(p.cust)} · ${esc(p.cat)}`, "The numbers you need for the meeting, ready to paste into your deck or your Copilot chat.") + `
+    <div class="spread" style="margin-bottom:14px"><div class="seg" role="group" aria-label="Audience">${[["internal", "Internal: power hour, team connect"], ["external", "Customer meeting"]].map(([k2, l]) => `<button data-a="anaud" data-v="${k2}" aria-pressed="${aud === k2}">${l}</button>`).join("")}</div>
+      <div class="seg" role="group" aria-label="Period">${Object.entries(PERIODS).map(([k2, l]) => `<button data-a="per" data-v="${k2}" aria-pressed="${state.per === k2}">${l}</button>`).join("")}</div></div>
+    ${aud === "external" ? `<div class="callout info" style="margin-bottom:14px">Customer-safe: internal plans, targets and margins are left out.</div>` : ""}
+    <div class="figs">${figs}</div>
+    <div class="section">${qhd("Talking points", "Each one says where it comes from", "")}<div class="card"><div class="pad"><ol class="points">${points.map(([k2, t, f], i) => `<li><span class="pn ${k2}">${i + 1}</span><span>${esc(t)}<br>${srcMini(k2)} ${f ? citeBtn(f.doc, f.loc) : `<span class="hint">calculated · data up to ${PW[LASTW]}</span>`}</span></li>`).join("")}</ol></div></div></div>
+    <div class="row section"><button class="btn primary" data-a="ancopy">Copy for Copilot or email</button><button class="btn plain" data-a="anslide">Download as one slide</button><button class="btn plain" data-a="launch" data-v="story" data-k="${p.id}">${icon("pen")}Build a deck with these</button></div>`;
+};
+// ---- Storyteller: a first draft in the selling format, fed by the numbers and the knowledge bank
+function storyData(p, m) {
+  const a = analystData(p), k = kbOf(p.cust), ck = catOf(p.market, p.cat), how = k.facts.find(f => /decide/i.test(f.topic)), win = ck && ck.facts.find(f => /wins/i.test(f.topic));
+  const ask = p.mc.sc.decision[0] || "agree the plan", buyerName = m.attendees[0] || "the buyer";
+  return [
+    ["Title", `${m.title}: ${p.objective.replace(/\.$/, "")}`, []],
+    ["Summarise the situation", `${p.cat} at ${p.cust}: ${eur(a.T.s)} in sales, ${pctS(a.T.g)} vs year ago${a.sh ? `, share ${a.sh[1]} (${a.sh[2]})` : ""}.`, [["de"]]],
+    ["State the idea", `Our proposal: ${ask.toLowerCase()}.`, []],
+    ["Explain how it works", how ? `Timing, space and mechanics, in their process: ${how.text}` : "Timing, space and mechanics, step by step.", how ? [["kb", how]] : []],
+    ["Reinforce the benefits", `${a.conv ? a.conv.text + " " : ""}${win ? win.text : ""}`.trim() || "Benefits in the customer's terms: shoppers, basket, growth.", [a.conv ? ["kb", a.conv] : null, win ? ["kb", win] : null].filter(Boolean)],
+    ["Suggest an easy next step", `Ask ${buyerName} to ${ask.toLowerCase()}, with a date before ${m.date || "the next review"}.`, []],
+  ];
+}
+V.story = () => {
+  const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid) || nextMeeting(p) || p.meetings[0], sl = storyData(p, m), open = p.meetings.filter(x => x.status !== "Done");
+  return head(`<button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>Storyteller</span>`, `Draft deck · ${esc(m.title)}`, `${sl.length} slides for ${m.minutes} minutes, in the selling format. Built from the project's meeting context, the numbers and the knowledge bank.`) + `
+    ${open.length > 1 ? `<div class="row" style="margin-bottom:14px"><span class="small muted">Meeting</span>${open.map(x => chipSel(x.title, x.id === m.id, "stmeet").replace(`data-v="${esc(x.title)}"`, `data-v="${x.id}"`)).join("")}</div>` : ""}
+    <div class="slides">${sl.map(([step, text, ev], i) => `<div class="slide"><span class="sn">${i + 1}</span><span><span class="label">${esc(step)}</span><br><b style="font-weight:600">${esc(text)}</b>${ev.length ? `<span class="ev">${ev.map(([k2, f]) => f ? `${srcMini(k2)} ${citeBtn(f.doc, f.loc)}` : `${srcMini(k2)} <span class="hint">calculated · ${PW[LASTW]}</span>`).join("")}</span>` : ""}</span></div>`).join("")}</div>
+    <div class="row section"><button class="btn primary" data-a="stcreate" data-v="${m.id}">Create in PowerPoint</button><button class="btn plain" data-a="stcopy">Copy outline for Copilot</button></div>
+    <p class="hint">Next: the draft goes to the meeting, where the Selling Coach can review it.</p>`;
+};
 // ---- Data & settings: where answers come from (product names live here)
 V.about = () => head("Where answers come from", "Data & settings", "Three sources, each with one job. You'll see their tags next to every number and fact.") + `
   <div class="explain">
@@ -1194,33 +1264,39 @@ V.about = () => head("Where answers come from", "Data & settings", "Three source
     <button class="src3 kb" data-a="go" data-v="sources">${tag("kb")}<b>Knowledge bank</b><span class="q">Why? What works? What does the buyer want?</span><span class="small">Facts from governed documents. Every fact links to its document.</span><span class="hint">See the documents, add domain knowledge →</span></button>
     <button class="src3 pc" data-a="go" data-v="personal">${tag("pc")}<b>Personal context</b><span class="q">Did I discuss this? Where?</span><span class="small">Counts where your emails, chats and meetings mention it, and opens Copilot. Nothing is stored.</span><span class="hint">Choose what it may use →</span></button></div>
   <div class="section"><button class="btn plain" data-a="go" data-v="copilot">${icon("chat")}See the assistant in Copilot</button></div>`;
-// ---- In Copilot: the assistant as a Copilot skill (A2A/MCP), same sources and tags
-const CP_CHIPS = ["Why is our share dropping at Carrefour?", "Review my deck for the range review", "Check my slides for legal risk"];
+// ---- In Copilot: each skill called by name (A2A/MCP), same sources and tags
+const CP_CHIPS = ["@Analyst key figures for my Carrefour power hour", "@Storyteller draft my Carrefour range review deck", "@Selling Coach review my range review deck", "@Stewardship check my slides for legal risk", "Why is our share dropping at Carrefour?"];
 function cpTurn(q) {
-  if (/deck|presentation|review my|coach/i.test(q)) return { kind: "coach", q };
-  if (/legal|disclaimer|stewardship|claim|risk on/i.test(q)) return { kind: "stew", q };
-  return { kind: "answer", q };
+  if (/@analyst|key figures|power hour|team connect/i.test(q)) return { kind: "analyst", q };
+  if (/@storyteller|draft|from zero|create .*deck|build .*deck/i.test(q)) return { kind: "story", q };
+  if (/@selling|review my|improve|coach/i.test(q)) return { kind: "coach", q };
+  if (/@stewardship|legal|disclaimer|claim/i.test(q)) return { kind: "stew", q };
+  return { kind: "answer", q: q.replace(/^@\S+( \S+){0,2} /, "") };
 }
+const cpSeed = () => [{ me: CP_CHIPS[0], ...cpTurn(CP_CHIPS[0]) }];
 function cpBot(t) {
-  const who = `<span class="who">${icon("spark")}AI Sales Assistant · skill</span>`;
+  const who = n => `<span class="who">${icon(n === "Analyst" ? "trend" : n === "Storyteller" ? "pen" : "spark")}${n}${n === "AI Sales Assistant" ? "" : " · skill"}</span>`;
+  const p = proj("P1"), m = p.meetings.find(x => x.id === "M1");
+  if (t.kind === "analyst") { const a = analystData(p);
+    return `<div class="bub bot">${who("Analyst")}<span>Key figures for <b>Carrefour · Fabric Care</b> (${PERIODS[state.per]}), internal version:</span><ol class="points">${[`Sales ${eur(a.T.s)}, ${pctS(a.T.g)} vs year ago`, `Last week ${eur(a.W.last)}, ${pctS(a.W.g)} vs previous week`, a.sh ? `${a.sh[0]} ${a.sh[1]}, ${a.sh[2]} ${a.sh[3]}` : "", `${pctS(a.gap)} vs internal plan`].filter(Boolean).map((x, i) => `<li><span class="pn de">N${i + 1}</span><span class="small">${esc(x)}</span></li>`).join("")}</ol>${a.alert ? `<span class="small">Watch: ${esc(a.alert.text)}</span>` : ""}<span class="row" style="gap:6px">${srcMini("de")}<button class="btn sm plain" data-a="pickproj" data-v="P1" data-k="analyst">Open in Analyst</button></span></div>`; }
+  if (t.kind === "story") { const sl = storyData(p, m);
+    return `<div class="bub bot">${who("Storyteller")}<span>A ${sl.length}-slide draft for <b>${esc(m.title)}</b>, in the selling format:</span><ol class="small" style="margin:0;padding-left:18px">${sl.map(([st, tx]) => `<li><b>${esc(st)}</b>: ${esc(tx.length > 90 ? tx.slice(0, 88) + "…" : tx)}</li>`).join("")}</ol><span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}<button class="btn sm primary" data-a="stcreate" data-v="M1">Create in PowerPoint</button><button class="btn sm plain" data-a="pickproj" data-v="P1" data-k="story">Open in Storyteller</button></span></div>`; }
   if (t.kind === "coach") {
-    const p = proj("P1"), m = p.meetings.find(x => x.id === "M1"), d = latestDeck(m), fb = feedbackFor(p, m, d), left = fb.steps.filter(x => x[1] !== "good").slice(0, 3);
-    return `<div class="bub bot">${who}<span>Score for <b>${esc(d.name)}</b>: <b>${fb.score.toFixed(1)}/5</b>, using your Carrefour project's meeting context.</span><span class="label">What's left to reach 5/5</span>${left.map(([n, st, tx]) => `<span class="small">• <b>${esc(n)}</b>: ${esc(tx)}</span>`).join("")}<span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}<button class="btn sm plain" data-a="meeting" data-v="P1" data-m="M1">Open full feedback</button></span></div>`;
+    const d = latestDeck(m), fb = feedbackFor(p, m, d), left = fb.steps.filter(x => x[1] !== "good").slice(0, 3);
+    return `<div class="bub bot">${who("Selling Coach")}<span>Score for <b>${esc(d.name)}</b>: <b>${fb.score.toFixed(1)}/5</b>, using your Carrefour project's meeting context.</span><span class="label">What's left to reach 5/5</span>${left.map(([n, st, tx]) => `<span class="small">• <b>${esc(n)}</b>: ${esc(tx)}</span>`).join("")}<span class="row" style="gap:6px"><button class="btn sm plain" data-a="meeting" data-v="P1" data-m="M1">Open full feedback</button></span></div>`;
   }
-  if (t.kind === "stew") return `<div class="bub bot">${who}<span>2 things to fix before this goes to a customer:</span><span class="small">• <b>Slide 6</b>: “cleans better than any other brand” is a comparative claim. Add the test reference and date.</span><span class="small">• <b>Slide 11</b>: the promotion price needs the legal price disclaimer for France.</span><span class="hint">Stewardship Coach · checked against the France rules</span></div>`;
+  if (t.kind === "stew") return `<div class="bub bot">${who("Stewardship Coach")}<span>2 things to fix before this goes to a customer:</span><span class="small">• <b>Slide 6</b>: “cleans better than any other brand” is a comparative claim. Add the test reference and date.</span><span class="small">• <b>Slide 11</b>: the promotion price needs the legal price disclaimer for France.</span></div>`;
   const r = answer(t.q, "");
-  return `<div class="bub bot">${who}<span>${esc(r.summary)}</span>${r.points.length ? `<ol class="points">${r.points.map((p, i) => `<li><span class="pn ${p.src}">${p.src === "de" ? "N" : "F"}${r.points.filter((q, j) => j <= i && q.src === p.src).length}</span><span class="small">${esc(p.text)}<br>${p.src === "de" ? srcMini("de") : `${srcMini("kb")} ${citeBtn(p.it.doc, p.it.loc)}`}</span></li>`).join("")}</ol>` : ""}<span><button class="btn sm plain" data-a="ask" data-v="${esc(t.q)}">Open in AI Sales Assistant</button></span></div>`;
+  return `<div class="bub bot">${who("AI Sales Assistant")}<span>${esc(r.summary)}</span>${r.points.length ? `<ol class="points">${r.points.map((p2, i) => `<li><span class="pn ${p2.src}">${p2.src === "de" ? "N" : "F"}${r.points.filter((q, j) => j <= i && q.src === p2.src).length}</span><span class="small">${esc(p2.text)}<br>${p2.src === "de" ? srcMini("de") : `${srcMini("kb")} ${citeBtn(p2.it.doc, p2.it.loc)}`}</span></li>`).join("")}</ol>` : ""}<span><button class="btn sm plain" data-a="ask" data-v="${esc(t.q)}">Open in AI Sales Assistant</button></span></div>`;
 }
 V.copilot = () => {
-  const turns = state.cp.length ? state.cp : [{ me: "@AI Sales Assistant why is our share dropping at Carrefour?", ...cpTurn("Why is our share dropping at Carrefour?") }];
-  return head(`<button data-a="go" data-v="about">Data & settings</button>`, "In Copilot", "The same assistant as a Copilot skill: same three sources, same tags, nothing to upload. The website stays for the deeper work.") + `
-    <div class="cpwrap"><div class="cpframe" aria-label="Copilot preview"><div class="cphd"><span class="pico" style="background:#E8EBF2;color:var(--slate)">${icon("chat")}</span>Copilot <span class="pill neutral" style="margin-left:auto">Preview of the skill</span></div>
-      <div class="cplog" id="cplog">${turns.map(t => `<div class="bub me">${esc(t.me)}${t.kind === "coach" ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : t.kind === "stew" ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : ""}</div>${cpBot(t)}`).join("")}</div>
-      <form class="cpbox"><input name="q" aria-label="Message Copilot" placeholder="@AI Sales Assistant …"><button class="btn primary sm" type="submit">Send</button></form></div>
-      <div class="stack" style="gap:16px"><div class="card"><div class="card-hd">Try it</div><div class="pad stack">${CP_CHIPS.map(q => `<button class="btn sm plain" data-a="cpchip" data-v="${esc(q)}" style="justify-content:flex-start;white-space:normal;text-align:left">${esc(q)}</button>`).join("")}<button class="btn ghost small" data-a="cpreset" style="color:var(--primary)">Start again</button></div></div>
-        <div class="card"><div class="card-hd">Why a Copilot skill</div><div class="pad stack small">
-          <p>Salespeople spend their day in Copilot. Opening another site to upload a deck is the main reason they skip coaching.</p>
-          <p><b>Decks come from OneDrive or SharePoint</b>: no download and upload.</p><p><b>Answers keep the three source tags</b>, so trust travels with them.</p><p><b>The website stays</b> for projects, the knowledge bank and the full feedback.</p></div></div></div></div>`;
+  const turns = state.cp.length ? state.cp : cpSeed();
+  return head(`<button data-a="go" data-v="about">Data & settings</button>`, "In Copilot", "Copilot does the general work. Our skills add what it doesn't have: the company's numbers, company knowledge and the selling method.") + `
+    <div class="cpwrap"><div class="cpframe" aria-label="Copilot preview"><div class="cphd"><span class="pico" style="background:#E8EBF2;color:var(--slate)">${icon("chat")}</span>Copilot <span class="pill neutral" style="margin-left:auto">Preview of the skills</span></div>
+      <div class="cplog" id="cplog">${turns.map(t => `<div class="bub me">${esc(t.me)}${["coach", "stew"].includes(t.kind) ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : ""}</div>${cpBot(t)}`).join("")}</div>
+      <form class="cpbox"><input name="q" aria-label="Message Copilot" placeholder="@Analyst, @Storyteller, @Selling Coach…"><button class="btn primary sm" type="submit">Send</button></form></div>
+      <div class="stack" style="gap:16px"><div class="card"><div class="card-hd">Try a skill</div><div class="pad stack">${CP_CHIPS.map(q => `<button class="btn sm plain" data-a="cpchip" data-v="${esc(q)}" style="justify-content:flex-start;white-space:normal;text-align:left">${esc(q)}</button>`).join("")}<button class="btn ghost small" data-a="cpreset" style="color:var(--primary)">Start again</button></div></div>
+        <div class="card"><div class="card-hd">How the skills fit together</div><div class="pad stack small">${["analyst", "story", "coach"].map(k => `<p><b>${SKILLS[k].cp}</b> · ${SKILLS[k].step.replace(/^\d · /, "")}: ${SKILLS[k].line}</p>`).join("")}<p><b>@Role-play</b> and <b>@Stewardship</b> · before you go.</p><p class="hint">Decks come from OneDrive or SharePoint: nothing to download and upload.</p></div></div></div></div>`;
 };
 AFTER.copilot = () => { const l = $("#cplog"); if (l) l.scrollTop = l.scrollHeight; };
 // ---- Decision Engine: the numbers, how they are calculated, and when they create an alert
@@ -1411,7 +1487,20 @@ function overviewTab(p) {
     </div><aside class="side">${knowCard(p)}${contextCard(p)}
       <div class="card"><div class="card-hd">Recent activity</div><div class="pad"><div class="timeline">${p.activity.slice(0, 4).map(([d, who, t]) => `<div>${esc(t[0].toUpperCase() + t.slice(1))}<br><span class="hint">${esc(d)}</span></div>`).join("")}</div></div></div></aside></div>`;
 }
+// The meeting flow: get the facts, build the story, improve the deck, then rehearse and check
+const SKILLS = {
+  analyst: { ic: "trend", name: "Analyst", step: "1 · Get the facts", line: "Key figures for your power hour, team connect or customer meeting.", cta: "Get key figures", cp: "@Analyst" },
+  story: { ic: "pen", name: "Storyteller", step: "2 · Build the story", line: "Drafts your deck from zero, with the numbers and facts already in.", cta: "Start a deck", cp: "@Storyteller" },
+  coach: { ic: "coach", name: "Selling Coach", step: "3 · Improve the deck", line: "Scores an existing deck and shows what's left to reach 5/5.", cta: "Review a deck", cp: "@Selling Coach" },
+  roleplay: { ic: "mic", name: "Role-play Coach", step: "Before you go", line: "Rehearse with a voice agent that plays your buyer.", cta: "Rehearse", cp: "@Role-play" },
+  qa: { ic: "chat", name: "Stewardship Coach", step: "Before you go", line: "Checks slides for legal risk and missing disclaimers.", cta: "Check slides", cp: "@Stewardship" },
+};
+const skillCard = (k, small) => { const x = SKILLS[k]; return small
+  ? `<div class="skill small"><span class="sico">${icon(x.ic)}</span><span><b style="font-size:14px">${x.name}</b><br><span class="hint">${x.line}</span></span><button class="btn sm plain" data-a="hometool" data-v="${k}">${x.cta}</button></div>`
+  : `<div class="skill"><span class="row" style="justify-content:space-between"><span class="sico">${icon(x.ic)}</span><span class="step">${x.step}</span></span><b>${x.name}</b><span class="small">${x.line}</span><span class="cpname">In Copilot: ${x.cp}</span><div style="margin-top:6px"><button class="btn primary sm" data-a="hometool" data-v="${k}">${x.cta}</button></div></div>`; };
 const TOOLDEFS = [
+  ["analyst", "trend", "Analyst", "Key figures for your power hour, team connect or customer meeting, ready to paste.", ["Sales vs year ago", "Share and stock", "Customer-safe version", "Talking points"], "Get key figures"],
+  ["story", "pen", "Storyteller", "Drafts your deck from zero in the selling format, with numbers and facts already in.", ["Deck from zero", "Selling format", "Numbers and cited facts", "Hands over to the Selling Coach"], "Start a deck"],
   ["coach", "coach", "Selling Coach", "Upload your presentation and get AI-powered feedback to improve your content based on the sales framework.", ["Upload your sales material", "AI feedback & scoring", "PSF sales framework", "Improvement recommendations"], "Start Coaching"],
   ["roleplay", "mic", "Role-play Coach", "Practise the meeting out loud with a voice agent that plays your buyer, then get scored feedback.", ["Voice-based practice", "Meeting rehearsal", "Objection handling", "Real-time feedback"], "Start Practice"],
   ["qa", "chat", "Stewardship Coach", "Checks your slides for legal risk and missing disclaimers before they reach a customer.", ["Legal risk on slides", "Missing disclaimers", "Antitrust guidance", "Global and local rules"], "Check my slides"],
@@ -1423,7 +1512,7 @@ function toolCards(ctx, act) {
 }
 function toolsRow(p) {
   const n = pbuyers(p).length;
-  const ctx = { coach: `Starts from the project's meeting context (version ${p.mc.v}). No Step 2 to fill in.`, roleplay: n ? `Personas from ${plural(n, "buyer profile", "buyer profiles")} in this project` : "Add a buyer profile to practise with a persona", qa: `Answers set for ${esc(p.market)} and ${esc(p.cat)}` };
+  const ctx = { analyst: `Key figures for ${esc(p.cust)} · ${esc(p.cat)}`, story: `Draft for your next meeting, in the selling format`, coach: `Starts from the project's meeting context (version ${p.mc.v}). No Step 2 to fill in.`, roleplay: n ? `Personas from ${plural(n, "buyer profile", "buyer profiles")} in this project` : "Add a buyer profile to practise with a persona", qa: `Answers set for ${esc(p.market)} and ${esc(p.cat)}` };
   return `<div class="section" style="margin:0 0 20px"><div class="spread" style="margin-bottom:12px"><h2 class="section-title">Tools for this project</h2><span class="hint">Each tool starts with this project's context.</span></div>${toolCards(k => ctx[k], "tool")}</div>`;
 }
 function pickProject(k) {
@@ -1730,6 +1819,8 @@ function confirmDelete(p) {
 }
 function launchTool(p, k) {
   const m = nextMeeting(p);
+  if (k === "analyst") { go("analyst", { pid: p.id }); return; }
+  if (k === "story") { const t = m || p.meetings[0]; if (!t) { toast("Add a meeting first: the Storyteller builds the deck for it."); meetingForm(p, null); return; } go("story", { pid: p.id, mid: t.id }); return; }
   if (k === "coach") {
     const open = p.meetings.filter(x => x.status !== "Done");
     if (open.length === 1) go("meeting", { mid: open[0].id });
@@ -1803,6 +1894,15 @@ document.addEventListener("click", e => {
     case "hideexplain": state.hideExplain = true; render(); break;
     case "gshide": state.gsHide = true; render(); break;
     case "gsopen": state.gsOpen = !state.gsOpen; render(); break;
+    case "anaud": state.anAud = v; render(); break;
+    case "ancopy": toast(state.anAud === "external" ? "Customer-safe key figures copied, with their sources." : "Key figures and talking points copied, with their sources. Paste them in Copilot or an email."); break;
+    case "anslide": toast("In the live tool this downloads one slide with these key figures and their sources."); break;
+    case "launch": launchTool(proj(el.dataset.k), v); break;
+    case "stmeet": state.mid = v; render(); break;
+    case "stcopy": toast("Outline copied. Paste it in Copilot to keep working on the wording."); break;
+    case "stcreate": { const pp = proj(state.view === "story" ? state.pid : "P1"), mm = pp.meetings.find(x => x.id === v); const vv = mm.decks.length + 1, name = `${mm.title} draft (Storyteller).pptx`;
+      mm.decks.push({ v: vv, name, uploaded: TODAY, by: "VB", slides: 6, result: null }); log(pp, `created ${name} with the Storyteller`); state.pid = pp.id; go("meeting", { mid: mm.id });
+      toast("Draft created and added to the meeting. Next: get Selling Coach feedback on it."); break; }
     case "ctab": state.ctab = v; render(); break;
     case "gtab": state.gtab = v; render(); break;
     case "pdet": state.pdet = !state.pdet; render(); break;
@@ -1817,7 +1917,7 @@ document.addEventListener("click", e => {
       <div class="field"><label for="rq-n">Customer</label><input id="rq-n" name="n" required placeholder="e.g. Metro"></div>
       <div class="field"><label for="rq-m">Market</label><select id="rq-m" name="m">${KB_MARKETS.map(x => `<option>${x}</option>`).join("")}</select></div>
       <div class="field"><label for="rq-w">Why you need it (optional)</label><input id="rq-w" name="w" placeholder="e.g. I prepare the yearly negotiation with them"></div>`, fd => { toast(`Request sent for ${fd.get("n").trim()} (${fd.get("m")}). You'll get an email when it's set up.`); }, "Send request"); break;
-    case "cpchip": state.cp = [...(state.cp.length ? state.cp : [{ me: "@AI Sales Assistant why is our share dropping at Carrefour?", ...cpTurn("Why is our share dropping at Carrefour?") }]), { me: `@AI Sales Assistant ${v.charAt(0).toLowerCase() + v.slice(1)}`, ...cpTurn(v) }]; render(); break;
+    case "cpchip": state.cp = [...(state.cp.length ? state.cp : cpSeed()), { me: v.startsWith("@") ? v : `@AI Sales Assistant ${v.charAt(0).toLowerCase() + v.slice(1)}`, ...cpTurn(v) }]; render(); break;
     case "cpreset": state.cp = []; render(); break;
     case "follow": { const on = isF(v); state.follow = on ? state.follow.filter(x => x !== v) : [...state.follow, v]; render(); toast(on ? "Unfollowed. It no longer appears in What changed on Home." : "Following. Its changes now appear on Home."); break; }
     case "fb": if (v === "wrong") { toast("Use the source link next to the fact: the knowledge bank team corrects facts by fixing or replacing the document."); break; }
@@ -1856,7 +1956,7 @@ document.addEventListener("click", e => {
   }
 });
 document.addEventListener("submit", e => {
-  if (e.target.matches(".cpbox")) { e.preventDefault(); const q = e.target.q.value.trim(); if (!q) return; state.cp = [...(state.cp.length ? state.cp : [{ me: "@AI Sales Assistant why is our share dropping at Carrefour?", ...cpTurn("Why is our share dropping at Carrefour?") }]), { me: q.startsWith("@") ? q : `@AI Sales Assistant ${q}`, ...cpTurn(q.replace(/^@\S+( \S+){0,2} /, "")) }]; render(); return; }
+  if (e.target.matches(".cpbox")) { e.preventDefault(); const q = e.target.q.value.trim(); if (!q) return; state.cp = [...(state.cp.length ? state.cp : cpSeed()), { me: q.startsWith("@") ? q : `@AI Sales Assistant ${q}`, ...cpTurn(q) }]; render(); return; }
   if (!e.target.matches(".askbox")) return; e.preventDefault();
   const q = e.target.q.value.trim(); if (!q) { e.target.q.focus(); return; }
   go("ask", { ask: q, askCust: e.target.dataset.askcust || "" });
