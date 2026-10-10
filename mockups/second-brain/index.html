@@ -224,59 +224,6 @@ button.src3:hover { box-shadow: var(--shadow); }
 .gstep .tick { width: 22px; height: 22px; }
 .moment { display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--light-gray); }
 .moment:last-child { border-bottom: 0; }
-/* Assistant workspace: chats | conversation | files and context (Cowork-style) */
-.app.wsmode { grid-template-columns: 64px minmax(0, 1fr); }
-.app.wsmode .sidebar { padding: 14px 8px; }
-.app.wsmode .sidebar .navitem { font-size: 0; justify-content: center; padding: 10px 0; gap: 0; }
-.app.wsmode .sidebar .navitem .count { display: none; }
-.app.wsmode .main { overflow: hidden; }
-.app.wsmode .content { max-width: none; padding: 0; height: 100%; }
-.wsgrid { display: grid; grid-template-columns: 240px minmax(0, 1fr) 330px; height: 100%; min-height: 0; }
-.wsl { border-right: 1px solid var(--light-gray); background: var(--surface); padding: 14px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; min-height: 0; }
-.wsl .grp { font: 700 11px var(--inter); color: var(--steel); text-transform: uppercase; letter-spacing: .04em; margin: 14px 8px 4px; }
-.chatitem { text-align: left; border: 1px solid transparent; background: none; border-radius: 8px; padding: 7px 10px; font-size: 13px; color: var(--slate); display: grid; gap: 1px; width: 100%; cursor: pointer; }
-.chatitem .hint { font-size: 11px; }
-.chatitem:hover { background: var(--white); }
-.chatitem[aria-current="true"] { background: var(--white); border-color: var(--light-gray); box-shadow: var(--shadow); color: var(--ink); font-weight: 600; }
-.wsc { display: grid; grid-template-rows: auto minmax(0, 1fr) auto; min-height: 0; background: #F7F7F9; }
-.wshd { display: flex; gap: 10px; align-items: center; padding: 10px 18px; background: var(--white); border-bottom: 1px solid var(--light-gray); flex-wrap: wrap; }
-.wshd b { font-size: 15px; }
-.wshd select { border: 1px solid var(--border-default); border-radius: 8px; padding: 5px 8px; font: inherit; font-size: 12.5px; background: var(--white); max-width: 230px; }
-.wsc .cplog { padding: 20px 24px; }
-.wsempty { display: grid; gap: 12px; justify-items: center; text-align: center; padding: 48px 16px; }
-.wsempty .starts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: 100%; max-width: 640px; }
-.wsempty .starts button { text-align: left; display: grid; gap: 4px; background: var(--white); border: 1px solid var(--light-gray); border-radius: 12px; padding: 12px; cursor: pointer; font: inherit; font-size: 13px; }
-.wsempty .starts button:hover { border-color: var(--primary); }
-.wscomp { padding: 10px 18px 14px; background: var(--white); border-top: 1px solid var(--light-gray); display: grid; gap: 8px; }
-.wscomp .skrow { display: flex; gap: 6px; flex-wrap: wrap; }
-.wscomp .skrow button { border: 1px solid var(--light-gray); background: var(--surface); border-radius: 999px; padding: 3px 10px; font-size: 12px; color: var(--primary); cursor: pointer; }
-.wsbox { display: flex; gap: 8px; align-items: center; border: 1px solid var(--border-default); border-radius: 12px; padding: 6px 6px 6px 8px; }
-.wsbox input[name=q] { flex: 1; border: 0; outline: 0; font-size: 14px; min-width: 0; background: none; padding: 6px 0; }
-.wsbox:focus-within { outline: 2px solid var(--border-primary-light); }
-.wsr { border-left: 1px solid var(--light-gray); background: var(--white); display: grid; grid-template-rows: auto minmax(0, 1fr); min-height: 0; }
-.rtabs { display: flex; border-bottom: 1px solid var(--light-gray); }
-.rtabs button { flex: 1; border: 0; background: none; padding: 12px 6px; font: inherit; font-size: 13px; color: var(--steel); border-bottom: 2px solid transparent; cursor: pointer; }
-.rtabs button[aria-selected="true"] { color: var(--primary); border-color: var(--primary); font-weight: 600; }
-.rbody { padding: 14px 16px 24px; display: grid; gap: 8px; align-content: start; overflow-y: auto; }
-.rbody .label { margin-top: 8px; }
-.frow { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--light-gray); font-size: 13px; }
-.frow .fileico { width: 34px; height: 34px; font-size: 9.5px; }
-.frow b { font-weight: 600; overflow-wrap: anywhere; }
-.wsmob { display: none; gap: 8px; padding: 8px 12px; background: var(--white); border-bottom: 1px solid var(--light-gray); }
-@media (max-width: 1100px) {
-  .wsgrid { grid-template-columns: 220px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); }
-  .wsmob { display: flex; grid-column: 1 / -1; }
-  .wsr { display: none; }
-  .wsgrid.pane-r .wsr { display: grid; } .wsgrid.pane-r .wsc { display: none; }
-  .wsempty .starts { grid-template-columns: minmax(0, 1fr); }
-}
-@media (max-width: 820px) {
-  .app.wsmode { grid-template-columns: minmax(0, 1fr); }
-  .app.wsmode .sidebar { padding: 8px 12px; }
-  .app.wsmode .sidebar .navitem { font-size: 13px; justify-content: flex-start; padding: 9px 11px; gap: 11px; }
-  .wsgrid { grid-template-columns: minmax(0, 1fr); }
-  .wsl { display: none; } .wsgrid.pane-l .wsl { display: flex; } .wsgrid.pane-l .wsc { display: none; }
-}
 .cpwrap { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 20px; align-items: start; }
 @media (max-width: 900px) { .cpwrap { grid-template-columns: minmax(0, 1fr); } }
 .cpframe { border: 1px solid var(--border-default); border-radius: 16px; background: #F7F7F9; overflow: hidden; display: grid; grid-template-rows: auto minmax(0, 1fr) auto; height: 640px; }
@@ -913,7 +860,6 @@ function log(p, text) { p.activity.unshift([TODAY, "VB", text]); p.updated = TOD
 const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", ctab: "numbers", gtab: "numbers", gs: { buyers: false, pinned: false }, gsHide: false, notify: {}, cp: [], follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
 const NAV = [
   { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
-  { id: "ws", label: "Assistant", icon: "chat", match: ["ws"] },
   { id: "kb", label: "Customers", icon: "store", match: ["kb", "category", "customer", "buyer"] },
   { id: "projects", label: "My Projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
   { id: "about", label: "Data & settings", icon: "building", match: ["about", "sources", "source", "de", "personal", "copilot"] },
@@ -922,10 +868,10 @@ function renderNav() {
   const cur = NAV.find(n => n.match.includes(state.view));
   $("#nav").classList.toggle("open", state.navOpen);
   $("#nav").innerHTML = `<button class="navtoggle" data-a="navtoggle" aria-expanded="${state.navOpen}">${icon("grid")}<span>${cur ? cur.label : "Menu"}</span><span style="margin-left:auto;font-size:12px;color:var(--steel);font-weight:500">${state.navOpen ? "Close" : "Menu"}</span></button>` +
-    NAV.map(n => `<button class="navitem" data-a="go" data-v="${n.id}" aria-current="${n.match.includes(state.view)}" title="${n.label}">${icon(n.icon)}${n.label}${n.id === "projects" ? `<span class="count">${PROJECTS.filter(p => p.status === "Active").length}</span>` : ""}</button>`).join("");
+    NAV.map(n => `<button class="navitem" data-a="go" data-v="${n.id}" aria-current="${n.match.includes(state.view)}">${icon(n.icon)}${n.label}${n.id === "projects" ? `<span class="count">${PROJECTS.filter(p => p.status === "Active").length}</span>` : ""}</button>`).join("");
 }
 function head(crumb, title, sub, actions = "") { return `<div class="crumb">${crumb}</div><div class="pagehead"><div><h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ""}</div>${actions ? `<div class="actions">${actions}</div>` : ""}</div>${NOTE}`; }
-function render() { renderNav(); $(".app").classList.toggle("wsmode", state.view === "ws"); $("#view").innerHTML = V[state.view](); AFTER[state.view]?.(); applyNotes(); }
+function render() { renderNav(); $("#view").innerHTML = V[state.view](); AFTER[state.view]?.(); applyNotes(); }
 // Numbered notes that explain the intended behaviour to the vendor building it
 const NOTES = {
   sources: [["#view .actions .btn", "PoC: upload single files or batches in 13 formats. People set the 9 facets; nothing is guessed."], ["#view .facetbar", "PoC: browse sources across sessions by facet. A document with an unset facet applies to every value at that level."], ["#view .srcrow", "PoC: processing status per file, including why a file was rejected. Governed uploads are trusted: no fact-by-fact review."]],
@@ -937,9 +883,8 @@ const NOTES = {
   buyer: [["#view .kcard", "What the whole company knows about this buyer."], ["#view .pcline", "No emails or meeting notes here: Copilot already summarises them."]],
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
   ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
-  ws: [["#view .wsl", "Left, like Claude Cowork: your chats, grouped by project. A chat remembers its project, so context is never typed again."], ["#view .wshd select", "Attach a project to a chat: its deck, documents and “About the meeting” become the chat's inputs."], ["#view .wscomp", "One chat, any skill: type @ or tap a skill. Same skills and sources as in Copilot."], ["#view .rtabs", "Right: Files (made in this chat / used by this chat), Context (what the assistant is using, with sources) and Skills."], ["#view .wsr .rbody", "Decision to make: build this space, or rely on Copilot's own Cowork and keep the website for knowledge and progress. Building both doubles the work."]],
   copilot: [["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Dependency to confirm: Cowork skills are instruction files; reaching the Decision Engine and knowledge bank needs a plugin or MCP connector. IT can push approved skills to sales groups."], ["#view .deckpane", "With Office in Copilot the deck opens next to the chat; Selling Coach fixes are applied in the deck, not listed."]],
-  home: [["#view .askbox", "Find first: the box jumps to a customer, category or buyer page; anything else opens a new chat in the Assistant."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .skills", "Skills in meeting order: Analyst gets the facts, Storyteller builds the deck, Selling Coach improves it. Each also works in Copilot by name."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
+  home: [["#view .askbox", "Find, not chat: Copilot is the chat. The box jumps to a customer, category or buyer page; anything else is asked in Copilot."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .skills", "Skills in meeting order: Analyst gets the facts, Storyteller builds the deck, Selling Coach improves it. Each also works in Copilot by name."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
   analyst: [["#view .seg", "Internal (power hour, team connect) or customer-safe: the customer version leaves out plans, targets and margins."], ["#view .figs", "Every figure comes from the Decision Engine, never generated."], ["#view .points", "Talking points say where each one comes from."]],
   story: [["#view .slides", "Our part: the storyline in the selling format, with governed numbers and cited facts."], ["#view .row.section", "Microsoft's part: Office in Copilot builds the slides. To check: Frontier-only rollout, and how a skill passes our content to PowerPoint (plugin or MCP connector)."]],
   about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."], ["#view .pcard", "Real settings, in one place: personal sources, what you follow, Copilot."]],
@@ -1017,7 +962,7 @@ V.home = () => {
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
   return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Prepare your meetings end to end, with numbers you can trust and facts with sources.</p></div>${NOTE}
     <form class="askbox findbox" role="search">${icon("search")}<input name="q" list="findlist" aria-label="Find a customer, category or buyer" placeholder="Find a customer, category or buyer…"><datalist id="findlist">${findItems().map(x => `<option value="${esc(x[0])}">`).join("")}</datalist><button class="btn primary sm" type="submit">Go</button></form>
-    <p class="hint" style="margin:6px 2px 0">Anything else is asked in the <button class="btn ghost small" data-a="go" data-v="ws" style="color:var(--primary);padding:0">Assistant</button>, with the same sources as in Copilot.</p>
+    <p class="hint" style="margin:6px 2px 0">Questions? Ask in Copilot, with the same sources.</p>
     ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="setup"><span><b>Finish setting up</b> · ${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gsopen" style="color:var(--primary)">${state.gsOpen ? "Hide steps" : "Show steps"}</button><button class="btn ghost small" data-a="gshide" style="color:var(--steel);margin-left:auto">Not now</button></div>
       ${state.gsOpen ? `<div class="card" style="margin-top:8px"><div class="pad gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}<div class="row"><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div>` : ""}</div>`}
     <div class="section">${qhd("Prepare a meeting", "Each skill also works in Copilot: type @ and its name", `<button class="btn ghost small" data-a="go" data-v="copilot" style="color:var(--primary)">See it in Copilot</button>`)}
@@ -1356,7 +1301,7 @@ function cpBot(t) {
   const who = n => `<span class="who">${icon(n === "Analyst" ? "trend" : n === "Storyteller" ? "pen" : "spark")}${n}${n === "AI Sales Assistant" ? "" : " · skill"}</span>`;
   const p = proj(t.pid || "P1"), m = p.meetings.find(x => x.id === (t.mid || "M1")) || p.meetings[0];
   if (t.kind === "analyst") { const a = analystData(p);
-    return `<div class="bub bot">${who("Analyst")}<span>Key figures for <b>${esc(p.cust)} · ${esc(p.cat)}</b> (${PERIODS[state.per]}), internal version:</span><ol class="points">${[`Sales ${eur(a.T.s)}, ${pctS(a.T.g)} vs year ago`, `Last week ${eur(a.W.last)}, ${pctS(a.W.g)} vs previous week`, a.sh ? `${a.sh[0]} ${a.sh[1]}, ${a.sh[2]} ${a.sh[3]}` : "", `${pctS(a.gap)} vs internal plan`].filter(Boolean).map((x, i) => `<li><span class="pn de">N${i + 1}</span><span class="small">${esc(x)}</span></li>`).join("")}</ol>${a.alert ? `<span class="small">Watch: ${esc(a.alert.text)}</span>` : ""}<span class="row" style="gap:6px">${srcMini("de")}<button class="btn sm plain" data-a="pickproj" data-v="${p.id}" data-k="analyst">Open in Analyst</button></span></div>`; }
+    return `<div class="bub bot">${who("Analyst")}<span>Key figures for <b>Carrefour · Fabric Care</b> (${PERIODS[state.per]}), internal version:</span><ol class="points">${[`Sales ${eur(a.T.s)}, ${pctS(a.T.g)} vs year ago`, `Last week ${eur(a.W.last)}, ${pctS(a.W.g)} vs previous week`, a.sh ? `${a.sh[0]} ${a.sh[1]}, ${a.sh[2]} ${a.sh[3]}` : "", `${pctS(a.gap)} vs internal plan`].filter(Boolean).map((x, i) => `<li><span class="pn de">N${i + 1}</span><span class="small">${esc(x)}</span></li>`).join("")}</ol>${a.alert ? `<span class="small">Watch: ${esc(a.alert.text)}</span>` : ""}<span class="row" style="gap:6px">${srcMini("de")}<button class="btn sm plain" data-a="pickproj" data-v="P1" data-k="analyst">Open in Analyst</button></span></div>`; }
   if (t.kind === "story") { const sl = storyData(p, m);
     return `<div class="bub bot">${who("Storyteller")}<span>Built a ${sl.length}-slide draft for <b>${esc(m.title)}</b>, in the selling format, with the numbers and facts in.</span><span class="deckpane">${icon("file")}<b>${esc(m.title)} · draft.pptx</b><span class="hint">PowerPoint · opened next to this chat · saved to OneDrive</span><span class="thumbs">${sl.map((x, i) => `<span class="thumb">${i + 1}</span>`).join("")}</span></span><span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}</span></div>`; }
   if (t.kind === "coach") {
@@ -1377,64 +1322,6 @@ V.copilot = () => {
       <div class="stack" style="gap:16px"><div class="card"><div class="card-hd">Try a skill</div><div class="pad stack">${CP_CHIPS.map(q => `<button class="btn sm plain" data-a="cpchip" data-v="${esc(q)}" style="justify-content:flex-start;white-space:normal;text-align:left">${esc(q)}</button>`).join("")}<button class="btn ghost small" data-a="cpreset" style="color:var(--primary)">Start again</button></div></div>
         <div class="card"><div class="card-hd">How the skills fit together</div><div class="pad stack small">${["analyst", "story", "coach"].map(k => `<p><b>${SKILLS[k].cp}</b> · ${SKILLS[k].step.replace(/^\d · /, "")}: ${SKILLS[k].line}</p>`).join("")}<p><b>@Role-play</b> and <b>@Stewardship</b> · before you go.</p><p class="hint">With Office in Copilot, the deck opens next to the chat: the Storyteller builds it, the Selling Coach fixes it in place. Files stay in OneDrive.</p></div></div></div></div>`;
 };
-// ---- Assistant: chats on the left, the conversation in the middle, files and context on the right
-const CHATS = [
-  { id: "C1", title: "Key figures for my power hour", pid: "P1", when: "Today", turns: [{ me: "@Analyst key figures for my Carrefour power hour", kind: "analyst" }] },
-  { id: "C2", title: "Draft the range review deck", pid: "P1", when: "Yesterday", turns: [{ me: "@Storyteller draft my range review deck", kind: "story", mid: "M1" }] },
-  { id: "C3", title: "Review range review v2", pid: "P1", when: "Yesterday", turns: [{ me: "@Selling Coach review this deck", kind: "coach", mid: "M1" }, { me: "@Stewardship check my slides for legal risk", kind: "stew" }] },
-  { id: "C4", title: "Activation plan figures", pid: "P2", when: "28 Sep", turns: [{ me: "@Analyst key figures for the activation plan review", kind: "analyst" }] },
-  { id: "C5", title: "Why is our share dropping at Carrefour?", pid: null, when: "25 Sep", turns: [{ me: "Why is our share dropping at Carrefour?", kind: "answer", q: "Why is our share dropping at Carrefour?" }] },
-];
-const chatOf = () => CHATS.find(c => c.id === state.chat) || CHATS[0];
-const WS_SKILLS = [["analyst", "@Analyst "], ["story", "@Storyteller "], ["coach", "@Selling Coach "], ["roleplay", "@Role-play "], ["qa", "@Stewardship "]];
-function chatTurn(c, t) { const pp = proj(t.pid || c.pid || "P1"); return { ...t, pid: pp.id, mid: t.mid || (nextMeeting(pp) || pp.meetings[0] || {}).id }; }
-function chatOutputs(c) {
-  return c.turns.flatMap(t0 => { const t = chatTurn(c, t0), pp = proj(t.pid), m = pp.meetings.find(x => x.id === t.mid);
-    if (t.kind === "analyst") return [["PPTX", `Key figures · ${pp.cust} · ${PERIODS[state.per]}.pptx`, "1 slide · Analyst"]];
-    if (t.kind === "story" && m) return [["PPTX", `${m.title} · draft.pptx`, "6 slides · Storyteller · OneDrive"]];
-    if (t.kind === "coach" && m && latestDeck(m)) { const d = latestDeck(m); return [["FB", `Feedback · ${d.name}`, `${feedbackFor(pp, m, d).score.toFixed(1)}/5 · Selling Coach`]]; }
-    if (t.kind === "stew") return [["FB", "Legal check", "2 things to fix · Stewardship Coach"]];
-    return []; });
-}
-function wsFiles(c) {
-  const p = c.pid && proj(c.pid), m = p && (nextMeeting(p) || p.meetings[0]), d = m && latestDeck(m), out = chatOutputs(c);
-  const row = (ico, n, sub, btn) => `<div class="frow"><span class="fileico">${ico}</span><span><b>${esc(n)}</b><br><span class="hint">${esc(sub)}</span></span>${btn}</div>`;
-  const open = `<button class="btn ghost small" data-a="wsopenfile" style="color:var(--primary)">Open</button>`;
-  return `<span class="label">Made in this chat</span>${out.length ? out.map(([i, n, sub]) => row(i, n, sub, open)).join("") : `<p class="hint">Nothing yet. Decks, slides and feedback you create here appear here.</p>`}
-    <span class="label">Used by this chat</span>${p ? `${d ? row("PPTX", d.name, `${m.title} · linked from OneDrive`, open) : ""}${row("ABT", "About the meeting", `${OBJECTIVES[p.mc.obj]} · ${p.mc.minutes} min`, `<button class="btn ghost small" data-a="ctxtab" style="color:var(--primary)">Edit</button>`)}${p.files.map(f => row(f.kind.toUpperCase(), f.name, `Project document · ${f.added}`, open)).join("")}${(c.extra || []).map(n => row(n.split(".").pop().toUpperCase().slice(0, 4), n, "Added to this chat", "")).join("")}`
-      : `<p class="hint">No project attached: answers use all company knowledge. Attach a project at the top to add its deck and documents.</p>`}
-    <label class="btn sm plain" style="cursor:pointer;justify-self:start;margin-top:6px">${icon("plus")}Add a file<input type="file" class="vh" data-up="wsfile"></label>`;
-}
-function wsContext(c) {
-  const p = c.pid && proj(c.pid);
-  if (!p) return `<p class="small">This chat has no project, so it uses everything you can see:</p>${explainer(false)}`;
-  const T = totP(series(p.cust, p.cat)), sh = shareOf(kbOf(p.cust).cats[p.cat]), k = kbOf(p.cust), facts = k.facts.slice(0, 2);
-  return `<span class="label">About the meeting</span><span class="small">${esc(OBJECTIVES[p.mc.obj])} · ${p.mc.minutes} min · ${pbuyers(p).map(b => esc(b.name)).join(", ") || "no buyer yet"}</span>
-    <span class="label">${tag("de")}</span><div class="spread small"><span>Sales · ${esc(PERIODS[state.per])}</span><b>${eur(T.s)} <span class="${dirC(T.g)}">${pctS(T.g)}</span></b></div>${sh ? `<div class="spread small"><span>${esc(sh[0])}</span><b>${esc(sh[1])} <span class="${sh[4]}">${esc(sh[2])}</span></b></div>` : ""}
-    <span class="label">${tag("kb")}</span>${facts.map(f => `<div class="small">${esc(f.text)}<br>${citeBtn(f.doc, f.loc)}</div>`).join("")}
-    ${pcLine(pcCount(x => x.cust === p.cust), p.cust)}
-    <div class="row" style="margin-top:6px"><button class="btn sm plain" data-a="cust" data-v="${esc(p.cust)}" data-k="${esc(p.cat)}">Open ${esc(p.cust)}</button><button class="btn sm plain" data-a="open" data-v="${p.id}">Open the project</button></div>`;
-}
-function wsSkills() {
-  return `<p class="small">Type @ in the chat, or pick one. Each skill uses this chat's project, files and context.</p>${["analyst", "story", "coach", "roleplay", "qa"].map(k => skillCard(k, true).replace('data-a="hometool" data-v="' + k + '"', `data-a="wsskill" data-v="${WS_SKILLS.find(x => x[0] === k)[1]}"`).replace(/>[^<]*<\/button><\/div>$/, ">Use</button></div>")).join("")}<p class="hint">Coming soon: ${SOON.map(x => x[0]).join(" · ")}</p>`;
-}
-V.ws = () => {
-  const c = chatOf(), act = PROJECTS.filter(p => p.status === "Active"), tab = state.wsTab || "files";
-  const groups = [...act.map(p => [p.name, CHATS.filter(x => x.pid === p.id)]), ["No project", CHATS.filter(x => !x.pid)]].filter(g => g[1].length);
-  const turns = c.turns.map(t => chatTurn(c, t));
-  return `<div class="wsgrid ${state.wsPane ? "pane-" + state.wsPane : ""}">
-    <div class="wsmob"><button class="btn sm plain wsml" data-a="wspane" data-v="l" aria-pressed="${state.wsPane === "l"}">Chats</button><button class="btn sm plain" data-a="wspane" data-v="" aria-pressed="${!state.wsPane}">Chat</button><button class="btn sm plain" data-a="wspane" data-v="r" aria-pressed="${state.wsPane === "r"}">Files and context</button></div>
-    <nav class="wsl" aria-label="Chats"><button class="btn primary sm" data-a="wsnew" style="justify-content:center">${icon("plus")}New chat</button>
-      ${groups.map(([g, cs]) => `<span class="grp">${esc(g)}</span>${cs.map(x => `<button class="chatitem" data-a="wschat" data-v="${x.id}" aria-current="${x.id === c.id}"><span>${esc(x.title)}</span><span class="hint">${esc(x.when)}</span></button>`).join("")}`).join("")}</nav>
-    <section class="wsc"><div class="wshd"><b>${esc(c.title)}</b><select data-wsproj aria-label="Project for this chat"><option value="">No project</option>${act.map(p => `<option value="${p.id}" ${c.pid === p.id ? "selected" : ""}>${esc(p.name)}</option>`).join("")}</select><span class="hint" style="margin-left:auto">Same skills as in Copilot</span></div>
-      <div class="cplog" id="cplog">${turns.length ? turns.map(t => `<div class="bub me">${esc(t.me)}</div>${cpBot(t)}`).join("")
-        : `<div class="wsempty"><h2 style="font-size:19px">What are you preparing?</h2><span class="small muted">${c.pid ? `For ${esc(proj(c.pid).name)}.` : "Pick a project at the top to use its deck and documents."}</span><div class="starts">${["analyst", "story", "coach"].map(k => `<button data-a="wssend" data-v="${WS_SKILLS.find(x => x[0] === k)[1]}${k === "analyst" ? "key figures for my next meeting" : k === "story" ? "draft my next deck" : "review my deck"}"><span class="sico">${icon(SKILLS[k].ic)}</span><b>${SKILLS[k].step.replace(/^\d · /, "")}</b><span class="hint">${SKILLS[k].name}</span></button>`).join("")}</div></div>`}</div>
-      <div class="wscomp"><div class="skrow">${WS_SKILLS.map(([k, h]) => `<button data-a="wsskill" data-v="${h}">${h.trim()}</button>`).join("")}</div>
-        <form class="wsbox"><label class="iconbtn" style="cursor:pointer" title="Add a file">${icon("plus")}<input type="file" class="vh" data-up="wsfile" aria-label="Add a file"></label><input name="q" aria-label="Message" placeholder="Ask, or type @ for a skill…" autocomplete="off"><button class="btn primary sm" type="submit">Send</button></form></div></section>
-    <aside class="wsr" aria-label="Files and context"><div class="rtabs" role="tablist">${[["files", "Files"], ["context", "Context"], ["skills", "Skills"]].map(([k, l]) => `<button role="tab" data-a="wstab" data-v="${k}" aria-selected="${tab === k}">${l}</button>`).join("")}</div>
-      <div class="rbody">${tab === "files" ? wsFiles(c) : tab === "context" ? wsContext(c) : wsSkills()}</div></aside></div>`;
-};
-AFTER.ws = () => { const l = $("#cplog"); if (l) l.scrollTop = l.scrollHeight; };
 AFTER.copilot = () => { const l = $("#cplog"); if (l) l.scrollTop = l.scrollHeight; };
 // ---- Decision Engine: the numbers, how they are calculated, and when they create an alert
 V.de = () => {
@@ -1572,7 +1459,7 @@ V.project = () => {
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.market)}</span><span class="chip">${esc(p.cat)}</span><span class="pill ${p.audience === "Customer-facing" ? "info" : "solid"}">${esc(p.audience)}</span>${p.status === "Archived" ? `<span class="pill neutral">Archived</span>` : ""}</div></div>
-      <div class="actions"><button class="btn sm plain" data-a="wsopen">${icon("chat")}Open in the assistant</button><button class="btn sm plain" data-a="editproj">Edit project</button><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New meeting</button></div></div>
+      <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New meeting</button></div></div>
     ${NOTE}
     <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${state.tab === k}" tabindex="${state.tab === k ? 0 : -1}">${l}</button>`).join("")}</div>${body}`;
 };
@@ -2067,14 +1954,6 @@ document.addEventListener("click", e => {
     case "cpfix": state.cpFix = { ...(state.cpFix || {}), [v]: true }; render(); toast("In the live tool this edits the slide in the deck. Undo is in PowerPoint."); break;
     case "cpopen": { const mm = p.meetings.find(x => x.id === el.dataset.m) || nextMeeting(p); state.cp = [{ me: "@Selling Coach review this deck", kind: "coach", pid: p.id, mid: mm.id }]; state.gs.pinned = true; go("copilot"); break; }
     case "cptry": state.gs.pinned = true; go("copilot"); break;
-    case "wschat": state.chat = v; state.wsPane = ""; render(); break;
-    case "wsnew": { const id = "C" + (CHATS.length + 1 + Math.floor(Math.random() * 1e4)); CHATS.unshift({ id, title: "New chat", pid: state.view === "ws" ? chatOf().pid : (state.pid || null), when: "Today", turns: [] }); state.chat = id; state.wsPane = ""; go("ws"); break; }
-    case "wsopen": { const ex = CHATS.find(x => x.pid === p.id); if (ex) state.chat = ex.id; else { const id = "C" + (CHATS.length + 1 + Math.floor(Math.random() * 1e4)); CHATS.unshift({ id, title: "New chat", pid: p.id, when: "Today", turns: [] }); state.chat = id; } go("ws"); break; }
-    case "wstab": state.wsTab = v; render(); break;
-    case "wspane": state.wsPane = v; render(); break;
-    case "wsskill": { if (state.view !== "ws") { go("ws"); } const i = $(".wsbox input[name=q]"); if (i) { i.value = v; i.focus(); } break; }
-    case "wssend": wsSend(v); break;
-    case "wsopenfile": toast("In the live tool this opens the file in Office, next to the chat."); break;
     case "follow": { const on = isF(v); state.follow = on ? state.follow.filter(x => x !== v) : [...state.follow, v]; render(); toast(on ? "Unfollowed. It no longer appears in What changed on Home." : "Following. Its changes now appear on Home."); break; }
     case "fb": if (v === "wrong") { toast("Use the source link next to the fact: the knowledge bank team corrects facts by fixing or replacing the document."); break; }
       state.fb[state.ask] = v; render(); toast(v === "up" ? "Thanks. Useful answers help tune what the assistant shows first." : "Thanks. Unhelpful answers are reviewed by the knowledge bank team."); break;
@@ -2111,17 +1990,11 @@ document.addEventListener("click", e => {
       PROJECTS.unshift(np); state.w = null; go("project", { pid: np.id, tab: "overview" }); toast("Project created. This is now your workspace for " + cust + "."); if (state.pendingTool) { const k = state.pendingTool; state.pendingTool = null; launchTool(np, k); } break; }
   }
 });
-function wsSend(q) {
-  const c = chatOf(); c.turns.push({ me: q, ...cpTurn(q) });
-  if (c.title === "New chat") { const t = q.replace(/^@(Selling Coach|Role-play|\S+)\s*/, ""); c.title = (t.charAt(0).toUpperCase() + t.slice(1)).slice(0, 42) || "New chat"; }
-  c.when = "Today"; render();
-}
 document.addEventListener("submit", e => {
-  if (e.target.matches(".wsbox")) { e.preventDefault(); const q = e.target.q.value.trim(); if (!q) { e.target.q.focus(); return; } wsSend(q); return; }
   if (e.target.matches(".cpbox")) { e.preventDefault(); const q = e.target.q.value.trim(); if (!q) return; state.cp = [...(state.cp.length ? state.cp : cpSeed()), { me: q.startsWith("@") ? q : `@AI Sales Assistant ${q}`, ...cpTurn(q) }]; render(); return; }
   if (e.target.matches(".findbox")) { e.preventDefault(); const q = e.target.q.value.trim().toLowerCase(); if (!q) { e.target.q.focus(); return; }
     const hit = findItems().find(x => x[0].toLowerCase() === q) || findItems().find(x => x[0].toLowerCase().includes(q));
-    if (!hit) { const q0 = e.target.q.value.trim(), id = "C" + (CHATS.length + 1 + Math.floor(Math.random() * 1e4)); CHATS.unshift({ id, title: "New chat", pid: null, when: "Today", turns: [] }); state.chat = id; go("ws"); wsSend(q0); return; }
+    if (!hit) { state.cp = [{ me: `@AI Sales Assistant ${e.target.q.value.trim()}`, ...cpTurn(e.target.q.value.trim()) }]; go("copilot"); toast("Not a customer, category or buyer: asked in Copilot instead."); return; }
     if (hit[1] === "customer") { state.ctab = "numbers"; go("customer", { cust: hit[2], cat: state.cat, mkt: kbOf(hit[2]).market || state.mkt }); }
     else if (hit[1] === "buyer") go("buyer", { bid: hit[2] });
     else { state.gtab = "numbers"; go("category", { cat: hit[2], mkt: Object.keys(CATKB).find(mk => CATKB[mk][hit[2]]) || state.mkt }); }
@@ -2137,7 +2010,6 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target;
-  if (t.matches("[data-wsproj]")) { chatOf().pid = t.value || null; render(); toast(t.value ? `Project attached: its deck, documents and meeting details are now this chat's inputs.` : "No project: answers use all company knowledge."); return; }
   if (t.dataset.w && t.matches("select")) { if (t.dataset.w === "cust") state.w.buyers = []; state.w[t.dataset.w] = t.dataset.w === "mObj" ? +t.value : t.value; if (t.hasAttribute("data-rr")) render(); else refreshPreview(); }
   if (t.dataset.c && !t.matches("textarea") && t.type !== "number") {
     const c = ctxTarget(), k = t.dataset.c; if (!c) return;
@@ -2159,7 +2031,6 @@ document.addEventListener("change", e => {
   if (t.dataset.up && t.files && t.files[0]) {
     const name = t.files[0].name;
     if (t.dataset.up === "deck") addDeck(name);
-    if (t.dataset.up === "wsfile") { const c = chatOf(); c.extra = [...(c.extra || []), name]; state.wsTab = "files"; render(); toast(`${name} added to this chat.`); }
     if (t.dataset.up === "wdeck") { if (!/\.(pptx?|pdf)$/i.test(name)) { toast("Upload a PPTX or PDF file."); return; } state.w.deck = name; render(); }
     if (t.dataset.up === "file") { const p = proj(state.pid), ext = name.split(".").pop().toLowerCase(); p.files.unshift({ name, kind: /xls|csv/.test(ext) ? "xls" : /doc|pdf|txt/.test(ext) ? "doc" : "ppt", added: TODAY, by: "VB" }); log(p, `added ${name}`); render(); toast(`${name} added to the project.`); }
   }
