@@ -365,6 +365,8 @@ button.chip { cursor: pointer; }
 .next > .stack { min-width: 0; }
 .next .btn { white-space: normal; text-align: left; max-width: 100%; }
 .checklist { display: grid; gap: 1px; background: var(--light-gray); border-top: 1px solid var(--light-gray); }
+.skname { font-size: 11px; font-weight: 600; color: var(--primary); background: var(--primary-50, #eef4ff); border-radius: 999px; padding: 1px 8px; margin-left: 4px; white-space: nowrap; }
+.checklist .btn.ghost { color: var(--primary); }
 .checklist > div { background: var(--white); padding: 11px 16px; display: grid; grid-template-columns: 24px minmax(0, 1fr) auto; gap: 10px; align-items: center; font-size: 13px; }
 .tick { width: 22px; height: 22px; border-radius: 99px; border: 2px solid var(--gray); display: grid; place-items: center; color: var(--white); font-size: 12px; font-weight: 700; }
 .tick.on { background: var(--ok-accent); border-color: var(--ok-accent); }
@@ -881,10 +883,10 @@ const NOTES = {
   home: [["#view .askbox", "Home is four things: ask, the coaches, what's coming up and what changed. Everything else is one click away."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .skills", "Skills in meeting order: Analyst gets the facts, Storyteller builds the deck, Selling Coach improves it. Each also works in Copilot by name."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
   analyst: [["#view .seg", "Internal (power hour, team connect) or customer-safe: the customer version leaves out plans, targets and margins."], ["#view .figs", "Every figure comes from the Decision Engine, never generated."], ["#view .points", "Talking points say where each one comes from."]],
   story: [["#view .slides", "A first draft in the selling format, built from the meeting context, the numbers and cited facts."], ["#view .row.section", "Create in PowerPoint adds the draft to the meeting, where the Selling Coach reviews it."]],
-  about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."]],
+  about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."], ["#view .pcard", "Real settings, in one place: personal sources, what you follow, Copilot."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
-  project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .toolgrid", "The three tools start with this project's customer, buyers, meeting and documents. Nothing is typed twice."], ["#view .checklist", "Get-ready checklist, worked out from the project's state."], ["#view .side .card", "Meeting context summary: the single source that every tool and every piece of feedback reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Saving creates a new version."], ["#view .sessions", "Each Selling Coach session records the context version it used, so changes never rewrite past feedback."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
-  meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Step 2 is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
+  project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .flow", "One flow per meeting, in order: each step is a skill (also callable in Copilot), worked out from the project's state. The box above always shows the next step. This replaces the tool cards: one way in, not five."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
+  meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Step 2 (shown to users as “About this meeting”) is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
   new: [["#view .stepper", "Five short steps. Only the name and customer are required."], ["#view .wizard .card", "Step 2 picks saved buyer profiles. Step 3 is Selling Coach's meeting context, filled once for the whole project and kept across sessions."], ["#view .preview", "Live preview of what the project will hold."]],
 };
 function applyNotes() {
@@ -950,7 +952,7 @@ V.home = () => {
   const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
   const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 4);
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Ask anything about your customers, or prepare your next meeting.</p></div>${NOTE}
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Prepare your meetings end to end, with numbers you can trust and facts with sources.<br><span class="hint">Quick question? The same skills work in Copilot.</span></p></div>${NOTE}
     ${askBox("", "Ask about a customer, category or buyer…")}${suggest(SUGGEST.slice(0, 2), "")}
     ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="setup"><span><b>Finish setting up</b> · ${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gsopen" style="color:var(--primary)">${state.gsOpen ? "Hide steps" : "Show steps"}</button><button class="btn ghost small" data-a="gshide" style="color:var(--steel);margin-left:auto">Not now</button></div>
       ${state.gsOpen ? `<div class="card" style="margin-top:8px"><div class="pad gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}<div class="row"><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div>` : ""}</div>`}
@@ -1200,14 +1202,11 @@ V.buyer = () => {
       <aside class="side">${pcLine(pcCount(x => x.bid === b.id), b.name)}</aside></div>`;
 };
 V.personal = () => head(`<button data-a="go" data-v="about">Data & settings</button>`, "Personal context", "Your own emails, chats, calendar and documents. Only you see them.") + `
-  <div class="two"><div class="card pcard"><div class="card-hd">Use my personal context ${tag("pc")}</div><div class="pad stack">
-      <div class="spread"><span><b>${state.wiq ? "On" : "Off"}</b><br><span class="hint">${state.wiq ? "Signed in as victoire@example.com" : "Nothing personal is looked at."}</span></span><button class="btn sm ${state.wiq ? "plain" : "primary"}" data-a="wiq">${state.wiq ? "Turn off" : "Turn on"}</button></div>
-      ${state.wiq ? Object.entries(PSRC).map(([k, [ic, lab]]) => `<label class="toggle"><span class="row" style="gap:10px"><span class="pico">${icon(ic)}</span><b style="font-weight:600">${lab}</b></span><input type="checkbox" data-src="${k}" ${state.src[k] ? "checked" : ""} aria-label="Use ${lab}"></label>`).join("") : ""}</div></div>
+  <div class="two"><div class="card pcard"><div class="card-hd">Use my personal context ${tag("pc")}</div><div class="pad stack">${pcToggles()}</div></div>
     <div class="card"><div class="card-hd">What it is used for</div><div class="pad stack">
       <p class="small">When you look at a customer or buyer, or ask a question, the assistant checks whether your own emails, chats, calendar or documents mention it, and tells you how many. That's all.</p>
       <p class="small"><b>Nothing is copied or stored here.</b> To read or summarise those emails, meetings and notes, use Copilot: it already does that.</p>
-      <p class="small">What this app adds: <b>the numbers</b> from the Decision Engine and <b>what the company knows</b> from the knowledge bank.</p></div></div></div>
-  <div class="section">${explainer(false)}</div>`;
+      <p class="small">What this app adds: <b>the numbers</b> from the Decision Engine and <b>what the company knows</b> from the knowledge bank.</p></div></div></div>`;
 // ---- Analyst: key figures for a power hour, a team connect or a customer meeting
 function analystData(p) {
   const rows = series(p.cust, p.cat), T = totP(rows), W = wowP(rows), k = kbOf(p.cust), ck = catOf(p.market, p.cat);
@@ -1251,19 +1250,33 @@ function storyData(p, m) {
 }
 V.story = () => {
   const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid) || nextMeeting(p) || p.meetings[0], sl = storyData(p, m), open = p.meetings.filter(x => x.status !== "Done");
-  return head(`<button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>Storyteller</span>`, `Draft deck · ${esc(m.title)}`, `${sl.length} slides for ${m.minutes} minutes, in the selling format. Built from the project's meeting context, the numbers and the knowledge bank.`) + `
+  return head(`<button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>Storyteller</span>`, `Draft deck · ${esc(m.title)}`, `${sl.length} slides for ${m.minutes} minutes, in the selling format. Built from what you said about the meeting, the numbers and company knowledge.`) + `
     ${open.length > 1 ? `<div class="row" style="margin-bottom:14px"><span class="small muted">Meeting</span>${open.map(x => chipSel(x.title, x.id === m.id, "stmeet").replace(`data-v="${esc(x.title)}"`, `data-v="${x.id}"`)).join("")}</div>` : ""}
     <div class="slides">${sl.map(([step, text, ev], i) => `<div class="slide"><span class="sn">${i + 1}</span><span><span class="label">${esc(step)}</span><br><b style="font-weight:600">${esc(text)}</b>${ev.length ? `<span class="ev">${ev.map(([k2, f]) => f ? `${srcMini(k2)} ${citeBtn(f.doc, f.loc)}` : `${srcMini(k2)} <span class="hint">calculated · ${PW[LASTW]}</span>`).join("")}</span>` : ""}</span></div>`).join("")}</div>
     <div class="row section"><button class="btn primary" data-a="stcreate" data-v="${m.id}">Create in PowerPoint</button><button class="btn plain" data-a="stcopy">Copy outline for Copilot</button></div>
     <p class="hint">Next: the draft goes to the meeting, where the Selling Coach can review it.</p>`;
 };
 // ---- Data & settings: where answers come from (product names live here)
-V.about = () => head("Where answers come from", "Data & settings", "Three sources, each with one job. You'll see their tags next to every number and fact.") + `
+function pcToggles() {
+  return `<div class="spread"><span><b>${state.wiq ? "On" : "Off"}</b><br><span class="hint">${state.wiq ? "Signed in as victoire@example.com" : "Nothing personal is looked at."}</span></span><button class="btn sm ${state.wiq ? "plain" : "primary"}" data-a="wiq">${state.wiq ? "Turn off" : "Turn on"}</button></div>
+      ${state.wiq ? Object.entries(PSRC).map(([k, [ic, lab]]) => `<label class="toggle"><span class="row" style="gap:10px"><span class="pico">${icon(ic)}</span><b style="font-weight:600">${lab}</b></span><input type="checkbox" data-src="${k}" ${state.src[k] ? "checked" : ""} aria-label="Use ${lab}"></label>`).join("") : ""}`;
+}
+const followLabel = k => k.startsWith("cust:") ? k.slice(5) : k.slice(4).split("|").reverse().join(" · ");
+V.about = () => head("Where answers come from", "Data & settings", "What the assistant uses, and what you control.") + `
   <div class="explain">
-    <button class="src3 de" data-a="go" data-v="de">${tag("de")}<b>Decision Engine</b><span class="q">How much? Growing? Versus last year?</span><span class="small">Sales, share, stock and alerts, calculated with fixed definitions. Never generated by AI.</span><span class="hint">How the numbers are calculated →</span></button>
-    <button class="src3 kb" data-a="go" data-v="sources">${tag("kb")}<b>Knowledge bank</b><span class="q">Why? What works? What does the buyer want?</span><span class="small">Facts from governed documents. Every fact links to its document.</span><span class="hint">See the documents, add domain knowledge →</span></button>
-    <button class="src3 pc" data-a="go" data-v="personal">${tag("pc")}<b>Personal context</b><span class="q">Did I discuss this? Where?</span><span class="small">Counts where your emails, chats and meetings mention it, and opens Copilot. Nothing is stored.</span><span class="hint">Choose what it may use →</span></button></div>
-  <div class="section"><button class="btn plain" data-a="go" data-v="copilot">${icon("chat")}See the assistant in Copilot</button></div>`;
+    <button class="src3 de" data-a="go" data-v="de">${tag("de")}<b>Decision Engine</b><span class="small">Sales, share, stock and alerts, calculated with fixed definitions. Never generated by AI.</span><span class="hint">How the numbers are calculated →</span></button>
+    <button class="src3 kb" data-a="go" data-v="sources">${tag("kb")}<b>Knowledge bank</b><span class="small">Facts from governed documents. Every fact links to its document.</span><span class="hint">See the documents, add knowledge →</span></button>
+    <button class="src3 pc" data-a="go" data-v="personal">${tag("pc")}<b>Personal context</b><span class="small">Counts where your emails, chats and meetings mention it. Nothing is stored.</span><span class="hint">What it is used for →</span></button></div>
+  <div class="two section">
+    <div class="card pcard"><div class="card-hd">Use my personal context ${tag("pc")}</div><div class="pad stack">${pcToggles()}</div></div>
+    <div class="stack" style="gap:18px">
+      <div class="card"><div class="card-hd">Following <button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button></div><div class="pad stack">
+        <span class="hint">Their changes show on Home, in What changed.</span>
+        <div class="row">${state.follow.length ? state.follow.map(k => `<button class="btn sm plain" data-a="follow" data-v="${esc(k)}" aria-label="Unfollow ${esc(followLabel(k))}">${esc(followLabel(k))} ✕</button>`).join("") : `<span class="muted small">Nothing yet.</span>`}</div></div></div>
+      <div class="card"><div class="card-hd">In Copilot</div><div class="pad stack">
+        <span class="small">The same skills work in Copilot: type <b>@Analyst</b>, <b>@Storyteller</b>, <b>@Selling Coach</b>, <b>@Role-play</b> or <b>@Stewardship</b>. Same sources, same tags.</span>
+        <div class="row"><button class="btn sm plain" data-a="go" data-v="copilot">${icon("chat")}See it in Copilot</button><button class="btn sm plain" data-a="install">${state.gs.pinned ? "Desktop app installed ✓" : "Install the desktop app"}</button></div></div></div>
+    </div></div>`;
 // ---- In Copilot: each skill called by name (A2A/MCP), same sources and tags
 const CP_CHIPS = ["@Analyst key figures for my Carrefour power hour", "@Storyteller draft my Carrefour range review deck", "@Selling Coach review my range review deck", "@Stewardship check my slides for legal risk", "Why is our share dropping at Carrefour?"];
 function cpTurn(q) {
@@ -1283,7 +1296,7 @@ function cpBot(t) {
     return `<div class="bub bot">${who("Storyteller")}<span>A ${sl.length}-slide draft for <b>${esc(m.title)}</b>, in the selling format:</span><ol class="small" style="margin:0;padding-left:18px">${sl.map(([st, tx]) => `<li><b>${esc(st)}</b>: ${esc(tx.length > 90 ? tx.slice(0, 88) + "…" : tx)}</li>`).join("")}</ol><span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}<button class="btn sm primary" data-a="stcreate" data-v="M1">Create in PowerPoint</button><button class="btn sm plain" data-a="pickproj" data-v="P1" data-k="story">Open in Storyteller</button></span></div>`; }
   if (t.kind === "coach") {
     const d = latestDeck(m), fb = feedbackFor(p, m, d), left = fb.steps.filter(x => x[1] !== "good").slice(0, 3);
-    return `<div class="bub bot">${who("Selling Coach")}<span>Score for <b>${esc(d.name)}</b>: <b>${fb.score.toFixed(1)}/5</b>, using your Carrefour project's meeting context.</span><span class="label">What's left to reach 5/5</span>${left.map(([n, st, tx]) => `<span class="small">• <b>${esc(n)}</b>: ${esc(tx)}</span>`).join("")}<span class="row" style="gap:6px"><button class="btn sm plain" data-a="meeting" data-v="P1" data-m="M1">Open full feedback</button></span></div>`;
+    return `<div class="bub bot">${who("Selling Coach")}<span>Score for <b>${esc(d.name)}</b>: <b>${fb.score.toFixed(1)}/5</b>, using what you said about the meeting in your Carrefour project.</span><span class="label">What's left to reach 5/5</span>${left.map(([n, st, tx]) => `<span class="small">• <b>${esc(n)}</b>: ${esc(tx)}</span>`).join("")}<span class="row" style="gap:6px"><button class="btn sm plain" data-a="meeting" data-v="P1" data-m="M1">Open full feedback</button></span></div>`;
   }
   if (t.kind === "stew") return `<div class="bub bot">${who("Stewardship Coach")}<span>2 things to fix before this goes to a customer:</span><span class="small">• <b>Slide 6</b>: “cleans better than any other brand” is a comparative claim. Add the test reference and date.</span><span class="small">• <b>Slide 11</b>: the promotion price needs the legal price disclaimer for France.</span></div>`;
   const r = answer(t.q, "");
@@ -1430,7 +1443,7 @@ AFTER.projects = () => { $("#q").addEventListener("input", e => { state.q = e.ta
    ===================================================================== */
 V.project = () => {
   const p = proj(state.pid);
-  const tabs = [["overview", "Overview"], ["context", "Meeting context" + (ctxDirty() ? " •" : "")], ["meetings", `Meetings (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
+  const tabs = [["overview", "Overview"], ["context", "About the meeting" + (ctxDirty() ? " •" : "")], ["meetings", `Meetings (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
   const body = { overview: overviewTab, context: contextTab, meetings: meetingsTab, files: filesTab, activity: activityTab }[state.tab](p);
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
@@ -1460,28 +1473,31 @@ function briefCard(p, m) {
 }
 function contextCard(p) {
   const c = p.mc;
-  return `<div class="card"><div class="card-hd">Meeting context <button class="btn ghost small" data-a="tab" data-v="context" style="color:var(--primary)">Edit</button></div><div class="pad stack">
-    <span class="hint">Set once, kept for every session in this project · version ${c.v} · used by ${plural(p.sessions.length, "session", "sessions")}</span>
+  return `<div class="card"><div class="card-hd">About the meeting <button class="btn ghost small" data-a="tab" data-v="context" style="color:var(--primary)">Edit</button></div><div class="pad stack">
+    <span class="hint">Set once for the project. Every skill starts from it.</span>
     <dl class="kv"><dt>Customer</dt><dd>${esc(p.cust)} · ${esc(p.market)}</dd><dt>Categories</dt><dd>${c.cats.map(esc).join(", ")}</dd><dt>Objective</dt><dd>${esc(OBJECTIVES[c.obj])}</dd><dt>Minutes</dt><dd>${c.minutes}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd>
       <dt>Buyers</dt><dd>${p.buyers.length ? pbuyers(p).map(b => `<button class="btn ghost small" data-a="buyer" data-v="${b.id}" style="color:var(--primary);padding:0">${esc(b.name)}</button> <span class="hint">· ${esc(b.role)} · DISC-${b.disc}</span>`).join("<br>") : `<span class="muted">None added</span>`}</dd>
       <dt>Important context</dt><dd>${c.context ? esc(c.context) : `<span class="muted">Nothing yet. Add what every analysis should know.</span>`}</dd></dl></div></div>`;
 }
+function flowSteps(p, m) {
+  const d = m && latestDeck(m), f = p.flow || {}, sc = d && d.result && d.result.score;
+  const b = (a, v, l, x = "") => `<button class="btn sm plain" data-a="${a}" data-v="${v}" data-m="${m.id}" ${x}>${l}</button>`;
+  return [
+    [!!p.mc.context && p.buyers.length > 0, "Tell it about the meeting", "", p.mc.context ? "Objective, buyers and what matters. Set once for the project." : "Objective, buyers and what matters. Every skill uses it.", b("ctxtab", "", "Add"), b("ctxtab", "", "Open")],
+    [!!f.analyst, "Get the facts", "Analyst", `Key figures for ${p.cust} · ${p.cat}`, b("tool", "analyst", "Get key figures"), b("tool", "analyst", "Open")],
+    [!!d, "Build the deck", "Storyteller", d ? d.name : "Start from zero, or upload the deck you have", b("stfor", "", "Start a deck") + " " + b("meeting", "", "Upload"), b("meeting", "", "Open")],
+    [!!sc, "Improve the deck", "Selling Coach", sc ? `${sc.toFixed(1)}/5 on version ${d.v}${sc < 4 ? " · aim for 4" : ""}` : "Score the deck and see what's left to reach 5/5", b("meeting", "", d ? "Get feedback" : "Upload first"), b("meeting", "", "Open")],
+    [!!f.roleplay, "Rehearse", "Role-play Coach", "Practise out loud with your buyer personas", b("tool", "roleplay", "Rehearse"), b("tool", "roleplay", "Open")],
+    [!!f.qa, "Check the slides", "Stewardship Coach", "Legal risk and missing disclaimers, before it reaches the customer", b("tool", "qa", "Check slides"), b("tool", "qa", "Open")],
+  ];
+}
 function overviewTab(p) {
-  const m = nextMeeting(p), d = m && latestDeck(m);
-  const checks = m ? [
-    [!!m.date, "Set the meeting date", m.date ? `${m.date}` : "", "editmeeting"],
-    [p.buyers.length > 0 && !!p.mc.context, "Complete the meeting context", p.mc.context ? `Version ${p.mc.v}, kept for every session` : "Add the important context once for the whole project", "ctxtab"],
-    [!!d, "Upload your presentation", d ? d.name : "", "meeting"],
-    [!!(d && d.result), "Get Selling Coach feedback", d && d.result ? `${d.result.score.toFixed(1)} out of 5` : "", "meeting"],
-    [!!(d && d.v > 1 && d.result) || !!(d && d.result && d.result.score >= 4), "Upload an improved version", d && d.v > 1 ? `Version ${d.v}` : "Aim for 4 out of 5", "meeting"],
-    [false, "Rehearse with Role-play Coach", "Practise with your buyer personas", "tool-roleplay"],
-  ] : [];
-  const done = checks.filter(c => c[0]).length;
+  const m = nextMeeting(p), steps = m ? flowSteps(p, m) : [], done = steps.filter(x => x[0]).length, nx = steps.find(x => !x[0]);
   return `${m ? `<div class="next" style="margin-bottom:20px">${dbox(m.date)}<div class="stack" style="gap:6px"><span class="label">Next meeting · ${when(m.date)}</span><h2 style="font-size:19px">${esc(m.title)}</h2>
       <span class="small">${esc(OBJECTIVES[m.obj])} · ${m.minutes} minutes · with ${m.attendees.map(esc).join(", ") || "no attendees yet"}</span>
-      <div class="row" style="margin-top:4px">${!d ? `<button class="btn primary" data-a="meeting" data-m="${m.id}">${icon("upload")}Upload your presentation</button>` : !d.result ? `<button class="btn primary" data-a="meeting" data-m="${m.id}">${icon("coach")}Get feedback on ${esc(d.name)}</button>` : `<button class="btn primary" data-a="meeting" data-m="${m.id}">Open the meeting</button>`}</div></div></div>` : ""}${toolsRow(p)}<div class="ws"><div class="stack" style="gap:18px">
-    ${m ? `    <div class="card"><div class="card-hd">Get ready for ${esc(m.title)} <span class="aside">${done} of ${checks.length} done</span></div>
-      <div class="checklist">${checks.map(([ok, t, sub, a]) => `<div><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span>${t}${sub ? `<br><span class="hint">${esc(sub)}</span>` : ""}</span>${a && !ok ? `<button class="btn sm plain" data-a="${a.startsWith("tool-") ? "tool" : a}" data-v="${a.startsWith("tool-") ? a.slice(5) : ""}" data-m="${m.id}">Do it</button>` : ok ? `<span class="pill ok">Done</span>` : `<span class="pill neutral">Later</span>`}</div>`).join("")}</div></div>`
+      <div class="row" style="margin-top:4px">${nx ? `<span class="small"><b>Next step:</b> ${nx[1]}${nx[2] ? ` <span class="hint">· ${nx[2]}</span>` : ""}</span>${nx[4].replace(/btn sm plain/g, "btn sm primary")}` : `<span class="pill ok">Ready</span><button class="btn sm plain" data-a="meeting" data-m="${m.id}">Open the meeting</button>`}</div></div></div>` : ""}<div class="ws"><div class="stack" style="gap:18px">
+    ${m ? `<div class="card flow"><div class="card-hd">Prepare ${esc(m.title)} <span class="aside">${done} of ${steps.length} done · each skill also works in Copilot</span></div>
+      <div class="checklist">${steps.map(([ok, t, sk, sub, act, open]) => `<div><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b>${sk ? ` <span class="skname">${sk}</span>` : ""}<br><span class="hint">${esc(sub)}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap">${ok ? `<span class="pill ok">Done</span>${open.replace("btn sm plain", "btn ghost small")}` : act}</span></div>`).join("")}</div></div>`
     : `<div class="empty">No upcoming meeting. <button class="btn sm primary" data-a="newmeeting">${icon("plus")}Add a meeting</button></div>`}
     <div class="card"><div class="card-hd">Meetings <button class="btn ghost small" data-a="tab" data-v="meetings" style="color:var(--primary)">See all</button></div><div class="pad">${meetingList(p, 3)}</div></div>
     </div><aside class="side">${knowCard(p)}${contextCard(p)}
@@ -1566,7 +1582,7 @@ V.meeting = () => {
   const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid), d = latestDeck(m), prev = m.decks.length > 1 ? m.decks[m.decks.length - 2] : null;
   const running = state.run && state.run.mid === m.id;
   const fb = d && d.result && d.result.fb;
-  const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Loading the project's meeting context", `version ${p.mc.v}, no Step 2 to fill in`], ["Getting the numbers from the Decision Engine", `${p.cust} · ${p.cat}`], ["Checking the knowledge bank", "what changed, what works, buyer profiles"], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
+  const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Reading what you said about this meeting", ""], ["Getting the numbers from the Decision Engine", `${p.cust} · ${p.cat}`], ["Checking the knowledge bank", "what changed, what works, buyer profiles"], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
     <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">${esc(OBJECTIVES[m.obj])}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${icon("cal")} ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "Not scheduled"}</span><span class="chip">${m.minutes} minutes</span>${m.attendees.map(a => `<span class="chip">${icon("user")} ${esc(a)}</span>`).join("")}<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
@@ -1575,19 +1591,20 @@ V.meeting = () => {
       <div class="card"><div class="card-hd">Presentation <span class="aside">${plural(m.decks.length, "version", "versions")}</span></div><div class="pad stack">
         ${m.decks.slice().reverse().map(x => `<div class="filerow"><span class="fileico">${x.name.split(".").pop().toUpperCase().slice(0, 4)}</span><span><b style="font-weight:600">${esc(x.name)}</b>${x === d ? ` <span class="pill solid">Latest</span>` : ""}<br><span class="hint">Version ${x.v} · ${x.slides} slides · uploaded ${esc(x.uploaded)}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap">${x.result ? `<span class="pill ok">${x.result.score.toFixed(1)}/5</span>` : `<span class="pill info">No feedback yet</span>`}<button class="iconbtn" data-a="deldeck" data-m="${m.id}" data-v="${x.v}" aria-label="Remove ${esc(x.name)}" title="Remove this version">✕</button></span></div>`).join("")}
         <label class="dropzone" id="drop" tabindex="0">${icon("upload")}<b>${d ? "Upload a new version" : "Upload the presentation for this meeting"}</b><span class="hint">PPTX or PDF · drag and drop or click to browse</span><input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label>
+        <div class="row small" style="gap:8px"><span class="hint">${d ? "Need the numbers?" : "No deck yet?"}</span>${d ? "" : `<button class="btn sm plain" data-a="stfor" data-m="${m.id}">${icon("pen")}Start one with the Storyteller</button>`}<button class="btn sm plain" data-a="tool" data-v="analyst">${icon("trend")}Key figures for this meeting</button></div>
       </div></div>
       ${briefCard(p, m)}
       ${mctxSummary(p, m)}
       ${d ? `<div class="card"><div class="card-hd">Selling Coach feedback ${d.result ? `<span class="aside">on version ${d.v} · ${esc(d.result.date)}</span>` : ""}</div>
         ${running ? `<div class="pad stack"><b>Analysing ${esc(d.name)}</b><ul class="stagelist">${stages.map((s, k) => `<li class="${k < state.run.done ? "ok" : k === state.run.done ? "run" : ""}"><span class="ico">${k < state.run.done ? "✓" : ""}</span>${esc(s[0])}${s[1] ? ` <span class="hint">· ${esc(s[1])}</span>` : ""}</li>`).join("")}</ul></div>`
-        : !d.result ? `<div class="pad stack"><p class="small">Selling Coach starts from the project's meeting context (Step 2 above), so you go straight to the analysis.</p>
-            <div class="usedctx"><span class="chip">Meeting context v${p.mc.v}</span>${srcMini("de")}<span class="hint">numbers</span>${srcMini("kb")}<span class="hint">${plural(kbOf(p.cust).facts.length + kbOf(p.cust).changes.filter(x => !x.de).length + (catOf(p.market, p.cat)?.facts.length || 0), "fact", "facts")}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "project document", "project documents")}</span>` : ""}</div>
+        : !d.result ? `<div class="pad stack"><p class="small">Selling Coach uses what you said about this meeting, the numbers and company knowledge, so you go straight to the analysis.</p>
+            <div class="usedctx"><span class="chip">About this meeting</span>${srcMini("de")}<span class="hint">numbers</span>${srcMini("kb")}<span class="hint">${plural(kbOf(p.cust).facts.length + kbOf(p.cust).changes.filter(x => !x.de).length + (catOf(p.market, p.cat)?.facts.length || 0), "fact", "facts")}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "project document", "project documents")}</span>` : ""}</div>
             <div><button class="btn primary" data-a="analyse" data-m="${m.id}">${icon("coach")}Get feedback on version ${d.v}</button></div></div>`
         : `<div class="result-hd"><div><span class="label">Overall</span><div class="bigscore">${d.result.score.toFixed(1)}<span>/5</span></div></div><div class="stack" style="gap:6px">
             ${prev && prev.result ? `<span><span class="delta">${d.result.score >= prev.result.score ? "+" : ""}${(d.result.score - prev.result.score).toFixed(1)} since version ${prev.v}</span></span>` : ""}
             <span class="small">${fb ? esc(fb.timing) : "Feedback from before this mock-up. Run it again to see the detail."}</span>
-            ${d.result.cv && d.result.cv !== p.mc.v ? `<div class="callout info">This feedback used meeting context version ${d.result.cv}. The project now has version ${p.mc.v}: run again to use it.</div>` : ""}
-            <div class="usedctx"><span class="hint">Used:</span><span class="chip">Meeting context v${d.result.cv || p.mc.v}</span>${srcMini("de")}${srcMini("kb")}<span class="chip">${esc(OBJECTIVES[m.obj])}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "document", "documents")}</span>` : ""}</div></div></div>
+            ${d.result.cv && d.result.cv !== p.mc.v ? `<div class="callout info">This feedback used older meeting details. Run it again to use the latest.</div>` : ""}
+            <div class="usedctx"><span class="hint">Used:</span><span class="chip">About this meeting</span>${srcMini("de")}${srcMini("kb")}<span class="chip">${esc(OBJECTIVES[m.obj])}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "document", "documents")}</span>` : ""}</div></div></div>
           ${fb ? `<div class="table-wrap" style="border-left:0;border-right:0;border-radius:0"><table><thead><tr><th>Selling step</th><th>Status</th><th>Feedback</th></tr></thead><tbody>${fb.steps.map(([s, st, t]) => `<tr><td style="color:var(--charcoal);font-weight:600">${s}</td><td><span class="pill ${{ good: "ok", improve: "warn", missing: "bad" }[st]}">${{ good: "Strong", improve: "Improve", missing: "Missing" }[st]}</span></td><td>${esc(t)}</td></tr>`).join("")}</tbody></table></div>
             <div class="pad stack">${(() => { const left = fb.steps.filter(x => x[1] !== "good").map(([n, st, t]) => [n, st === "missing" ? .8 : .4, t]).sort((a, b) => b[1] - a[1]), hist = m.decks.filter(x => x.result).map(x => `v${x.v} ${x.result.score.toFixed(1)}`);
               return `<div class="label">What's left to reach 5/5</div>${left.length ? left.map(([n, g, t]) => `<div class="dd"><span title="${esc(t)}"><b style="font-weight:600">${esc(n)}</b> · ${esc(t)}</span><b class="up-good">up to +${g.toFixed(1)}</b></div>`).join("") : `<p class="small">Nothing left on the selling steps. Polish the slides below.</p>`}
@@ -1628,9 +1645,9 @@ V.new = () => {
     ${w.withMeeting && w.mTitle ? `<div class="row small">${icon("cal")}${esc(w.mTitle)}${w.mDate ? ` · ${esc(w.mDate)}` : ""}</div>` : ""}
     ${w.deck ? `<div class="row small">${icon("file")}${esc(w.deck)}</div>` : ""}
     ${w.buyers.length ? `<div class="row small">${icon("user")}${w.buyers.map(buyer).map(b => esc(b.name)).join(", ")}</div>` : ""}
-    ${w.step >= 2 ? `<div class="small"><b>Meeting context</b><br>${esc(OBJECTIVES[w.mc.obj])} · ${w.mc.minutes} min · ${esc(w.mc.lang)}${w.mc.context ? `<br><span class="hint">${esc(w.mc.context.slice(0, 90))}${w.mc.context.length > 90 ? "…" : ""}</span>` : ""}</div>` : ""}
+    ${w.step >= 2 ? `<div class="small"><b>About the meeting</b><br>${esc(OBJECTIVES[w.mc.obj])} · ${w.mc.minutes} min · ${esc(w.mc.lang)}${w.mc.context ? `<br><span class="hint">${esc(w.mc.context.slice(0, 90))}${w.mc.context.length > 90 ? "…" : ""}</span>` : ""}</div>` : ""}
     <span class="hint">Everything here is kept across every session in the project.</span></aside>`;
-  const steps = ["Customer and goal", "Buyers", "Meeting context", "First meeting", "Review"];
+  const steps = ["Customer and goal", "Buyers", "About the meeting", "First meeting", "Review"];
   let body = "";
   if (w.step === 0) body = `<div class="card"><div class="card-hd">Customer and goal</div><div class="pad stack">
     <div class="field"><label for="w-name">Project name</label><input id="w-name" data-w="name" value="${esc(w.name)}" placeholder="e.g. Carrefour range review"></div>
@@ -1644,20 +1661,20 @@ V.new = () => {
     ${w.withMeeting ? `<div class="grid2"><div class="field"><label for="w-mt">Meeting name</label><input id="w-mt" data-w="mTitle" value="${esc(w.mTitle)}" placeholder="e.g. Range review"></div>
       <div class="field"><label for="w-mo">Meeting objective</label><select id="w-mo" data-w="mObj" aria-describedby="w-mo-h">${OBJECTIVES.map((o, i) => `<option value="${i}" ${+w.mObj === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select></div></div>
       <div class="grid2"><div class="field"><label for="w-md">Date</label><input id="w-md" type="date" data-w="mDate" value="${toISO(w.mDate)}"></div><div class="field"><label for="w-mm">Minutes available</label><input id="w-mm" type="number" min="5" data-w="mMin" value="${w.mMin}"></div></div>
-      <span class="hint" id="w-mo-h">Objective and minutes start from the meeting context you just set.</span>
+      <span class="hint" id="w-mo-h">Objective and minutes start from what you just set.</span>
       <label class="dropzone" tabindex="0">${icon("upload")}<b>${w.deck ? esc(w.deck) : "Upload the presentation (optional)"}</b><span class="hint">PPTX or PDF. You can also add it later inside the meeting.</span><input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="wdeck"></label>`
     : `<p class="small muted">You can add meetings later from the project.</p>`}</div></div>`;
   if (w.step === 1) body = `<div class="card"><div class="card-hd">Attach buyer profiles <span class="aside">${w.buyers.length} selected</span></div><div class="pad stack">
       ${buyerPicker(cust, w.buyers, b => `data-pick="${b.id}"`)}
       <div style="border-top:1px solid var(--light-gray);padding-top:12px;text-align:right"><button class="btn sm" data-a="addbuyer">${icon("plus")}Add buyer</button></div></div></div>`;
-  if (w.step === 2) body = `<div class="card"><div class="card-hd">Step 2 · Tell us about the meeting context <span class="aside">Kept for every session</span></div><div class="pad stack">
-      <div class="callout info">Fill this in once for the whole project. Every Selling Coach session in it starts from here, so nobody fills in Step 2 again. You can change it later in the project's <b>Meeting context</b> tab.</div>
+  if (w.step === 2) body = `<div class="card"><div class="card-hd">Step 2 · About the meeting <span class="aside">Set once</span></div><div class="pad stack">
+      <div class="callout info">Fill this in once for the whole project. Every skill starts from here. You can change it later in the project's <b>About the meeting</b> tab.</div>
       ${ctxForm(w.mc, cust, w.buyers.map(buyer).map(b => b.role))}</div></div>`;
   if (w.step === 4) body = `<div class="card"><div class="card-hd">Review</div><div class="pad stack">
     <dl class="kv"><dt>Project</dt><dd>${esc(w.name)}</dd><dt>Customer</dt><dd>${esc(cust)} · ${esc(w.market)}</dd><dt>Category</dt><dd>${esc(w.cat)}</dd><dt>Audience</dt><dd>${esc(w.audience)}</dd><dt>Objective</dt><dd>${esc(w.objective || "Not set")}</dd>
       <dt>First meeting</dt><dd>${w.withMeeting && w.mTitle ? `${esc(w.mTitle)} · ${esc(OBJECTIVES[w.mObj])}${w.mDate ? ` · ${esc(w.mDate)}` : ""}${w.deck ? `<br>${icon("file")} ${esc(w.deck)}` : ""}` : "None yet"}</dd>
       <dt>Buyers</dt><dd>${w.buyers.map(buyer).map(b => `${esc(b.name)} · ${esc(b.role)} <span class="hint">· DISC-${b.disc}</span>`).join("<br>") || "None yet"}</dd>
-      <dt>Meeting context</dt><dd>${esc(OBJECTIVES[w.mc.obj])} · ${w.mc.minutes} min · ${esc(w.mc.lang)} · ${esc(w.mc.notation)}<br>Categories: ${w.mc.cats.map(esc).join(", ")}${w.mc.titles.length ? `<br>Buyer titles: ${w.mc.titles.map(esc).join(", ")}` : ""}<br>AI comments in slides: ${w.mc.ai ? "Yes" : "No"}</dd>
+      <dt>About the meeting</dt><dd>${esc(OBJECTIVES[w.mc.obj])} · ${w.mc.minutes} min · ${esc(w.mc.lang)} · ${esc(w.mc.notation)}<br>Categories: ${w.mc.cats.map(esc).join(", ")}${w.mc.titles.length ? `<br>Buyer titles: ${w.mc.titles.map(esc).join(", ")}` : ""}<br>AI comments in slides: ${w.mc.ai ? "Yes" : "No"}</dd>
       <dt>Important context</dt><dd>${esc(w.mc.context || "None yet")}</dd>${scCount(w.mc.sc) ? `<dt>Shortcuts</dt><dd style="white-space:pre-line">${esc(scText(w.mc.sc))}</dd>` : ""}</dl>
     <div class="callout info">You can change all of this later from the project.</div></div></div>`;
   return head(`<button data-a="go" data-v="projects">My Projects</button><span>›</span><span>New project</span>`, "Create a project", "Set the context once. Every meeting, presentation and piece of feedback in the project will use it.") +
@@ -1727,21 +1744,20 @@ function ctxChanged() {
   if (state.view === "new") { refreshPreview(); return; }
   const d = ctxDirty(), pill = $("#ctx-dirty"), tab = $('[role="tab"][data-v="context"]');
   if (pill) pill.hidden = !d;
-  if (tab) tab.textContent = "Meeting context" + (d ? " •" : "");
+  if (tab) tab.textContent = "About the meeting" + (d ? " •" : "");
 }
 function sessionsCard(p) {
   const ss = [...p.sessions].reverse();
   return `<div class="card sessions"><div class="card-hd">Selling Coach sessions <span class="aside">${ss.length}</span></div><div class="pad">
-    <span class="hint" style="display:block;margin-bottom:6px">Every session in this project started from the meeting context. Nobody filled in Step 2 again.</span>
-    ${ss.length ? ss.map(x => `<button class="sessrow" data-a="meeting" data-m="${x.mid}"><span><b>${esc(x.mt)}</b><br><span class="hint">${esc(x.date)} · ${esc(x.deck)}</span></span><span class="stack" style="gap:4px;justify-items:end"><span class="pill ok">${x.score.toFixed(1)}/5</span><span class="pill ${x.cv === p.mc.v ? "info" : "neutral"}">Context v${x.cv}</span></span></button>`).join("")
-      : `<div class="empty">No session yet. Upload a presentation in a meeting and get feedback: it will use this context.</div>`}</div></div>`;
+    ${ss.length ? ss.map(x => `<button class="sessrow" data-a="meeting" data-m="${x.mid}"><span><b>${esc(x.mt)}</b><br><span class="hint">${esc(x.date)} · ${esc(x.deck)}</span></span><span class="stack" style="gap:4px;justify-items:end"><span class="pill ok">${x.score.toFixed(1)}/5</span></span></button>`).join("")
+      : `<div class="empty">No feedback yet. Upload a presentation in a meeting and get feedback: it starts from these details.</div>`}</div></div>`;
 }
 function contextTab(p) {
   if (!state.cdraft || state.cdraftPid !== p.id) { state.cdraft = clone(p.mc); state.cdraftPid = p.id; }
-  return `<div class="ws"><div class="card"><div class="card-hd mctx-hd"><span>Meeting context <span class="hint" style="font-weight:400">· Selling Coach “Step 2”, set once for this project</span></span><span class="row" style="gap:6px"><span class="pill warn" id="ctx-dirty" ${ctxDirty() ? "" : "hidden"}>Unsaved changes</span><span class="pill ok">Version ${p.mc.v} · saved ${esc(p.mc.updated)}</span></span></div>
-    <div class="pad stack"><div class="callout info">Fill this in once. Every Selling Coach session in this project starts from it, so it is kept across sessions and never typed again. When you save a change, new sessions use the new version and past sessions keep the version they used.</div>
+  return `<div class="ws"><div class="card"><div class="card-hd mctx-hd"><span>About the meeting <span class="hint" style="font-weight:400">· set once for this project, used by every skill</span></span><span class="row" style="gap:6px"><span class="pill warn" id="ctx-dirty" ${ctxDirty() ? "" : "hidden"}>Unsaved changes</span><span class="pill ok">Saved ${esc(p.mc.updated)}</span></span></div>
+    <div class="pad stack"><div class="callout info">Fill this in once. The Selling Coach, Storyteller and Role-play Coach all start from it, so you never type it again. Past feedback keeps the details it used.</div>
       ${ctxForm(state.cdraft, p.cust, pbuyers(p).map(b => b.role))}
-      <div class="row" style="justify-content:flex-end;border-top:1px solid var(--light-gray);padding-top:14px"><button class="btn plain" data-a="ctx-discard">Discard changes</button><button class="btn primary" data-a="ctx-save">Save meeting context</button></div></div></div>
+      <div class="row" style="justify-content:flex-end;border-top:1px solid var(--light-gray);padding-top:14px"><button class="btn plain" data-a="ctx-discard">Discard changes</button><button class="btn primary" data-a="ctx-save">Save</button></div></div></div>
     <aside class="side">${sessionsCard(p)}</aside></div>`;
 }
 function mctxSummary(p, m) {
@@ -1750,8 +1766,8 @@ function mctxSummary(p, m) {
     <dt>Minutes</dt><dd>${m.minutes}${m.minutes !== c.minutes ? ` <span class="pill neutral">this meeting only</span>` : ""}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd><dt>Email</dt><dd>${USER_EMAIL}</dd><dt>Number notation</dt><dd>${esc(c.notation)}</dd>
     <dt>Customer</dt><dd>${esc(p.cust)}</dd><dt>Categories</dt><dd>${c.cats.map(esc).join(", ") || "None"}</dd><dt>Buyers' job titles</dt><dd>${c.titles.map(esc).join(", ") || "None"}</dd>
     <dt>Important context</dt><dd>${esc(c.context) || `<span class="muted">None yet</span>`}</dd><dt>Shortcuts</dt><dd style="white-space:pre-line">${esc(scText(c.sc)) || `<span class="muted">None</span>`}</dd><dt>AI comments in slides</dt><dd>${c.ai ? "Yes" : "No"}</dd></dl>`;
-  return `<div class="card mctx"><div class="card-hd mctx-hd"><span>Step 2 · Meeting context <span class="pill ok" style="margin-left:6px">Kept from the project · v${c.v}</span></span><button class="btn ghost small" data-a="mc-toggle" aria-expanded="${open}" style="color:var(--primary)">${open ? "Hide" : "Show all"}</button></div>
-    <div class="pad stack"><div class="usedctx"><span class="chip">${esc(OBJECTIVES[m.obj])}</span><span class="chip">${m.minutes} min</span><span class="chip">${esc(c.lang)}</span><span class="chip">${c.cats.map(esc).join(", ")}</span>${c.titles.length ? `<span class="chip">${plural(c.titles.length, "buyer title", "buyer titles")}</span>` : ""}${c.context ? `<span class="chip">Important context</span>` : ""}${scCount(c.sc) ? `<span class="chip">${plural(scCount(c.sc), "shortcut", "shortcuts")}</span>` : ""}</div>
+  return `<div class="card mctx"><div class="card-hd mctx-hd"><span>About this meeting <span class="hint" style="font-weight:400">· same for the whole project</span></span><button class="btn ghost small" data-a="mc-toggle" aria-expanded="${open}" style="color:var(--primary)">${open ? "Hide" : "Show all"}</button></div>
+    <div class="pad stack"><div class="usedctx"><span class="chip">${esc(OBJECTIVES[m.obj])}</span><span class="chip">${m.minutes} min</span><span class="chip">${esc(c.lang)}</span><span class="chip">${c.cats.map(esc).join(", ")}</span></div>
       ${open ? rows : ""}
       <div class="row"><button class="btn sm plain" data-a="tab" data-v="context">Change for the whole project</button><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Change objective or minutes for this meeting</button></div></div></div>`;
 }
@@ -1774,7 +1790,7 @@ function projectForm(p) {
     <div class="field"><span class="flabel">Buyer profiles</span><div class="stack" style="gap:8px">${BUYERS.map(b => `<label class="bpick" data-cust="${esc(b.cust)}" ${b.cust === p.cust ? "" : "hidden"}><input type="checkbox" name="b" value="${b.id}" ${p.buyers.includes(b.id) ? "checked" : ""}><span><b>${esc(b.name)} · ${esc(b.role)}</b><br><span class="hint">${bmeta(b)}</span></span></label>`).join("")}
       <span class="hint" id="pf-none" ${BUYERS.some(b => b.cust === p.cust) ? "hidden" : ""}>No saved buyer profiles for this customer yet.</span>
       <div style="text-align:right"><button type="button" class="btn sm" id="pf-addb">${icon("plus")}Add buyer</button></div></div></div>
-    <p class="hint">Meeting objective, language, important context and shortcuts are in the <b>Meeting context</b> tab of the project.</p>
+    <p class="hint">Meeting objective, language, important context and shortcuts are in the <b>About the meeting</b> tab of the project.</p>
     <div class="field"><label for="pf-st">Status</label>${sel("st", ["Active", "Archived"], p.status)}</div>
     <div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delproj" data-v="${p.id}">Delete this project…</button></div>`, fd => {
       const cust = fd.get("cust");
@@ -1819,6 +1835,7 @@ function confirmDelete(p) {
 }
 function launchTool(p, k) {
   const m = nextMeeting(p);
+  if (["analyst", "roleplay", "qa"].includes(k)) p.flow = { ...(p.flow || {}), [k]: true };
   if (k === "analyst") { go("analyst", { pid: p.id }); return; }
   if (k === "story") { const t = m || p.meetings[0]; if (!t) { toast("Add a meeting first: the Storyteller builds the deck for it."); meetingForm(p, null); return; } go("story", { pid: p.id, mid: t.id }); return; }
   if (k === "coach") {
@@ -1898,6 +1915,7 @@ document.addEventListener("click", e => {
     case "ancopy": toast(state.anAud === "external" ? "Customer-safe key figures copied, with their sources." : "Key figures and talking points copied, with their sources. Paste them in Copilot or an email."); break;
     case "anslide": toast("In the live tool this downloads one slide with these key figures and their sources."); break;
     case "launch": launchTool(proj(el.dataset.k), v); break;
+    case "stfor": go("story", { pid: p.id, mid: el.dataset.m }); break;
     case "stmeet": state.mid = v; render(); break;
     case "stcopy": toast("Outline copied. Paste it in Copilot to keep working on the wording."); break;
     case "stcreate": { const pp = proj(state.view === "story" ? state.pid : "P1"), mm = pp.meetings.find(x => x.id === v); const vv = mm.decks.length + 1, name = `${mm.title} draft (Storyteller).pptx`;
@@ -1936,7 +1954,7 @@ document.addEventListener("click", e => {
     case "ctx-discard": state.cdraft = clone(p.mc); render(); toast("Changes discarded."); break;
     case "ctx-save": { if (!ctxDirty()) { toast("No changes to save."); break; }
       const c = clone(state.cdraft); c.context = c.context.trim(); p.mc = { ...c, v: p.mc.v + 1, updated: TODAY }; state.cdraft = clone(p.mc);
-      log(p, `updated the meeting context (version ${p.mc.v})`); render(); toast(`Meeting context saved as version ${p.mc.v}. Every new session in this project will use it.`); break; }
+      log(p, `updated the meeting context (version ${p.mc.v})`); render(); toast(`Saved. Every skill in this project now starts from it.`); break; }
     case "hometool": state.navOpen = false; renderNav(); pickProject(v); break;
     case "pickproj": { const q = proj(v); go("project", { pid: v, tab: "overview" }); launchTool(q, el.dataset.k); break; }
     case "newfor": state.w = blankW(); state.pendingTool = v; go("new"); break;
