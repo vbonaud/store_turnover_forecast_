@@ -233,6 +233,10 @@ button.src3:hover { box-shadow: var(--shadow); }
 .bub.me { justify-self: end; background: #E8EBF2; }
 .bub.bot { justify-self: start; background: var(--white); border: 1px solid var(--light-gray); display: grid; gap: 8px; width: 88%; }
 .bub .who { font: 700 11.5px var(--inter); color: var(--primary); display: flex; gap: 6px; align-items: center; }
+.deckpane { display: grid; gap: 4px; background: var(--white); border: 1px solid var(--light-gray); border-radius: 10px; padding: 10px; margin-top: 4px; }
+.thumbs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+.thumb { width: 44px; height: 26px; border: 1px solid var(--light-gray); border-radius: 4px; background: var(--primary-light); font-size: 11px; display: grid; place-items: center; color: var(--steel); }
+.fixrow { display: flex; gap: 8px; align-items: center; justify-content: space-between; border-top: 1px solid var(--light-gray); padding-top: 6px; }
 .att { display: inline-flex; gap: 6px; align-items: center; background: var(--white); border: 1px solid var(--light-gray); border-radius: 8px; padding: 4px 8px; font-size: 12px; margin-top: 6px; }
 .cpbox { display: flex; gap: 8px; padding: 10px 12px; background: var(--white); border-top: 1px solid var(--light-gray); }
 .cpbox input { flex: 1; min-width: 0; border: 1px solid var(--border-default); border-radius: 10px; padding: 9px 11px; }
@@ -879,14 +883,14 @@ const NOTES = {
   buyer: [["#view .kcard", "What the whole company knows about this buyer."], ["#view .pcline", "No emails or meeting notes here: Copilot already summarises them."]],
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
   ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
-  copilot: [["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Open question for the vendor: the website as the product, or as the back office behind the Copilot skill (A2A/MCP)."]],
-  home: [["#view .askbox", "Home is four things: ask, the coaches, what's coming up and what changed. Everything else is one click away."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .skills", "Skills in meeting order: Analyst gets the facts, Storyteller builds the deck, Selling Coach improves it. Each also works in Copilot by name."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
+  copilot: [["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Dependency to confirm: Cowork skills are instruction files; reaching the Decision Engine and knowledge bank needs a plugin or MCP connector. IT can push approved skills to sales groups."], ["#view .deckpane", "With Office in Copilot the deck opens next to the chat; Selling Coach fixes are applied in the deck, not listed."]],
+  home: [["#view .askbox", "Find, not chat: Copilot is the chat. The box jumps to a customer, category or buyer page; anything else is asked in Copilot."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .skills", "Skills in meeting order: Analyst gets the facts, Storyteller builds the deck, Selling Coach improves it. Each also works in Copilot by name."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
   analyst: [["#view .seg", "Internal (power hour, team connect) or customer-safe: the customer version leaves out plans, targets and margins."], ["#view .figs", "Every figure comes from the Decision Engine, never generated."], ["#view .points", "Talking points say where each one comes from."]],
-  story: [["#view .slides", "A first draft in the selling format, built from the meeting context, the numbers and cited facts."], ["#view .row.section", "Create in PowerPoint adds the draft to the meeting, where the Selling Coach reviews it."]],
+  story: [["#view .slides", "Our part: the storyline in the selling format, with governed numbers and cited facts."], ["#view .row.section", "Microsoft's part: Office in Copilot builds the slides. To check: Frontier-only rollout, and how a skill passes our content to PowerPoint (plugin or MCP connector)."]],
   about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."], ["#view .pcard", "Real settings, in one place: personal sources, what you follow, Copilot."]],
   projects: [["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .flow", "One flow per meeting, in order: each step is a skill (also callable in Copilot), worked out from the project's state. The box above always shows the next step. This replaces the tool cards: one way in, not five."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
-  meeting: [["#view .ws .card", "One meeting, one presentation, many versions. A new upload keeps the history."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Step 2 (shown to users as “About this meeting”) is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
+  meeting: [["#view .deckcard", "The deck is a OneDrive link, not an upload: versions, labels and co-editing stay in Office. One main action: Open in Copilot. Upload stays as a fallback for users without a Copilot licence."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Step 2 (shown to users as “About this meeting”) is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
   new: [["#view .stepper", "Five short steps. Only the name and customer are required."], ["#view .wizard .card", "Step 2 picks saved buyer profiles. Step 3 is Selling Coach's meeting context, filled once for the whole project and kept across sessions."], ["#view .preview", "Live preview of what the project will hold."]],
 };
 function applyNotes() {
@@ -931,11 +935,15 @@ const KEY_MOMENTS = [
   { date: "01 Dec 2026", title: "Yearly negotiation opens", cust: "Carrefour", kind: "Big moment", note: "Closes 1 March. No price change after 15 January.", act: ["pickproj", "P1", "Rehearse it", "roleplay"] },
   { date: "15 Jan 2027", title: "Joint business plan", cust: "Auchan", kind: "Big moment", act: ["cust", "Auchan", "Open Auchan"] },
 ];
+function findItems() {
+  const cats = [...new Set(Object.values(CATKB).flatMap(o => Object.keys(o)))];
+  return [...Object.keys(KB).map(c => [c, "customer", c]), ...cats.map(c => [c, "category", c]), ...BUYERS.map(b => [b.name, "buyer", b.id])];
+}
 function getStarted() {
   return [["Pick your customers", "So the assistant shows their numbers and knowledge", state.follow.some(k => k.startsWith("cust:")), `<button class="btn sm plain" data-a="go" data-v="kb">Pick customers</button>`],
     ["Set up your buyers", "Tailors feedback for external meetings. Not needed for internal ones", state.gs.buyers, `<button class="btn sm plain" data-a="cust" data-v="Carrefour">See buyer profiles</button>`],
     ["Try it on your next presentation", "Early draft, detailed feedback or finishing touches", PROJECTS.some(p => p.sessions.length), `<button class="btn sm plain" data-a="hometool" data-v="coach">Start coaching</button>`],
-    ["Pin it to your taskbar", "Open it in one click, like any desktop app", state.gs.pinned, `<button class="btn sm plain" data-a="install">Install as app</button>`]];
+    ["Try a skill in Copilot", "Type @Analyst in Copilot. Your IT team already added the skills", state.gs.pinned, `<button class="btn sm plain" data-a="cptry">Try it</button>`]];
 }
 function impactStats() {
   const by = new Map(); PROJECTS.forEach(p => p.sessions.forEach(x => by.set(p.id + x.mid, [...(by.get(p.id + x.mid) || []), x])));
@@ -952,8 +960,9 @@ V.home = () => {
   const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
   const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 4);
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Prepare your meetings end to end, with numbers you can trust and facts with sources.<br><span class="hint">Quick question? The same skills work in Copilot.</span></p></div>${NOTE}
-    ${askBox("", "Ask about a customer, category or buyer…")}${suggest(SUGGEST.slice(0, 2), "")}
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Prepare your meetings end to end, with numbers you can trust and facts with sources.</p></div>${NOTE}
+    <form class="askbox findbox" role="search">${icon("search")}<input name="q" list="findlist" aria-label="Find a customer, category or buyer" placeholder="Find a customer, category or buyer…"><datalist id="findlist">${findItems().map(x => `<option value="${esc(x[0])}">`).join("")}</datalist><button class="btn primary sm" type="submit">Go</button></form>
+    <p class="hint" style="margin:6px 2px 0">Questions? Ask in Copilot, with the same sources.</p>
     ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="setup"><span><b>Finish setting up</b> · ${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gsopen" style="color:var(--primary)">${state.gsOpen ? "Hide steps" : "Show steps"}</button><button class="btn ghost small" data-a="gshide" style="color:var(--steel);margin-left:auto">Not now</button></div>
       ${state.gsOpen ? `<div class="card" style="margin-top:8px"><div class="pad gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}<div class="row"><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div>` : ""}</div>`}
     <div class="section">${qhd("Prepare a meeting", "Each skill also works in Copilot: type @ and its name", `<button class="btn ghost small" data-a="go" data-v="copilot" style="color:var(--primary)">See it in Copilot</button>`)}
@@ -1233,7 +1242,7 @@ V.analyst = () => {
     ${aud === "external" ? `<div class="callout info" style="margin-bottom:14px">Customer-safe: internal plans, targets and margins are left out.</div>` : ""}
     <div class="figs">${figs}</div>
     <div class="section">${qhd("Talking points", "Each one says where it comes from", "")}<div class="card"><div class="pad"><ol class="points">${points.map(([k2, t, f], i) => `<li><span class="pn ${k2}">${i + 1}</span><span>${esc(t)}<br>${srcMini(k2)} ${f ? citeBtn(f.doc, f.loc) : `<span class="hint">calculated · data up to ${PW[LASTW]}</span>`}</span></li>`).join("")}</ol></div></div></div>
-    <div class="row section"><button class="btn primary" data-a="ancopy">Copy for Copilot or email</button><button class="btn plain" data-a="anslide">Download as one slide</button><button class="btn plain" data-a="launch" data-v="story" data-k="${p.id}">${icon("pen")}Build a deck with these</button></div>`;
+    <div class="row section"><button class="btn primary" data-a="ancopy">Copy for Copilot or email</button><button class="btn plain" data-a="anslide">Add as a slide in Copilot</button><button class="btn plain" data-a="launch" data-v="story" data-k="${p.id}">${icon("pen")}Build a deck with these</button></div>`;
 };
 // ---- Storyteller: a first draft in the selling format, fed by the numbers and the knowledge bank
 function storyData(p, m) {
@@ -1253,8 +1262,8 @@ V.story = () => {
   return head(`<button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>Storyteller</span>`, `Draft deck · ${esc(m.title)}`, `${sl.length} slides for ${m.minutes} minutes, in the selling format. Built from what you said about the meeting, the numbers and company knowledge.`) + `
     ${open.length > 1 ? `<div class="row" style="margin-bottom:14px"><span class="small muted">Meeting</span>${open.map(x => chipSel(x.title, x.id === m.id, "stmeet").replace(`data-v="${esc(x.title)}"`, `data-v="${x.id}"`)).join("")}</div>` : ""}
     <div class="slides">${sl.map(([step, text, ev], i) => `<div class="slide"><span class="sn">${i + 1}</span><span><span class="label">${esc(step)}</span><br><b style="font-weight:600">${esc(text)}</b>${ev.length ? `<span class="ev">${ev.map(([k2, f]) => f ? `${srcMini(k2)} ${citeBtn(f.doc, f.loc)}` : `${srcMini(k2)} <span class="hint">calculated · ${PW[LASTW]}</span>`).join("")}</span>` : ""}</span></div>`).join("")}</div>
-    <div class="row section"><button class="btn primary" data-a="stcreate" data-v="${m.id}">Create in PowerPoint</button><button class="btn plain" data-a="stcopy">Copy outline for Copilot</button></div>
-    <p class="hint">Next: the draft goes to the meeting, where the Selling Coach can review it.</p>`;
+    <div class="row section"><button class="btn primary" data-a="stcreate" data-v="${m.id}">${icon("chat")}Build in Copilot</button></div>
+    <p class="hint">Builds the deck in PowerPoint inside Copilot and saves it to OneDrive. Then the Selling Coach can review it.</p>`;
 };
 // ---- Data & settings: where answers come from (product names live here)
 function pcToggles() {
@@ -1275,7 +1284,7 @@ V.about = () => head("Where answers come from", "Data & settings", "What the ass
         <div class="row">${state.follow.length ? state.follow.map(k => `<button class="btn sm plain" data-a="follow" data-v="${esc(k)}" aria-label="Unfollow ${esc(followLabel(k))}">${esc(followLabel(k))} ✕</button>`).join("") : `<span class="muted small">Nothing yet.</span>`}</div></div></div>
       <div class="card"><div class="card-hd">In Copilot</div><div class="pad stack">
         <span class="small">The same skills work in Copilot: type <b>@Analyst</b>, <b>@Storyteller</b>, <b>@Selling Coach</b>, <b>@Role-play</b> or <b>@Stewardship</b>. Same sources, same tags.</span>
-        <div class="row"><button class="btn sm plain" data-a="go" data-v="copilot">${icon("chat")}See it in Copilot</button><button class="btn sm plain" data-a="install">${state.gs.pinned ? "Desktop app installed ✓" : "Install the desktop app"}</button></div></div></div>
+        <div class="row"><button class="btn sm plain" data-a="go" data-v="copilot">${icon("chat")}See it in Copilot</button><span class="pill ok">Added for you by IT</span></div></div></div>
     </div></div>`;
 // ---- In Copilot: each skill called by name (A2A/MCP), same sources and tags
 const CP_CHIPS = ["@Analyst key figures for my Carrefour power hour", "@Storyteller draft my Carrefour range review deck", "@Selling Coach review my range review deck", "@Stewardship check my slides for legal risk", "Why is our share dropping at Carrefour?"];
@@ -1287,16 +1296,18 @@ function cpTurn(q) {
   return { kind: "answer", q: q.replace(/^@\S+( \S+){0,2} /, "") };
 }
 const cpSeed = () => [{ me: CP_CHIPS[0], ...cpTurn(CP_CHIPS[0]) }];
+const cpFix = k => state.cpFix && state.cpFix[k];
 function cpBot(t) {
   const who = n => `<span class="who">${icon(n === "Analyst" ? "trend" : n === "Storyteller" ? "pen" : "spark")}${n}${n === "AI Sales Assistant" ? "" : " · skill"}</span>`;
-  const p = proj("P1"), m = p.meetings.find(x => x.id === "M1");
+  const p = proj(t.pid || "P1"), m = p.meetings.find(x => x.id === (t.mid || "M1")) || p.meetings[0];
   if (t.kind === "analyst") { const a = analystData(p);
     return `<div class="bub bot">${who("Analyst")}<span>Key figures for <b>Carrefour · Fabric Care</b> (${PERIODS[state.per]}), internal version:</span><ol class="points">${[`Sales ${eur(a.T.s)}, ${pctS(a.T.g)} vs year ago`, `Last week ${eur(a.W.last)}, ${pctS(a.W.g)} vs previous week`, a.sh ? `${a.sh[0]} ${a.sh[1]}, ${a.sh[2]} ${a.sh[3]}` : "", `${pctS(a.gap)} vs internal plan`].filter(Boolean).map((x, i) => `<li><span class="pn de">N${i + 1}</span><span class="small">${esc(x)}</span></li>`).join("")}</ol>${a.alert ? `<span class="small">Watch: ${esc(a.alert.text)}</span>` : ""}<span class="row" style="gap:6px">${srcMini("de")}<button class="btn sm plain" data-a="pickproj" data-v="P1" data-k="analyst">Open in Analyst</button></span></div>`; }
   if (t.kind === "story") { const sl = storyData(p, m);
-    return `<div class="bub bot">${who("Storyteller")}<span>A ${sl.length}-slide draft for <b>${esc(m.title)}</b>, in the selling format:</span><ol class="small" style="margin:0;padding-left:18px">${sl.map(([st, tx]) => `<li><b>${esc(st)}</b>: ${esc(tx.length > 90 ? tx.slice(0, 88) + "…" : tx)}</li>`).join("")}</ol><span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}<button class="btn sm primary" data-a="stcreate" data-v="M1">Create in PowerPoint</button><button class="btn sm plain" data-a="pickproj" data-v="P1" data-k="story">Open in Storyteller</button></span></div>`; }
+    return `<div class="bub bot">${who("Storyteller")}<span>Built a ${sl.length}-slide draft for <b>${esc(m.title)}</b>, in the selling format, with the numbers and facts in.</span><span class="deckpane">${icon("file")}<b>${esc(m.title)} · draft.pptx</b><span class="hint">PowerPoint · opened next to this chat · saved to OneDrive</span><span class="thumbs">${sl.map((x, i) => `<span class="thumb">${i + 1}</span>`).join("")}</span></span><span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}</span></div>`; }
   if (t.kind === "coach") {
-    const d = latestDeck(m), fb = feedbackFor(p, m, d), left = fb.steps.filter(x => x[1] !== "good").slice(0, 3);
-    return `<div class="bub bot">${who("Selling Coach")}<span>Score for <b>${esc(d.name)}</b>: <b>${fb.score.toFixed(1)}/5</b>, using what you said about the meeting in your Carrefour project.</span><span class="label">What's left to reach 5/5</span>${left.map(([n, st, tx]) => `<span class="small">• <b>${esc(n)}</b>: ${esc(tx)}</span>`).join("")}<span class="row" style="gap:6px"><button class="btn sm plain" data-a="meeting" data-v="P1" data-m="M1">Open full feedback</button></span></div>`;
+    const d = latestDeck(m); if (!d) return `<div class="bub bot">${who("Selling Coach")}<span>No deck linked to <b>${esc(m.title)}</b> yet. Ask @Storyteller to build one.</span></div>`;
+    const fb = feedbackFor(p, m, d), left = fb.steps.filter(x => x[1] !== "good").slice(0, 3);
+    return `<div class="bub bot">${who("Selling Coach")}<span>Score for <b>${esc(d.name)}</b>: <b>${fb.score.toFixed(1)}/5</b>. ${left.length} fixes, in order:</span>${left.map(([n, st, tx], i) => { const k = `${m.id}-${i}`; return `<span class="fixrow"><span class="small"><b>${esc(n)}</b>: ${esc(tx)}</span>${cpFix(k) ? `<span class="pill ok">Applied</span>` : `<button class="btn sm plain" data-a="cpfix" data-v="${k}">Apply in the deck</button>`}</span>`; }).join("")}<span class="row" style="gap:6px"><button class="btn sm plain" data-a="meeting" data-v="${p.id}" data-m="${m.id}">See the meeting</button></span></div>`;
   }
   if (t.kind === "stew") return `<div class="bub bot">${who("Stewardship Coach")}<span>2 things to fix before this goes to a customer:</span><span class="small">• <b>Slide 6</b>: “cleans better than any other brand” is a comparative claim. Add the test reference and date.</span><span class="small">• <b>Slide 11</b>: the promotion price needs the legal price disclaimer for France.</span></div>`;
   const r = answer(t.q, "");
@@ -1309,7 +1320,7 @@ V.copilot = () => {
       <div class="cplog" id="cplog">${turns.map(t => `<div class="bub me">${esc(t.me)}${["coach", "stew"].includes(t.kind) ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : ""}</div>${cpBot(t)}`).join("")}</div>
       <form class="cpbox"><input name="q" aria-label="Message Copilot" placeholder="@Analyst, @Storyteller, @Selling Coach…"><button class="btn primary sm" type="submit">Send</button></form></div>
       <div class="stack" style="gap:16px"><div class="card"><div class="card-hd">Try a skill</div><div class="pad stack">${CP_CHIPS.map(q => `<button class="btn sm plain" data-a="cpchip" data-v="${esc(q)}" style="justify-content:flex-start;white-space:normal;text-align:left">${esc(q)}</button>`).join("")}<button class="btn ghost small" data-a="cpreset" style="color:var(--primary)">Start again</button></div></div>
-        <div class="card"><div class="card-hd">How the skills fit together</div><div class="pad stack small">${["analyst", "story", "coach"].map(k => `<p><b>${SKILLS[k].cp}</b> · ${SKILLS[k].step.replace(/^\d · /, "")}: ${SKILLS[k].line}</p>`).join("")}<p><b>@Role-play</b> and <b>@Stewardship</b> · before you go.</p><p class="hint">Decks come from OneDrive or SharePoint: nothing to download and upload.</p></div></div></div></div>`;
+        <div class="card"><div class="card-hd">How the skills fit together</div><div class="pad stack small">${["analyst", "story", "coach"].map(k => `<p><b>${SKILLS[k].cp}</b> · ${SKILLS[k].step.replace(/^\d · /, "")}: ${SKILLS[k].line}</p>`).join("")}<p><b>@Role-play</b> and <b>@Stewardship</b> · before you go.</p><p class="hint">With Office in Copilot, the deck opens next to the chat: the Storyteller builds it, the Selling Coach fixes it in place. Files stay in OneDrive.</p></div></div></div></div>`;
 };
 AFTER.copilot = () => { const l = $("#cplog"); if (l) l.scrollTop = l.scrollHeight; };
 // ---- Decision Engine: the numbers, how they are calculated, and when they create an alert
@@ -1485,8 +1496,8 @@ function flowSteps(p, m) {
   return [
     [!!p.mc.context && p.buyers.length > 0, "Tell it about the meeting", "", p.mc.context ? "Objective, buyers and what matters. Set once for the project." : "Objective, buyers and what matters. Every skill uses it.", b("ctxtab", "", "Add"), b("ctxtab", "", "Open")],
     [!!f.analyst, "Get the facts", "Analyst", `Key figures for ${p.cust} · ${p.cat}`, b("tool", "analyst", "Get key figures"), b("tool", "analyst", "Open")],
-    [!!d, "Build the deck", "Storyteller", d ? d.name : "Start from zero, or upload the deck you have", b("stfor", "", "Start a deck") + " " + b("meeting", "", "Upload"), b("meeting", "", "Open")],
-    [!!sc, "Improve the deck", "Selling Coach", sc ? `${sc.toFixed(1)}/5 on version ${d.v}${sc < 4 ? " · aim for 4" : ""}` : "Score the deck and see what's left to reach 5/5", b("meeting", "", d ? "Get feedback" : "Upload first"), b("meeting", "", "Open")],
+    [!!d, "Build the deck", "Storyteller", d ? d.name : "Built in Copilot, or link the deck you have", b("stfor", "", "Build in Copilot") + " " + b("meeting", "", "Link a file"), b("cpopen", "", "Open")],
+    [!!sc, "Improve the deck", "Selling Coach", sc ? `${sc.toFixed(1)}/5 on version ${d.v}${sc < 4 ? " · aim for 4" : ""}` : "Score the deck and see what's left to reach 5/5", d ? b("cpopen", "", "Review in Copilot") : b("stfor", "", "Build the deck first"), b("meeting", "", "Open")],
     [!!f.roleplay, "Rehearse", "Role-play Coach", "Practise out loud with your buyer personas", b("tool", "roleplay", "Rehearse"), b("tool", "roleplay", "Open")],
     [!!f.qa, "Check the slides", "Stewardship Coach", "Legal risk and missing disclaimers, before it reaches the customer", b("tool", "qa", "Check slides"), b("tool", "qa", "Open")],
   ];
@@ -1506,8 +1517,8 @@ function overviewTab(p) {
 // The meeting flow: get the facts, build the story, improve the deck, then rehearse and check
 const SKILLS = {
   analyst: { ic: "trend", name: "Analyst", step: "1 · Get the facts", line: "Key figures for your power hour, team connect or customer meeting.", cta: "Get key figures", cp: "@Analyst" },
-  story: { ic: "pen", name: "Storyteller", step: "2 · Build the story", line: "Drafts your deck from zero, with the numbers and facts already in.", cta: "Start a deck", cp: "@Storyteller" },
-  coach: { ic: "coach", name: "Selling Coach", step: "3 · Improve the deck", line: "Scores an existing deck and shows what's left to reach 5/5.", cta: "Review a deck", cp: "@Selling Coach" },
+  story: { ic: "pen", name: "Storyteller", step: "2 · Build the story", line: "Builds your deck from zero in PowerPoint, with the numbers and facts already in.", cta: "Start a deck", cp: "@Storyteller" },
+  coach: { ic: "coach", name: "Selling Coach", step: "3 · Improve the deck", line: "Scores your deck and applies the fixes with you, in the deck.", cta: "Review a deck", cp: "@Selling Coach" },
   roleplay: { ic: "mic", name: "Role-play Coach", step: "Before you go", line: "Rehearse with a voice agent that plays your buyer.", cta: "Rehearse", cp: "@Role-play" },
   qa: { ic: "chat", name: "Stewardship Coach", step: "Before you go", line: "Checks slides for legal risk and missing disclaimers.", cta: "Check slides", cp: "@Stewardship" },
 };
@@ -1588,10 +1599,13 @@ V.meeting = () => {
       <div class="row" style="margin-top:8px"><span class="chip">${icon("cal")} ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "Not scheduled"}</span><span class="chip">${m.minutes} minutes</span>${m.attendees.map(a => `<span class="chip">${icon("user")} ${esc(a)}</span>`).join("")}<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
       <div class="actions"><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Edit meeting</button><button class="btn sm plain linkdanger-btn" data-a="delmeeting" data-m="${m.id}">Delete meeting</button></div></div>${NOTE}
     <div class="ws"><div class="stack" style="gap:18px">
-      <div class="card"><div class="card-hd">Presentation <span class="aside">${plural(m.decks.length, "version", "versions")}</span></div><div class="pad stack">
-        ${m.decks.slice().reverse().map(x => `<div class="filerow"><span class="fileico">${x.name.split(".").pop().toUpperCase().slice(0, 4)}</span><span><b style="font-weight:600">${esc(x.name)}</b>${x === d ? ` <span class="pill solid">Latest</span>` : ""}<br><span class="hint">Version ${x.v} · ${x.slides} slides · uploaded ${esc(x.uploaded)}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap">${x.result ? `<span class="pill ok">${x.result.score.toFixed(1)}/5</span>` : `<span class="pill info">No feedback yet</span>`}<button class="iconbtn" data-a="deldeck" data-m="${m.id}" data-v="${x.v}" aria-label="Remove ${esc(x.name)}" title="Remove this version">✕</button></span></div>`).join("")}
-        <label class="dropzone" id="drop" tabindex="0">${icon("upload")}<b>${d ? "Upload a new version" : "Upload the presentation for this meeting"}</b><span class="hint">PPTX or PDF · drag and drop or click to browse</span><input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label>
-        <div class="row small" style="gap:8px"><span class="hint">${d ? "Need the numbers?" : "No deck yet?"}</span>${d ? "" : `<button class="btn sm plain" data-a="stfor" data-m="${m.id}">${icon("pen")}Start one with the Storyteller</button>`}<button class="btn sm plain" data-a="tool" data-v="analyst">${icon("trend")}Key figures for this meeting</button></div>
+      <div class="card deckcard"><div class="card-hd">Deck <span class="aside">${icon("file")} OneDrive · version history kept there</span></div><div class="pad stack">
+        ${d ? `<div class="filerow"><span class="fileico">PPTX</span><span><b style="font-weight:600">${esc(d.name)}</b><br><span class="hint">${d.slides} slides · updated ${esc(d.uploaded)}${m.decks.filter(x => x.result).length > 1 ? ` · scores ${m.decks.filter(x => x.result).map(x => x.result.score.toFixed(1)).join(" → ")}` : ""}</span></span>${d.result ? `<span class="pill ok">${d.result.score.toFixed(1)}/5</span>` : `<span class="pill info">Not reviewed yet</span>`}</div>
+        <div class="row"><button class="btn primary" data-a="cpopen" data-m="${m.id}">${icon("chat")}Open in Copilot</button><label class="btn plain" style="cursor:pointer">Link another file<input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label></div>
+        <span class="hint">Opens the deck in PowerPoint inside Copilot, with the Selling Coach ready. Fixes go straight into the deck.</span>`
+        : `<p class="small">No deck yet.</p><div class="row"><button class="btn primary" data-a="stfor" data-m="${m.id}">${icon("pen")}Build it in Copilot</button><label class="btn plain" style="cursor:pointer">Link a file you have<input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label></div>
+        <span class="hint">The Storyteller builds it in PowerPoint inside Copilot, with the numbers and facts in. It saves to OneDrive.</span>`}
+        <div><button class="btn ghost small" data-a="tool" data-v="analyst" style="color:var(--primary);padding:0">${icon("trend")} Key figures for this meeting</button></div>
       </div></div>
       ${briefCard(p, m)}
       ${mctxSummary(p, m)}
@@ -1599,7 +1613,7 @@ V.meeting = () => {
         ${running ? `<div class="pad stack"><b>Analysing ${esc(d.name)}</b><ul class="stagelist">${stages.map((s, k) => `<li class="${k < state.run.done ? "ok" : k === state.run.done ? "run" : ""}"><span class="ico">${k < state.run.done ? "✓" : ""}</span>${esc(s[0])}${s[1] ? ` <span class="hint">· ${esc(s[1])}</span>` : ""}</li>`).join("")}</ul></div>`
         : !d.result ? `<div class="pad stack"><p class="small">Selling Coach uses what you said about this meeting, the numbers and company knowledge, so you go straight to the analysis.</p>
             <div class="usedctx"><span class="chip">About this meeting</span>${srcMini("de")}<span class="hint">numbers</span>${srcMini("kb")}<span class="hint">${plural(kbOf(p.cust).facts.length + kbOf(p.cust).changes.filter(x => !x.de).length + (catOf(p.market, p.cat)?.facts.length || 0), "fact", "facts")}</span>${m.attendees.map(a => `<span class="chip">${esc(a)}</span>`).join("")}${p.files.some(f => f.ctx) ? `<span class="chip">${plural(p.files.filter(f => f.ctx).length, "project document", "project documents")}</span>` : ""}</div>
-            <div><button class="btn primary" data-a="analyse" data-m="${m.id}">${icon("coach")}Get feedback on version ${d.v}</button></div></div>`
+            <div class="row"><button class="btn primary" data-a="cpopen" data-m="${m.id}">${icon("chat")}Review in Copilot</button><button class="btn ghost small" data-a="analyse" data-m="${m.id}" style="color:var(--primary)">or get feedback here</button></div></div>`
         : `<div class="result-hd"><div><span class="label">Overall</span><div class="bigscore">${d.result.score.toFixed(1)}<span>/5</span></div></div><div class="stack" style="gap:6px">
             ${prev && prev.result ? `<span><span class="delta">${d.result.score >= prev.result.score ? "+" : ""}${(d.result.score - prev.result.score).toFixed(1)} since version ${prev.v}</span></span>` : ""}
             <span class="small">${fb ? esc(fb.timing) : "Feedback from before this mock-up. Run it again to see the detail."}</span>
@@ -1609,7 +1623,7 @@ V.meeting = () => {
             <div class="pad stack">${(() => { const left = fb.steps.filter(x => x[1] !== "good").map(([n, st, t]) => [n, st === "missing" ? .8 : .4, t]).sort((a, b) => b[1] - a[1]), hist = m.decks.filter(x => x.result).map(x => `v${x.v} ${x.result.score.toFixed(1)}`);
               return `<div class="label">What's left to reach 5/5</div>${left.length ? left.map(([n, g, t]) => `<div class="dd"><span title="${esc(t)}"><b style="font-weight:600">${esc(n)}</b> · ${esc(t)}</span><b class="up-good">up to +${g.toFixed(1)}</b></div>`).join("") : `<p class="small">Nothing left on the selling steps. Polish the slides below.</p>`}
                 ${hist.length > 1 ? `<p class="hint">Score history: ${hist.join(" → ")}</p>` : ""}<p class="hint">Don't chase the score, chase a better presentation: fix the biggest gap first.</p>`; })()}<div class="label">Slide by slide</div>${fb.slides.map(([n, t]) => `<div class="row small"><span class="chip">Slide ${n}</span>${esc(t)}</div>`).join("")}
-            <div class="row" style="margin-top:6px"><label class="btn sm primary" style="cursor:pointer">${icon("upload")}Upload an improved version<input type="file" class="vh" accept=".pptx,.ppt,.pdf" data-up="deck"></label><button class="btn sm plain" data-a="analyse" data-m="${m.id}">Run again</button></div></div>`
+            <div class="row" style="margin-top:6px"><button class="btn sm primary" data-a="cpopen" data-m="${m.id}">${icon("chat")}Fix it in Copilot</button><button class="btn sm plain" data-a="analyse" data-m="${m.id}">Run again</button></div></div>`
           : `<div class="pad"><button class="btn sm plain" data-a="analyse" data-m="${m.id}">Show detailed feedback</button></div>`}`}
       </div>` : ""}
       <div class="card"><div class="card-hd">After the meeting</div><div class="pad stack">
@@ -1913,14 +1927,14 @@ document.addEventListener("click", e => {
     case "gsopen": state.gsOpen = !state.gsOpen; render(); break;
     case "anaud": state.anAud = v; render(); break;
     case "ancopy": toast(state.anAud === "external" ? "Customer-safe key figures copied, with their sources." : "Key figures and talking points copied, with their sources. Paste them in Copilot or an email."); break;
-    case "anslide": toast("In the live tool this downloads one slide with these key figures and their sources."); break;
+    case "anslide": toast("In the live tool this adds one slide with these figures and their sources to your deck, in PowerPoint inside Copilot."); break;
     case "launch": launchTool(proj(el.dataset.k), v); break;
     case "stfor": go("story", { pid: p.id, mid: el.dataset.m }); break;
     case "stmeet": state.mid = v; render(); break;
     case "stcopy": toast("Outline copied. Paste it in Copilot to keep working on the wording."); break;
-    case "stcreate": { const pp = proj(state.view === "story" ? state.pid : "P1"), mm = pp.meetings.find(x => x.id === v); const vv = mm.decks.length + 1, name = `${mm.title} draft (Storyteller).pptx`;
-      mm.decks.push({ v: vv, name, uploaded: TODAY, by: "VB", slides: 6, result: null }); log(pp, `created ${name} with the Storyteller`); state.pid = pp.id; go("meeting", { mid: mm.id });
-      toast("Draft created and added to the meeting. Next: get Selling Coach feedback on it."); break; }
+    case "stcreate": { const pp = proj(state.view === "story" ? state.pid : "P1"), mm = pp.meetings.find(x => x.id === v); const vv = mm.decks.length + 1, name = `${mm.title} · draft.pptx`;
+      mm.decks.push({ v: vv, name, uploaded: TODAY, by: "VB", slides: 6, result: null }); log(pp, `built ${name} in Copilot with the Storyteller`); state.pid = pp.id; go("meeting", { mid: mm.id });
+      toast("In the live tool this opens PowerPoint in Copilot. The draft is saved to OneDrive and linked here. Next: Selling Coach."); break; }
     case "ctab": state.ctab = v; render(); break;
     case "gtab": state.gtab = v; render(); break;
     case "pdet": state.pdet = !state.pdet; render(); break;
@@ -1936,7 +1950,10 @@ document.addEventListener("click", e => {
       <div class="field"><label for="rq-m">Market</label><select id="rq-m" name="m">${KB_MARKETS.map(x => `<option>${x}</option>`).join("")}</select></div>
       <div class="field"><label for="rq-w">Why you need it (optional)</label><input id="rq-w" name="w" placeholder="e.g. I prepare the yearly negotiation with them"></div>`, fd => { toast(`Request sent for ${fd.get("n").trim()} (${fd.get("m")}). You'll get an email when it's set up.`); }, "Send request"); break;
     case "cpchip": state.cp = [...(state.cp.length ? state.cp : cpSeed()), { me: v.startsWith("@") ? v : `@AI Sales Assistant ${v.charAt(0).toLowerCase() + v.slice(1)}`, ...cpTurn(v) }]; render(); break;
-    case "cpreset": state.cp = []; render(); break;
+    case "cpreset": state.cp = []; state.cpFix = {}; render(); break;
+    case "cpfix": state.cpFix = { ...(state.cpFix || {}), [v]: true }; render(); toast("In the live tool this edits the slide in the deck. Undo is in PowerPoint."); break;
+    case "cpopen": { const mm = p.meetings.find(x => x.id === el.dataset.m) || nextMeeting(p); state.cp = [{ me: "@Selling Coach review this deck", kind: "coach", pid: p.id, mid: mm.id }]; state.gs.pinned = true; go("copilot"); break; }
+    case "cptry": state.gs.pinned = true; go("copilot"); break;
     case "follow": { const on = isF(v); state.follow = on ? state.follow.filter(x => x !== v) : [...state.follow, v]; render(); toast(on ? "Unfollowed. It no longer appears in What changed on Home." : "Following. Its changes now appear on Home."); break; }
     case "fb": if (v === "wrong") { toast("Use the source link next to the fact: the knowledge bank team corrects facts by fixing or replacing the document."); break; }
       state.fb[state.ask] = v; render(); toast(v === "up" ? "Thanks. Useful answers help tune what the assistant shows first." : "Thanks. Unhelpful answers are reviewed by the knowledge bank team."); break;
@@ -1975,6 +1992,13 @@ document.addEventListener("click", e => {
 });
 document.addEventListener("submit", e => {
   if (e.target.matches(".cpbox")) { e.preventDefault(); const q = e.target.q.value.trim(); if (!q) return; state.cp = [...(state.cp.length ? state.cp : cpSeed()), { me: q.startsWith("@") ? q : `@AI Sales Assistant ${q}`, ...cpTurn(q) }]; render(); return; }
+  if (e.target.matches(".findbox")) { e.preventDefault(); const q = e.target.q.value.trim().toLowerCase(); if (!q) { e.target.q.focus(); return; }
+    const hit = findItems().find(x => x[0].toLowerCase() === q) || findItems().find(x => x[0].toLowerCase().includes(q));
+    if (!hit) { state.cp = [{ me: `@AI Sales Assistant ${e.target.q.value.trim()}`, ...cpTurn(e.target.q.value.trim()) }]; go("copilot"); toast("Not a customer, category or buyer: asked in Copilot instead."); return; }
+    if (hit[1] === "customer") { state.ctab = "numbers"; go("customer", { cust: hit[2], cat: state.cat, mkt: kbOf(hit[2]).market || state.mkt }); }
+    else if (hit[1] === "buyer") go("buyer", { bid: hit[2] });
+    else { state.gtab = "numbers"; go("category", { cat: hit[2], mkt: Object.keys(CATKB).find(mk => CATKB[mk][hit[2]]) || state.mkt }); }
+    return; }
   if (!e.target.matches(".askbox")) return; e.preventDefault();
   const q = e.target.q.value.trim(); if (!q) { e.target.q.focus(); return; }
   go("ask", { ask: q, askCust: e.target.dataset.askcust || "" });
