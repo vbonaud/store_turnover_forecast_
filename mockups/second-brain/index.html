@@ -387,6 +387,10 @@ button.chip { cursor: pointer; }
 .topfix li > span:first-child { display: block; }
 .topfix li { display: list-item; }
 .topfix li .hint { display: block; margin-top: 2px; }
+.segopt input { width: auto; height: auto; padding: 0; margin: 0; border: 0; box-shadow: none; accent-color: var(--primary); }
+.onlyana { display: grid; gap: 14px; }
+.segopt { white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; }
+.segopt:has(input:checked) { background: var(--white); color: var(--primary); font-weight: 600; box-shadow: var(--shadow); }
 .dropzone { border: 2px dashed var(--border-primary-light); border-radius: 12px; background: var(--primary-light); padding: 22px; display: grid; justify-items: center; gap: 6px; text-align: center; color: var(--primary); }
 .dropzone.drag { background: var(--primary-lighter); }
 .filerow { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--light-gray); border-radius: 9px; background: var(--white); }
@@ -521,6 +525,7 @@ let PROJECTS = [
       { id: "M2", title: "Q3 business review", date: "12 Sep 2026", obj: 0, minutes: 60, attendees: ["Juliette Morel", "Camille Robert"], status: "Done", aud: "Customer", focus: "Whole category", ask: "Agree the Q4 joint plan", objection: "",
         decks: [{ v: 1, name: "Carrefour Q3 CBR.pptx", uploaded: "05 Sep 2026", by: "VB", slides: 16, result: null }],
         notes: "" },
+      { id: "M7", type: "analysis", title: "Why are capsules losing share?", question: "Why are capsules losing share in hypermarkets, and is it us or the whole category?", date: "", due: "24 Oct 2026", obj: 5, minutes: 0, attendees: [], status: "Open", aud: "Internal", focus: "Capsules", ask: "", objection: "", decks: [], notes: "" },
       { id: "M6", title: "Power hour: Carrefour Q4", date: "21 Oct 2026", obj: 5, minutes: 30, attendees: [], status: "Preparing", aud: "Internal", focus: "Whole category", ask: "Agree the Q4 priorities with the team", objection: "", decks: [], notes: "" },
     ],
     files: [{ name: "Carrefour JBP 2026-27.pptx", kind: "ppt", added: "02 Jul 2026", by: "VB", ctx: true }, { name: "Buyer meeting notes August.docx", kind: "doc", added: "14 Aug 2026", by: "VB" }, { name: "Q4 promotion calendar.xlsx", kind: "xls", added: "20 Sep 2026", by: "VB" }],
@@ -846,7 +851,8 @@ const days = d => { const x = pd(d), y = pd(TODAY); return isNaN(x) ? null : Mat
 const dbox = d => { if (!d) return `<div class="datebox"><b>?</b><span>No date</span></div>`; const [dd, mm] = d.split(" "); return `<div class="datebox"><b>${dd}</b><span>${mm}</span></div>`; };
 const when = d => { const n = days(d); if (n === null) return "Not scheduled"; if (n === 0) return "Today"; if (n > 0) return `In ${plural(n, "day", "days")}`; return `${plural(-n, "day", "days")} ago`; };
 const latestDeck = m => m.decks[m.decks.length - 1];
-const nextMeeting = p => p.meetings.filter(m => m.status !== "Done").sort((a, b) => (pd(a.date) || 9e15) - (pd(b.date) || 9e15))[0];
+const isAna = m => !!m && m.type === "analysis";
+const nextMeeting = p => p.meetings.filter(m => m.status !== "Done" && !isAna(m)).sort((a, b) => (pd(a.date) || 9e15) - (pd(b.date) || 9e15))[0];
 function deckState(m) {
   const d = m && latestDeck(m);
   if (!m) return ["neutral", "No meeting yet"];
@@ -896,8 +902,9 @@ const NOTES = {
   story: [["#view .slides", "Our part: the storyline in the selling format, with governed numbers and cited facts."], ["#view .row.section", "Microsoft's part: Office in Copilot builds the slides. To check: Frontier-only rollout, and how a skill passes our content to PowerPoint (plugin or MCP connector)."]],
   about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."], ["#view .pcard", "Real settings, in one place: personal sources, what you follow, Copilot."]],
   projects: [["#view .impact", "The PoC success measure: better decks, shown as the score gain before meetings. Private to the user; any team view would be aggregated without names."], ["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
-  project: [["#view .pagehead", "A project is one customer and one category (users can still start a second one). It holds what is shared: buyers, documents, defaults. Each meeting inside keeps its own audience, focus (category, sub-category or brand), objective and ask."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .flow", "One flow per meeting, in order: each step is a skill (also callable in Copilot), worked out from the project's state. The box above always shows the next step. This replaces the tool cards: one way in, not five."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
-  meeting: [["#view .deckcard", "The deck is a OneDrive link, not an upload: versions, labels and co-editing stay in Office. One main action: Open in Copilot. Upload stays as a fallback for users without a Copilot licence."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Selling Coach Step 2, split in two: what changes per meeting (audience, focus, objective, minutes, ask, objection) lives on the meeting; the rest are project defaults. A new meeting is prefilled from the last one."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .topfix", "From the user interview: decks are reviewed right before the meeting, with about 15 minutes. So: the 3 fixes that move the score most, with time and expected gain. Everything else is one click away. Scores (1 to 5) are private to the user. PoC success measure: score gain before meetings."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
+  project: [["#view .pagehead", "A project is one customer and one category (users can still start a second one). It holds what is shared: buyers, documents, defaults. Inside it, each task is a meeting (customer or internal, with its own audience, focus, objective and ask) or an analysis with no meeting."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .flow", "One flow per meeting, in order: each step is a skill (also callable in Copilot), worked out from the project's state. The box above always shows the next step. This replaces the tool cards: one way in, not five."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
+
+  meeting: [["#view .anaq", "A task can be an analysis with no meeting: a question, a focus and an optional due date. No deck, no Selling Coach."], ["#view .anaans", "The first answer comes straight from the Decision Engine and the knowledge bank, tagged and cited. Copilot takes the follow-up questions."], ["#view .deckcard", "The deck is a OneDrive link, not an upload: versions, labels and co-editing stay in Office. One main action: Open in Copilot. Upload stays as a fallback for users without a Copilot licence."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Selling Coach Step 2, split in two: what changes per meeting (audience, focus, objective, minutes, ask, objection) lives on the meeting; the rest are project defaults. A new meeting is prefilled from the last one."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .topfix", "From the user interview: decks are reviewed right before the meeting, with about 15 minutes. So: the 3 fixes that move the score most, with time and expected gain. Everything else is one click away. Scores (1 to 5) are private to the user. PoC success measure: score gain before meetings."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
   new: [["#view .stepper", "Five short steps. Only the name and customer are required."], ["#view .wizard .card", "Step 2 picks saved buyer profiles. Step 3 is Selling Coach's meeting context, filled once for the whole project and kept across sessions."], ["#view .preview", "Live preview of what the project will hold."]],
 };
 function applyNotes() {
@@ -964,7 +971,7 @@ V.home = () => {
   const all = sortChanges([...fk.flatMap(([mk, c]) => (catOf(mk, c)?.changes || []).map(x => ({ ...x, where: `${c} · ${mk}` }))), ...fc.flatMap(c => kbOf(c).changes.map(x => ({ ...x, where: c })))]);
   const watch = sortChanges([...all.filter(x => x.de).slice(0, 2), ...all.filter(x => !x.de).slice(0, 2)]);
   const gs = getStarted(), gsDone = gs.filter(x => x[2]).length;
-  const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
+  const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date && !isAna(m)).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
   const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 4);
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
   return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Prepare your meetings end to end, with numbers you can trust and facts with sources.</p></div>${NOTE}
@@ -1265,7 +1272,7 @@ function storyData(p, m) {
   ];
 }
 V.story = () => {
-  const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid) || nextMeeting(p) || p.meetings[0], sl = storyData(p, m), open = p.meetings.filter(x => x.status !== "Done");
+  const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid && !isAna(x)) || nextMeeting(p) || p.meetings[0], sl = storyData(p, m), open = p.meetings.filter(x => x.status !== "Done" && !isAna(x));
   return head(`<button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>Storyteller</span>`, `Draft deck · ${esc(m.title)}`, `${sl.length} slides for ${m.minutes} minutes, in the selling format. Built from what you said about the meeting, the numbers and company knowledge.`) + `
     ${open.length > 1 ? `<div class="row" style="margin-bottom:14px"><span class="small muted">Meeting</span>${open.map(x => chipSel(x.title, x.id === m.id, "stmeet").replace(`data-v="${esc(x.title)}"`, `data-v="${x.id}"`)).join("")}</div>` : ""}
     <div class="slides">${sl.map(([step, text, ev], i) => `<div class="slide"><span class="sn">${i + 1}</span><span><span class="label">${esc(step)}</span><br><b style="font-weight:600">${esc(text)}</b>${ev.length ? `<span class="ev">${ev.map(([k2, f]) => f ? `${srcMini(k2)} ${citeBtn(f.doc, f.loc)}` : `${srcMini(k2)} <span class="hint">calculated · ${PW[LASTW]}</span>`).join("")}</span>` : ""}</span></div>`).join("")}</div>
@@ -1461,12 +1468,12 @@ AFTER.projects = () => { $("#q").addEventListener("input", e => { state.q = e.ta
    ===================================================================== */
 V.project = () => {
   const p = proj(state.pid);
-  const tabs = [["overview", "Overview"], ["context", "Defaults" + (ctxDirty() ? " •" : "")], ["meetings", `Meetings (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
+  const tabs = [["overview", "Overview"], ["context", "Defaults" + (ctxDirty() ? " •" : "")], ["meetings", `Tasks (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
   const body = { overview: overviewTab, context: contextTab, meetings: meetingsTab, files: filesTab, activity: activityTab }[state.tab](p);
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.market)}</span><span class="chip">${esc(p.cat)}</span>${p.status === "Archived" ? `<span class="pill neutral">Archived</span>` : ""}</div></div>
-      <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New meeting</button></div></div>
+      <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New task</button></div></div>
     ${NOTE}
     <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${state.tab === k}" tabindex="${state.tab === k ? 0 : -1}">${l}</button>`).join("")}</div>${body}`;
 };
@@ -1516,8 +1523,8 @@ function overviewTab(p) {
       <div class="row" style="margin-top:4px">${nx ? `<span class="small"><b>Next step:</b> ${nx[1]}${nx[2] ? ` <span class="hint">· ${nx[2]}</span>` : ""}</span>${nx[4].replace(/btn sm plain/g, "btn sm primary")}` : `<span class="pill ok">Ready</span><button class="btn sm plain" data-a="meeting" data-m="${m.id}">Open the meeting</button>`}</div></div></div>` : ""}<div class="ws"><div class="stack" style="gap:18px">
     ${m ? `<div class="card flow"><div class="card-hd">Prepare ${esc(m.title)} <span class="aside">${done} of ${steps.length} done · each skill also works in Copilot</span></div>
       <div class="checklist">${steps.map(([ok, t, sk, sub, act, open]) => `<div><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b>${sk ? ` <span class="skname">${sk}</span>` : ""}<br><span class="hint">${esc(sub)}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap">${ok ? `<span class="pill ok">Done</span>${open.replace("btn sm plain", "btn ghost small")}` : act}</span></div>`).join("")}</div></div>`
-    : `<div class="empty">No upcoming meeting. <button class="btn sm primary" data-a="newmeeting">${icon("plus")}Add a meeting</button></div>`}
-    <div class="card"><div class="card-hd">Meetings <button class="btn ghost small" data-a="tab" data-v="meetings" style="color:var(--primary)">See all</button></div><div class="pad">${meetingList(p, 3)}</div></div>
+    : `<div class="empty">No upcoming meeting. <button class="btn sm primary" data-a="newmeeting">${icon("plus")}New task</button></div>`}
+    <div class="card"><div class="card-hd">Tasks <button class="btn ghost small" data-a="tab" data-v="meetings" style="color:var(--primary)">See all</button></div><div class="pad">${meetingList(p, 4)}</div></div>
     </div><aside class="side">${knowCard(p)}${contextCard(p)}
       <div class="card"><div class="card-hd">Recent activity</div><div class="pad"><div class="timeline">${p.activity.slice(0, 4).map(([d, who, t]) => `<div>${esc(t[0].toUpperCase() + t.slice(1))}<br><span class="hint">${esc(d)}</span></div>`).join("")}</div></div></div></aside></div>`;
 }
@@ -1556,12 +1563,12 @@ function pickProject(k) {
     <div><button type="button" class="btn sm" data-a="newfor" data-v="${k}">${icon("plus")}Create a new project for it</button></div>`, null);
 }
 function meetingList(p, max) {
-  const ms = [...p.meetings].sort((a, b) => (pd(b.date) || 9e15) - (pd(a.date) || 9e15)).slice(0, max || 99);
-  return ms.length ? `<div class="mlist">${ms.map(m => { const [cls, lab] = deckState(m), past = m.status === "Done";
-    return `<button class="mrow ${past ? "past" : ""}" data-a="meeting" data-m="${m.id}">${dbox(m.date)}<span><b>${esc(m.title)}</b><br><span class="hint">${esc(OBJECTIVES[m.obj])} · ${m.minutes} min · ${plural(m.decks.length, "version", "versions")}</span></span><span class="stack" style="gap:4px;justify-items:end"><span class="pill ${past ? "neutral" : m.status === "Not scheduled" ? "warn" : "info"}">${esc(m.status)}</span><span class="pill ${cls}">${lab}</span></span></button>`; }).join("")}</div>`
-    : `<div class="empty">No meetings yet.</div>`;
+  const dt = m => pd(m.date || m.due || "") || 0, ms = [...p.meetings].sort((a, b) => (a.status === "Done") - (b.status === "Done") || (dt(a) || 9e15) - (dt(b) || 9e15)).slice(0, max || 99);
+  return ms.length ? `<div class="mlist">${ms.map(m => { const ana = isAna(m), [cls, lab] = ana ? ["solid", "Analysis"] : deckState(m), past = m.status === "Done";
+    return `<button class="mrow ${past ? "past" : ""}" data-a="meeting" data-m="${m.id}">${dbox(ana ? m.due : m.date)}<span><b>${esc(m.title)}</b><br><span class="hint">${ana ? `Focus: ${esc(m.focus || "Whole category")}${m.due ? ` · needed by ${esc(m.due)}` : ""}` : `${audOf(m) === "Internal" ? "Internal" : "Customer"} · ${esc(OBJECTIVES[m.obj])} · ${m.minutes} min`}</span></span><span class="stack" style="gap:4px;justify-items:end"><span class="pill ${past ? "neutral" : m.status === "Not scheduled" ? "warn" : "info"}">${esc(m.status)}</span><span class="pill ${cls}">${lab}</span></span></button>`; }).join("")}</div>`
+    : `<div class="empty">No tasks yet.</div>`;
 }
-function meetingsTab(p) { return `<div class="spread" style="margin-bottom:12px"><span class="small muted">Each meeting holds its own presentation versions, feedback and notes.</span><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New meeting</button></div>${meetingList(p)}`; }
+function meetingsTab(p) { return `<div class="spread" style="margin-bottom:12px"><span class="small muted">A task is a meeting (customer or internal) or an analysis with no meeting.</span><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New task</button></div>${meetingList(p)}`; }
 function filesTab(p) {
   const decks = p.meetings.flatMap(m => m.decks.map(d => ({ ...d, m })));
   const ext = n => n.split(".").pop().slice(0, 4).toUpperCase();
@@ -1583,7 +1590,7 @@ function topFixes(fb) {
 }
 // Each meeting has its own audience, focus, ask and objection; new meetings start from the last one
 const audOf = m => m.aud || "Customer";
-const lastMeeting = p => [...p.meetings].sort((a, b) => (pd(b.date) || 0) - (pd(a.date) || 0))[0];
+const lastMeeting = p => [...p.meetings.filter(m => !isAna(m))].sort((a, b) => (pd(b.date) || 0) - (pd(a.date) || 0))[0];
 function feedbackFor(p, m, d) {
   const v = d.v, buyer = m.attendees[0], doc = p.files.find(f => f.ctx), c = p.mc, ask = m.ask || c.sc.decision[0], obj = m.objection || c.sc.objection[0];
   const steps = [
@@ -1605,7 +1612,24 @@ function feedbackFor(p, m, d) {
   if (obj) slides.splice(2, 0, [Math.min(12, d.slides - 1), `You expect “${obj}”. Answer it on this slide before the buyer raises it.`]);
   return { score: Math.round(score * 10) / 10, steps, slides, timing: `${d.slides} slides for ${m.minutes} minutes is about ${(m.minutes / d.slides).toFixed(1)} minutes per slide. ${d.slides > m.minutes / 3 ? `Aim for ${Math.round(m.minutes / 4)} to ${Math.round(m.minutes / 3)} slides.` : "Good pace."}${c.lang !== "English (EN)" ? ` Feedback written in ${c.lang.split(" (")[0]}.` : ""}${c.ai ? " AI comments added to the slides." : ""}` };
 }
+function anaPage(p, m) {
+  const a = analystData(p), tile = (l, v, sub, cls) => `<div class="tile"><span class="tl">${l}</span><span class="tv">${v}</span><span class="td"><b class="${cls}">${sub}</b></span></div>`;
+  return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
+    <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">An analysis, no meeting needed.</p>
+      <div class="row" style="margin-top:8px"><span class="pill solid">Analysis</span><span class="chip">Focus: ${esc(m.focus || "Whole category")}</span>${m.due ? `<span class="chip">${icon("cal")} Needed by ${esc(m.due)}</span>` : ""}<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
+      <div class="actions"><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Edit</button><button class="btn sm plain linkdanger-btn" data-a="delmeeting" data-m="${m.id}">Delete</button></div></div>${NOTE}
+    <div class="ws"><div class="stack" style="gap:18px">
+      <div class="card anaq"><div class="card-hd">The question</div><div class="pad"><p style="margin:0;font-size:15px">${esc(m.question || m.title)}</p></div></div>
+      <div class="card anaans"><div class="card-hd">First answer <span class="row" style="gap:6px">${tag("de")}${tag("kb")}</span></div><div class="pad stack">
+        <div class="tiles">${tile(`Sales · ${esc(PERIODS[state.per])}`, eur(a.T.s), `${arrow(pctS(a.T.g))} ${pctS(a.T.g)} vs year ago`, dirC(a.T.g))}${a.sh ? tile(esc(a.sh[0]), esc(a.sh[1]), `${arrow(a.sh[2])} ${esc(a.sh[2])} ${esc(a.sh[3])}`, a.sh[4]) : ""}${a.cs ? tile(`${esc(p.cat)} market · ${esc(p.market)}`, esc(a.cs[1]), `${arrow(a.cs[2])} ${esc(a.cs[2])} ${esc(a.cs[3])}`, a.cs[4]) : ""}</div>
+        <ol class="points">${a.alert ? `<li><span class="pn de">N1</span><span>${esc(a.alert.text)}<br>${srcMini("de")} <span class="hint">calculated · ${PW[LASTW]}</span></span></li>` : ""}${a.conv ? `<li><span class="pn kb">F1</span><span>${esc(a.conv.text)}<br>${srcMini("kb")} ${citeBtn(a.conv.doc, a.conv.loc)}</span></li>` : ""}</ol>
+        <div class="row"><button class="btn primary" data-a="cpask" data-m="${m.id}">${icon("chat")}Dig deeper in Copilot</button><button class="btn plain" data-a="ancopy">Copy for email</button><button class="btn plain" data-a="anxls">Download as Excel</button></div></div></div>
+      <div class="card"><div class="card-hd">What next</div><div class="pad stack"><span class="small muted">Need to present it? Turn it into a meeting and the Storyteller will build the deck from this answer.</span>
+        <div class="row"><button class="btn sm plain" data-a="newmeeting">${icon("plus")}Present it at a meeting</button>${m.status !== "Done" ? `<button class="btn sm plain" data-a="markdone" data-m="${m.id}">Mark as done</button>` : ""}</div></div></div>
+    </div><aside class="side"><div class="card"><div class="card-hd">Other tasks</div><div class="pad">${p.meetings.filter(x => x !== m).map(x => `<button class="btn ghost" data-a="meeting" data-m="${x.id}" style="display:block;color:var(--primary)">${esc(x.title)} <span class="hint">· ${isAna(x) ? "analysis" : x.date ? esc(x.date) : "no date"}</span></button>`).join("")}</div></div></aside></div>`;
+}
 V.meeting = () => {
+  { const p0 = proj(state.pid), m0 = p0.meetings.find(x => x.id === state.mid); if (isAna(m0)) return anaPage(p0, m0); }
   const p = proj(state.pid), m = p.meetings.find(x => x.id === state.mid), d = latestDeck(m), prev = m.decks.length > 1 ? m.decks[m.decks.length - 2] : null;
   const running = state.run && state.run.mid === m.id;
   const fb = d && d.result && d.result.fb;
@@ -1650,7 +1674,7 @@ V.meeting = () => {
         <p class="small muted">Copilot already summarises your meeting and notes, so nothing is stored here.</p>
         <div class="row">${m.status !== "Done" ? `<button class="btn sm plain" data-a="markdone" data-m="${m.id}">Mark meeting as done</button>` : `<button class="btn sm plain" data-a="followup" data-m="${m.id}">${icon("plus")}Plan the follow-up meeting</button>`}</div></div></div>
     </div><aside class="side">${sessionsCard(p)}
-      <div class="card"><div class="card-hd">Other meetings</div><div class="pad">${p.meetings.filter(x => x !== m).map(x => `<button class="btn ghost" data-a="meeting" data-m="${x.id}" style="display:block;color:var(--primary)">${esc(x.title)} <span class="hint">· ${x.date ? esc(x.date) : "no date"}</span></button>`).join("") || `<span class="hint">None</span>`}</div></div></aside></div>`;
+      <div class="card"><div class="card-hd">Other tasks</div><div class="pad">${p.meetings.filter(x => x !== m).map(x => `<button class="btn ghost" data-a="meeting" data-m="${x.id}" style="display:block;color:var(--primary)">${esc(x.title)} <span class="hint">· ${isAna(x) ? "analysis" : x.date ? esc(x.date) : "no date"}</span></button>`).join("") || `<span class="hint">None</span>`}</div></div></aside></div>`;
 };
 AFTER.meeting = () => {
   const dz = $("#drop"); if (!dz) return;
@@ -1741,20 +1765,29 @@ function inlineForm(title, fields, onSave, saveLabel = "Save") {
   return box;
 }
 function meetingForm(p, m, after) {
-  inlineForm(m ? "Edit meeting" : after ? `Plan the follow-up to ${esc(after.title)}` : "New meeting", `
-    <div class="field"><label for="f-t">Meeting name</label><input id="f-t" name="t" required value="${esc(m ? m.title : after ? `Follow-up: ${after.title}` : "")}" placeholder="e.g. Follow-up on promotions"></div>
-    <div class="field"><label for="f-o">Meeting objective</label><select id="f-o" name="o">${OBJECTIVES.map((o, i) => `<option value="${i}" ${(m ? m.obj : (lastMeeting(p) || p.mc).obj) === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select>${m ? "" : ``}</div>
-    <div class="grid2"><div class="field"><label for="f-d">Date</label><input id="f-d" name="d" type="date" value="${m ? toISO(m.date) : ""}"></div><div class="field"><label for="f-m">Minutes</label><input id="f-m" name="m" type="number" min="5" value="${m ? m.minutes : p.mc.minutes}"></div></div>
-    ${(() => { const src = m || lastMeeting(p) || {}; return `<div class="grid2"><div class="field"><label for="f-aud">Audience</label><select id="f-aud" name="aud">${[["Customer", "Customer meeting"], ["Internal", "Internal: power hour, team connect"]].map(([k, l]) => `<option value="${k}" ${(src.aud || (p.audience === "Internal team" ? "Internal" : "Customer")) === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
-      <div class="field"><label for="f-focus">Focus</label><input id="f-focus" name="focus" list="f-focus-l" value="${esc(src.focus || "Whole category")}"><datalist id="f-focus-l"><option value="Whole category">${(SUBS[p.cat] || []).map(x => `<option value="${esc(x)}">`).join("")}</datalist><span class="hint">The whole ${esc(p.cat)} category, a sub-category or a brand.</span></div></div>
+  const ana = m ? isAna(m) : false, src = m || lastMeeting(p) || {};
+  inlineForm(m ? (ana ? "Edit analysis" : "Edit meeting") : after ? `Plan the follow-up to ${esc(after.title)}` : "New task", `
+    ${m || after ? "" : `<div class="field"><span class="flabel">What is it?</span><div class="seg" role="radiogroup"><label class="segopt"><input type="radio" name="ttype" value="meeting" checked> A meeting</label><label class="segopt"><input type="radio" name="ttype" value="analysis"> An analysis, no meeting</label></div></div>`}
+    <div class="field"><label for="f-t">Name</label><input id="f-t" name="t" required value="${esc(m ? m.title : after ? `Follow-up: ${after.title}` : "")}" placeholder="e.g. Range review, or Why are capsules losing share?"></div>
+    <div class="field"><label for="f-focus">Focus</label><input id="f-focus" name="focus" list="f-focus-l" value="${esc(src.focus || "Whole category")}"><datalist id="f-focus-l"><option value="Whole category">${(SUBS[p.cat] || []).map(x => `<option value="${esc(x)}">`).join("")}</datalist><span class="hint">The whole ${esc(p.cat)} category, a sub-category or a brand.</span></div>
+    <div class="onlyana" ${ana ? "" : "hidden"}><div class="field"><label for="f-q">What do you want to find out?</label><textarea id="f-q" name="q" rows="3" placeholder="e.g. Is the share drop us or the whole category?">${esc(m && ana ? m.question || "" : "")}</textarea></div>
+      <div class="field"><label for="f-due">Needed by <span class="hint">(optional)</span></label><input id="f-due" name="due" type="date" value="${m && ana ? toISO(m.due || "") : ""}"></div></div>
+    <div class="onlymeet stack" style="gap:14px" ${ana ? "hidden" : ""}>
+    <div class="field"><label for="f-o">Meeting objective</label><select id="f-o" name="o">${OBJECTIVES.map((o, i) => `<option value="${i}" ${(m ? m.obj : (lastMeeting(p) || p.mc).obj) === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select></div>
+    <div class="grid2"><div class="field"><label for="f-d">Date</label><input id="f-d" name="d" type="date" value="${m ? toISO(m.date) : ""}"></div><div class="field"><label for="f-m">Minutes</label><input id="f-m" name="m" type="number" min="5" value="${m && !ana ? m.minutes : p.mc.minutes}"></div></div>
+    <div class="field"><label for="f-aud">Audience</label><select id="f-aud" name="aud">${[["Customer", "Customer meeting"], ["Internal", "Internal: power hour, team connect"]].map(([k, l]) => `<option value="${k}" ${(src.aud || (p.audience === "Internal team" ? "Internal" : "Customer")) === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
     <div class="field"><label for="f-ask">What do you want them to agree to?</label><input id="f-ask" name="ask" value="${esc(m ? m.ask || "" : "")}" placeholder="${esc((lastMeeting(p) || {}).ask || "e.g. Agree the promotion plan")}"></div>
     <div class="field"><label for="f-objn">Objection you expect <span class="hint">(optional)</span></label><input id="f-objn" name="objn" value="${esc(m ? m.objection || "" : "")}"></div>
-    ${m ? "" : `<span class="hint">Prefilled from your last meeting in this project. Change only what's different.</span>`}`; })()}
-    <div class="field"><span class="flabel">Attendees</span>${pbuyers(p).length ? `<div class="row">${pbuyers(p).map(b => `<label class="chip" style="cursor:pointer;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" name="a" value="${esc(b.name)}" ${m ? (m.attendees.includes(b.name) ? "checked" : "") : "checked"}>${esc(b.name)} <span class="hint">· DISC-${b.disc}</span></label>`).join("")}</div>` : `<span class="hint">No buyer profiles in this project yet. Add them with “Edit project”.</span>`}<span class="hint">Buyers come from the project’s buyer profiles.</span></div>
-    ${m ? `<div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delmeeting" data-m="${m.id}">Delete this meeting…</button></div>` : ""}`, fd => {
-      const data = { title: fd.get("t").trim(), obj: +fd.get("o"), date: fromISO(fd.get("d")), minutes: +fd.get("m") || 30, attendees: fd.getAll("a"), aud: fd.get("aud"), focus: fd.get("focus").trim() || "Whole category", ask: fd.get("ask").trim(), objection: fd.get("objn").trim() };
-      if (m) { Object.assign(m, data); if (m.status === "Not scheduled" && m.date) m.status = "Preparing"; log(p, `updated ${m.title}`); toast("Meeting updated."); render(); }
-      else { const nm = { id: "M" + Date.now(), ...data, status: data.date ? "Preparing" : "Not scheduled", decks: [], notes: "" }; p.meetings.push(nm); log(p, `added the meeting ${nm.title}`); go("meeting", { mid: nm.id }); toast("Meeting added. Upload its presentation when you're ready."); }
+    <div class="field"><span class="flabel">Attendees</span>${pbuyers(p).length ? `<div class="row">${pbuyers(p).map(b => `<label class="chip" style="cursor:pointer;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" name="a" value="${esc(b.name)}" ${m ? (m.attendees.includes(b.name) ? "checked" : "") : "checked"}>${esc(b.name)} <span class="hint">· DISC-${b.disc}</span></label>`).join("")}</div>` : `<span class="hint">No buyer profiles in this project yet. Add them with “Edit project”.</span>`}</div>
+    ${m ? "" : `<span class="hint">Prefilled from your last meeting in this project. Change only what's different.</span>`}</div>
+    ${m ? `<div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delmeeting" data-m="${m.id}">Delete this ${ana ? "analysis" : "meeting"}…</button></div>` : ""}`, fd => {
+      const type = m ? (ana ? "analysis" : "meeting") : fd.get("ttype") || "meeting", focus = fd.get("focus").trim() || "Whole category";
+      const data = type === "analysis" ? { type, title: fd.get("t").trim(), focus, question: fd.get("q").trim(), due: fromISO(fd.get("due")), aud: "Internal" }
+        : { title: fd.get("t").trim(), obj: +fd.get("o"), date: fromISO(fd.get("d")), minutes: +fd.get("m") || 30, attendees: fd.getAll("a"), aud: fd.get("aud"), focus, ask: fd.get("ask").trim(), objection: fd.get("objn").trim() };
+      if (m) { Object.assign(m, data); if (m.status === "Not scheduled" && m.date) m.status = "Preparing"; log(p, `updated ${m.title}`); toast(type === "analysis" ? "Analysis updated." : "Meeting updated."); render(); return; }
+      const nm = type === "analysis" ? { id: "M" + Date.now(), ...data, date: "", obj: p.mc.obj, minutes: 0, attendees: [], status: "Open", ask: "", objection: "", decks: [], notes: "" }
+        : { id: "M" + Date.now(), ...data, status: data.date ? "Preparing" : "Not scheduled", decks: [], notes: "" };
+      p.meetings.push(nm); log(p, `added ${type === "analysis" ? "the analysis" : "the meeting"} ${nm.title}`); go("meeting", { mid: nm.id }); toast(type === "analysis" ? "Analysis added. The first answer is ready." : "Meeting added. Build or link its deck when you're ready.");
     });
 }
 function ctxForm(c, cust, roles) {
@@ -1881,7 +1914,7 @@ function launchTool(p, k) {
   if (k === "analyst") { go("analyst", { pid: p.id }); return; }
   if (k === "story") { const t = m || p.meetings[0]; if (!t) { toast("Add a meeting first: the Storyteller builds the deck for it."); meetingForm(p, null); return; } go("story", { pid: p.id, mid: t.id }); return; }
   if (k === "coach") {
-    const open = p.meetings.filter(x => x.status !== "Done");
+    const open = p.meetings.filter(x => x.status !== "Done" && !isAna(x));
     if (open.length === 1) go("meeting", { mid: open[0].id });
     else if (!open.length) { toast("Add a meeting first, then upload its presentation."); meetingForm(p, null); }
     else inlineForm("Which meeting is the presentation for?", `<div class="mlist">${open.map(x => { const [cls, lab] = deckState(x); return `<button type="button" class="mrow" data-a="meeting" data-m="${x.id}">${dbox(x.date)}<span><b>${esc(x.title)}</b><br><span class="hint">${esc(OBJECTIVES[x.obj])} · ${when(x.date)}</span></span><span class="pill ${cls}">${lab}</span></button>`; }).join("")}</div>`, null);
@@ -1916,7 +1949,9 @@ document.addEventListener("click", e => {
     case "new": state.w = blankW(); state.pendingTool = null; go("new"); break;
     case "newmeeting": meetingForm(p, null); break;
     case "editmeeting": meetingForm(p, m); break;
-    case "markdone": m.status = "Done"; log(p, `marked ${m.title} as done`); render(); toast("Meeting marked as done. Plan the follow-up when you're ready."); break;
+    case "markdone": m.status = "Done"; log(p, `marked ${m.title} as done`); render(); toast(isAna(m) ? "Analysis marked as done." : "Meeting marked as done. Plan the follow-up when you're ready."); break;
+    case "cpask": state.cp = [{ me: `@Analyst ${m.question || m.title}`, kind: "analyst", pid: p.id, mid: m.id }]; go("copilot"); break;
+    case "anxls": toast("In the live tool this downloads the figures as Excel, each with its source."); break;
     case "analyse": { const d = latestDeck(m); state.run = { mid: m.id, done: 0 }; render();
       const t = setInterval(() => { state.run.done++; if (state.run.done >= 7) { clearInterval(t); const fb = feedbackFor(p, m, d); d.result = { score: fb.score, date: TODAY, fb, cv: p.mc.v }; p.sessions.push({ date: TODAY, mid: m.id, mt: m.title, deck: d.name, cv: p.mc.v, score: fb.score }); state.run = null; log(p, `got Selling Coach feedback on ${d.name}: ${fb.score.toFixed(1)} out of 5`); toast("Feedback ready."); } if (state.view === "meeting") render(); }, 550); break; }
     // wizard
@@ -2039,6 +2074,7 @@ document.addEventListener("input", e => {
 });
 document.addEventListener("change", e => {
   const t = e.target;
+  if (t.name === "ttype") { const box = t.closest(".dlg") || document; box.querySelectorAll(".onlymeet").forEach(x => x.hidden = t.value === "analysis"); box.querySelectorAll(".onlyana").forEach(x => x.hidden = t.value !== "analysis"); return; }
   if (t.dataset.w && t.matches("select")) { if (t.dataset.w === "cust") state.w.buyers = []; state.w[t.dataset.w] = t.dataset.w === "mObj" ? +t.value : t.value; if (t.hasAttribute("data-rr")) render(); else refreshPreview(); }
   if (t.dataset.c && !t.matches("textarea") && t.type !== "number") {
     const c = ctxTarget(), k = t.dataset.c; if (!c) return;
