@@ -391,6 +391,11 @@ button.chip { cursor: pointer; }
 .onlyana { display: grid; gap: 14px; }
 .segopt { white-space: nowrap; display: inline-flex; gap: 6px; align-items: center; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 13px; }
 .segopt:has(input:checked) { background: var(--white); color: var(--primary); font-weight: 600; box-shadow: var(--shadow); }
+.homeacts { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 900px) { .homeacts { grid-template-columns: minmax(0, 1fr); } }
+.bigact { display: flex; gap: 14px; align-items: flex-start; text-align: left; background: var(--white); border: 1px solid var(--light-gray); border-radius: 14px; padding: 18px; cursor: pointer; font: inherit; box-shadow: var(--shadow); }
+.bigact:hover { border-color: var(--primary); }
+.bigact b { font-size: 16px; }
 .dropzone { border: 2px dashed var(--border-primary-light); border-radius: 12px; background: var(--primary-light); padding: 22px; display: grid; justify-items: center; gap: 6px; text-align: center; color: var(--primary); }
 .dropzone.drag { background: var(--primary-lighter); }
 .filerow { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--light-gray); border-radius: 9px; background: var(--white); }
@@ -457,7 +462,7 @@ button.chip { cursor: pointer; }
     <span class="appbar__name">AI Sales Assistant</span>
     <span class="appbar__spacer"></span>
     <button class="btn sm vbtn" data-a="vnotes" aria-pressed="false"><span class="npin static">i</span><span>Notes for the vendor</span></button>
-    <button class="btn primary sm newbtn" data-a="new"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span>New project</span></button>
+    <button class="btn primary sm newbtn" data-a="hometool" data-v="coach"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></svg><span>Review a deck</span></button>
     <span class="avatar" title="Victoire · Key Account Manager">VB</span>
   </header>
   <aside class="sidebar" id="nav" aria-label="Sections"></aside>
@@ -524,6 +529,7 @@ let PROJECTS = [
       { id: "M2", title: "Q3 business review", date: "12 Sep 2026", obj: 0, minutes: 60, attendees: ["Juliette Morel", "Camille Robert"], status: "Done", aud: "Customer", focus: "Whole category", ask: "Agree the Q4 joint plan", objection: "",
         decks: [{ v: 1, name: "Carrefour Q3 CBR.pptx", uploaded: "05 Sep 2026", by: "VB", slides: 16, result: null }],
         notes: "" },
+      { id: "A1", type: "answer", title: "Our Fabric Care share at Carrefour", question: "What is our Fabric Care share at Carrefour, and is it moving?", saved: "08 Oct 2026", via: "Copilot · @Analyst", date: "", due: "", obj: 5, minutes: 0, attendees: [], status: "Done", aud: "Internal", focus: "Whole category", ask: "", objection: "", decks: [], notes: "" },
       { id: "M7", type: "analysis", title: "Why are capsules losing share?", question: "Why are capsules losing share in hypermarkets, and is it us or the whole category?", date: "", due: "24 Oct 2026", obj: 5, minutes: 0, attendees: [], status: "Open", aud: "Internal", focus: "Capsules", ask: "", objection: "", decks: [], notes: "" },
       { id: "M6", title: "Power hour: Carrefour Q4", date: "21 Oct 2026", obj: 5, minutes: 30, attendees: [], status: "Preparing", aud: "Internal", focus: "Whole category", ask: "Agree the Q4 priorities with the team", objection: "", decks: [], notes: "" },
     ],
@@ -532,7 +538,7 @@ let PROJECTS = [
   { id: "P2", name: "Cdiscount · Home Care", cust: "Cdiscount", market: "France", cat: "Home Care", audience: "Customer-facing", status: "Active",
     objective: "Build the autumn activation recommendation.", updated: "22 Sep 2026",
     buyers: ["B4"], context: "Online share in Home Care is flat. Thomas is open to a sponsored-search test if we bring a clear plan for Black Friday.",
-    meetings: [{ id: "M3", title: "Activation plan review", date: "22 Oct 2026", obj: 10, minutes: 30, attendees: ["Thomas Garnier"], status: "Preparing", aud: "Customer", focus: "Online", ask: "Approve a sponsored-search test for Black Friday", objection: "", decks: [{ v: 1, name: "Cdiscount autumn activation.pptx", uploaded: "22 Sep 2026", by: "VB", slides: 14, result: null }], notes: "" }],
+    meetings: [{ id: "M3", title: "Activation plan review", date: "22 Oct 2026", obj: 10, minutes: 30, attendees: ["Thomas Garnier"], status: "Preparing", aud: "Customer", focus: "Online", ask: "Approve a sponsored-search test for Black Friday", objection: "", decks: [{ v: 1, name: "Cdiscount autumn activation.pptx", uploaded: "22 Sep 2026", by: "VB", slides: 14, result: null }], notes: "" }, { id: "A2", type: "answer", title: "Did the sponsored-search test work?", question: "Did last year's Black Friday sponsored-search test at Cdiscount work?", saved: "06 Oct 2026", via: "Copilot", date: "", due: "", obj: 10, minutes: 0, attendees: [], status: "Done", aud: "Internal", focus: "Online", ask: "", objection: "", decks: [], notes: "" }],
     files: [{ name: "Home Care e-commerce strategy FY26.pdf", kind: "doc", added: "20 Jan 2026", by: "VB" }],
     activity: [["22 Sep 2026", "VB", "uploaded Cdiscount autumn activation.pptx"], ["15 Sep 2026", "VB", "created the project"]] },
   { id: "P3", name: "Auchan · Hair Care", cust: "Auchan", market: "France", cat: "Hair Care", audience: "Customer-facing", status: "Active",
@@ -850,7 +856,8 @@ const days = d => { const x = pd(d), y = pd(TODAY); return isNaN(x) ? null : Mat
 const dbox = d => { if (!d) return `<div class="datebox"><b>?</b><span>No date</span></div>`; const [dd, mm] = d.split(" "); return `<div class="datebox"><b>${dd}</b><span>${mm}</span></div>`; };
 const when = d => { const n = days(d); if (n === null) return "Not scheduled"; if (n === 0) return "Today"; if (n > 0) return `In ${plural(n, "day", "days")}`; return `${plural(-n, "day", "days")} ago`; };
 const latestDeck = m => m.decks[m.decks.length - 1];
-const isAna = m => !!m && m.type === "analysis";
+const isAna = m => !!m && (m.type === "analysis" || m.type === "answer");
+const isAns = m => !!m && m.type === "answer";
 const nextCust = p => p.meetings.filter(m => m.status !== "Done" && !isAna(m) && (m.aud || "Customer") === "Customer").sort((a, b) => (pd(a.date) || 9e15) - (pd(b.date) || 9e15))[0];
 const nextMeeting = p => p.meetings.filter(m => m.status !== "Done" && !isAna(m)).sort((a, b) => (pd(a.date) || 9e15) - (pd(b.date) || 9e15))[0];
 function deckState(m) {
@@ -874,7 +881,7 @@ const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true
 const NAV = [
   { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
   { id: "kb", label: "Customers", icon: "store", match: ["kb", "category", "customer", "buyer"] },
-  { id: "projects", label: "My Projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
+  { id: "projects", label: "My work", icon: "grid", match: ["projects", "project", "new", "meeting"] },
   { id: "copilot", label: "In Copilot", icon: "chat", match: ["copilot"] },
   { id: "about", label: "Data & settings", icon: "building", match: ["about", "sources", "source", "de", "personal"] },
 ];
@@ -885,7 +892,7 @@ function renderNav() {
     NAV.map(n => `<button class="navitem" data-a="go" data-v="${n.id}" aria-current="${n.match.includes(state.view)}">${icon(n.icon)}${n.label}${n.id === "projects" ? `<span class="count">${PROJECTS.filter(p => p.status === "Active").length}</span>` : ""}</button>`).join("");
 }
 function head(crumb, title, sub, actions = "") { return `<div class="crumb">${crumb}</div><div class="pagehead"><div><h1>${title}</h1>${sub ? `<p class="sub">${sub}</p>` : ""}</div>${actions ? `<div class="actions">${actions}</div>` : ""}</div>${NOTE}`; }
-function render() { renderNav(); { const nb = $(".appbar .newbtn"), inP = ["project", "meeting", "analyst", "story"].includes(state.view); nb.dataset.a = inP ? "newmeeting" : "new"; nb.lastElementChild.textContent = inP ? "New task" : "New project"; } $("#view").innerHTML = V[state.view](); AFTER[state.view]?.(); applyNotes(); }
+function render() { renderNav();  $("#view").innerHTML = V[state.view](); AFTER[state.view]?.(); applyNotes(); }
 // Numbered notes that explain the intended behaviour to the vendor building it
 const NOTES = {
   sources: [["#view .crumb", "Open decision: who feeds the knowledge bank (owners per customer and category, every user, or a central team). Suggestion: owners publish, anyone can suggest. PoC language: English first."], ["#view .actions .btn", "PoC: upload single files or batches in 13 formats. People set the 9 facets; nothing is guessed."], ["#view .facetbar", "PoC: browse sources across sessions by facet. A document with an unset facet applies to every value at that level."], ["#view .srcrow", "PoC: processing status per file, including why a file was rejected. Governed uploads are trusted: no fact-by-fact review."]],
@@ -897,13 +904,13 @@ const NOTES = {
   buyer: [["#view .kcard", "What the whole company knows about this buyer."], ["#view .pcline", "No emails or meeting notes here: Copilot already summarises them."]],
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
   ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
-  copilot: [["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Dependency to confirm: Cowork skills are instruction files; reaching the Decision Engine and knowledge bank needs a plugin or MCP connector. IT can push approved skills to sales groups."], ["#view .deckpane", "With Office in Copilot the deck opens next to the chat; Selling Coach fixes are applied in the deck, not listed."]],
-  home: [["#view .askbox", "Find, not chat: Copilot is the chat. The box jumps to a customer, category or buyer page; anything else is asked in Copilot."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .skills", "Skills in meeting order: Analyst gets the facts, Storyteller builds the deck, Selling Coach improves it. Each also works in Copilot by name."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
+  copilot: [["#view .cplog .bub", "The day starts here: a morning briefing in Copilot built from Decision Engine alerts, company knowledge and the calendar, each with a one-tap next step."], ["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Dependency to confirm: Cowork skills are instruction files; reaching the Decision Engine and knowledge bank needs a plugin or MCP connector. IT can push approved skills to sales groups."], ["#view .deckpane", "With Office in Copilot the deck opens next to the chat; Selling Coach fixes are applied in the deck, not listed."]],
+  home: [["#view .askbox", "Find, not chat: Copilot is the chat. The box jumps to a customer, category or buyer page; anything else is asked in Copilot."], ["#view .homeacts", "From the user interview: most of the week is quick answers, internal and customer meetings, triggered by the user's own prep or by a change. So the website asks nothing up front: ask in Copilot (where the daily briefing lives) or drop a deck."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
   quick: [["#view .qdrop", "Quick review: no project, no form. The most common moment (right before a meeting) gets feedback in one step."], ["#view .callout", "Generic first, specific later: saving to a project adds the customer, buyer and ask."]],
   analyst: [["#view .seg", "Internal (power hour, team connect) or customer-safe: the customer version leaves out plans, targets and margins."], ["#view .figs", "Every figure comes from the Decision Engine, never generated."], ["#view .points", "Talking points say where each one comes from."]],
   story: [["#view .slides", "Our part: the storyline in the selling format, with governed numbers and cited facts."], ["#view .row.section", "Microsoft's part: Office in Copilot builds the slides. To check: Frontier-only rollout, and how a skill passes our content to PowerPoint (plugin or MCP connector)."]],
   about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."], ["#view .pcard", "Real settings, in one place: personal sources, what you follow, Copilot."]],
-  projects: [["#view .impact", "The PoC success measure: better decks, shown as the score gain before meetings. Private to the user; any team view would be aggregated without names."], ["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
+  projects: [["#view .crumb", "Work is filed automatically by customer and category (from what is asked in Copilot, the calendar and OneDrive). Users never create a project; they can add one by hand if something is missing."], ["#view .impact", "The PoC success measure: better decks, shown as the score gain before meetings. Private to the user; any team view would be aggregated without names."], ["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
   project: [["#view .pagehead", "A project is one customer and one category (users can still start a second one). It holds what is shared: buyers, documents, defaults. Inside it, each task is a meeting (customer or internal, with its own audience, focus, objective and ask) or an analysis with no meeting."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .flow", "One flow per meeting, in order: each step is a skill (also callable in Copilot), worked out from the project's state. The box above always shows the next step. This replaces the tool cards: one way in, not five."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
 
   meeting: [["#view .anaq", "A task can be an analysis with no meeting: a question, a focus and an optional due date. No deck, no Selling Coach."], ["#view .anaans", "The first answer comes straight from the Decision Engine and the knowledge bank, tagged and cited. Copilot takes the follow-up questions."], ["#view .deckcard", "The deck is a OneDrive link, not an upload: versions, labels and co-editing stay in Office. One main action: Open in Copilot. Upload stays as a fallback for users without a Copilot licence."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Selling Coach Step 2, split in two: what changes per meeting (audience, focus, objective, minutes, ask, objection) lives on the meeting; the rest are project defaults. A new meeting is prefilled from the last one."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .topfix", "From the user interview: decks are reviewed right before the meeting, with about 15 minutes. So: the 3 fixes that move the score most, with time and expected gain. Everything else is one click away. Scores (1 to 5) are private to the user. PoC success measure: score gain before meetings."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
@@ -932,14 +939,14 @@ const V = {}, AFTER = {};
    Home
    ===================================================================== */
 function projectCard(p) {
-  const m = nextCust(p) || nextMeeting(p), [cls, lab] = deckState(m), others = p.meetings.filter(x => x !== m && x.status !== "Done").length;
+  const m = nextCust(p) || nextMeeting(p), [cls, lab] = deckState(m), others = p.meetings.filter(x => x !== m && x.status !== "Done" && !isAns(x)).length, saved = p.meetings.filter(isAns).length;
   const open = state.menu === p.id;
   return `<div class="pcwrap"><button class="projcard" data-a="open" data-v="${p.id}">
     <span class="spread"><span class="nm">${esc(p.cust)}</span><span class="chip">${esc(p.cat)}</span></span>
     ${p.name !== `${p.cust} · ${p.cat}` ? `<b style="font-size:13.5px">${esc(p.name)}</b>` : ""}
     <span class="goal">${esc(p.objective)}</span>
     <span class="row small">${icon("cal")}${m ? `${esc(m.title)} · ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "not scheduled"}` : "No upcoming meeting"}</span>
-    <span class="row" style="gap:6px"><span class="pill ${cls}">${lab}</span>${others ? `<span class="hint">+ ${plural(others, "other open task", "other open tasks")}</span>` : ""}</span>
+    <span class="row" style="gap:6px"><span class="pill ${cls}">${lab}</span>${others || saved ? `<span class="hint">${[others ? plural(others, "other open task", "other open tasks") : "", saved ? plural(saved, "saved answer", "saved answers") : ""].filter(Boolean).join(" · ")}</span>` : ""}</span>
     <span class="hint">Updated ${esc(p.updated)}</span>
   </button><button class="pcmenu" data-a="cardmenu" data-v="${p.id}" aria-label="Actions for ${esc(p.name)}" aria-haspopup="menu" aria-expanded="${open}">⋯</button>
   ${open ? `<div class="cardpop" role="menu"><button role="menuitem" data-a="editproj" data-v="${p.id}">Edit project</button><button role="menuitem" data-a="archive" data-v="${p.id}">${p.status === "Archived" ? "Restore to active" : "Archive project"}</button><hr><button role="menuitem" class="danger" data-a="delproj" data-v="${p.id}">Delete project</button></div>` : ""}</div>`;
@@ -976,15 +983,12 @@ V.home = () => {
   const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date && !isAna(m)).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
   const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 4);
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Prepare your meetings end to end, with numbers you can trust and facts with sources.</p></div>${NOTE}
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Ask in Copilot or review a deck here. Everything you do is saved by customer and category.</p></div>${NOTE}
     <form class="askbox findbox" role="search">${icon("search")}<input name="q" list="findlist" aria-label="Find a customer, category or buyer" placeholder="Find a customer, category or buyer…"><datalist id="findlist">${findItems().map(x => `<option value="${esc(x[0])}">`).join("")}</datalist><button class="btn primary sm" type="submit">Go</button></form>
-    <p class="hint" style="margin:6px 2px 0">Questions? Ask in Copilot, with the same sources.</p>
     ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="setup"><span><b>Finish setting up</b> · ${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gsopen" style="color:var(--primary)">${state.gsOpen ? "Hide steps" : "Show steps"}</button><button class="btn ghost small" data-a="gshide" style="color:var(--steel);margin-left:auto">Not now</button></div>
       ${state.gsOpen ? `<div class="card" style="margin-top:8px"><div class="pad gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}<div class="row"><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div>` : ""}</div>`}
-    <div class="section">${qhd("Prepare a meeting", "Each skill also works in Copilot: type @ and its name", `<button class="btn ghost small" data-a="go" data-v="copilot" style="color:var(--primary)">See it in Copilot</button>`)}
-      <div class="skills">${["analyst", "story", "coach"].map(k => skillCard(k)).join("")}</div>
-      <div class="skills2">${["roleplay", "qa"].map(k => skillCard(k, true)).join("")}</div>
-      <p class="hint" style="margin-top:10px">Coming soon: ${SOON.map(x => x[0]).join(" · ")}</p></div>
+    <div class="section homeacts"><button class="bigact" data-a="go" data-v="copilot"><span class="sico">${icon("chat")}</span><span><b>Ask in Copilot</b><br><span class="small">Numbers, facts, a deck, a rehearsal: just ask. Your briefing for the day is waiting there every morning.</span><br><span class="hint">@Analyst · @Storyteller · @Selling Coach · @Role-play · @Stewardship</span></span></button>
+      <button class="bigact" data-a="hometool" data-v="coach"><span class="sico">${icon("upload")}</span><span><b>Review a deck</b><br><span class="small">Drop it here, get the 3 fixes that matter most. No setup.</span></span></button></div>
     <div class="two section"><div>${qhd("Coming up", "Prepare the big moments early", "")}<div class="card"><div class="pad">${moments.map(x => `<div class="moment">${dbox(x.date)}<span><b style="font-weight:600">${esc(x.title)}</b> · ${esc(x.cust)}<br><span class="hint">${when(x.date)}</span>${x.kind === "Big moment" ? ` <span class="pill warn">Big moment</span>` : ""}</span>${actBtn(x)}</div>`).join("")}</div></div></div>
       <div>${qhd("What changed", "For the customers and categories you follow", `<button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button>`)}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">${state.follow.length ? "Nothing new for what you follow." : "Follow customers and categories to see what changes here."}</div>`}</div></div></div></div>`;
 };
@@ -1329,13 +1333,20 @@ function cpTurn(q) {
   if (/@stewardship|legal|disclaimer|claim/i.test(q)) return { kind: "stew", q };
   return { kind: "answer", q: q.replace(/^@\S+( \S+){0,2} /, "") };
 }
-const cpSeed = () => [{ me: CP_CHIPS[0], ...cpTurn(CP_CHIPS[0]) }];
+const cpSeed = () => [{ kind: "today" }];
 const cpFix = k => state.cpFix && state.cpFix[k];
 function cpBot(t) {
   const who = n => `<span class="who">${icon(n === "Analyst" ? "trend" : n === "Storyteller" ? "pen" : "spark")}${n}${n === "AI Sales Assistant" ? "" : " · skill"}</span>`;
   const p = proj(t.pid || "P1"), m = p.meetings.find(x => x.id === (t.mid || "M1")) || p.meetings[0];
+  if (t.kind === "today") { const pm = nextMeeting(p), rr = p.meetings.find(x => x.id === "M1"), sh = shareOf(kbOf(p.cust).cats[p.cat]);
+    const item = (txt, q, cta) => `<span class="fixrow"><span class="small">${txt}</span><button class="btn sm plain" data-a="cpchip" data-v="${esc(q)}">${cta}</button></span>`;
+    return `<div class="bub bot">${who("AI Sales Assistant")}<span><b>Good morning Victoire.</b> 3 things for today:</span>
+      ${item(`${sh ? `Our ${esc(p.cat)} share at ${esc(p.cust)} is ${esc(sh[1])} (${esc(sh[2])}), mostly capsules in hypermarkets.` : "Your share moved."}`, "Why is our share dropping at Carrefour?", "Why?")}
+      ${pm ? item(`${esc(pm.title)}, ${when(pm.date).toLowerCase()}.`, "@Analyst key figures for my Carrefour power hour", "Get key figures") : ""}
+      ${rr ? item(`${esc(rr.title)}, ${when(rr.date).toLowerCase()}: ${latestDeck(rr) && latestDeck(rr).result ? `deck at ${latestDeck(rr).result.score.toFixed(1)}/5` : "latest deck not reviewed yet"}.`, "@Selling Coach review my range review deck", "Review it") : ""}
+      <span class="hint">From the numbers, company knowledge and your calendar. Everything you do is saved under the customer and category.</span></div>`; }
   if (t.kind === "analyst") { const a = analystData(p);
-    return `<div class="bub bot">${who("Analyst")}<span>Key figures for <b>Carrefour · Fabric Care</b> (${PERIODS[state.per]}), internal version:</span><ol class="points">${[`Sales ${eur(a.T.s)}, ${pctS(a.T.g)} vs year ago`, `Last week ${eur(a.W.last)}, ${pctS(a.W.g)} vs previous week`, a.sh ? `${a.sh[0]} ${a.sh[1]}, ${a.sh[2]} ${a.sh[3]}` : "", `${pctS(a.gap)} vs internal plan`].filter(Boolean).map((x, i) => `<li><span class="pn de">N${i + 1}</span><span class="small">${esc(x)}</span></li>`).join("")}</ol>${a.alert ? `<span class="small">Watch: ${esc(a.alert.text)}</span>` : ""}<span class="row" style="gap:6px">${srcMini("de")}<button class="btn sm plain" data-a="pickproj" data-v="P1" data-k="analyst">Open in Analyst</button></span></div>`; }
+    return `<div class="bub bot">${who("Analyst")}<span>Key figures for <b>${esc(p.cust)} · ${esc(p.cat)}</b> (${PERIODS[state.per]}), internal version:</span><ol class="points">${[`Sales ${eur(a.T.s)}, ${pctS(a.T.g)} vs year ago`, `Last week ${eur(a.W.last)}, ${pctS(a.W.g)} vs previous week`, a.sh ? `${a.sh[0]} ${a.sh[1]}, ${a.sh[2]} ${a.sh[3]}` : "", `${pctS(a.gap)} vs internal plan`].filter(Boolean).map((x, i) => `<li><span class="pn de">N${i + 1}</span><span class="small">${esc(x)}</span></li>`).join("")}</ol>${a.alert ? `<span class="small">Watch: ${esc(a.alert.text)}</span>` : ""}<span class="row" style="gap:6px">${srcMini("de")}<span class="hint">${icon("ok")} Saved to ${esc(p.name)}</span></span></div>`; }
   if (t.kind === "story") { const sl = storyData(p, m);
     return `<div class="bub bot">${who("Storyteller")}<span>Built a ${sl.length}-slide draft for <b>${esc(m.title)}</b>, in the selling format, with the numbers and facts in.</span><span class="deckpane">${icon("file")}<b>${esc(m.title)} · draft.pptx</b><span class="hint">PowerPoint · opened next to this chat · saved to OneDrive</span><span class="thumbs">${sl.map((x, i) => `<span class="thumb">${i + 1}</span>`).join("")}</span></span><span class="row" style="gap:6px">${srcMini("de")}${srcMini("kb")}</span></div>`; }
   if (t.kind === "coach") {
@@ -1351,7 +1362,7 @@ V.copilot = () => {
   const turns = state.cp.length ? state.cp : cpSeed();
   return head("Preview", "In Copilot", "This is how the skills look inside Microsoft Copilot, where you'll use them every day. Copilot does the general work; the skills add the company's numbers, company knowledge and the selling method.") + `
     <div class="cpwrap"><div class="cpframe" aria-label="Copilot preview"><div class="cphd"><span class="pico" style="background:#E8EBF2;color:var(--slate)">${icon("chat")}</span>Copilot <span class="pill neutral" style="margin-left:auto">Preview of the skills</span></div>
-      <div class="cplog" id="cplog">${turns.map(t => `<div class="bub me">${esc(t.me)}${["coach", "stew"].includes(t.kind) ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : ""}</div>${cpBot(t)}`).join("")}</div>
+      <div class="cplog" id="cplog">${turns.map(t => `${t.me ? `<div class="bub me">${esc(t.me)}${["coach", "stew"].includes(t.kind) ? `<br><span class="att">${icon("file")}Carrefour range review v2.pptx · OneDrive</span>` : ""}</div>` : ""}${cpBot(t)}`).join("")}</div>
       <form class="cpbox"><input name="q" aria-label="Message Copilot" placeholder="@Analyst, @Storyteller, @Selling Coach…"><button class="btn primary sm" type="submit">Send</button></form></div>
       <div class="stack" style="gap:16px"><div class="card"><div class="card-hd">Try a skill</div><div class="pad stack">${CP_CHIPS.map(q => `<button class="btn sm plain" data-a="cpchip" data-v="${esc(q)}" style="justify-content:flex-start;white-space:normal;text-align:left">${esc(q)}</button>`).join("")}<button class="btn ghost small" data-a="cpreset" style="color:var(--primary)">Start again</button></div></div>
         <div class="card"><div class="card-hd">How the skills fit together</div><div class="pad stack small">${["analyst", "story", "coach"].map(k => `<p><b>${SKILLS[k].cp}</b> · ${SKILLS[k].step.replace(/^\d · /, "")}: ${SKILLS[k].line}</p>`).join("")}<p><b>@Role-play</b> and <b>@Stewardship</b> · before you go.</p><p class="hint">With Office in Copilot, the deck opens next to the chat: the Storyteller builds it, the Selling Coach fixes it in place. Files stay in OneDrive.</p></div></div></div></div>`;
@@ -1474,11 +1485,12 @@ V.projects = () => {
   const q = state.q.toLowerCase();
   const list = PROJECTS.filter(p => p.status === state.filter && (!q || `${p.name} ${p.cust} ${p.cat}`.toLowerCase().includes(q)));
   const act = PROJECTS.filter(p => p.status === "Active");
-  return head("One project per customer and category", "My Projects", "Each project holds your tasks for one customer and category: meetings, with their decks and feedback, and analyses.", `<button class="btn primary" data-a="new">${icon("plus")}New project</button>`) + `
+  return head("Saved automatically", "My work", "Everything you do in Copilot and here is filed by customer and category: answers, analyses, meetings from your calendar, decks from OneDrive. Nothing to create.") + `
     <div class="row" style="margin-bottom:14px"><input class="search" id="q" type="search" placeholder="Search projects or customers" value="${esc(state.q)}" style="max-width:300px" aria-label="Search projects">
       <div class="seg" role="group" aria-label="Status">${["Active", "Archived"].map(s => `<button data-a="filter" data-v="${s}" aria-pressed="${state.filter === s}">${s} (${PROJECTS.filter(p => p.status === s).length})</button>`).join("")}</div></div>
     ${(() => { const im = impactStats(); return im.improved ? `<div class="callout ok impact" style="margin-bottom:14px"><b>Your decks got better: +${im.avg.toFixed(1)} points on average</b> before the meeting, across ${plural(im.coached, "presentation", "presentations")} reviewed this year.${im.best ? ` Best: ${esc(im.best.mt)}, ${im.best.from.toFixed(1)} → ${im.best.to.toFixed(1)}.` : ""} <span class="hint">Only you see this.</span></div>` : ""; })()}
-    <div class="projgrid">${list.map(projectCard).join("")}${state.filter === "Active" ? newCard() : ""}</div>
+    <div class="projgrid">${list.map(projectCard).join("")}</div>
+    <p class="hint" style="margin-top:12px">Missing one? <button class="btn ghost small" data-a="new" style="color:var(--primary);padding:0">Add a customer and category yourself</button></p>
     ${!list.length ? `<div class="empty" style="margin-top:12px">No ${state.filter.toLowerCase()} project matches “${esc(state.q)}”.</div>` : ""}`;
 };
 AFTER.projects = () => { $("#q").addEventListener("input", e => { state.q = e.target.value; const c = e.target.selectionStart; render(); const n = $("#q"); n.focus(); n.setSelectionRange(c, c); }); };
@@ -1488,12 +1500,12 @@ AFTER.projects = () => { $("#q").addEventListener("input", e => { state.q = e.ta
    ===================================================================== */
 V.project = () => {
   const p = proj(state.pid);
-  const tabs = [["overview", "Overview"], ["context", "Defaults" + (ctxDirty() ? " •" : "")], ["meetings", `Tasks (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
+  const tabs = [["overview", "Overview"], ["context", "Defaults" + (ctxDirty() ? " •" : "")], ["meetings", `Work (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
   const body = { overview: overviewTab, context: contextTab, meetings: meetingsTab, files: filesTab, activity: activityTab }[state.tab](p);
-  return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
+  return `<div class="crumb"><button data-a="go" data-v="projects">My work</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.market)}</span><span class="chip">${esc(p.cat)}</span>${p.status === "Archived" ? `<span class="pill neutral">Archived</span>` : ""}</div></div>
-      <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New task</button></div></div>
+      <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button></div></div>
     ${NOTE}
     <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${state.tab === k}" tabindex="${state.tab === k ? 0 : -1}">${l}</button>`).join("")}</div>${body}`;
 };
@@ -1543,8 +1555,8 @@ function overviewTab(p) {
       <div class="row" style="margin-top:4px">${nx ? `<span class="small"><b>Next step:</b> ${nx[1]}${nx[2] ? ` <span class="hint">· ${nx[2]}</span>` : ""}</span>${nx[4].replace(/btn sm plain/g, "btn sm primary")}` : `<span class="pill ok">Ready</span><button class="btn sm plain" data-a="meeting" data-m="${m.id}">Open the meeting</button>`}</div></div></div>` : ""}<div class="ws"><div class="stack" style="gap:18px">
     ${m ? `<div class="card flow"><div class="card-hd">Prepare ${esc(m.title)} <span class="aside">${audOf(m) === "Internal" ? "Internal meeting: just the facts" : `${done} of ${steps.length} done`} · each skill also works in Copilot</span></div>
       <div class="checklist">${steps.map(([ok, t, sk, sub, act, open]) => `<div><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b>${sk ? ` <span class="skname">${sk}</span>` : ""}<br><span class="hint">${esc(sub)}</span></span><span class="row" style="gap:6px;flex-wrap:nowrap">${ok ? `<span class="pill ok">Done</span>${open.replace("btn sm plain", "btn ghost small")}` : act}</span></div>`).join("")}</div></div>`
-    : `<div class="empty">No upcoming meeting. <button class="btn sm primary" data-a="newmeeting">${icon("plus")}New task</button></div>`}
-    <div class="card"><div class="card-hd">Tasks <button class="btn ghost small" data-a="tab" data-v="meetings" style="color:var(--primary)">See all</button></div><div class="pad">${meetingList(p, 4)}</div></div>
+    : `<div class="empty">No upcoming meeting in your calendar. <button class="btn sm plain" data-a="newmeeting">${icon("plus")}Add one</button></div>`}
+    <div class="card"><div class="card-hd">Recent work <button class="btn ghost small" data-a="tab" data-v="meetings" style="color:var(--primary)">See all</button></div><div class="pad">${meetingList(p, 4)}</div></div>
     </div><aside class="side">${knowCard(p)}${contextCard(p)}
       <div class="card"><div class="card-hd">Recent activity</div><div class="pad"><div class="timeline">${p.activity.slice(0, 4).map(([d, who, t]) => `<div>${esc(t[0].toUpperCase() + t.slice(1))}<br><span class="hint">${esc(d)}</span></div>`).join("")}</div></div></div></aside></div>`;
 }
@@ -1583,12 +1595,12 @@ function pickProject(k) {
     <div><button type="button" class="btn sm" data-a="newfor" data-v="${k}">${icon("plus")}Create a new project for it</button></div>`, null);
 }
 function meetingList(p, max) {
-  const dt = m => pd(m.date || m.due || "") || 0, ms = [...p.meetings].sort((a, b) => (a.status === "Done") - (b.status === "Done") || (dt(a) || 9e15) - (dt(b) || 9e15)).slice(0, max || 99);
-  return ms.length ? `<div class="mlist">${ms.map(m => { const ana = isAna(m), [cls, lab] = ana ? ["solid", "Analysis"] : deckState(m), past = m.status === "Done";
-    return `<button class="mrow ${past ? "past" : ""}" data-a="meeting" data-m="${m.id}">${dbox(ana ? m.due : m.date)}<span><b>${esc(m.title)}</b><br><span class="hint">${ana ? `Focus: ${esc(m.focus || "Whole category")}${m.due ? ` · needed by ${esc(m.due)}` : ""}` : `${audOf(m) === "Internal" ? "Internal" : "Customer"} · ${esc(OBJECTIVES[m.obj])} · ${m.minutes} min`}</span></span><span class="stack" style="gap:4px;justify-items:end"><span class="pill ${past ? "neutral" : m.status === "Not scheduled" ? "warn" : "info"}">${esc(m.status)}</span><span class="pill ${cls}">${lab}</span></span></button>`; }).join("")}</div>`
-    : `<div class="empty">No tasks yet.</div>`;
+  const dt = m => pd(m.date || m.due || m.saved || "") || 0, ms = [...p.meetings].sort((a, b) => (a.status === "Done" && !isAns(a)) - (b.status === "Done" && !isAns(b)) || (dt(a) || 9e15) - (dt(b) || 9e15)).slice(0, max || 99);
+  return ms.length ? `<div class="mlist">${ms.map(m => { const ana = isAna(m), [cls, lab] = isAns(m) ? ["neutral", "Answer"] : ana ? ["solid", "Analysis"] : deckState(m), past = m.status === "Done" && !isAns(m);
+    return `<button class="mrow ${past ? "past" : ""}" data-a="meeting" data-m="${m.id}">${dbox(isAns(m) ? m.saved : ana ? m.due : m.date)}<span><b>${esc(m.title)}</b><br><span class="hint">${isAns(m) ? `Saved from ${esc(m.via || "Copilot")}` : ana ? `Focus: ${esc(m.focus || "Whole category")}${m.due ? ` · needed by ${esc(m.due)}` : ""}` : `${audOf(m) === "Internal" ? "Internal" : "Customer"} · ${esc(OBJECTIVES[m.obj])} · ${m.minutes} min`}</span></span><span class="stack" style="gap:4px;justify-items:end">${isAns(m) ? "" : `<span class="pill ${past ? "neutral" : m.status === "Not scheduled" ? "warn" : "info"}">${esc(m.status)}</span>`}<span class="pill ${cls}">${lab}</span></span></button>`; }).join("")}</div>`
+    : `<div class="empty">Nothing yet. What you do in Copilot and here is saved here automatically.</div>`;
 }
-function meetingsTab(p) { return `<div class="spread" style="margin-bottom:12px"><span class="small muted">A task is a meeting (customer or internal) or an analysis with no meeting.</span><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New task</button></div>${meetingList(p)}`; }
+function meetingsTab(p) { return `<div class="spread" style="margin-bottom:12px"><span class="small muted">Saved automatically: answers and analyses from Copilot, meetings from your calendar, decks from OneDrive.</span><button class="btn sm plain" data-a="newmeeting">${icon("plus")}Add a meeting</button></div>${meetingList(p)}`; }
 function filesTab(p) {
   const decks = p.meetings.flatMap(m => m.decks.map(d => ({ ...d, m })));
   const ext = n => n.split(".").pop().slice(0, 4).toUpperCase();
@@ -1634,13 +1646,13 @@ function feedbackFor(p, m, d) {
 }
 function anaPage(p, m) {
   const a = analystData(p), tile = (l, v, sub, cls) => `<div class="tile"><span class="tl">${l}</span><span class="tv">${v}</span><span class="td"><b class="${cls}">${sub}</b></span></div>`;
-  return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
-    <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">An analysis, no meeting needed.</p>
-      <div class="row" style="margin-top:8px"><span class="pill solid">Analysis</span><span class="chip">Focus: ${esc(m.focus || "Whole category")}</span>${m.due ? `<span class="chip">${icon("cal")} Needed by ${esc(m.due)}</span>` : ""}<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
-      <div class="actions"><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Edit</button><button class="btn sm plain linkdanger-btn" data-a="delmeeting" data-m="${m.id}">Delete</button></div></div>${NOTE}
+  return `<div class="crumb"><button data-a="go" data-v="projects">My work</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
+    <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">${isAns(m) ? `Saved automatically from ${esc(m.via || "Copilot")} on ${esc(m.saved)}.` : "An analysis, no meeting needed."}</p>
+      <div class="row" style="margin-top:8px"><span class="pill ${isAns(m) ? "neutral" : "solid"}">${isAns(m) ? "Answer" : "Analysis"}</span><span class="chip">Focus: ${esc(m.focus || "Whole category")}</span>${m.due ? `<span class="chip">${icon("cal")} Needed by ${esc(m.due)}</span>` : ""}${isAns(m) ? "" : `<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span>`}</div></div>
+      <div class="actions">${isAns(m) ? "" : `<button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Edit</button>`}<button class="btn sm plain linkdanger-btn" data-a="delmeeting" data-m="${m.id}">Delete</button></div></div>${NOTE}
     <div class="ws"><div class="stack" style="gap:18px">
       <div class="card anaq"><div class="card-hd">The question</div><div class="pad"><p style="margin:0;font-size:15px">${esc(m.question || m.title)}</p></div></div>
-      <div class="card anaans"><div class="card-hd">First answer <span class="row" style="gap:6px">${tag("de")}${tag("kb")}</span></div><div class="pad stack">
+      <div class="card anaans"><div class="card-hd">${isAns(m) ? "The answer" : "First answer"} <span class="row" style="gap:6px">${tag("de")}${tag("kb")}</span></div><div class="pad stack">
         <div class="tiles">${tile(`Sales · ${esc(PERIODS[state.per])}`, eur(a.T.s), `${arrow(pctS(a.T.g))} ${pctS(a.T.g)} vs year ago`, dirC(a.T.g))}${a.sh ? tile(esc(a.sh[0]), esc(a.sh[1]), `${arrow(a.sh[2])} ${esc(a.sh[2])} ${esc(a.sh[3])}`, a.sh[4]) : ""}${a.cs ? tile(`${esc(p.cat)} market · ${esc(p.market)}`, esc(a.cs[1]), `${arrow(a.cs[2])} ${esc(a.cs[2])} ${esc(a.cs[3])}`, a.cs[4]) : ""}</div>
         <ol class="points">${a.alert ? `<li><span class="pn de">N1</span><span>${esc(a.alert.text)}<br>${srcMini("de")} <span class="hint">calculated · ${PW[LASTW]}</span></span></li>` : ""}${a.conv ? `<li><span class="pn kb">F1</span><span>${esc(a.conv.text)}<br>${srcMini("kb")} ${citeBtn(a.conv.doc, a.conv.loc)}</span></li>` : ""}</ol>
         <div class="row"><button class="btn primary" data-a="cpask" data-m="${m.id}">${icon("chat")}Dig deeper in Copilot</button><button class="btn plain" data-a="ancopy">Copy for email</button><button class="btn plain" data-a="anxls">Download as Excel</button></div></div></div>
@@ -1654,7 +1666,7 @@ V.meeting = () => {
   const running = state.run && state.run.mid === m.id;
   const fb = d && d.result && d.result.fb;
   const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Reading what you said about this meeting", ""], ["Getting the numbers from the Decision Engine", `${p.cust} · ${p.cat}`], ["Checking the knowledge bank", "what changed, what works, buyer profiles"], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
-  return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
+  return `<div class="crumb"><button data-a="go" data-v="projects">My work</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
     <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">${esc(OBJECTIVES[m.obj])}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${icon("cal")} ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "Not scheduled"}</span><span class="chip">${m.minutes} minutes</span>${m.attendees.map(a => `<span class="chip">${icon("user")} ${esc(a)}</span>`).join("")}<span class="pill ${audOf(m) === "Internal" ? "solid" : "info"}">${audOf(m) === "Internal" ? "Internal" : "Customer"}</span><span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
       <div class="actions"><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Edit meeting</button><button class="btn sm plain linkdanger-btn" data-a="delmeeting" data-m="${m.id}">Delete meeting</button></div></div>${NOTE}
@@ -1758,7 +1770,7 @@ V.new = () => {
       <dt>About the meeting</dt><dd>${esc(OBJECTIVES[w.mc.obj])} · ${w.mc.minutes} min · ${esc(w.mc.lang)} · ${esc(w.mc.notation)}<br>Categories: ${w.mc.cats.map(esc).join(", ")}${w.mc.titles.length ? `<br>Buyer titles: ${w.mc.titles.map(esc).join(", ")}` : ""}<br>AI comments in slides: ${w.mc.ai ? "Yes" : "No"}</dd>
       <dt>Important context</dt><dd>${esc(w.mc.context || "None yet")}</dd>${scCount(w.mc.sc) ? `<dt>Shortcuts</dt><dd style="white-space:pre-line">${esc(scText(w.mc.sc))}</dd>` : ""}</dl>
     <div class="callout info">You can change all of this later from the project.</div></div></div>`;
-  return head(`<button data-a="go" data-v="projects">My Projects</button><span>›</span><span>New project</span>`, "Create a project", "Set the context once. Every meeting, presentation and piece of feedback in the project will use it.") +
+  return head(`<button data-a="go" data-v="projects">My work</button><span>›</span><span>New project</span>`, "Create a project", "Set the context once. Every meeting, presentation and piece of feedback in the project will use it.") +
     `<div class="stepper">${steps.map((s, i) => `<div class="step ${i < w.step ? "done" : i === w.step ? "active" : ""}"><span class="n">${i < w.step ? "✓" : i + 1}</span>${s}</div>${i < steps.length - 1 ? '<span class="step-sep"></span>' : ""}`).join("")}</div>
     <div class="wizard"><div>${body}<p class="hint" id="w-err" style="color:var(--err-accent);margin-top:10px" hidden></p>
       <div class="row" style="margin-top:16px;justify-content:space-between"><button class="btn plain" data-a="${w.step ? "w-back" : "go"}" data-v="projects">${w.step ? "Back" : "Cancel"}</button><button class="btn primary" data-a="${w.step === 4 ? "w-create" : "w-next"}">${w.step === 4 ? "Create project" : "Continue →"}</button></div></div>${preview}</div>`;
@@ -1787,9 +1799,8 @@ function inlineForm(title, fields, onSave, saveLabel = "Save") {
 }
 function meetingForm(p, m, after) {
   const ana = m ? isAna(m) : false, src = m || lastMeeting(p) || {};
-  inlineForm(m ? (ana ? "Edit analysis" : "Edit meeting") : after ? `Plan the follow-up to ${esc(after.title)}` : "New task", `
-    ${m || after ? "" : `<div class="field"><span class="flabel">What is it?</span><div class="seg" role="radiogroup"><label class="segopt"><input type="radio" name="ttype" value="meeting" checked> A meeting</label><label class="segopt"><input type="radio" name="ttype" value="analysis"> An analysis, no meeting</label></div></div>`}
-    <div class="field"><label for="f-t">Name</label><input id="f-t" name="t" required value="${esc(m ? m.title : after ? `Follow-up: ${after.title}` : "")}" placeholder="e.g. Range review, or Why are capsules losing share?"></div>
+  inlineForm(m ? (ana ? "Edit analysis" : "Edit meeting") : after ? `Plan the follow-up to ${esc(after.title)}` : "Add a meeting", `
+    <div class="field"><label for="f-t">Name</label><input id="f-t" name="t" required value="${esc(m ? m.title : after ? `Follow-up: ${after.title}` : "")}" placeholder="e.g. Range review"></div>
     <div class="field"><label for="f-focus">Focus</label><input id="f-focus" name="focus" list="f-focus-l" value="${esc(src.focus || "Whole category")}"><datalist id="f-focus-l"><option value="Whole category">${(SUBS[p.cat] || []).map(x => `<option value="${esc(x)}">`).join("")}</datalist><span class="hint">The whole ${esc(p.cat)} category, a sub-category or a brand.</span></div>
     <div class="onlyana" ${ana ? "" : "hidden"}><div class="field"><label for="f-q">What do you want to find out?</label><textarea id="f-q" name="q" rows="3" placeholder="e.g. Is the share drop us or the whole category?">${esc(m && ana ? m.question || "" : "")}</textarea></div>
       <div class="field"><label for="f-due">Needed by <span class="hint">(optional)</span></label><input id="f-due" name="due" type="date" value="${m && ana ? toISO(m.due || "") : ""}"></div></div>
