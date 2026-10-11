@@ -470,6 +470,7 @@ const TODAY = "01 Oct 2026";
 const CUSTOMERS = ["Carrefour", "Cdiscount", "Auchan", "E.Leclerc", "Intermarché", "Monoprix"];
 const MARKETS = ["France", "Belgium", "Spain", "Italy"];
 const CATEGORIES = ["Fabric Care", "Hair Care", "Oral Care", "Home Care", "Baby Care"];
+const SUBS = { "Fabric Care": ["Capsules", "Liquids", "Powders", "Fabric enhancers", "Ariel", "Lenor"], "Home Care": ["Dish", "Surface cleaners", "Online", "Fairy", "Mr. Proper"], "Hair Care": ["Shampoo", "Conditioner", "Pantene", "Head & Shoulders"], "Baby Care": ["Diapers", "Wipes", "Pampers"], "Femme Care": ["Pads", "Liners", "Always"] };
 const OBJECTIVES = ["Customer Business Review (CBR)", "Category Growth & Market Share Strategy Meeting", "New Product Innovation (NPI) / Line Extension Presentation", "Joint Business Planning (JBP) Session", "Internal Innovation Deployment for Sales Teams", "Internal Account Review & Growth Plan", "Promotion Strategy Alignment", "Post-Promotional Performance Review", "Space & Assortment Optimization Review", "Seasonal & Event-Based Program Pitch", "Digital & E-commerce Strategy Session", "Key Brand Strategic Alignment Meeting", "Supply Chain & Logistics Optimization Meeting", "Sustainability Initiative Collaboration", "New Retailer Onboarding Presentation", "Store Operations & Field Execution Pitch", "Top to Top Meeting"];
 const TEAMMATES = { VB: { name: "Victoire", role: "Key Account Manager", cls: "" } };
 // Buyer profiles you have already built. Projects pick from these.
@@ -510,33 +511,34 @@ function buyerPicker(cust, selected, attrs) {
 }
 
 let PROJECTS = [
-  { id: "P1", name: "Carrefour range review", cust: "Carrefour", market: "France", cat: "Fabric Care", audience: "Customer-facing", status: "Active",
-    objective: "Align the Q4 value story before the range review.", updated: "28 Sep 2026",
+  { id: "P1", name: "Carrefour · Fabric Care", cust: "Carrefour", market: "France", cat: "Fabric Care", audience: "Customer-facing", status: "Active",
+    objective: "Win the Q1 range review and grow our share in hypermarkets.", updated: "28 Sep 2026",
     buyers: ["B1", "B2"],
     context: "Juliette wants fewer, bigger promotions. The range review decides Q1 shelf space for laundry across hypermarkets.",
     meetings: [
-      { id: "M1", title: "Range review", date: "14 Nov 2026", obj: 8, minutes: 45, attendees: ["Juliette Morel"], status: "Preparing",
+      { id: "M1", title: "Range review", date: "14 Nov 2026", obj: 8, minutes: 45, attendees: ["Juliette Morel"], status: "Preparing", aud: "Customer", focus: "Capsules", ask: "Agree the promotion plan", objection: "Too many promotions already",
         decks: [{ v: 1, name: "Carrefour range review v1.pptx", uploaded: "24 Sep 2026", by: "VB", slides: 22, result: null }, { v: 2, name: "Carrefour range review v2.pptx", uploaded: "28 Sep 2026", by: "VB", slides: 18, result: null }], notes: "" },
-      { id: "M2", title: "Q3 business review", date: "12 Sep 2026", obj: 0, minutes: 60, attendees: ["Juliette Morel", "Camille Robert"], status: "Done",
+      { id: "M2", title: "Q3 business review", date: "12 Sep 2026", obj: 0, minutes: 60, attendees: ["Juliette Morel", "Camille Robert"], status: "Done", aud: "Customer", focus: "Whole category", ask: "Agree the Q4 joint plan", objection: "",
         decks: [{ v: 1, name: "Carrefour Q3 CBR.pptx", uploaded: "05 Sep 2026", by: "VB", slides: 16, result: null }],
         notes: "" },
+      { id: "M6", title: "Power hour: Carrefour Q4", date: "21 Oct 2026", obj: 5, minutes: 30, attendees: [], status: "Preparing", aud: "Internal", focus: "Whole category", ask: "Agree the Q4 priorities with the team", objection: "", decks: [], notes: "" },
     ],
     files: [{ name: "Carrefour JBP 2026-27.pptx", kind: "ppt", added: "02 Jul 2026", by: "VB", ctx: true }, { name: "Buyer meeting notes August.docx", kind: "doc", added: "14 Aug 2026", by: "VB" }, { name: "Q4 promotion calendar.xlsx", kind: "xls", added: "20 Sep 2026", by: "VB" }],
     activity: [["28 Sep 2026", "VB", "uploaded Carrefour range review v2.pptx to Range review"], ["24 Sep 2026", "VB", "got Selling Coach feedback on v1: 3.1 out of 5"], ["20 Sep 2026", "VB", "added Q4 promotion calendar.xlsx"], ["12 Sep 2026", "VB", "added notes to Q3 business review"], ["10 Sep 2026", "VB", "created the project"]] },
-  { id: "P2", name: "Cdiscount autumn activation", cust: "Cdiscount", market: "France", cat: "Home Care", audience: "Customer-facing", status: "Active",
+  { id: "P2", name: "Cdiscount · Home Care", cust: "Cdiscount", market: "France", cat: "Home Care", audience: "Customer-facing", status: "Active",
     objective: "Build the autumn activation recommendation.", updated: "22 Sep 2026",
     buyers: ["B4"], context: "Online share in Home Care is flat. Thomas is open to a sponsored-search test if we bring a clear plan for Black Friday.",
-    meetings: [{ id: "M3", title: "Activation plan review", date: "22 Oct 2026", obj: 10, minutes: 30, attendees: ["Thomas Garnier"], status: "Preparing", decks: [{ v: 1, name: "Cdiscount autumn activation.pptx", uploaded: "22 Sep 2026", by: "VB", slides: 14, result: null }], notes: "" }],
+    meetings: [{ id: "M3", title: "Activation plan review", date: "22 Oct 2026", obj: 10, minutes: 30, attendees: ["Thomas Garnier"], status: "Preparing", aud: "Customer", focus: "Online", ask: "Approve a sponsored-search test for Black Friday", objection: "", decks: [{ v: 1, name: "Cdiscount autumn activation.pptx", uploaded: "22 Sep 2026", by: "VB", slides: 14, result: null }], notes: "" }],
     files: [{ name: "Home Care e-commerce strategy FY26.pdf", kind: "doc", added: "20 Jan 2026", by: "VB" }],
     activity: [["22 Sep 2026", "VB", "uploaded Cdiscount autumn activation.pptx"], ["15 Sep 2026", "VB", "created the project"]] },
-  { id: "P3", name: "Auchan first opportunity", cust: "Auchan", market: "France", cat: "Hair Care", audience: "Customer-facing", status: "Active",
+  { id: "P3", name: "Auchan · Hair Care", cust: "Auchan", market: "France", cat: "Hair Care", audience: "Customer-facing", status: "Active",
     objective: "Shape the first customer opportunity.", updated: "18 Sep 2026",
     buyers: ["B6"], context: "",
-    meetings: [{ id: "M4", title: "Opportunity pitch", date: "", obj: 2, minutes: 30, attendees: ["Nadia Benali"], status: "Not scheduled", decks: [], notes: "" }],
+    meetings: [{ id: "M4", title: "Opportunity pitch", date: "", obj: 2, minutes: 30, attendees: ["Nadia Benali"], status: "Not scheduled", aud: "Customer", focus: "Whole category", ask: "", objection: "", decks: [], notes: "" }],
     files: [], activity: [["18 Sep 2026", "VB", "created the project"]] },
-  { id: "P4", name: "Carrefour spring promotions", cust: "Carrefour", market: "France", cat: "Fabric Care", audience: "Customer-facing", status: "Archived",
+  { id: "P4", name: "Carrefour · Fabric Care · spring 2026", cust: "Carrefour", market: "France", cat: "Fabric Care", audience: "Customer-facing", status: "Archived",
     objective: "Agree the spring promotion plan.", updated: "30 Apr 2026", buyers: ["B1"], context: "",
-    meetings: [{ id: "M5", title: "Promotion alignment", date: "15 Apr 2026", obj: 6, minutes: 45, attendees: ["Juliette Morel"], status: "Done", decks: [{ v: 1, name: "Spring promotions.pptx", uploaded: "08 Apr 2026", by: "VB", slides: 12, result: null }], notes: "" }],
+    meetings: [{ id: "M5", title: "Promotion alignment", date: "15 Apr 2026", obj: 6, minutes: 45, attendees: ["Juliette Morel"], status: "Done", aud: "Customer", focus: "Whole category", ask: "Agree the spring promotion plan", objection: "", decks: [{ v: 1, name: "Spring promotions.pptx", uploaded: "08 Apr 2026", by: "VB", slides: 12, result: null }], notes: "" }],
     files: [], activity: [["30 Apr 2026", "VB", "archived the project"]] },
 ];
 // Earlier feedback already on file
@@ -894,8 +896,8 @@ const NOTES = {
   story: [["#view .slides", "Our part: the storyline in the selling format, with governed numbers and cited facts."], ["#view .row.section", "Microsoft's part: Office in Copilot builds the slides. To check: Frontier-only rollout, and how a skill passes our content to PowerPoint (plugin or MCP connector)."]],
   about: [["#view .explain", "Product names live here. Everywhere else users see plain tags: Numbers, Company knowledge, Only you."], ["#view .pcard", "Real settings, in one place: personal sources, what you follow, Copilot."]],
   projects: [["#view .impact", "The PoC success measure: better decks, shown as the score gain before meetings. Private to the user; any team view would be aggregated without names."], ["#q", "Search by project name, customer or category."], ["#view .seg", "Finished projects are archived, not deleted, and stay searchable."], ["#view .projcard .pill", "Status comes from the latest presentation: none yet, ready for feedback, or its score."], ["#view .pcmenu", "Each card's ⋯ menu: edit, archive or delete the project. Delete asks first and offers Archive instead."], ["#view .projcard.new", "Create a project from the list too."]],
-  project: [["#view .pagehead", "Set once: customer, market, category, audience and objective. “Edit project” changes them everywhere."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .flow", "One flow per meeting, in order: each step is a skill (also callable in Copilot), worked out from the project's state. The box above always shows the next step. This replaces the tool cards: one way in, not five."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
-  meeting: [["#view .deckcard", "The deck is a OneDrive link, not an upload: versions, labels and co-editing stay in Office. One main action: Open in Copilot. Upload stays as a fallback for users without a Copilot licence."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Step 2 (shown to users as “About this meeting”) is read from the project, not typed per analysis. Objective and minutes can differ for one meeting."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .topfix", "From the user interview: decks are reviewed right before the meeting, with about 15 minutes. So: the 3 fixes that move the score most, with time and expected gain. Everything else is one click away. Scores (1 to 5) are private to the user. PoC success measure: score gain before meetings."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
+  project: [["#view .pagehead", "A project is one customer and one category (users can still start a second one). It holds what is shared: buyers, documents, defaults. Each meeting inside keeps its own audience, focus (category, sub-category or brand), objective and ask."], ["#view .next", "The next meeting and the one action that moves it forward."], ["#view .flow", "One flow per meeting, in order: each step is a skill (also callable in Copilot), worked out from the project's state. The box above always shows the next step. This replaces the tool cards: one way in, not five."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
+  meeting: [["#view .deckcard", "The deck is a OneDrive link, not an upload: versions, labels and co-editing stay in Office. One main action: Open in Copilot. Upload stays as a fallback for users without a Copilot licence."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Selling Coach Step 2, split in two: what changes per meeting (audience, focus, objective, minutes, ask, objection) lives on the meeting; the rest are project defaults. A new meeting is prefilled from the last one."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .topfix", "From the user interview: decks are reviewed right before the meeting, with about 15 minutes. So: the 3 fixes that move the score most, with time and expected gain. Everything else is one click away. Scores (1 to 5) are private to the user. PoC success measure: score gain before meetings."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
   new: [["#view .stepper", "Five short steps. Only the name and customer are required."], ["#view .wizard .card", "Step 2 picks saved buyer profiles. Step 3 is Selling Coach's meeting context, filled once for the whole project and kept across sessions."], ["#view .preview", "Live preview of what the project will hold."]],
 };
 function applyNotes() {
@@ -925,7 +927,7 @@ function projectCard(p) {
   const open = state.menu === p.id;
   return `<div class="pcwrap"><button class="projcard" data-a="open" data-v="${p.id}">
     <span class="spread"><span class="nm">${esc(p.cust)}</span><span class="chip">${esc(p.cat)}</span></span>
-    <b style="font-size:13.5px">${esc(p.name)}</b>
+    ${p.name !== `${p.cust} · ${p.cat}` ? `<b style="font-size:13.5px">${esc(p.name)}</b>` : ""}
     <span class="goal">${esc(p.objective)}</span>
     <span class="row small">${icon("cal")}${m ? `${esc(m.title)} · ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "not scheduled"}` : "No upcoming meeting"}</span>
     <span><span class="pill ${cls}">${lab}</span></span>
@@ -933,7 +935,7 @@ function projectCard(p) {
   </button><button class="pcmenu" data-a="cardmenu" data-v="${p.id}" aria-label="Actions for ${esc(p.name)}" aria-haspopup="menu" aria-expanded="${open}">⋯</button>
   ${open ? `<div class="cardpop" role="menu"><button role="menuitem" data-a="editproj" data-v="${p.id}">Edit project</button><button role="menuitem" data-a="archive" data-v="${p.id}">${p.status === "Archived" ? "Restore to active" : "Archive project"}</button><hr><button role="menuitem" class="danger" data-a="delproj" data-v="${p.id}">Delete project</button></div>` : ""}</div>`;
 }
-const newCard = () => `<button class="projcard new" data-a="new"><span class="plus">${icon("plus")}</span><b style="font:700 15px var(--mont)">Create a project</b><span class="small muted">One customer, one goal. Your meetings, presentations and feedback in one place.</span></button>`;
+const newCard = () => `<button class="projcard new" data-a="new"><span class="plus">${icon("plus")}</span><b style="font:700 15px var(--mont)">Create a project</b><span class="small muted">One customer and one category. Your meetings, decks and feedback in one place.</span></button>`;
 const SOON = [["DLA 360", "Distributor landscape assessment: who sells what, where, and where to grow.", "Pilot in 1 market"], ["Amazon EU", "The assistant set up for Amazon Europe teams, with the right customer profiles.", "OND ’26"], ["PSKU Assistant", "Find and defend your Power SKUs at each customer.", "OND ’26"]];
 const KEY_MOMENTS = [
   { date: "20 Oct 2026", title: "Black Friday retail media bookings close", cust: "Cdiscount", kind: "Deadline", act: ["cust", "Cdiscount", "Open Cdiscount"] },
@@ -1230,7 +1232,7 @@ function analystData(p) {
   return { T, W, sh, cs, alert, conv, gap };
 }
 V.analyst = () => {
-  const p = proj(state.pid), aud = state.anAud || "internal", a = analystData(p);
+  const p = proj(state.pid), nm = nextMeeting(p), aud = state.anAud || (nm && audOf(nm) === "Customer" ? "external" : "internal"), a = analystData(p);
   const fig = (l, v, sub, dir, internal) => `<div class="tile"><span class="tl">${l}${internal ? ` <span class="pill warn">Internal only</span>` : ""}</span><span class="tv">${v}</span><span class="td">${dir ? `<b class="${dir}">${sub}</b>` : sub}</span></div>`;
   const figs = [fig(`Sales · ${esc(PERIODS[state.per])}`, eur(a.T.s), `${arrow(pctS(a.T.g))} ${pctS(a.T.g)} vs year ago`, dirC(a.T.g)),
     fig(`Last week · ${PW[LASTW]}`, eur(a.W.last), `${arrow(pctS(a.W.g))} ${pctS(a.W.g)} vs previous week`, dirC(a.W.g)),
@@ -1459,11 +1461,11 @@ AFTER.projects = () => { $("#q").addEventListener("input", e => { state.q = e.ta
    ===================================================================== */
 V.project = () => {
   const p = proj(state.pid);
-  const tabs = [["overview", "Overview"], ["context", "About the meeting" + (ctxDirty() ? " •" : "")], ["meetings", `Meetings (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
+  const tabs = [["overview", "Overview"], ["context", "Defaults" + (ctxDirty() ? " •" : "")], ["meetings", `Meetings (${p.meetings.length})`], ["files", `Files (${p.files.length + p.meetings.reduce((n, m) => n + m.decks.length, 0)})`], ["activity", "Activity"]];
   const body = { overview: overviewTab, context: contextTab, meetings: meetingsTab, files: filesTab, activity: activityTab }[state.tab](p);
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
-      <div class="row" style="margin-top:8px"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.market)}</span><span class="chip">${esc(p.cat)}</span><span class="pill ${p.audience === "Customer-facing" ? "info" : "solid"}">${esc(p.audience)}</span>${p.status === "Archived" ? `<span class="pill neutral">Archived</span>` : ""}</div></div>
+      <div class="row" style="margin-top:8px"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.market)}</span><span class="chip">${esc(p.cat)}</span>${p.status === "Archived" ? `<span class="pill neutral">Archived</span>` : ""}</div></div>
       <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button><button class="btn sm primary" data-a="newmeeting">${icon("plus")}New meeting</button></div></div>
     ${NOTE}
     <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${state.tab === k}" tabindex="${state.tab === k ? 0 : -1}">${l}</button>`).join("")}</div>${body}`;
@@ -1489,8 +1491,8 @@ function briefCard(p, m) {
 }
 function contextCard(p) {
   const c = p.mc;
-  return `<div class="card"><div class="card-hd">About the meeting <button class="btn ghost small" data-a="tab" data-v="context" style="color:var(--primary)">Edit</button></div><div class="pad stack">
-    <span class="hint">Set once for the project. Every skill starts from it.</span>
+  return `<div class="card"><div class="card-hd">Project defaults <button class="btn ghost small" data-a="tab" data-v="context" style="color:var(--primary)">Edit</button></div><div class="pad stack">
+    <span class="hint">Shared by every meeting for this customer and category.</span>
     <dl class="kv"><dt>Customer</dt><dd>${esc(p.cust)} · ${esc(p.market)}</dd><dt>Categories</dt><dd>${c.cats.map(esc).join(", ")}</dd><dt>Objective</dt><dd>${esc(OBJECTIVES[c.obj])}</dd><dt>Minutes</dt><dd>${c.minutes}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd>
       <dt>Buyers</dt><dd>${p.buyers.length ? pbuyers(p).map(b => `<button class="btn ghost small" data-a="buyer" data-v="${b.id}" style="color:var(--primary);padding:0">${esc(b.name)}</button> <span class="hint">· ${esc(b.role)} · DISC-${b.disc}</span>`).join("<br>") : `<span class="muted">None added</span>`}</dd>
       <dt>Important context</dt><dd>${c.context ? esc(c.context) : `<span class="muted">Nothing yet. Add what every analysis should know.</span>`}</dd></dl></div></div>`;
@@ -1499,7 +1501,7 @@ function flowSteps(p, m) {
   const d = m && latestDeck(m), f = p.flow || {}, sc = d && d.result && d.result.score;
   const b = (a, v, l, x = "") => `<button class="btn sm plain" data-a="${a}" data-v="${v}" data-m="${m.id}" ${x}>${l}</button>`;
   return [
-    [!!p.mc.context && p.buyers.length > 0, "Tell it about the meeting", "", p.mc.context ? "Objective, buyers and what matters. Set once for the project." : "Objective, buyers and what matters. Every skill uses it.", b("ctxtab", "", "Add"), b("ctxtab", "", "Open")],
+    [!!m.ask, "Tell it about this meeting", "", m.ask ? `${audOf(m) === "Internal" ? "Internal" : "Customer"} · ${m.focus || "Whole category"} · ask: ${m.ask}` : "Audience, focus and what you want agreed. Prefilled from your last meeting.", b("editmeeting", "", "Add"), b("editmeeting", "", "Edit")],
     [!!f.analyst, "Get the facts", "Analyst", `Key figures for ${p.cust} · ${p.cat}`, b("tool", "analyst", "Get key figures"), b("tool", "analyst", "Open")],
     [!!d, "Build the deck", "Storyteller", d ? d.name : "Built in Copilot, or link the deck you have", b("stfor", "", "Build in Copilot") + " " + b("meeting", "", "Link a file"), b("cpopen", "", "Open")],
     [!!sc, "Improve the deck", "Selling Coach", sc ? `${sc.toFixed(1)}/5 on version ${d.v}${sc < 4 ? " · aim for 4" : ""}` : "Score the deck and see what's left to reach 5/5", d ? b("cpopen", "", "Review in Copilot") : b("stfor", "", "Build the deck first"), b("meeting", "", "Open")],
@@ -1579,8 +1581,11 @@ function topFixes(fb) {
   const slides = fb.slides.filter(x => !/^Good/.test(x[1])).map(([n, t]) => [`Slide ${n}`, t, .1, 2]);
   return [...steps.sort((a, b) => b[2] - a[2]), ...slides].slice(0, 3);
 }
+// Each meeting has its own audience, focus, ask and objection; new meetings start from the last one
+const audOf = m => m.aud || "Customer";
+const lastMeeting = p => [...p.meetings].sort((a, b) => (pd(b.date) || 0) - (pd(a.date) || 0))[0];
 function feedbackFor(p, m, d) {
-  const v = d.v, buyer = m.attendees[0], doc = p.files.find(f => f.ctx), c = p.mc, ask = c.sc.decision[0], obj = c.sc.objection[0];
+  const v = d.v, buyer = m.attendees[0], doc = p.files.find(f => f.ctx), c = p.mc, ask = m.ask || c.sc.decision[0], obj = m.objection || c.sc.objection[0];
   const steps = [
     ["Summarise the situation", "good", `Clear opening: the ${p.cat} picture at ${p.cust} lands in two slides.`],
     ["State the idea", v >= 2 ? "good" : "improve", v >= 2 ? "The idea is now one sentence on slide 4." : "The idea only appears on slide 11. Bring it forward and say it in one sentence."],
@@ -1607,7 +1612,7 @@ V.meeting = () => {
   const stages = [["Reading the presentation", `${d ? d.slides : 0} slides`], ["Reading what you said about this meeting", ""], ["Getting the numbers from the Decision Engine", `${p.cust} · ${p.cat}`], ["Checking the knowledge bank", "what changed, what works, buyer profiles"], ["Checking each step of the selling framework", ""], [`Checking timing for ${m.minutes} minutes`, ""], ["Writing feedback", ""]];
   return `<div class="crumb"><button data-a="go" data-v="projects">My Projects</button><span>›</span><button data-a="open" data-v="${p.id}">${esc(p.name)}</button><span>›</span><span>${esc(m.title)}</span></div>
     <div class="pagehead"><div><h1>${esc(m.title)}</h1><p class="sub">${esc(OBJECTIVES[m.obj])}</p>
-      <div class="row" style="margin-top:8px"><span class="chip">${icon("cal")} ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "Not scheduled"}</span><span class="chip">${m.minutes} minutes</span>${m.attendees.map(a => `<span class="chip">${icon("user")} ${esc(a)}</span>`).join("")}<span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
+      <div class="row" style="margin-top:8px"><span class="chip">${icon("cal")} ${m.date ? `${esc(m.date)} · ${when(m.date)}` : "Not scheduled"}</span><span class="chip">${m.minutes} minutes</span>${m.attendees.map(a => `<span class="chip">${icon("user")} ${esc(a)}</span>`).join("")}<span class="pill ${audOf(m) === "Internal" ? "solid" : "info"}">${audOf(m) === "Internal" ? "Internal" : "Customer"}</span><span class="pill ${m.status === "Done" ? "neutral" : "info"}">${esc(m.status)}</span></div></div>
       <div class="actions"><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Edit meeting</button><button class="btn sm plain linkdanger-btn" data-a="delmeeting" data-m="${m.id}">Delete meeting</button></div></div>${NOTE}
     <div class="ws"><div class="stack" style="gap:18px">
       <div class="card deckcard"><div class="card-hd">Deck <span class="aside">${icon("file")} OneDrive · version history kept there</span></div><div class="pad stack">
@@ -1679,13 +1684,15 @@ V.new = () => {
   const steps = ["Customer and goal", "Buyers", "About the meeting", "First meeting", "Review"];
   let body = "";
   if (w.step === 0) body = `<div class="card"><div class="card-hd">Customer and goal</div><div class="pad stack">
-    <div class="field"><label for="w-name">Project name</label><input id="w-name" data-w="name" value="${esc(w.name)}" placeholder="e.g. Carrefour range review"></div>
+    <p class="small muted">A project is one customer and one category. Its meetings each keep their own audience, focus and ask.</p>
     <div class="grid3"><div class="field"><label for="w-cust">Customer</label><select id="w-cust" data-w="cust" data-rr><option value="">Choose a customer</option>${CUSTOMERS.map(c => `<option ${c === w.cust ? "selected" : ""}>${esc(c)}</option>`).join("")}<option value="__other" ${w.cust === "__other" ? "selected" : ""}>Another customer…</option></select></div>
       <div class="field"><label for="w-market">Market</label><select id="w-market" data-w="market">${MARKETS.map(c => `<option ${c === w.market ? "selected" : ""}>${c}</option>`).join("")}</select></div>
       <div class="field"><label for="w-cat">Category</label><select id="w-cat" data-w="cat" data-rr>${CATEGORIES.map(c => `<option ${c === w.cat ? "selected" : ""}>${c}</option>`).join("")}</select></div></div>
     ${w.cust === "__other" ? `<div class="field"><label for="w-other">Customer name</label><input id="w-other" data-w="custOther" value="${esc(w.custOther)}" placeholder="Type the customer's name"></div>` : ""}
-    <div class="field"><label for="w-obj">What do you want to achieve?</label><input id="w-obj" data-w="objective" value="${esc(w.objective)}" placeholder="e.g. Align the Q4 value story before the range review"></div>
-    <div class="field"><span class="flabel">Who will see the output?</span><div class="seg">${["Customer-facing", "Internal team"].map(a => `<button type="button" data-a="w-aud" data-v="${a}" aria-pressed="${w.audience === a}">${a}</button>`).join("")}</div></div></div></div>`;
+    ${(() => { const c0 = w.cust === "__other" ? w.custOther : w.cust, dup = c0 && PROJECTS.find(p => p.status === "Active" && p.cust === c0 && p.cat === w.cat); return dup ? `<div class="callout info">You already have <b>${esc(dup.name)}</b>. <button type="button" class="btn ghost small" data-a="open" data-v="${dup.id}" style="color:var(--primary);padding:0">Add a meeting there</button>, or continue to start a separate one.</div>` : ""; })()}
+    <div class="field"><label for="w-name">Name <span class="hint">(optional)</span></label><input id="w-name" data-w="name" value="${esc(w.name)}" placeholder="${esc((w.cust && w.cust !== "__other" ? w.cust : "Customer") + " · " + w.cat)}"></div>
+    <div class="field"><label for="w-obj">Goal for this customer and category</label><input id="w-obj" data-w="objective" value="${esc(w.objective)}" placeholder="e.g. Win the Q1 range review and grow our share"></div>
+    </div></div>`;
   if (w.step === 3) body = `<div class="card"><div class="card-hd">First meeting <label class="row small" style="font:400 12px var(--inter)"><input type="checkbox" data-a="w-meet" ${w.withMeeting ? "checked" : ""}> Add a meeting now</label></div><div class="pad stack">
     ${w.withMeeting ? `<div class="grid2"><div class="field"><label for="w-mt">Meeting name</label><input id="w-mt" data-w="mTitle" value="${esc(w.mTitle)}" placeholder="e.g. Range review"></div>
       <div class="field"><label for="w-mo">Meeting objective</label><select id="w-mo" data-w="mObj" aria-describedby="w-mo-h">${OBJECTIVES.map((o, i) => `<option value="${i}" ${+w.mObj === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select></div></div>
@@ -1736,11 +1743,16 @@ function inlineForm(title, fields, onSave, saveLabel = "Save") {
 function meetingForm(p, m, after) {
   inlineForm(m ? "Edit meeting" : after ? `Plan the follow-up to ${esc(after.title)}` : "New meeting", `
     <div class="field"><label for="f-t">Meeting name</label><input id="f-t" name="t" required value="${esc(m ? m.title : after ? `Follow-up: ${after.title}` : "")}" placeholder="e.g. Follow-up on promotions"></div>
-    <div class="field"><label for="f-o">Meeting objective</label><select id="f-o" name="o">${OBJECTIVES.map((o, i) => `<option value="${i}" ${(m ? m.obj : p.mc.obj) === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select>${m ? "" : `<span class="hint">Objective and minutes start from the project's meeting context. Change them here for this meeting only.</span>`}</div>
+    <div class="field"><label for="f-o">Meeting objective</label><select id="f-o" name="o">${OBJECTIVES.map((o, i) => `<option value="${i}" ${(m ? m.obj : (lastMeeting(p) || p.mc).obj) === i ? "selected" : ""}>${i + 1}. ${o}</option>`).join("")}</select>${m ? "" : ``}</div>
     <div class="grid2"><div class="field"><label for="f-d">Date</label><input id="f-d" name="d" type="date" value="${m ? toISO(m.date) : ""}"></div><div class="field"><label for="f-m">Minutes</label><input id="f-m" name="m" type="number" min="5" value="${m ? m.minutes : p.mc.minutes}"></div></div>
+    ${(() => { const src = m || lastMeeting(p) || {}; return `<div class="grid2"><div class="field"><label for="f-aud">Audience</label><select id="f-aud" name="aud">${[["Customer", "Customer meeting"], ["Internal", "Internal: power hour, team connect"]].map(([k, l]) => `<option value="${k}" ${(src.aud || (p.audience === "Internal team" ? "Internal" : "Customer")) === k ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+      <div class="field"><label for="f-focus">Focus</label><input id="f-focus" name="focus" list="f-focus-l" value="${esc(src.focus || "Whole category")}"><datalist id="f-focus-l"><option value="Whole category">${(SUBS[p.cat] || []).map(x => `<option value="${esc(x)}">`).join("")}</datalist><span class="hint">The whole ${esc(p.cat)} category, a sub-category or a brand.</span></div></div>
+    <div class="field"><label for="f-ask">What do you want them to agree to?</label><input id="f-ask" name="ask" value="${esc(m ? m.ask || "" : "")}" placeholder="${esc((lastMeeting(p) || {}).ask || "e.g. Agree the promotion plan")}"></div>
+    <div class="field"><label for="f-objn">Objection you expect <span class="hint">(optional)</span></label><input id="f-objn" name="objn" value="${esc(m ? m.objection || "" : "")}"></div>
+    ${m ? "" : `<span class="hint">Prefilled from your last meeting in this project. Change only what's different.</span>`}`; })()}
     <div class="field"><span class="flabel">Attendees</span>${pbuyers(p).length ? `<div class="row">${pbuyers(p).map(b => `<label class="chip" style="cursor:pointer;display:inline-flex;gap:6px;align-items:center"><input type="checkbox" name="a" value="${esc(b.name)}" ${m ? (m.attendees.includes(b.name) ? "checked" : "") : "checked"}>${esc(b.name)} <span class="hint">· DISC-${b.disc}</span></label>`).join("")}</div>` : `<span class="hint">No buyer profiles in this project yet. Add them with “Edit project”.</span>`}<span class="hint">Buyers come from the project’s buyer profiles.</span></div>
     ${m ? `<div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delmeeting" data-m="${m.id}">Delete this meeting…</button></div>` : ""}`, fd => {
-      const data = { title: fd.get("t").trim(), obj: +fd.get("o"), date: fromISO(fd.get("d")), minutes: +fd.get("m") || 30, attendees: fd.getAll("a") };
+      const data = { title: fd.get("t").trim(), obj: +fd.get("o"), date: fromISO(fd.get("d")), minutes: +fd.get("m") || 30, attendees: fd.getAll("a"), aud: fd.get("aud"), focus: fd.get("focus").trim() || "Whole category", ask: fd.get("ask").trim(), objection: fd.get("objn").trim() };
       if (m) { Object.assign(m, data); if (m.status === "Not scheduled" && m.date) m.status = "Preparing"; log(p, `updated ${m.title}`); toast("Meeting updated."); render(); }
       else { const nm = { id: "M" + Date.now(), ...data, status: data.date ? "Preparing" : "Not scheduled", decks: [], notes: "" }; p.meetings.push(nm); log(p, `added the meeting ${nm.title}`); go("meeting", { mid: nm.id }); toast("Meeting added. Upload its presentation when you're ready."); }
     });
@@ -1773,7 +1785,7 @@ function ctxChanged() {
   if (state.view === "new") { refreshPreview(); return; }
   const d = ctxDirty(), pill = $("#ctx-dirty"), tab = $('[role="tab"][data-v="context"]');
   if (pill) pill.hidden = !d;
-  if (tab) tab.textContent = "About the meeting" + (d ? " •" : "");
+  if (tab) tab.textContent = "Defaults" + (d ? " •" : "");
 }
 function sessionsCard(p) {
   const ss = [...p.sessions].reverse();
@@ -1783,8 +1795,8 @@ function sessionsCard(p) {
 }
 function contextTab(p) {
   if (!state.cdraft || state.cdraftPid !== p.id) { state.cdraft = clone(p.mc); state.cdraftPid = p.id; }
-  return `<div class="ws"><div class="card"><div class="card-hd mctx-hd"><span>About the meeting <span class="hint" style="font-weight:400">· set once for this project, used by every skill</span></span><span class="row" style="gap:6px"><span class="pill warn" id="ctx-dirty" ${ctxDirty() ? "" : "hidden"}>Unsaved changes</span><span class="pill ok">Saved ${esc(p.mc.updated)}</span></span></div>
-    <div class="pad stack"><div class="callout info">Fill this in once. The Selling Coach, Storyteller and Role-play Coach all start from it, so you never type it again. Past feedback keeps the details it used.</div>
+  return `<div class="ws"><div class="card"><div class="card-hd mctx-hd"><span>Defaults for every meeting <span class="hint" style="font-weight:400">· each meeting can change its audience, focus, objective and ask</span></span><span class="row" style="gap:6px"><span class="pill warn" id="ctx-dirty" ${ctxDirty() ? "" : "hidden"}>Unsaved changes</span><span class="pill ok">Saved ${esc(p.mc.updated)}</span></span></div>
+    <div class="pad stack"><div class="callout info">Fill this in once for this customer and category. Every new meeting starts from it, then keeps its own audience, focus and ask. Past feedback keeps the details it used.</div>
       ${ctxForm(state.cdraft, p.cust, pbuyers(p).map(b => b.role))}
       <div class="row" style="justify-content:flex-end;border-top:1px solid var(--light-gray);padding-top:14px"><button class="btn plain" data-a="ctx-discard">Discard changes</button><button class="btn primary" data-a="ctx-save">Save</button></div></div></div>
     <aside class="side">${sessionsCard(p)}</aside></div>`;
@@ -1795,10 +1807,11 @@ function mctxSummary(p, m) {
     <dt>Minutes</dt><dd>${m.minutes}${m.minutes !== c.minutes ? ` <span class="pill neutral">this meeting only</span>` : ""}</dd><dt>Language</dt><dd>${esc(c.lang)}</dd><dt>Email</dt><dd>${USER_EMAIL}</dd><dt>Number notation</dt><dd>${esc(c.notation)}</dd>
     <dt>Customer</dt><dd>${esc(p.cust)}</dd><dt>Categories</dt><dd>${c.cats.map(esc).join(", ") || "None"}</dd><dt>Buyers' job titles</dt><dd>${c.titles.map(esc).join(", ") || "None"}</dd>
     <dt>Important context</dt><dd>${esc(c.context) || `<span class="muted">None yet</span>`}</dd><dt>Shortcuts</dt><dd style="white-space:pre-line">${esc(scText(c.sc)) || `<span class="muted">None</span>`}</dd><dt>AI comments in slides</dt><dd>${c.ai ? "Yes" : "No"}</dd></dl>`;
-  return `<div class="card mctx"><div class="card-hd mctx-hd"><span>About this meeting <span class="hint" style="font-weight:400">· same for the whole project</span></span><button class="btn ghost small" data-a="mc-toggle" aria-expanded="${open}" style="color:var(--primary)">${open ? "Hide" : "Show all"}</button></div>
-    <div class="pad stack"><div class="usedctx"><span class="chip">${esc(OBJECTIVES[m.obj])}</span><span class="chip">${m.minutes} min</span><span class="chip">${esc(c.lang)}</span><span class="chip">${c.cats.map(esc).join(", ")}</span></div>
-      ${open ? rows : ""}
-      <div class="row"><button class="btn sm plain" data-a="tab" data-v="context">Change for the whole project</button><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Change objective or minutes for this meeting</button></div></div></div>`;
+  return `<div class="card mctx"><div class="card-hd mctx-hd"><span>About this meeting</span><button class="btn ghost small" data-a="mc-toggle" aria-expanded="${open}" style="color:var(--primary)">${open ? "Hide" : "Show all"}</button></div>
+    <div class="pad stack"><div class="usedctx"><span class="pill ${audOf(m) === "Internal" ? "solid" : "info"}">${audOf(m) === "Internal" ? "Internal" : "Customer meeting"}</span><span class="chip">Focus: ${esc(m.focus || "Whole category")}</span><span class="chip">${esc(OBJECTIVES[m.obj])}</span><span class="chip">${m.minutes} min</span></div>
+      ${m.ask ? `<span class="small"><b>You want them to agree to:</b> ${esc(m.ask)}</span>` : `<span class="small muted">Add what you want them to agree to: the Selling Coach checks your deck asks for it.</span>`}${m.objection ? `<span class="small"><b>Objection you expect:</b> ${esc(m.objection)}</span>` : ""}
+      ${open ? `<span class="label">From the project, for every meeting</span>${rows}` : ""}
+      <div class="row"><button class="btn sm plain" data-a="editmeeting" data-m="${m.id}">Edit this meeting</button><button class="btn ghost small" data-a="tab" data-v="context" style="color:var(--primary)">Project defaults</button></div></div></div>`;
 }
 function buyerForm(cust, onAdd) {
   inlineForm(`New buyer profile · ${esc(cust)}`, `
@@ -1814,12 +1827,12 @@ function projectForm(p) {
   const box = inlineForm("Edit project", `
     <div class="field"><label for="pf-name">Project name</label><input id="pf-name" name="name" required value="${esc(p.name)}"></div>
     <div class="grid2"><div class="field"><label for="pf-cust">Customer</label>${sel("cust", CUSTOMERS, p.cust)}</div><div class="field"><label for="pf-market">Market</label>${sel("market", MARKETS, p.market)}</div></div>
-    <div class="grid2"><div class="field"><label for="pf-cat">Category</label>${sel("cat", CATEGORIES, p.cat)}</div><div class="field"><label for="pf-aud">Audience</label>${sel("aud", ["Customer-facing", "Internal team"], p.audience)}</div></div>
-    <div class="field"><label for="pf-obj">Objective</label><input id="pf-obj" name="obj" value="${esc(p.objective)}"></div>
+    <div class="grid2"><div class="field"><label for="pf-cat">Category</label>${sel("cat", CATEGORIES, p.cat)}</div><div class="field"><label for="pf-aud">Default audience for new meetings</label>${sel("aud", ["Customer-facing", "Internal team"], p.audience)}</div></div>
+    <div class="field"><label for="pf-obj">Goal for this customer and category</label><input id="pf-obj" name="obj" value="${esc(p.objective)}"></div>
     <div class="field"><span class="flabel">Buyer profiles</span><div class="stack" style="gap:8px">${BUYERS.map(b => `<label class="bpick" data-cust="${esc(b.cust)}" ${b.cust === p.cust ? "" : "hidden"}><input type="checkbox" name="b" value="${b.id}" ${p.buyers.includes(b.id) ? "checked" : ""}><span><b>${esc(b.name)} · ${esc(b.role)}</b><br><span class="hint">${bmeta(b)}</span></span></label>`).join("")}
       <span class="hint" id="pf-none" ${BUYERS.some(b => b.cust === p.cust) ? "hidden" : ""}>No saved buyer profiles for this customer yet.</span>
       <div style="text-align:right"><button type="button" class="btn sm" id="pf-addb">${icon("plus")}Add buyer</button></div></div></div>
-    <p class="hint">Meeting objective, language, important context and shortcuts are in the <b>About the meeting</b> tab of the project.</p>
+    <p class="hint">Each meeting sets its own audience, focus, objective and ask. Shared defaults are in the project's <b>Defaults</b> tab.</p>
     <div class="field"><label for="pf-st">Status</label>${sel("st", ["Active", "Archived"], p.status)}</div>
     <div style="border-top:1px solid var(--light-gray);padding-top:12px"><button type="button" class="linkdanger" data-a="delproj" data-v="${p.id}">Delete this project…</button></div>`, fd => {
       const cust = fd.get("cust");
@@ -1993,16 +2006,16 @@ document.addEventListener("click", e => {
     case "newfor": state.w = blankW(); state.pendingTool = v; go("new"); break;
     case "w-back": w.step--; render(); break;
     case "w-next": { const err = $("#w-err"), cust = w.cust === "__other" ? w.custOther.trim() : w.cust;
-      if (w.step === 0 && (!w.name.trim() || !cust)) { err.hidden = false; err.textContent = !w.name.trim() ? "Give the project a name." : "Choose the customer."; return; }
+      if (w.step === 0 && !cust) { err.hidden = false; err.textContent = "Choose the customer."; return; }
       if (w.step === 0 && w.mc.cats.length <= 1) w.mc.cats = [w.cat];
       if (w.step === 1 && !w.mc.titlesSet) { w.mc.titles = [...new Set(w.buyers.map(buyer).map(b => b.role))]; }
       if (w.step === 2) { w.mc.titlesSet = true; w.mObj = w.mc.obj; w.mMin = w.mc.minutes; }
       w.step++; render(); $("#main").scrollTop = 0; break; }
     case "w-create": { const cust = w.cust === "__other" ? w.custOther.trim() : w.cust;
       if (w.cust === "__other" && !CUSTOMERS.includes(cust)) CUSTOMERS.push(cust);
-      const np = { id: "P" + Date.now(), name: w.name.trim(), cust, market: w.market, cat: w.cat, audience: w.audience, status: "Active", objective: w.objective.trim() || "No objective set yet.", updated: TODAY,
+      const np = { id: "P" + Date.now(), name: w.name.trim() || `${cust} · ${w.cat}`, cust, market: w.market, cat: w.cat, audience: w.audience, status: "Active", objective: w.objective.trim() || "No objective set yet.", updated: TODAY,
         buyers: [...w.buyers], mc: (({ titlesSet, ...c }) => ({ ...clone(c), context: c.context.trim(), v: 1, updated: TODAY }))(w.mc), sessions: [], meetings: [], files: [], activity: [[TODAY, "VB", "created the project"]] };
-      if (w.withMeeting && w.mTitle.trim()) np.meetings.push({ id: "M" + Date.now(), title: w.mTitle.trim(), date: w.mDate.trim(), obj: +w.mObj, minutes: +w.mMin || 30, attendees: pbuyers(np).map(b => b.name), status: w.mDate.trim() ? "Preparing" : "Not scheduled", decks: w.deck ? [{ v: 1, name: w.deck, uploaded: TODAY, by: "VB", slides: 16, result: null }] : [], notes: "" });
+      if (w.withMeeting && w.mTitle.trim()) np.meetings.push({ id: "M" + Date.now(), title: w.mTitle.trim(), date: w.mDate.trim(), obj: +w.mObj, minutes: +w.mMin || 30, attendees: pbuyers(np).map(b => b.name), status: w.mDate.trim() ? "Preparing" : "Not scheduled", aud: "Customer", focus: "Whole category", ask: "", objection: "", decks: w.deck ? [{ v: 1, name: w.deck, uploaded: TODAY, by: "VB", slides: 16, result: null }] : [], notes: "" });
       PROJECTS.unshift(np); state.w = null; go("project", { pid: np.id, tab: "overview" }); toast("Project created. This is now your workspace for " + cust + "."); if (state.pendingTool) { const k = state.pendingTool; state.pendingTool = null; launchTool(np, k); } break; }
   }
 });
