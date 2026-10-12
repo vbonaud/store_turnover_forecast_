@@ -919,8 +919,8 @@ function log(p, text) { p.activity.unshift([TODAY, "VB", text]); p.updated = TOD
 const state = { pdet: true, wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", ctab: "numbers", gtab: "numbers", gs: { buyers: false, pinned: false }, gsHide: false, notify: {}, cp: [], follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
 const NAV = [
   { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
-  { id: "kb", label: "My customers & buyers", icon: "store", match: ["kb", "category", "customer", "buyer", "newbuyer"] },
   { id: "projects", label: "My projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
+  { id: "kb", label: "My customers & buyers", icon: "store", match: ["kb", "category", "customer", "buyer", "newbuyer"] },
   { id: "copilot", label: "In Copilot", icon: "chat", match: ["copilot"] },
   { id: "about", label: "Data & settings", icon: "building", match: ["about", "sources", "source", "de", "personal"] },
 ];
