@@ -460,10 +460,6 @@ button.chip { cursor: pointer; }
 .step.done .n { background: var(--ok-accent); color: var(--white); }
 .step-sep { height: 1px; width: 16px; background: var(--gray); }
 .wizard { display: grid; grid-template-columns: minmax(0, 1fr) 290px; gap: 20px; align-items: start; }
-.covbar { height: 6px; border-radius: 99px; background: var(--light-gray); overflow: hidden; }
-.covbar span { display: block; height: 100%; background: var(--ok-accent, #008530); border-radius: 99px; }
-.covbar.warn span { background: var(--alert-accent, #FABB00); }
-.covbar.bad span { background: var(--err-accent, #DE1409); }
 .reviewcard { border: 1px solid var(--light-gray); border-radius: 12px; padding: 16px; display: grid; gap: 8px; background: var(--snow); }
 .preview { border: 1px solid var(--light-gray); border-radius: 14px; background: var(--snow); padding: 18px; position: sticky; top: 16px; display: grid; gap: 10px; }
 .personrow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 8px; align-items: center; }
@@ -959,7 +955,7 @@ const NOTES = {
   project: [["#view .pagehead", "A project is one customer and one category (users can still start a second one). It holds what is shared: buyers, documents, defaults. Inside it, each task is a meeting (customer or internal, with its own audience, focus, objective and ask) or an analysis with no meeting."], ["#view .latest .btn.primary", "Add a task: pick an assistant, say what you need, optionally link a meeting from the calendar. No meeting/analysis question."], ["#view .latest", "Latest work first: answers, analyses, meetings and decks, newest on top. The step-by-step preparation lives inside each meeting."], ["#view .side .card", "“About the meeting” is Selling Coach Step 2, renamed for users: the single source every skill reads."], ["#view .ctxform", "Selling Coach “Step 2” now lives in the project: filled once, kept across every session. Versions are kept behind the scenes, so past feedback is never rewritten."], ["#view .tabs", "Meetings, files and activity all live inside the project."]],
 
   meeting: [["#view .anaq", "A task can be an analysis with no meeting: a question, a focus and an optional due date. No deck, no Selling Coach."], ["#view .anaans", "The first answer comes straight from the Decision Engine and the knowledge bank, tagged and cited. Copilot takes the follow-up questions."], ["#view .deckcard", "The deck is a OneDrive link, not an upload: versions, labels and co-editing stay in Office. One main action: Open in Copilot. Upload stays as a fallback for users without a Copilot licence."], ["#view .brief", "Later (beyond the PoC, where briefings are out of scope): a brief for this meeting from the knowledge bank."], ["#view .mctx", "Selling Coach Step 2, split in two: what changes per meeting (audience, focus, objective, minutes, ask, objection) lives on the meeting; the rest are project defaults. A new meeting is prefilled from the last one."], ["#view .dropzone + .row", "No deck yet: the Storyteller starts one for this meeting. The Analyst is one click away too."], ["#view .usedctx", "Feedback reuses the project context (customer, buyers, documents) instead of asking for it again."], ["#view .delta", "After a new version, the score shows the change since the last one."], ["#view .topfix", "From the user interview: decks are reviewed right before the meeting, with about 15 minutes. So: the 3 fixes that move the score most, with time and expected gain. Everything else is one click away. Scores (1 to 5) are private to the user. PoC success measure: score gain before meetings."], ["#view .actions [data-a=delmeeting]", "Delete meeting asks first and can be undone for a few seconds. Versions and documents have a ✕ with Undo too."]],
-  new: [["#view .stepper", "Two steps, as in the profile builder: scope, buyer and meeting on one page, then review."], ["#view .preview", "Scope preview: market, customer and category, with how much the knowledge bank already knows (coverage) before the project is created."]],
+  new: [["#view .stepper", "Two steps, as in the profile builder: scope, buyer, meeting and project context on one page, then review."], ["#view .preview", "Scope preview: market, customer and category, and what the knowledge bank already holds for them."], ["#w-ctx", "Project context: what every assistant should know that the knowledge bank doesn't, plus the user's own documents. It becomes Project set up (Selling Coach Step 2's important context)."]],
 };
 function applyNotes() {
   document.querySelectorAll(".npin:not(.static)").forEach(x => x.remove()); document.querySelectorAll(".noted").forEach(x => x.classList.remove("noted"));
@@ -1853,17 +1849,14 @@ V.new = () => {
   const w = state.w || (state.w = blankW());
   const custs = KB_CUSTS[w.market] || [], cust = w.cust, k = cust ? kbOf(cust) : null, ck = catOf(w.market, w.cat);
   const facts = (k ? k.facts.length + k.changes.filter(x => !x.de).length : 0) + (ck ? ck.facts.length : 0), docs = SOURCES.filter(d => (!d.f.mkt || d.f.mkt === w.market) && (!d.f.cust || d.f.cust === cust) && (!d.f.cat || d.f.cat === w.cat)).length;
-  const own = SOURCES.filter(d => d.f.cust === cust && (!d.f.cat || d.f.cat === w.cat)).length, chg = k ? k.changes.filter(x => x.cat === w.cat).length : 0, nb = BUYERS.filter(b => b.cust === cust && (BKB[b.id]?.cats || []).includes(w.cat)).length;
-  const cov = cust ? Math.min(92, 8 + (k && k.cats[w.cat] ? 22 : 0) + (ck ? ck.facts.length * 5 : 0) + chg * 6 + own * 7 + nb * 6) : 0, [covCls, covLab] = cov >= 70 ? ["ok", "Sufficient coverage"] : cov >= 40 ? ["warn", "Thin coverage"] : ["bad", "Insufficient coverage"];
   const dup = cust && PROJECTS.find(p => p.status === "Active" && p.cust === cust && p.cat === w.cat);
   const preview = `<aside class="preview"><b style="font:700 15px var(--mont)">Scope preview</b>
     <div class="row">${[w.market, cust, w.cat].filter(Boolean).map(x => `<span class="chip">${esc(x)}</span>`).join("")}</div>
-    ${cust ? `<span class="label">Knowledge coverage</span><div class="spread"><b style="font:700 26px var(--mont)">${cov}%</b><span class="pill ${covCls}">${covCls === "ok" ? "✓ " : ""}${covLab}</span></div>
-      <div class="covbar ${covCls}"><span style="width:${cov}%"></span></div>
-      <span class="small">${plural(facts, "fact", "facts")} · ${plural(docs, "document", "documents")}${cov < 70 ? " · thin on buyer and shopper knowledge" : ""}</span>
+    ${cust ? `<span class="small">${srcMini("kb")} ${plural(facts, "fact", "facts")} · ${plural(docs, "document", "documents")} already in the knowledge bank</span>
       ${w.buyers.length ? `<div class="row small">${icon("user")}${w.buyers.map(buyer).map(b => esc(b.name)).join(", ")}</div>` : ""}
       ${w.mDate ? `<div class="row small">${icon("cal")}${esc(w.mDate)}</div>` : ""}
-      <span class="hint">The project opens with this evidence scope. Assistants won't ask for it again.</span>` : `<span class="hint">Choose a customer to see how much the knowledge bank already knows.</span>`}</aside>`;
+      ${w.mc.context || (w.files || []).length ? `<div class="small"><b>Project context</b><br>${w.mc.context ? `<span class="hint">${esc(w.mc.context.slice(0, 110))}${w.mc.context.length > 110 ? "…" : ""}</span><br>` : ""}${(w.files || []).length ? `<span class="hint">${icon("file")} ${plural(w.files.length, "document", "documents")}</span>` : ""}</div>` : ""}
+      <span class="hint">The project opens with this evidence scope. Assistants won't ask for it again.</span>` : `<span class="hint">Choose a customer to see what the knowledge bank already holds.</span>`}</aside>`;
   const steps = ["Scope, buyer & meeting", "Review"];
   const body = w.step === 0 ? `
     <div class="card"><div class="card-hd">Define the customer scope</div><div class="pad stack"><p class="small muted" style="margin:0">These determine which company knowledge and numbers every assistant can use.</p>
@@ -1876,10 +1869,15 @@ V.new = () => {
       <div style="border-top:1px solid var(--light-gray);padding-top:12px;text-align:right"><button class="btn sm plain" data-a="addbuyer">${icon("plus")}Add buyer</button></div></div></div>
     <div class="card section"><div class="card-hd">Set the meeting context</div><div class="pad stack"><p class="small muted" style="margin:0">Give the assistants a clear objective and time horizon.</p>
       <div class="field"><label for="w-obj">Meeting objective</label><textarea id="w-obj" data-w="objective" rows="3" placeholder="e.g. Align the Q4 value story before the range review.">${esc(w.objective)}</textarea></div>
-      <div class="field" style="max-width:260px"><label for="w-md">Meeting date</label><input id="w-md" type="date" data-w="mDate" value="${toISO(w.mDate)}"></div></div></div>`
+      <div class="field" style="max-width:260px"><label for="w-md">Meeting date</label><input id="w-md" type="date" data-w="mDate" value="${toISO(w.mDate)}"></div></div></div>
+    <div class="card section"><div class="card-hd">Project context <span class="aside">Optional · every assistant reads it</span></div><div class="pad stack"><p class="small muted" style="margin:0">What should every assistant know about this customer and category that the knowledge bank doesn't?</p>
+      <div class="field"><label for="w-ctx">Context</label><textarea id="w-ctx" data-wctx rows="4" placeholder="e.g. The buyer wants fewer, bigger promotions. The range review decides Q1 shelf space. Main objection: private label is cheaper.">${esc(w.mc.context || "")}</textarea></div>
+      <label class="dropzone" tabindex="0">${icon("upload")}<b>Add project documents</b><span class="hint">Your joint business plan, last review deck, notes. PPTX, DOCX, PDF, XLSX. Used as context for this project only.</span><input type="file" class="vh" multiple accept=".pptx,.docx,.pdf,.xlsx,.txt" data-up="wfile"></label>
+      ${(w.files || []).map((x, i) => `<div class="filerow"><span class="fileico">${esc(x.split(".").pop().toUpperCase().slice(0, 4))}</span><span><b style="font-weight:600">${esc(x)}</b><br><span class="hint">Project context · this project only</span></span><button class="iconbtn" data-a="wfrm" data-v="${i}" aria-label="Remove ${esc(x)}">✕</button></div>`).join("")}</div></div>`
     : `<div class="card"><div class="card-hd">Review the project</div><div class="pad stack"><p class="small muted" style="margin:0">Confirm the context before creating it.</p>
       <div class="reviewcard"><span class="label">${esc(cust.toUpperCase())}</span><b style="font:700 18px var(--mont)">${esc(w.market)} · ${esc(w.cat)}</b><span class="small">${esc(w.objective || "No objective yet")}</span>
         <div class="row">${[w.market, cust, w.cat].map(x => `<span class="chip">${esc(x)}</span>`).join("")}${w.buyers.map(buyer).map(b => `<span class="chip">${icon("user")} ${esc(b.name)}</span>`).join("")}${w.mDate ? `<span class="chip">${icon("cal")} ${esc(w.mDate)}</span>` : ""}</div></div>
+      ${w.mc.context || (w.files || []).length ? `<div class="reviewcard"><span class="label">Project context</span>${w.mc.context ? `<span class="small" style="white-space:pre-line">${esc(w.mc.context)}</span>` : ""}${(w.files || []).length ? `<div class="row">${w.files.map(x => `<span class="chip">${icon("file")} ${esc(x)}</span>`).join("")}</div>` : ""}</div>` : ""}
       <div class="callout info">You can change all of this later in the project's <b>Project set up</b> tab.</div></div></div>`;
   return head(`<button data-a="go" data-v="projects">My projects</button><span>›</span><span>New project</span>`, "Create a project", "Choose the context once. Every assistant and everything you create will inherit it.") +
     `<div class="stepper">${steps.map((s0, i) => `<div class="step ${i < w.step ? "done" : i === w.step ? "active" : ""}"><span class="n">${i < w.step ? "✓" : i + 1}</span>${s0}</div>${i < steps.length - 1 ? '<span class="step-sep"></span>' : ""}`).join("")}</div>
@@ -2220,6 +2218,7 @@ document.addEventListener("click", e => {
     case "pickproj": { const q = proj(v); go("project", { pid: v, tab: "overview" }); launchTool(q, el.dataset.k); break; }
     case "newfor": state.w = blankW(); state.pendingTool = v; go("new"); break;
     case "w-back": w.step--; render(); break;
+    case "wfrm": w.files.splice(+v, 1); render(); break;
     case "w-next": { const err = $("#w-err");
       if (!w.cust) { err.hidden = false; err.textContent = "Choose the customer."; return; }
       w.mc.cats = [w.cat]; w.mc.titles = [...new Set(w.buyers.map(buyer).map(b => b.role))]; w.withMeeting = !!w.mDate; w.mTitle = w.mDate ? `Meeting with ${w.cust}` : "";
@@ -2227,7 +2226,7 @@ document.addEventListener("click", e => {
     case "w-create": { const cust = w.cust === "__other" ? w.custOther.trim() : w.cust;
       if (w.cust === "__other" && !CUSTOMERS.includes(cust)) CUSTOMERS.push(cust);
       const np = { id: "P" + Date.now(), name: w.name.trim() || `${cust} · ${w.cat}`, cust, market: w.market, cat: w.cat, audience: w.audience, status: "Active", objective: w.objective.trim() || "No objective set yet.", updated: TODAY,
-        buyers: [...w.buyers], mc: (({ titlesSet, ...c }) => ({ ...clone(c), context: c.context.trim(), v: 1, updated: TODAY }))(w.mc), sessions: [], meetings: [], files: [], activity: [[TODAY, "VB", "created the project"]] };
+        buyers: [...w.buyers], mc: (({ titlesSet, ...c }) => ({ ...clone(c), context: c.context.trim(), v: 1, updated: TODAY }))(w.mc), sessions: [], meetings: [], files: (w.files || []).map(n => ({ name: n, kind: /xls|csv/i.test(n) ? "xls" : /doc|pdf|txt/i.test(n) ? "doc" : "ppt", added: TODAY, by: "VB", ctx: true })), activity: [[TODAY, "VB", "created the project"]] };
       if (w.withMeeting && w.mTitle.trim()) np.meetings.push({ id: "M" + Date.now(), title: w.mTitle.trim(), date: w.mDate.trim(), obj: +w.mObj, minutes: +w.mMin || 30, attendees: pbuyers(np).map(b => b.name), status: w.mDate.trim() ? "Preparing" : "Not scheduled", aud: "Customer", focus: "Whole category", ask: w.objective.trim(), objection: "", upd: TODAY, decks: w.deck ? [{ v: 1, name: w.deck, uploaded: TODAY, by: "VB", slides: 16, result: null }] : [], notes: "" });
       PROJECTS.unshift(np); state.w = null; go("project", { pid: np.id, tab: "overview" }); toast("Project created. This is now your workspace for " + cust + "."); if (state.pendingTool) { const k = state.pendingTool; state.pendingTool = null; launchTool(np, k); } break; }
   }
@@ -2247,6 +2246,7 @@ document.addEventListener("submit", e => {
 });
 document.addEventListener("input", e => {
   const t = e.target;
+  if (t.hasAttribute("data-wctx") && state.w) { state.w.mc.context = t.value; refreshPreview(); }
   if (t.dataset.nb && state.nb) state.nb[t.dataset.nb] = t.value;
   if (t.dataset.w && !t.matches("select")) { state.w[t.dataset.w] = t.type === "number" ? +t.value : t.type === "date" ? fromISO(t.value) : t.value; if (["name", "objective", "mTitle", "mDate", "custOther"].includes(t.dataset.w)) refreshPreview(); }
   if (t.dataset.c && (t.matches("textarea") || t.type === "number")) { const c = ctxTarget(); if (!c) return; if (t.dataset.c === "minutes") c.minutes = Math.max(5, +t.value || 5); else c[t.dataset.c] = t.value; ctxChanged(); }
@@ -2278,6 +2278,7 @@ document.addEventListener("change", e => {
   if (t.dataset.up && t.files && t.files[0]) {
     const name = t.files[0].name;
     if (t.dataset.up === "deck") addDeck(name);
+    if (t.dataset.up === "wfile") { state.w.files = [...(state.w.files || []), ...[...t.files].map(f0 => f0.name)]; render(); }
     if (t.dataset.up === "nbfile") { [...t.files].forEach(f0 => state.nb.files.push(f0.name)); render(); }
     if (t.dataset.up === "qdeck") { if (!/\.(pptx?|pdf)$/i.test(name)) { toast("Drop a PPTX or PDF file."); return; } state.qdeck = name; render(); }
     if (t.dataset.up === "wdeck") { if (!/\.(pptx?|pdf)$/i.test(name)) { toast("Upload a PPTX or PDF file."); return; } state.w.deck = name; render(); }
