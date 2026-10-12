@@ -416,6 +416,10 @@ button.chip { cursor: pointer; }
 .pdot.amber { background: var(--alert-bg, #FFF6DB); color: var(--alert-text, #523D00); }
 .pdot.green { background: var(--ok-bg); color: var(--ok-text); }
 .access { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: var(--steel); }
+.pcprop { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 18px; align-items: center; border: 1px solid var(--border-primary-light); background: var(--primary-light); border-radius: 12px; padding: 20px 24px; }
+.pcprop .pcico { width: 48px; height: 48px; border-radius: 10px; background: var(--primary); color: var(--white); display: grid; place-items: center; }
+@media (max-width: 760px) { .pcprop { grid-template-columns: minmax(0, 1fr); } }
+.cite-n { color: var(--primary); font-weight: 700; margin-left: 1px; }
 .dropzone { border: 2px dashed var(--border-primary-light); border-radius: 12px; background: var(--primary-light); padding: 22px; display: grid; justify-items: center; gap: 6px; text-align: center; color: var(--primary); }
 .dropzone.drag { background: var(--primary-lighter); }
 .filerow { display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--light-gray); border-radius: 9px; background: var(--white); }
@@ -856,6 +860,7 @@ const ICON = {
   user: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>',
   spark: '<path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
   trend: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  pin: '<path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>',
   pen: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
   trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/>',
   download: '<path d="M12 4v12M7 11l5 5 5-5"/><path d="M4 18v2h16v-2"/>',
@@ -903,7 +908,7 @@ function log(p, text) { p.activity.unshift([TODAY, "VB", text]); p.updated = TOD
 const state = { wiq: true, src: { mail: true, cal: true, teams: true, docs: true }, mkt: "France", cat: "Fabric Care", ctab: "numbers", gtab: "numbers", gs: { buyers: false, pinned: false }, gsHide: false, notify: {}, cp: [], follow: ["cust:Carrefour", "cust:Cdiscount", "cust:Auchan", "cat:France|Fabric Care", "cat:France|Home Care", "cat:France|Hair Care"], fb: {}, per: "CYTD", tbl: false, perfRows: null, sf: {}, sq: "", sid: null, af: {}, cust: "Carrefour", bid: "B1", ask: "", askCust: "", view: "home", pid: "P1", tab: "overview", mid: null, filter: "Active", q: "", navOpen: false, w: null, run: null };
 const NAV = [
   { id: "home", label: "Home", icon: "home", match: ["home", "ask"] },
-  { id: "kb", label: "My customers & buyers", icon: "store", match: ["kb", "category", "customer", "buyer"] },
+  { id: "kb", label: "My customers & buyers", icon: "store", match: ["kb", "category", "customer", "buyer", "newbuyer"] },
   { id: "projects", label: "My projects", icon: "grid", match: ["projects", "project", "new", "meeting"] },
   { id: "copilot", label: "In Copilot", icon: "chat", match: ["copilot"] },
   { id: "about", label: "Data & settings", icon: "building", match: ["about", "sources", "source", "de", "personal"] },
@@ -920,7 +925,8 @@ function render() { renderNav();  $("#view").innerHTML = V[state.view](); AFTER[
 const NOTES = {
   sources: [["#view .crumb", "Open decision: who feeds the knowledge bank (owners per customer and category, every user, or a central team). Suggestion: owners publish, anyone can suggest. PoC language: English first."], ["#view .actions .btn", "PoC: upload single files or batches in 13 formats. People set the 9 facets; nothing is guessed."], ["#view .facetbar", "PoC: browse sources across sessions by facet. A document with an unset facet applies to every value at that level."], ["#view .srcrow", "PoC: processing status per file, including why a file was rejected. Governed uploads are trusted: no fact-by-fact review."]],
   source: [["#view .actions", "PoC: download the original, edit facets, replace (old facts stop being used) or remove from search."], ["#view .ws .card", "PoC: facts are taken as written, with units and periods, and point to their location in the file."], ["#view .side .card", "PoC: the nine facets: Region › Market › Customer, Buyer, Category › Sub-category › Brand › Product, and document type."]],
-  kb: [["#view .access", "Each user sees only the 2 to 3 categories their admin gives them, everywhere in the tool."], ["#view .buyergrid", "Buyer profiles sit next to customers, in the same format as the current Knowledge Bank. Private to the user."], ["#view .seg", "Explore by market, then category, then customer. Each page mixes the numbers and the knowledge, each clearly tagged."], ["#view .catcard", "Category cards: our share from the Decision Engine, fact count from the knowledge bank."]],
+  newbuyer: [["#view .nbdrop", "Users can add their own documents about a buyer (notes, decks, saved emails). Private to them."], ["#view .pcprop", "Personal context proposes the profile from where the buyer actually talks, plus the user's documents; every line is tied to a source."], ["#view .nbproposal", "The style read is an inference: the user confirms it before saving. Sensitive details are left out."]],
+  kb: [["#view .access", "Each user sees only the 2 to 3 categories their admin gives them, everywhere in the tool."], ["#view .kbfilters", "Filter by market and by customer, on customers and buyers alike."], ["#view .buyergrid", "Buyer profiles sit next to customers, in the same format as the current Knowledge Bank. Private to the user."], ["#view .seg", "Explore by market, then category, then customer. Each page mixes the numbers and the knowledge, each clearly tagged."], ["#view .catcard", "Category cards: our share from the Decision Engine, fact count from the knowledge bank."]],
   de: [["#view .explain", "The three sources explained in one line each. Same tags and colours everywhere in the app."], ["#view .two .dcard", "Fixed metric definitions shared with the dashboards. The assistant asks the Decision Engine; it never calculates numbers itself."], ["#view .section:last-child .dcard", "Alerts: rules on the numbers that feed “What changed”."]],
   category: [["#view .perf .tiles", "Later (beyond the PoC): sell-out across the customers we track, with the biggest grower."], ["#view .minis", "By customer: click to open that customer in the same category."], ["#view .two .kcard", "What is changing and what wins in the category: company knowledge no single inbox holds."], ["#view .section:last-child .custgrid", "Customers for this category, with our share at each."]],
   customer: [["#view .tabs", "A summary first, then tabs, instead of one long page."], ["#view .glance", "At a glance: the 10-second version, one line per source, before the detail."], ["#view .actions [data-a=follow]", "Follow a customer or category to get its changes on Home."], ["#view .perf .qhd", "Pages are organised by the user's question, not by system: How are we doing? What changed? What do we know?"], ["#perfchart", "Decision Engine numbers, same model as the BNL Electro dashboard. Integration is beyond the knowledge bank PoC."], ["#view .two .card", "What changed mixes Decision Engine alerts and knowledge bank news; each row says which."], ["#view .cite", "PoC: every knowledge bank fact cites its document and location."], ["#view .pcline", "Personal context only counts mentions and hands over to Copilot."]],
@@ -928,7 +934,7 @@ const NOTES = {
   personal: [["#view .pcard", "One switch and per-source control. Personal context is never stored or added to the knowledge bank."]],
   ask: [["#view .points", "Key points: each claim numbered and tied to one source. N = a number from the Decision Engine, F = a cited fact."], ["#view .fbk", "Feedback on every answer. Wrong facts are fixed at the source document, not one by one (PoC rule)."], ["#view .answer", "One answer, then “Built from”: how many numbers, facts and mentions it used."], ["#view .dcard", "Numbers come from the Decision Engine and are never generated."], ["#view .kcard", "Facts come from the knowledge bank, each cited."], ["#view .facetbar", "PoC: facet filters. Document type applies to the knowledge bank only."]],
   copilot: [["#view .cplog .bub", "The day starts here: a morning briefing in Copilot built from Decision Engine alerts, company knowledge and the calendar, each with a one-tap next step."], ["#view .cpframe", "Copilot-first (5 of 5 interviewees work in Copilot daily): the same skill answers, coaches a deck from OneDrive and checks slides, with the same source tags."], ["#view .cpwrap .card", "Dependency to confirm: Cowork skills are instruction files; reaching the Decision Engine and knowledge bank needs a plugin or MCP connector. IT can push approved skills to sales groups."], ["#view .deckpane", "With Office in Copilot the deck opens next to the chat; Selling Coach fixes are applied in the deck, not listed."]],
-  home: [["#view .askbox", "Find, not chat: Copilot is the chat. The box jumps to a customer, category or buyer page; anything else is asked in Copilot."], ["#view .homeacts", "From the user interview: most of the week is quick answers, internal and customer meetings, triggered by the user's own prep or by a change. So the website asks nothing up front: ask in Copilot (where the daily briefing lives) or drop a deck."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
+  home: [["#view .skills", "Home is the capabilities page, as in the live tool: one card per assistant, in meeting order. Each also works in Copilot by name."], ["#view .setup", "Setup shows as one line until it's done, from the welcome email steps."], ["#view .moment", "Big decks happen 1 to 2 times a year: Home prepares those moments."]],
   quick: [["#view .qdrop", "Quick review: no project, no form. The most common moment (right before a meeting) gets feedback in one step."], ["#view .callout", "Generic first, specific later: saving to a project adds the customer, buyer and ask."]],
   analyst: [["#view .seg", "Internal (power hour, team connect) or customer-safe: the customer version leaves out plans, targets and margins."], ["#view .figs", "Every figure comes from the Decision Engine, never generated."], ["#view .points", "Talking points say where each one comes from."]],
   story: [["#view .slides", "Our part: the storyline in the selling format, with governed numbers and cited facts."], ["#view .row.section", "Microsoft's part: Office in Copilot builds the slides. To check: Frontier-only rollout, and how a skill passes our content to PowerPoint (plugin or MCP connector)."]],
@@ -1006,12 +1012,13 @@ V.home = () => {
   const meet = active.flatMap(p => p.meetings.filter(m => m.status !== "Done" && m.date && !isAna(m)).map(m => ({ date: m.date, title: m.title, cust: p.cust, kind: /range review|business review|negotiation|joint business/i.test(m.title) ? "Big moment" : "Meeting", act: ["meeting", p.id, "Prepare", m.id] })));
   const moments = [...meet, ...KEY_MOMENTS].filter(x => days(x.date) >= 0).sort((a, b) => pd(a.date) - pd(b.date)).slice(0, 4);
   const actBtn = x => x.act[0] === "meeting" ? `<button class="btn sm plain" data-a="meeting" data-v="${x.act[1]}" data-m="${x.act[3]}">${x.act[2]}</button>` : x.act[0] === "pickproj" ? `<button class="btn sm plain" data-a="pickproj" data-v="${x.act[1]}" data-k="${x.act[3]}">${x.act[2]}</button>` : `<button class="btn sm plain" data-a="cust" data-v="${esc(x.act[1])}">${x.act[2]}</button>`;
-  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Ask in Copilot or review a deck here. Everything you do is saved by customer and category.</p></div>${NOTE}
-    <form class="askbox findbox" role="search">${icon("search")}<input name="q" list="findlist" aria-label="Find a customer, category or buyer" placeholder="Find a customer, category or buyer…"><datalist id="findlist">${findItems().map(x => `<option value="${esc(x[0])}">`).join("")}</datalist><button class="btn primary sm" type="submit">Go</button></form>
+  return `<div class="welcome"><h1><span class="spark">${icon("spark")}</span>Welcome to AI Sales Assistant</h1><p>Hello Victoire! Choose an assistant to get the facts, build a deck, improve it or rehearse. Everything you do is saved by customer and category.</p></div>${NOTE}
     ${state.gsHide || gsDone === gs.length ? "" : `<div class="section"><div class="setup"><span><b>Finish setting up</b> · ${gsDone} of ${gs.length} done</span><button class="btn ghost small" data-a="gsopen" style="color:var(--primary)">${state.gsOpen ? "Hide steps" : "Show steps"}</button><button class="btn ghost small" data-a="gshide" style="color:var(--steel);margin-left:auto">Not now</button></div>
       ${state.gsOpen ? `<div class="card" style="margin-top:8px"><div class="pad gsteps">${gs.map(([t, sub, ok, btn]) => `<div class="gstep"><span class="tick ${ok ? "on" : ""}">${ok ? "✓" : ""}</span><span><b style="font-weight:600">${t}</b><br><span class="hint">${sub}</span></span>${ok ? `<span class="pill ok">Done</span>` : btn}</div>`).join("")}<div class="row"><button class="btn ghost small" data-a="reqcust" style="color:var(--primary)">Customer missing? Request it</button></div></div></div>` : ""}</div>`}
-    <div class="section homeacts"><button class="bigact" data-a="go" data-v="copilot"><span class="sico">${icon("chat")}</span><span><b>Ask in Copilot</b><br><span class="small">Numbers, facts, a deck, a rehearsal: just ask. Your briefing for the day is waiting there every morning.</span><br><span class="hint">@Analyst · @Storyteller · @Selling Coach · @Role-play · @Stewardship</span></span></button>
-      <button class="bigact" data-a="hometool" data-v="coach"><span class="sico">${icon("upload")}</span><span><b>Review a deck</b><br><span class="small">Drop it here, get the 3 fixes that matter most. No setup.</span></span></button></div>
+    <div class="section">${qhd("Your assistants", "Each one knows your customers, categories and buyers. Each also works in Copilot: type @ and its name.", `<button class="btn ghost small" data-a="go" data-v="copilot" style="color:var(--primary)">See them in Copilot</button>`)}
+      <div class="skills">${["analyst", "story", "coach"].map(k => skillCard(k)).join("")}</div>
+      <div class="skills2">${["roleplay", "qa"].map(k => skillCard(k, true)).join("")}</div>
+      <p class="hint" style="margin-top:10px">Coming soon: ${SOON.map(x => x[0]).join(" · ")}</p></div>
     <div class="two section"><div>${qhd("Coming up", "Prepare the big moments early", "")}<div class="card"><div class="pad">${moments.map(x => `<div class="moment">${dbox(x.date)}<span><b style="font-weight:600">${esc(x.title)}</b> · ${esc(x.cust)}<br><span class="hint">${when(x.date)}</span>${x.kind === "Big moment" ? ` <span class="pill warn">Big moment</span>` : ""}</span>${actBtn(x)}</div>`).join("")}</div></div></div>
       <div>${qhd("What changed", "For the customers and categories you follow", `<button class="btn ghost small" data-a="go" data-v="kb" style="color:var(--primary)">Follow more</button>`)}<div class="card"><div class="pad">${watch.length ? watch.map(x => changeRow(x, x.where)).join("") : `<div class="empty">${state.follow.length ? "Nothing new for what you follow." : "Follow customers and categories to see what changes here."}</div>`}</div></div></div></div>`;
 };
@@ -1121,10 +1128,10 @@ const scopeOf = d => d.f.cust ? "Customer" : d.f.mkt ? "Local · market" : d.f.r
 const facetChips = f => FACETS.filter(([k]) => f[k] && k !== "region").map(([k]) => `<span class="chip">${esc(f[k])}</span>`).join("");
 V.sources = () => {
   const F = state.sf, q = (state.sq || "").toLowerCase();
-  const list = SOURCES.filter(d => (!F.mkt || !d.f.mkt || d.f.mkt === F.mkt) && (!F.cat || !d.f.cat || d.f.cat === F.cat) && (!F.type || d.type === F.type) && (!q || d.name.toLowerCase().includes(q)));
+  const list = SOURCES.filter(d => (!F.mkt || !d.f.mkt || d.f.mkt === F.mkt) && (!F.cust || !d.f.cust || d.f.cust === F.cust) && (!F.cat || !d.f.cat || d.f.cat === F.cat) && (!F.type || d.type === F.type) && (!q || d.name.toLowerCase().includes(q)));
   const sel = (k, l, opts) => `<div class="field"><label for="sf-${k}">${l}</label><select id="sf-${k}" data-sf="${k}"><option value="">All</option>${opts.map(o => `<option ${F[k] === o ? "selected" : ""}>${esc(o)}</option>`).join("")}</select></div>`;
   return head(`<button data-a="go" data-v="about">Data & settings</button>`, "Knowledge bank", "The documents behind every fact. Governed uploads are trusted: their facts are ready to use once processed.", `<button class="btn primary" data-a="upload">${icon("upload")}Add domain knowledge</button>`) + `
-    <div class="facetbar">${sel("mkt", "Market", KB_MARKETS)}${sel("cat", "Category", MY_CATS)}${sel("type", "Document type", DOC_TYPES)}<div class="field"><label for="sq">Search</label><input id="sq" class="search" type="search" value="${esc(state.sq || "")}" placeholder="File name"></div></div>
+    <div class="facetbar">${sel("mkt", "Market", KB_MARKETS)}${sel("cust", "Customer", F.mkt ? KB_CUSTS[F.mkt] : [...new Set(Object.values(KB_CUSTS).flat())])}${sel("cat", "Category", MY_CATS)}${sel("type", "Document type", DOC_TYPES)}<div class="field"><label for="sq">Search</label><input id="sq" class="search" type="search" value="${esc(state.sq || "")}" placeholder="File name"></div></div>
     <p class="hint" style="margin:6px 0 12px">${plural(list.length, "document", "documents")} · a document with no market or category applies to all of them</p>
     ${list.length ? list.map(d => `<button class="srcrow ${d.active ? "" : "off"}" data-a="src" data-v="${d.id}"><span class="fileico ${["docx", "pdf", "txt", "md"].includes(d.ext) ? "doc" : ["xlsx", "csv", "xls"].includes(d.ext) ? "xls" : ""}">${esc(d.ext.toUpperCase().slice(0, 4))}</span>
       <span style="min-width:0"><b style="font-weight:600">${esc(d.name)}</b><br><span class="hint">${esc(d.type)} · ${esc(d.owner)} · ${esc(d.uploaded)}${d.v > 1 ? ` · version ${d.v}` : ""}</span><span class="row" style="gap:6px;margin-top:4px"><span class="pill info">${scopeOf(d)}</span>${d.pub ? `<span class="pill neutral">Public</span>` : ""}${facetChips(d.f)}</span></span>${statusPill(d)}</button>`).join("") : `<div class="empty">No document matches these filters.</div>`}`;
@@ -1197,21 +1204,28 @@ function buyerCard(b) {
       <div class="buyerrow" style="margin-bottom:0"><span class="buyercard__kpi">Key buyer information and KPIs:</span> ${esc((k.priorities || []).join(", ") || "Not specified")}</div>
       <div class="hint" style="margin-top:10px">${icon("lock")} Private to you · updated ${esc(b.updated)}</div></div></div>`;
 }
+function customerCard(c) {
+  const k = kbOf(c), w = k.changes.filter(x => x.sev === "warn").length, cats = Object.keys(k.cats).filter(myCat), nb = BUYERS.filter(b => b.cust === c).length;
+  return `<div class="buyercard"><div class="buyercard__hd"><span class="bldg">${icon("store")}</span><div style="flex:1;min-width:0"><button class="nm" data-a="cust" data-v="${esc(c)}">${esc(c)}</button><div class="loc">${icon("pin")} ${esc(k.market || state.mkt)}</div></div>
+    <div class="acts"><button data-a="follow" data-v="cust:${esc(c)}" title="${isF("cust:" + c) ? "Following" : "Follow"}" aria-label="Follow ${esc(c)}">${isF("cust:" + c) ? "✓" : icon("plus")}</button></div></div>
+    <div class="buyercard__bd"><div class="buyerrow">${esc(k.summary)}</div>
+      <div class="buyerrow"><b>Your categories here:</b> ${cats.length ? cats.map(x => `<span class="pdot green">${esc(x)}</span>`).join(" ") : `<span class="pdot amber">None</span>`}</div>
+      <div class="buyerrow"><b>Buyer profiles:</b> ${nb} ${w ? `<span class="pill warn" style="margin-left:8px">${plural(w, "change", "changes")} to watch</span>` : ""}</div>
+      <div class="buyerrow" style="margin-bottom:0"><span class="buyercard__kpi">Company knowledge:</span> ${plural(k.facts.length, "fact", "facts")} · updated ${esc(k.updated || "")}</div></div></div>`;
+}
 V.kb = () => {
-  const mk = state.mkt, tab = state.kbtab || "customers", myB = BUYERS.filter(b => (BKB[b.id]?.cats || []).some(myCat) && (KB_CUSTS[mk] || []).includes(b.cust));
-  return head(`<span class="access">${icon("lock")} Your categories: ${MY_CATS.join(", ")} · set by your admin</span>`, "My customers & buyers", "Numbers and company knowledge for your customers, and the buyer profiles you build.", `<button class="btn primary" data-a="newbuyer">${icon("plus")}Add buyer</button><button class="btn plain" data-a="reqcust">${icon("plus")}Request a customer</button>`) + `
-    <div class="tabs" role="tablist" style="margin-bottom:18px">${[["customers", "Your customers"], ["buyers", `Your buyers (${myB.length})`]].map(([k2, l]) => `<button role="tab" data-a="kbtab" data-v="${k2}" aria-selected="${tab === k2}" tabindex="${tab === k2 ? 0 : -1}">${l}</button>`).join("")}</div>
-    <div class="spread" style="margin-bottom:14px">${mktSeg()}</div>
-    ${tab === "buyers" ? `<div class="buyergrid">${myB.map(buyerCard).join("") || `<div class="empty">No buyer profiles for ${esc(mk)} yet.</div>`}</div>` : `
-    <div class="section"><h2 class="section-title" style="margin-bottom:12px">Categories in ${esc(mk)}</h2>
-      <div class="custgrid">${MY_CATS.map(c => { const k = catOf(mk, c), sh = k && shareOf(k.numbers), w = k ? k.changes.filter(x => x.sev === "warn").length : 0;
+  const mk = state.mkt, tab = state.kbtab || "customers", fc = state.kbcust || "";
+  const custs = KB_CUSTS[mk].filter(c => Object.keys(kbOf(c).cats).some(myCat) || BUYERS.some(b => b.cust === c)), shown = fc ? custs.filter(c => c === fc) : custs;
+  const myB = BUYERS.filter(b => (BKB[b.id]?.cats || []).some(myCat) && custs.includes(b.cust) && (!fc || b.cust === fc));
+  return head(`<span class="access">${icon("lock")} Your categories: ${MY_CATS.join(", ")} · set by your admin</span>`, "My customers & buyers", "Your customers, the buyer profiles you build and your categories, with their numbers and company knowledge.", `<button class="btn primary" data-a="newbuyer">${icon("plus")}Add buyer</button><button class="btn plain" data-a="reqcust">${icon("plus")}Request a customer</button>`) + `
+    <div class="tabs" role="tablist" style="margin-bottom:18px">${[["customers", `Your customers (${custs.length})`], ["buyers", `Your buyers (${BUYERS.filter(b => (BKB[b.id]?.cats || []).some(myCat) && custs.includes(b.cust)).length})`], ["cats", `Your categories (${MY_CATS.length})`]].map(([k2, l]) => `<button role="tab" data-a="kbtab" data-v="${k2}" aria-selected="${tab === k2}" tabindex="${tab === k2 ? 0 : -1}">${l}</button>`).join("")}</div>
+    <div class="spread kbfilters" style="margin-bottom:14px">${mktSeg()}${tab === "cats" ? "" : `<div class="field" style="margin:0;min-width:200px"><label for="kb-cust" class="vh">Customer</label><select id="kb-cust" data-kbcust><option value="">All customers</option>${custs.map(c => `<option ${fc === c ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>`}</div>
+    ${tab === "buyers" ? `<div class="buyergrid">${myB.map(buyerCard).join("") || `<div class="empty">No buyer profiles${fc ? ` for ${esc(fc)}` : ""} yet. <button class="btn sm primary" data-a="newbuyer">${icon("plus")}Add buyer</button></div>`}</div>`
+    : tab === "cats" ? `<div class="custgrid">${MY_CATS.map(c => { const k = catOf(mk, c), sh = k && shareOf(k.numbers), w = k ? k.changes.filter(x => x.sev === "warn").length : 0;
         return `<button class="custcard catcard" data-a="cat" data-v="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(c)}</b>
           ${sh ? `<span class="small">Our share <b>${esc(sh[1])}</b> <span class="td"><b class="${sh[4]}">${arrow(sh[2])} ${esc(sh[2])}</b> ${esc(sh[3])}</span></span><span>${srcMini("de")}</span>` : `<span class="small muted">No numbers for ${esc(mk)} yet.</span>`}
-          <span class="row small">${k && k.facts.length ? `<span class="pill info">${plural(k.facts.length, "fact", "facts")} in the knowledge bank</span>` : `<span class="pill neutral">Knowledge being built</span>`}${w ? `<span class="pill warn">${plural(w, "change", "changes")} to watch</span>` : ""}</span></button>`; }).join("")}</div></div>
-    <div class="section"><div class="spread" style="margin-bottom:12px"><h2 class="section-title">Customers in ${esc(mk)}</h2></div>
-      <div class="custgrid">${KB_CUSTS[mk].map(c => { const k = kbOf(c), w = k.changes.filter(x => x.sev === "warn").length;
-        return `<button class="custcard" data-a="cust" data-v="${esc(c)}"><b style="font:700 16px var(--mont)">${esc(c)}</b><span class="small muted">${esc(k.summary)}</span>
-          <span class="row small">${Object.keys(k.cats).filter(myCat).map(x => `<span class="chip">${esc(x)}</span>`).join("")}${w ? `<span class="pill warn">${plural(w, "change", "changes")} to watch</span>` : ""}</span></button>`; }).join("")}</div></div>`}`;
+          <span class="row small">${k && k.facts.length ? `<span class="pill info">${plural(k.facts.length, "fact", "facts")} in the knowledge bank</span>` : `<span class="pill neutral">Knowledge being built</span>`}${w ? `<span class="pill warn">${plural(w, "change", "changes")} to watch</span>` : ""}</span></button>`; }).join("")}</div>`
+    : `<div class="buyergrid">${shown.map(customerCard).join("") || `<div class="empty">No customer in ${esc(mk)} for your categories.</div>`}</div>`}`;
 };
 const isF = k => state.follow.includes(k);
 const followBtn = k => `<button class="btn sm ${isF(k) ? "plain" : ""}" data-a="follow" data-v="${esc(k)}" aria-pressed="${isF(k)}">${isF(k) ? "✓ Following" : "+ Follow"}</button>`;
@@ -1304,6 +1318,36 @@ V.quick = () => {
         <div class="callout info">This review doesn't know the customer, the buyer or what you want them to agree to. Save it to a project to check the deck against those, with the customer's numbers.</div>
         <div class="row"><button class="btn primary" data-a="qsave">Save to a project</button><button class="btn plain" data-a="qreset">Review another deck</button></div></div></div></div>
       <aside class="side"><div class="card"><div class="card-hd">Next</div><div class="pad stack small"><p>Saved to a project, the deck gets the full Selling Coach: customer numbers, buyer, your ask, and fixes applied in Copilot.</p></div></div></aside></div>`;
+};
+V.newbuyer = () => {
+  const n = state.nb || (state.nb = { name: "", cust: "Carrefour", cat: MY_CATS[0], role: "", know: "", files: [], prop: false, disc: false });
+  const custs = KB_CUSTS[state.mkt] || KB_CUSTS.France, nm = esc(n.name.trim() || "this buyer");
+  const srcs = [["Email thread you exchanged with " + (n.name.trim() || "the buyer"), "Outlook · personal context", "Direct quote"], ["Meeting notes: last business review", "Teams · personal context", "High"], ...n.files.map(x => [x, "Added by you", "Your document"]), ...(n.know.trim() ? [["Your notes above", "Typed by you", "Your note"]] : [])];
+  const ref = i => `<sup class="cite-n">${i}</sup>`;
+  return head(`<button data-a="go" data-v="kb">My customers & buyers</button><span>›</span><span>New buyer</span>`, "Create a buyer profile", "Private to you. Used by the Selling Coach and Role-play when this buyer is in a meeting.") + `
+    <div class="stack" style="gap:18px;max-width:980px">
+    <div class="card"><div class="card-hd">Which buyer, and against which customer?</div><div class="pad stack">
+      <div class="grid2"><div class="field"><label for="nb-name">Buyer name</label><input id="nb-name" data-nb="name" value="${esc(n.name)}" placeholder="e.g. Claire Dubois"></div>
+        <div class="field"><label for="nb-cust">Linked customer</label><select id="nb-cust" data-nb="cust">${custs.map(c => `<option ${n.cust === c ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div></div>
+      <div class="grid2"><div class="field"><label for="nb-cat">Category</label><select id="nb-cat" data-nb="cat">${MY_CATS.map(c => `<option ${n.cat === c ? "selected" : ""}>${esc(c)}</option>`).join("")}</select></div>
+        <div class="field"><label for="nb-role">Buyer role</label><input id="nb-role" data-nb="role" value="${esc(n.role)}" placeholder="e.g. Category Buyer"></div></div>
+      <div class="field"><label for="nb-know">What do you already know about this buyer? <span class="hint">Optional</span></label><textarea id="nb-know" data-nb="know" rows="3" placeholder="Add priorities, ways of working or a recent conversation…">${esc(n.know)}</textarea></div></div></div>
+    <div class="card"><div class="card-hd">Documents about this buyer <span class="aside">Optional · private to you</span></div><div class="pad stack">
+      <label class="dropzone nbdrop" tabindex="0">${icon("upload")}<b>Add your own documents</b><span class="hint">Meeting notes, a business review deck, an email you saved. PPTX, DOCX, PDF or TXT.</span><input type="file" class="vh" multiple accept=".pptx,.docx,.pdf,.txt,.msg,.eml" data-up="nbfile"></label>
+      ${n.files.length ? n.files.map((x, i) => `<div class="filerow"><span class="fileico">${esc(x.split(".").pop().toUpperCase().slice(0, 4))}</span><span><b style="font-weight:600">${esc(x)}</b><br><span class="hint">Private to you · used only for this buyer's profile</span></span><button class="iconbtn" data-a="nbrm" data-v="${i}" aria-label="Remove ${esc(x)}">✕</button></div>`).join("") : ""}</div></div>
+    <div class="pcprop"><span class="pcico">${icon("search")}</span><div><b style="font:600 16px var(--mont)">Use personal context to propose the buyer profile</b><p class="small" style="margin:6px 0 0">Reads the <b>emails, calls and meetings where this buyer actually talks</b>, plus the documents you added, and proposes their category goals, their style (DISC) and friction points, <b>each tied to its source</b>. You review, confirm, then save. Private to you; it never enters the shared customer profile.</p></div><button class="btn primary" data-a="nbprop">${n.prop ? "Build again" : "Build proposal"}</button></div>
+    ${n.prop ? `<div class="card nbproposal"><div class="card-hd">Proposed profile for ${nm} <span class="aside">Review before saving</span></div><div class="pad stack">
+      <div class="label">Category goals and KPIs <span class="pill ok" style="margin-left:6px">High confidence</span></div>
+      <p class="small" style="margin:0">Grow ${esc(n.cat)} sales at ${esc(n.cust)} while protecting margin on premium lines${ref(1)}. Judges suppliers on promotion return and on-shelf availability during peaks${ref(2)}.${n.files.length ? ` Wants fewer, deeper promotions next season${ref(3)}.` : ""}</p>
+      <div class="label">Style (DISC) <span class="pill warn" style="margin-left:6px">Inferred · confirm</span></div>
+      <p class="small" style="margin:0">Reads as <b>Dominant, data-led</b>: concise, decides fast on a quantified case, dislikes long decks<sup class="cite-n">1,2</sup>. This is a read of how they write and talk, not something they said.</p>
+      <div>${n.disc ? `<span class="pill ok">Confirmed by you</span>` : `<button class="btn sm plain" data-a="nbdisc">Confirm this style read</button>`}</div>
+      <div class="label">Known friction points</div>
+      <p class="small" style="margin:0">Pushed back on extra shelf space for premium lines at the last review; agreed to revisit with data${ref(2)}.</p>
+      <div class="label">Where this comes from</div>
+      ${srcs.map(([t, w, kind], i) => `<div class="row small" style="gap:8px"><span class="pn kb">${i + 1}</span><span><b style="font-weight:600">${esc(t)}</b> <span class="hint">· ${esc(w)}</span></span><span class="pill neutral" style="margin-left:auto">${esc(kind)}</span></div>`).join("")}
+      <p class="hint" style="margin:0">${icon("lock")} Personal details, out-of-office and health mentions are left out. Nothing here enters the shared customer profile.</p></div></div>` : ""}
+    <div class="row" style="justify-content:flex-end"><button class="btn plain" data-a="go" data-v="kb">Cancel</button><button class="btn primary" data-a="nbsave" ${n.prop && !n.disc ? 'aria-disabled="true"' : ''}>Save buyer profile</button></div></div>`;
 };
 V.analyst = () => {
   const p = proj(state.pid), nm = nextMeeting(p), aud = state.anAud || (nm && audOf(nm) === "Customer" ? "external" : "internal"), a = analystData(p);
@@ -2092,7 +2136,14 @@ document.addEventListener("click", e => {
     case "cpreset": state.cp = []; state.cpFix = {}; render(); break;
     case "fball": state.fbAll = !state.fbAll; render(); break;
     case "kbtab": state.kbtab = v; render(); break;
-    case "newbuyer": buyerForm(state.cust || "Carrefour", b => { BKB[b.id] = { cats: [myCat(state.cat) ? state.cat : MY_CATS[0]], decides: "", priorities: [] }; state.kbtab = "buyers"; render(); }); break;
+    case "newbuyer": state.nb = { name: "", cust: state.kbcust || "Carrefour", cat: myCat(state.cat) ? state.cat : MY_CATS[0], role: "", know: "", files: [], prop: false, disc: false }; go("newbuyer"); break;
+    case "nbprop": if (!state.nb.name.trim()) { toast("Add the buyer's name first."); $("#nb-name")?.focus(); break; } state.nb.prop = true; render(); toast("Proposal ready. Review it, confirm the style read, then save."); break;
+    case "nbdisc": state.nb.disc = true; render(); break;
+    case "nbrm": state.nb.files.splice(+v, 1); render(); break;
+    case "nbsave": { const n = state.nb; if (!n.name.trim() || !n.role.trim()) { toast("Add the buyer's name and role."); break; } if (n.prop && !n.disc) { toast("Confirm the style read first."); break; }
+      const b = { id: "B" + Date.now(), name: n.name.trim(), role: n.role.trim(), cust: n.cust, disc: n.prop ? "D" : "S", updated: "just now" }; BUYERS.push(b);
+      BKB[b.id] = { cats: [n.cat], decides: n.prop ? `${n.cat} range and promotions at ${n.cust}` : "", priorities: n.prop ? [`Grow ${n.cat} while protecting margin`, "Promotion return", "On-shelf availability"] : (n.know ? [n.know.slice(0, 80)] : []), tip: n.prop ? "Concise and data-led: lead with a quantified case." : "" };
+      state.kbtab = "buyers"; state.kbcust = n.cust; go("kb"); toast(`${b.name} saved. Private to you, ready for the Selling Coach and Role-play.`); break; }
     case "buyeredit": toast("In the live tool this opens the buyer profile to edit. Profiles are private to you."); break;
     case "buyerdel": toast("In the live tool this asks first, then deletes the profile with Undo for a few seconds."); break;
     case "cpfix": state.cpFix = { ...(state.cpFix || {}), [v]: true }; render(); toast("In the live tool this edits the slide in the deck. Undo is in PowerPoint."); break;
@@ -2102,7 +2153,7 @@ document.addEventListener("click", e => {
     case "fb": if (v === "wrong") { toast("Use the source link next to the fact: the knowledge bank team corrects facts by fixing or replacing the document."); break; }
       state.fb[state.ask] = v; render(); toast(v === "up" ? "Thanks. Useful answers help tune what the assistant shows first." : "Thanks. Unhelpful answers are reviewed by the knowledge bank team."); break;
     case "cat": state.gtab = "numbers"; go("category", { cat: v, mkt: el.dataset.k || state.mkt }); break;
-    case "mkt": state.mkt = v; render(); break;
+    case "mkt": state.mkt = v; state.kbcust = ""; render(); break;
     case "copilot": toast(`In the live tool this opens Copilot to summarise what your emails, chats and meetings say about ${v}.`); break;
     case "buyer": state.gs.buyers = true; go("buyer", { bid: v }); break;
     case "ask": state.allsrc = false; go("ask", { ask: v, askCust: el.dataset.k || "" }); break;
@@ -2153,11 +2204,14 @@ document.addEventListener("submit", e => {
 });
 document.addEventListener("input", e => {
   const t = e.target;
+  if (t.dataset.nb && state.nb) state.nb[t.dataset.nb] = t.value;
   if (t.dataset.w && !t.matches("select")) { state.w[t.dataset.w] = t.type === "number" ? +t.value : t.type === "date" ? fromISO(t.value) : t.value; if (["name", "objective", "mTitle", "mDate", "custOther"].includes(t.dataset.w)) refreshPreview(); }
   if (t.dataset.c && (t.matches("textarea") || t.type === "number")) { const c = ctxTarget(); if (!c) return; if (t.dataset.c === "minutes") c.minutes = Math.max(5, +t.value || 5); else c[t.dataset.c] = t.value; ctxChanged(); }
 });
 document.addEventListener("change", e => {
   const t = e.target;
+  if (t.matches("[data-kbcust]")) { state.kbcust = t.value; render(); return; }
+  if (t.dataset.nb) { state.nb[t.dataset.nb] = t.value; return; }
   if (t.name === "ttype") { const box = t.closest(".dlg") || document; box.querySelectorAll(".onlymeet").forEach(x => x.hidden = t.value === "analysis"); box.querySelectorAll(".onlyana").forEach(x => x.hidden = t.value !== "analysis"); return; }
   if (t.dataset.w && t.matches("select")) { if (t.dataset.w === "cust") state.w.buyers = []; state.w[t.dataset.w] = t.dataset.w === "mObj" ? +t.value : t.value; if (t.hasAttribute("data-rr")) render(); else refreshPreview(); }
   if (t.dataset.c && !t.matches("textarea") && t.type !== "number") {
@@ -2180,6 +2234,7 @@ document.addEventListener("change", e => {
   if (t.dataset.up && t.files && t.files[0]) {
     const name = t.files[0].name;
     if (t.dataset.up === "deck") addDeck(name);
+    if (t.dataset.up === "nbfile") { [...t.files].forEach(f0 => state.nb.files.push(f0.name)); render(); }
     if (t.dataset.up === "qdeck") { if (!/\.(pptx?|pdf)$/i.test(name)) { toast("Drop a PPTX or PDF file."); return; } state.qdeck = name; render(); }
     if (t.dataset.up === "wdeck") { if (!/\.(pptx?|pdf)$/i.test(name)) { toast("Upload a PPTX or PDF file."); return; } state.w.deck = name; render(); }
     if (t.dataset.up === "file") { const p = proj(state.pid), ext = name.split(".").pop().toLowerCase(); p.files.unshift({ name, kind: /xls|csv/.test(ext) ? "xls" : /doc|pdf|txt/.test(ext) ? "doc" : "ppt", added: TODAY, by: "VB" }); log(p, `added ${name}`); render(); toast(`${name} added to the project.`); }
