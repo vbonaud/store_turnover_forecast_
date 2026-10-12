@@ -1619,7 +1619,7 @@ V.project = () => {
   return `<div class="crumb"><button data-a="go" data-v="projects">My projects</button><span>›</span><span>${esc(p.name)}</span></div>
     <div class="pagehead"><div><h1>${esc(p.name)}</h1><p class="sub">${esc(p.objective)}</p>
       <div class="row" style="margin-top:8px"><span class="chip">${esc(p.cust)}</span><span class="chip">${esc(p.market)}</span><span class="chip">${esc(p.cat)}</span>${p.status === "Archived" ? `<span class="pill neutral">Archived</span>` : ""}</div></div>
-      <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button></div></div>
+      <div class="actions"><button class="btn sm plain" data-a="editproj">Edit project</button><button class="btn sm primary" data-a="newtask">${icon("plus")}Add a task</button></div></div>
     ${NOTE}
     <div class="tabs" role="tablist">${tabs.map(([k, l]) => `<button role="tab" data-a="tab" data-v="${k}" aria-selected="${state.tab === k}" tabindex="${state.tab === k ? 0 : -1}">${l}</button>`).join("")}</div>${body}`;
 };
